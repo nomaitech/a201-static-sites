@@ -40,4 +40,6 @@ sites:
   - name: hello2
     hosts:
       - hello2.example.test
-
+  - name: hello3
+    hosts:
+      - hello3.example.test

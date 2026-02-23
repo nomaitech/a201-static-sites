@@ -109,6 +109,7 @@ This repo includes a small local Helm chart that keeps the Option 2 behavior whi
 ```bash
 HELLO1_HOST=hello1.ai201.site \
 HELLO2_HOST=hello2.ai201.site \
+HELLO3_HOST=hello3.ai201.site \
 ./scripts/helm-deploy-k3s.sh
 ```
 
