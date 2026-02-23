@@ -21,7 +21,7 @@ spec:
   containers:
     - name: shell
       image: ${helper_image}
-      command: [\"sh\", \"-lc\", \"sleep 3600\"]
+      command: ["sh", "-lc", "sleep 3600"]
       volumeMounts:
         - name: site-content
           mountPath: /srv/sites
@@ -38,4 +38,3 @@ kubectl exec -n "$namespace" "$helper_pod" -- sh -lc 'find /srv/sites -maxdepth 
 echo "Synced content to PVC ${claim_name} in namespace ${namespace}"
 echo "Deleting helper pod ${helper_pod}"
 kubectl delete pod -n "$namespace" "$helper_pod" --wait=true
-
