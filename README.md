@@ -132,3 +132,52 @@ Then verify from the running deployment:
 ```bash
 kubectl exec -n "$USER" deploy/shared-static-sites-shared-static-sites -- ls -l /srv/sites/hello1
 ```
+
+## Caddy wildcard variant (no Helm upgrade for new hosts)
+
+This variant uses Caddy plus a wildcard ingress host (for example `*.shared.ai201.site`) and maps requests to the filesystem path `/srv/sites/{host}/current`.
+
+That means:
+
+- Add a new host by publishing content into a matching directory (for example `hello4.shared.ai201.site`)
+- No nginx/caddy config change
+- No Helm upgrade
+- No pod rollout
+
+### Files
+
+- `helm/shared-static-caddy`: Caddy chart with wildcard ingress + PVC
+- `Dockerfile.caddy`: thin runtime image
+- `scripts/build-and-push-caddy-image.sh`: push image tagged with Git SHA
+- `scripts/helm-deploy-caddy-k3s.sh`: deploy wildcard Caddy release
+- `content/caddy-sites/`: seed content keyed by hostname
+
+### Deploy Caddy wildcard release
+
+1. Build and push the Caddy image:
+
+```bash
+./scripts/build-and-push-caddy-image.sh
+```
+
+2. Deploy a wildcard release:
+
+```bash
+WILDCARD_HOST='*.shared.ai201.site' ./scripts/helm-deploy-caddy-k3s.sh
+```
+
+3. Seed content into the Caddy PVC:
+
+```bash
+RELEASE_NAME=shared-static-caddy CONTENT_ROOT=content/caddy-sites ./scripts/k3s-sync-content.sh
+```
+
+### Add a new host later (no rollout)
+
+Publish content directly to a host directory that matches the wildcard:
+
+```bash
+RELEASE_NAME=shared-static-caddy ./scripts/k3s-publish-site.sh hello4.shared.ai201.site /path/to/site-build
+```
+
+The Caddy config and ingress stay unchanged because routing is wildcard-based.

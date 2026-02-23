@@ -1,0 +1,39 @@
+replicaCount: 2
+
+image:
+  repository: pdr.jonbesga.com/shared-static-caddy-demo
+  tag: ""
+  pullPolicy: IfNotPresent
+
+imagePullSecrets:
+  - name: regcred
+
+service:
+  type: ClusterIP
+  port: 80
+
+resources:
+  requests:
+    cpu: 25m
+    memory: 32Mi
+  limits:
+    cpu: 100m
+    memory: 64Mi
+
+persistence:
+  enabled: true
+  existingClaim: ""
+  storageClassName: local-path
+  size: 1Gi
+
+ingress:
+  enabled: true
+  className: ""
+  annotations:
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+  host: "*.shared.ai201.site"
+  tls: []
+
+caddy:
+  wildcardHost: "*.shared.ai201.site"
+

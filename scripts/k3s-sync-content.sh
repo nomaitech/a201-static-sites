@@ -8,6 +8,7 @@ namespace="${NAMESPACE:-${USER}}"
 release="${RELEASE_NAME:-shared-static-sites}"
 helper_pod="${HELPER_POD_NAME:-${release}-content-sync}"
 helper_image="${HELPER_IMAGE:-alpine:3.20}"
+content_root="${CONTENT_ROOT:-content/sites}"
 
 claim_name="${PVC_NAME:-${release}-shared-static-sites-content}"
 
@@ -32,9 +33,9 @@ spec:
 EOF
 
 kubectl wait -n "$namespace" --for=condition=Ready "pod/${helper_pod}" --timeout=120s
-kubectl cp -n "$namespace" content/sites/. "${helper_pod}:/srv/sites"
-kubectl exec -n "$namespace" "$helper_pod" -- sh -lc 'find /srv/sites -maxdepth 3 -type l -ls || true'
+kubectl cp -n "$namespace" "${content_root}/." "${helper_pod}:/srv/sites"
+kubectl exec -n "$namespace" "$helper_pod" -- sh -lc 'find /srv/sites -maxdepth 3 -type l -print || true'
 
-echo "Synced content to PVC ${claim_name} in namespace ${namespace}"
+echo "Synced ${content_root} to PVC ${claim_name} in namespace ${namespace}"
 echo "Deleting helper pod ${helper_pod}"
 kubectl delete pod -n "$namespace" "$helper_pod" --wait=true
