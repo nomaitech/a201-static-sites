@@ -1,5 +1,8 @@
 replicaCount: 2
 
+nameOverride: ""
+fullnameOverride: "shared-static-sites"
+
 image:
   repository: pdr.jonbesga.com/shared-static-caddy-demo
   tag: ""
