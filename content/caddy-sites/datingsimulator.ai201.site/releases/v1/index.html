@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Dating Simulator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0b0d;
+            --surface: #141417;
+            --card: #1a1a1f;
+            --card-hover: #222228;
+            --border: #27272d;
+            --border-light: #35353d;
+            --amber: #e09f3e;
+            --amber-light: #edb956;
+            --amber-dark: #c48a2e;
+            --amber-glow: rgba(224, 159, 62, 0.12);
+            --rose: #d4727a;
+            --rose-dark: #b85962;
+            --rose-glow: rgba(212, 114, 122, 0.12);
+            --blue: #5b8fb9;
+            --blue-dark: #477294;
+            --blue-glow: rgba(91, 143, 185, 0.12);
+            --green: #5cb87a;
+            --green-glow: rgba(92, 184, 122, 0.12);
+            --text: #ede8e2;
+            --text-secondary: #a09a93;
+            --text-muted: #6b6660;
+            --font-display: 'Fraunces', Georgia, serif;
+            --font-body: 'Outfit', system-ui, sans-serif;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+
+        /* ── Hero ── */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            background: radial-gradient(ellipse at 50% 30%, rgba(224, 159, 62, 0.05), transparent 70%);
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 9vw, 6.5rem);
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--text) 40%, var(--amber));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            color: var(--text-secondary);
+            max-width: 540px;
+            margin-bottom: 48px;
+            font-weight: 300;
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 40px;
+            animation: bounce 2s ease-in-out infinite;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .scroll-hint::after { content: '↓'; display: block; text-align: center; margin-top: 4px; font-size: 1.2rem; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); opacity: 0.6; }
+            50% { transform: translateY(8px); opacity: 1; }
+        }
+
+        /* ── Sections ── */
+        .sim-section { padding: 80px 0; border-top: 1px solid var(--border); }
+        .hidden-section { display: none; opacity: 0; transform: translateY(30px); }
+        .hidden-section.visible { display: block; animation: revealSection 0.8s ease forwards; }
+
+        @keyframes revealSection {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-label {
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--amber);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+        }
+
+        .section-desc {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            max-width: 640px;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        /* ── Gender Toggle ── */
+        .gender-toggle {
+            display: flex;
+            gap: 0;
+            margin-bottom: 28px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            width: fit-content;
+        }
+
+        .gender-btn {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 12px 32px;
+            border: none;
+            cursor: pointer;
+            background: var(--surface);
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .gender-btn.active-male { background: var(--blue); color: #fff; }
+        .gender-btn.active-female { background: var(--rose); color: #fff; }
+
+        /* ── Sliders ── */
+        .sliders-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px 48px;
+            margin-bottom: 40px;
+        }
+        @media (max-width: 600px) { .sliders-wrapper { grid-template-columns: 1fr; } }
+
+        .stat-slider { margin-bottom: 0; }
+
+        .stat-label { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .stat-emoji { font-size: 1rem; }
+        .stat-name { font-weight: 500; font-size: 0.92rem; color: var(--text); flex: 1; }
+        .stat-value {
+            font-weight: 600; color: var(--amber); font-variant-numeric: tabular-nums;
+            min-width: 28px; text-align: right; font-size: 0.92rem;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none; appearance: none;
+            width: 100%; height: 6px; border-radius: 3px; outline: none; cursor: pointer;
+            background: linear-gradient(to right, var(--amber) var(--fill, 50%), var(--border) var(--fill, 50%));
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
+            background: var(--amber); cursor: pointer; border: 3px solid var(--bg);
+            box-shadow: 0 0 0 2px var(--amber-dark); transition: box-shadow 0.2s;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            box-shadow: 0 0 0 2px var(--amber), 0 0 12px rgba(224, 159, 62, 0.4);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 16px; height: 16px; border-radius: 50%;
+            background: var(--amber); cursor: pointer; border: 3px solid var(--bg);
+        }
+        input[type="range"]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--border); }
+        input[type="range"]::-moz-range-progress { height: 6px; border-radius: 3px; background: var(--amber); }
+
+        /* ── Age Control ── */
+        .age-control { margin-bottom: 32px; max-width: 380px; }
+
+        /* ── Character Preview ── */
+        .character-preview {
+            display: flex; gap: 40px; align-items: center;
+            margin-bottom: 48px; padding: 32px;
+            background: var(--surface); border-radius: 16px; border: 1px solid var(--border);
+        }
+        @media (max-width: 600px) { .character-preview { flex-direction: column; gap: 24px; } }
+
+        .radar-container { width: 220px; height: 220px; flex-shrink: 0; }
+        .radar-container svg { width: 100%; height: 100%; }
+        .preview-info { flex: 1; }
+        .preview-name { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; margin-bottom: 4px; }
+        .preview-gender { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 2px; }
+        .preview-age { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px; }
+        .preview-overall { font-size: 2.4rem; font-weight: 700; color: var(--amber); font-variant-numeric: tabular-nums; }
+        .preview-overall-label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+
+        /* ── Buttons ── */
+        .btn-primary {
+            font-family: var(--font-body); font-weight: 600; font-size: 1.05rem;
+            padding: 16px 40px; background: var(--amber); color: var(--bg);
+            border: none; border-radius: 12px; cursor: pointer; transition: all 0.25s;
+        }
+        .btn-primary:hover { background: var(--amber-light); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(224, 159, 62, 0.25); }
+        .btn-primary:active { transform: translateY(0); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .btn-secondary {
+            font-family: var(--font-body); font-weight: 500; font-size: 0.95rem;
+            padding: 12px 24px; background: var(--surface); color: var(--text);
+            border: 1px solid var(--border); border-radius: 12px; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-secondary:hover { background: var(--card); border-color: var(--border-light); }
+        .btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .btn-danger {
+            font-family: var(--font-body); font-weight: 500; font-size: 0.95rem;
+            padding: 12px 24px; background: transparent; color: var(--rose);
+            border: 1px solid var(--rose-dark); border-radius: 12px; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-danger:hover { background: var(--rose-glow); }
+
+        .btn-group { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
+
+        /* ── Population Grid ── */
+        .population-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 10px; margin-bottom: 48px;
+        }
+
+        .person-card {
+            background: var(--card); border-radius: 10px; padding: 12px;
+            border: 1px solid var(--border); transition: all 0.2s; cursor: default;
+        }
+        .person-card:hover { background: var(--card-hover); transform: translateY(-2px); }
+        .person-card.is-user { border-color: var(--amber); box-shadow: 0 0 20px var(--amber-glow), inset 0 0 20px var(--amber-glow); }
+
+        .person-card .card-header { display: flex; align-items: center; gap: 4px; margin-bottom: 6px; }
+        .person-card .card-gender { font-size: 0.8rem; }
+        .person-card .card-name { font-weight: 600; font-size: 0.78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .person-card .card-age { font-size: 0.72rem; color: var(--text-muted); }
+        .person-card .card-avg { font-size: 0.72rem; color: var(--text-muted); margin-left: auto; font-weight: 600; font-variant-numeric: tabular-nums; }
+        .mini-bars { display: flex; flex-direction: column; gap: 2px; }
+        .mini-bar { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+        .mini-bar-fill { height: 100%; border-radius: 2px; transition: width 0.6s ease; }
+        .male-fill { background: var(--blue); }
+        .female-fill { background: var(--rose); }
+
+        /* ── Matching Section ── */
+        .formula-box {
+            background: var(--surface); border-radius: 12px; padding: 24px;
+            border: 1px solid var(--border); margin-bottom: 32px;
+            font-size: 0.95rem; color: var(--text-secondary); line-height: 1.7;
+        }
+        .formula-box code { background: var(--card); padding: 2px 8px; border-radius: 4px; font-size: 0.88rem; color: var(--amber); }
+
+        .threshold-control { margin-bottom: 40px; }
+        .threshold-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .threshold-label span:first-child { font-weight: 500; }
+        .threshold-value { font-size: 1.4rem; font-weight: 700; color: var(--amber); font-variant-numeric: tabular-nums; }
+        .threshold-hint { font-size: 0.85rem; color: var(--text-muted); margin-top: 8px; }
+
+        /* ── Matching Animation ── */
+        .matching-overlay { text-align: center; padding: 60px 20px; display: none; }
+        .matching-overlay.active { display: block; }
+        .matching-heart { font-size: 4rem; animation: heartbeat 0.6s ease-in-out infinite; margin-bottom: 16px; }
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        .matching-text { font-size: 1.1rem; color: var(--text-secondary); }
+
+        /* ── Results ── */
+        .user-result {
+            background: var(--surface); border: 2px solid var(--amber); border-radius: 16px;
+            padding: 32px; margin-bottom: 48px; text-align: center;
+            box-shadow: 0 0 40px var(--amber-glow);
+        }
+        .user-result-title { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; margin-bottom: 8px; }
+        .user-result-subtitle { color: var(--text-secondary); margin-bottom: 24px; }
+        .user-match-card { display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; }
+        .match-person { text-align: center; }
+        .match-person-name { font-weight: 600; font-size: 1.1rem; margin-bottom: 4px; }
+        .match-person-detail { font-size: 0.85rem; color: var(--text-secondary); }
+        .match-heart { font-size: 2rem; }
+        .match-score { font-size: 1.8rem; font-weight: 700; color: var(--amber); font-variant-numeric: tabular-nums; }
+        .match-score-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+        .match-risk { font-size: 0.8rem; color: var(--rose); margin-top: 4px; }
+
+        /* ── Stats Grid ── */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 48px; }
+        .stat-card { background: var(--surface); border-radius: 12px; padding: 18px; border: 1px solid var(--border); text-align: center; }
+        .stat-card-value { font-size: 1.8rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .stat-card-value.green { color: var(--green); }
+        .stat-card-value.amber { color: var(--amber); }
+        .stat-card-value.rose { color: var(--rose); }
+        .stat-card-value.blue { color: var(--blue); }
+        .stat-card-label { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+
+        /* ── Couples Grid ── */
+        .couples-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-bottom: 48px; }
+        .couple-card {
+            display: flex; align-items: center; background: var(--card); border-radius: 12px;
+            padding: 14px; border: 1px solid var(--border); gap: 10px;
+            animation: fadeInUp 0.5s ease forwards; opacity: 0;
+        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .couple-person { flex: 1; min-width: 0; }
+        .couple-person-name { font-weight: 600; font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .couple-person-detail { font-size: 0.72rem; color: var(--text-muted); }
+        .couple-heart { text-align: center; flex-shrink: 0; }
+        .couple-score { font-weight: 700; font-size: 0.95rem; color: var(--amber); font-variant-numeric: tabular-nums; }
+        .couple-meta { font-size: 0.65rem; color: var(--text-muted); }
+
+        /* ── Singles ── */
+        .singles-section { margin-top: 48px; }
+        .singles-header { font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; margin-bottom: 8px; }
+        .singles-subtitle { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 24px; }
+        .singles-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+        @media (max-width: 600px) { .singles-columns { grid-template-columns: 1fr; } }
+        .singles-col-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .singles-list { display: flex; flex-direction: column; gap: 6px; }
+        .single-person {
+            display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+            background: var(--surface); border-radius: 8px; font-size: 0.85rem; border: 1px solid var(--border);
+        }
+        .single-person.is-user { border-color: var(--amber); box-shadow: 0 0 12px var(--amber-glow); }
+        .single-person-age { color: var(--text-muted); font-size: 0.78rem; }
+        .single-person-avg { margin-left: auto; font-variant-numeric: tabular-nums; color: var(--text-muted); font-size: 0.78rem; }
+
+        .section-divider { width: 60px; height: 2px; background: var(--border-light); margin: 32px 0; border-radius: 1px; }
+        .sub-heading { font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 24px; }
+
+        /* ══════════════════════════════════ */
+        /* ── TIMELINE / YEAR PROGRESSION ── */
+        /* ══════════════════════════════════ */
+        .current-status-box {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+            padding: 24px 28px; margin-bottom: 32px;
+        }
+        .status-year {
+            font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; margin-bottom: 12px;
+        }
+        .status-row {
+            display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 12px;
+            font-size: 0.95rem; color: var(--text-secondary);
+        }
+        .status-row strong { color: var(--text); }
+        .status-user {
+            padding-top: 12px; border-top: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+        .status-user .matched { color: var(--green); }
+        .status-user .single { color: var(--rose); }
+
+        /* Timeline vertical */
+        .timeline-list { margin-bottom: 40px; }
+        .timeline-entry {
+            position: relative; padding-left: 28px; padding-bottom: 20px;
+            border-left: 2px solid var(--border);
+            margin-left: 4px;
+        }
+        .timeline-entry:last-child { border-left-color: transparent; padding-bottom: 0; }
+        .timeline-entry::before {
+            content: ''; position: absolute; left: -6px; top: 4px;
+            width: 10px; height: 10px; border-radius: 50%; background: var(--border-light);
+            border: 2px solid var(--bg);
+        }
+        .timeline-entry.current::before { background: var(--amber); box-shadow: 0 0 8px var(--amber-glow); }
+        .timeline-entry-year {
+            font-weight: 600; font-size: 0.9rem; color: var(--text); margin-bottom: 2px;
+        }
+        .timeline-entry-summary { font-size: 0.82rem; color: var(--text-muted); }
+        .timeline-entry-summary .breakup-count { color: var(--rose); }
+        .timeline-entry-summary .match-count { color: var(--green); }
+        .timeline-entry-summary .couple-count { color: var(--amber); font-weight: 600; }
+
+        /* Year Event Details */
+        .year-details { margin-top: 32px; }
+        .year-detail-section { margin-bottom: 32px; }
+        .year-detail-title {
+            font-weight: 600; font-size: 1rem; margin-bottom: 12px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .event-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 10px;
+        }
+        .event-card {
+            display: flex; align-items: center; background: var(--card); border-radius: 10px;
+            padding: 12px 14px; gap: 10px; font-size: 0.85rem;
+        }
+        .event-card.breakup-event { border-left: 3px solid var(--rose); }
+        .event-card.match-event { border-left: 3px solid var(--green); }
+        .event-card .event-names { font-weight: 500; flex: 1; }
+        .event-card .event-detail { color: var(--text-muted); font-size: 0.78rem; text-align: right; }
+        .event-card .event-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+        /* ── Footer ── */
+        footer {
+            text-align: center; padding: 48px 24px;
+            color: var(--text-muted); font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+        }
+        footer a { color: var(--amber); text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <!-- ═══ HERO ═══ -->
+    <section id="hero">
+        <h1 class="hero-title">The Dating<br>Simulator</h1>
+        <p class="hero-subtitle">An interactive experiment exploring compatibility, matching, breakups, and the mathematics of love across time.</p>
+        <a href="#creation" class="btn-primary">Begin the Experiment</a>
+        <div class="scroll-hint">scroll</div>
+    </section>
+
+    <!-- ═══ CHARACTER CREATION ═══ -->
+    <section id="creation" class="sim-section">
+        <div class="container">
+            <span class="step-label">Step 1</span>
+            <h2 class="section-title">Create Your Character</h2>
+            <p class="section-desc">Define who you are. Set your age, attributes, and see how you stack up against the rest of the population.</p>
+
+            <div class="gender-toggle">
+                <button class="gender-btn active-male" data-gender="male" onclick="setGender('male')">♂ Male</button>
+                <button class="gender-btn" data-gender="female" onclick="setGender('female')">♀ Female</button>
+            </div>
+
+            <div style="margin-bottom: 28px;">
+                <button class="btn-secondary" onclick="randomizeUser()">🎲 Randomize My Traits</button>
+            </div>
+
+            <div class="age-control">
+                <div class="stat-label">
+                    <span class="stat-emoji">🎂</span>
+                    <span class="stat-name">Age</span>
+                    <span class="stat-value" id="val-age">25</span>
+                </div>
+                <input type="range" min="18" max="55" value="25" data-attr="age" oninput="updateAge(this)">
+            </div>
+
+            <div class="sliders-wrapper">
+                <div class="stat-slider">
+                    <div class="stat-label"><span class="stat-emoji">💎</span><span class="stat-name">Physical Beauty</span><span class="stat-value" id="val-beauty">50</span></div>
+                    <input type="range" min="0" max="100" value="50" data-attr="beauty" oninput="updateSlider(this)">
+                </div>
+                <div class="stat-slider">
+                    <div class="stat-label"><span class="stat-emoji">🌟</span><span class="stat-name">Personality</span><span class="stat-value" id="val-personality">50</span></div>
+                    <input type="range" min="0" max="100" value="50" data-attr="personality" oninput="updateSlider(this)">
+                </div>
+                <div class="stat-slider">
+                    <div class="stat-label"><span class="stat-emoji">✨</span><span class="stat-name">Charisma</span><span class="stat-value" id="val-charisma">50</span></div>
+                    <input type="range" min="0" max="100" value="50" data-attr="charisma" oninput="updateSlider(this)">
+                </div>
+                <div class="stat-slider">
+                    <div class="stat-label"><span class="stat-emoji">🔥</span><span class="stat-name">Ambition</span><span class="stat-value" id="val-ambition">50</span></div>
+                    <input type="range" min="0" max="100" value="50" data-attr="ambition" oninput="updateSlider(this)">
+                </div>
+                <div class="stat-slider">
+                    <div class="stat-label"><span class="stat-emoji">🧠</span><span class="stat-name">Awareness</span><span class="stat-value" id="val-awareness">50</span></div>
+                    <input type="range" min="0" max="100" value="50" data-attr="awareness" oninput="updateSlider(this)">
+                </div>
+                <div class="stat-slider">
+                    <div class="stat-label"><span class="stat-emoji">📚</span><span class="stat-name">Smartness</span><span class="stat-value" id="val-smartness">50</span></div>
+                    <input type="range" min="0" max="100" value="50" data-attr="smartness" oninput="updateSlider(this)">
+                </div>
+            </div>
+
+            <div class="character-preview">
+                <div class="radar-container" id="radar-chart"></div>
+                <div class="preview-info">
+                    <div class="preview-name">You</div>
+                    <div class="preview-gender" id="preview-gender">♂ Male</div>
+                    <div class="preview-age" id="preview-age">Age 25</div>
+                    <div class="preview-overall-label">Overall Score</div>
+                    <div class="preview-overall" id="preview-overall">50</div>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="generatePopulation()">Generate Population →</button>
+        </div>
+    </section>
+
+    <!-- ═══ POPULATION ═══ -->
+    <section id="population" class="sim-section hidden-section">
+        <div class="container">
+            <span class="step-label">Step 2</span>
+            <h2 class="section-title">Meet the Population</h2>
+            <p class="section-desc" id="population-desc"></p>
+            <div class="population-grid" id="population-grid"></div>
+            <button class="btn-primary" onclick="showMatching()">Continue to Matching →</button>
+        </div>
+    </section>
+
+    <!-- ═══ MATCHING ═══ -->
+    <section id="matching" class="sim-section hidden-section">
+        <div class="container">
+            <span class="step-label">Step 3</span>
+            <h2 class="section-title">Let the Matching Begin</h2>
+            <p class="section-desc">We'll use the Gale-Shapley algorithm to find stable matches. Age gaps and attribute differences both affect compatibility.</p>
+
+            <div class="formula-box">
+                <strong>How compatibility works:</strong><br><br>
+                For each pair, we compute <code>max(0, 100 - 2 x |difference|)</code> for each of the 6 attributes and average them. Then:<br><br>
+                <strong>Age gap penalty:</strong> gaps over 5 years reduce compatibility by <code>1.5 per extra year</code> (max -20).<br><br>
+                <strong>Bonuses:</strong> Power couple (both ambitious) +4 | Emotional depth (both aware) +3 | Intellectual bond (both smart) +3 | Chemistry (both strong personality) +3 | Magnetic charm (high charisma) +3 | Classic attraction (beauty meets charisma) +2<br><br>
+                The <strong>threshold</strong> determines the minimum compatibility for a match. Below it, people stay single.
+            </div>
+
+            <div class="threshold-control">
+                <div class="threshold-label">
+                    <span>Compatibility Threshold</span>
+                    <span class="threshold-value" id="threshold-value">65</span>
+                </div>
+                <input type="range" min="30" max="95" value="65" id="threshold-slider" oninput="updateThreshold(this)">
+                <div class="threshold-hint">Higher = fewer but stronger matches. Lower = more but weaker bonds.</div>
+            </div>
+
+            <div id="matching-overlay" class="matching-overlay">
+                <div class="matching-heart">💕</div>
+                <div class="matching-text">Finding matches...</div>
+            </div>
+
+            <button class="btn-primary" id="run-matching-btn" onclick="runMatching()">Run Matching →</button>
+        </div>
+    </section>
+
+    <!-- ═══ RESULTS ═══ -->
+    <section id="results" class="sim-section hidden-section">
+        <div class="container">
+            <span class="step-label">Year 1 — The Results</span>
+            <h2 class="section-title">The Algorithm Has Spoken</h2>
+            <p class="section-desc" id="results-desc"></p>
+
+            <div id="user-result"></div>
+            <div class="section-divider"></div>
+            <h3 class="sub-heading">Statistics</h3>
+            <div class="stats-grid" id="stats-grid"></div>
+            <div class="section-divider"></div>
+            <h3 class="sub-heading">All Matches</h3>
+            <div class="couples-grid" id="couples-grid"></div>
+            <div class="singles-section" id="singles-section"></div>
+        </div>
+    </section>
+
+    <!-- ═══ TIMELINE / YEAR PROGRESSION ═══ -->
+    <section id="timeline" class="sim-section hidden-section">
+        <div class="container">
+            <span class="step-label">The Simulation</span>
+            <h2 class="section-title">Year by Year</h2>
+            <p class="section-desc">Time passes. Relationships are tested. Some couples break up based on their breakup probability — a function of compatibility, age gap, emotional awareness, and relationship length. Singles re-enter the dating pool each year.</p>
+
+            <div id="current-status"></div>
+
+            <div class="btn-group" id="year-controls">
+                <button class="btn-primary" id="btn-advance" onclick="advanceYear()">Advance 1 Year →</button>
+                <button class="btn-secondary" id="btn-auto5" onclick="autoPlay(5)">Auto-play 5 Years</button>
+                <button class="btn-secondary" id="btn-auto10" onclick="autoPlay(10)">Auto-play 10 Years</button>
+                <button class="btn-danger" id="btn-stop" onclick="stopAutoPlay()" style="display:none">Stop</button>
+            </div>
+
+            <div class="formula-box" style="margin-bottom: 32px;">
+                <strong>Breakup probability formula:</strong><br><br>
+                Base rate: <code>0.45 - (compatibility / 100) x 0.40</code><br>
+                A 100% compatible couple has ~5% annual breakup risk. At 65% compatibility, it's ~19%.<br><br>
+                <strong>Modifiers:</strong> Age gap > 10 years (+8%) | Low awareness in either (<35) (+6%) | Personality clash (diff > 40) (+5%) | Together 3+ years (-4%) | Together 5+ years (-8%)
+            </div>
+
+            <h3 class="sub-heading">Timeline</h3>
+            <div class="timeline-list" id="timeline-list"></div>
+
+            <div id="year-details"></div>
+        </div>
+    </section>
+
+    <footer>
+        <p>The Dating Simulator — An interactive experiment about compatibility, matching, and the passage of time.</p>
+    </footer>
+
+<script>
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+const MALE_NAMES = ["James","Robert","Michael","David","William","Richard","Thomas","Charles","Daniel","Matthew","Anthony","Mark","Steven","Paul","Andrew","Joshua","Kenneth","Kevin","Brian","George","Edward","Timothy","Jason","Jeffrey","Ryan","Jacob","Gary","Nicholas","Eric","Jonathan","Stephen","Larry","Justin","Scott","Brandon","Benjamin","Samuel","Raymond","Gregory","Frank","Alexander","Patrick","Jack","Dennis","Jerry","Tyler","Aaron","Nathan","Henry","Douglas","Peter","Adam","Zachary","Walter","Kyle","Harold","Carl","Arthur","Dylan","Jesse"];
+const FEMALE_NAMES = ["Mary","Patricia","Jennifer","Linda","Elizabeth","Susan","Jessica","Sarah","Karen","Lisa","Nancy","Margaret","Sandra","Ashley","Dorothy","Kimberly","Emily","Donna","Michelle","Carol","Amanda","Melissa","Stephanie","Rebecca","Sharon","Laura","Cynthia","Amy","Angela","Anna","Brenda","Pamela","Emma","Nicole","Helen","Samantha","Katherine","Christine","Rachel","Janet","Catherine","Maria","Heather","Diane","Ruth","Julie","Olivia","Joyce","Victoria","Kelly","Lauren","Christina","Megan","Andrea","Hannah","Jacqueline","Martha","Gloria","Teresa","Sara"];
+const ATTRS = ['beauty','personality','charisma','ambition','awareness','smartness'];
+const ATTR_EMOJI = { beauty:'💎', personality:'🌟', charisma:'✨', ambition:'🔥', awareness:'🧠', smartness:'📚' };
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+const state = {
+    userGender: 'male',
+    userAge: 25,
+    userStats: { beauty:50, personality:50, charisma:50, ambition:50, awareness:50, smartness:50 },
+    population: [],
+    men: [],
+    women: [],
+    userCharacter: null,
+    threshold: 65,
+    // Year system
+    year: 0,
+    couples: [],        // { man, woman, score, yearFormed }
+    singleMen: [],
+    singleWomen: [],
+    history: [],        // year snapshots
+    autoPlaying: false,
+    autoTimer: null,
+    totalExitedMen: 0,
+    totalExitedWomen: 0
+};
+
+// ═══════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════
+function clamp(val, min, max) { return Math.round(Math.max(min, Math.min(max, val))); }
+
+function normalRandom(mean, stdDev) {
+    let u = 0, v = 0;
+    while (u === 0) u = Math.random();
+    while (v === 0) v = Math.random();
+    return mean + stdDev * Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function avgStat(person) {
+    return Math.round(ATTRS.reduce((s, a) => s + person[a], 0) / ATTRS.length);
+}
+
+// ═══════════════════════════════════════
+// CHARACTER CREATION
+// ═══════════════════════════════════════
+function setGender(gender) {
+    state.userGender = gender;
+    document.querySelectorAll('.gender-btn').forEach(btn => {
+        btn.className = 'gender-btn' + (btn.dataset.gender === gender ? (gender === 'male' ? ' active-male' : ' active-female') : '');
+    });
+    document.getElementById('preview-gender').textContent = gender === 'male' ? '♂ Male' : '♀ Female';
+}
+
+function randomizeUser() {
+    // Randomize gender
+    const gender = Math.random() < 0.5 ? 'male' : 'female';
+    setGender(gender);
+
+    // Randomize age
+    const age = clamp(Math.round(normalRandom(28, 7)), 18, 55);
+    state.userAge = age;
+    document.getElementById('val-age').textContent = age;
+    const ageSlider = document.querySelector('[data-attr="age"]');
+    ageSlider.value = age;
+    ageSlider.style.setProperty('--fill', ((age - 18) / 37 * 100) + '%');
+    document.getElementById('preview-age').textContent = 'Age ' + age;
+
+    // Randomize all stats
+    ATTRS.forEach(attr => {
+        const val = clamp(Math.round(normalRandom(50, 20)), 0, 100);
+        state.userStats[attr] = val;
+        document.getElementById('val-' + attr).textContent = val;
+        const slider = document.querySelector(`[data-attr="${attr}"]`);
+        slider.value = val;
+        slider.style.setProperty('--fill', val + '%');
+    });
+
+    updatePreview();
+}
+
+function updateAge(el) {
+    state.userAge = parseInt(el.value);
+    document.getElementById('val-age').textContent = el.value;
+    el.style.setProperty('--fill', ((el.value - 18) / 37 * 100) + '%');
+    document.getElementById('preview-age').textContent = 'Age ' + el.value;
+}
+
+function updateSlider(el) {
+    const attr = el.dataset.attr;
+    const val = parseInt(el.value);
+    state.userStats[attr] = val;
+    document.getElementById('val-' + attr).textContent = val;
+    el.style.setProperty('--fill', val + '%');
+    updatePreview();
+}
+
+function updatePreview() {
+    document.getElementById('preview-overall').textContent = avgStat(state.userStats);
+    renderRadarChart(state.userStats, document.getElementById('radar-chart'));
+}
+
+// ═══════════════════════════════════════
+// RADAR CHART
+// ═══════════════════════════════════════
+function renderRadarChart(person, container) {
+    const size = 220, cx = size/2, cy = size/2, maxR = 80;
+    function pt(i, val) {
+        const angle = (i * 60 - 90) * Math.PI / 180;
+        const r = (val / 100) * maxR;
+        return [cx + r * Math.cos(angle), cy + r * Math.sin(angle)];
+    }
+    let svg = `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">`;
+    [25,50,75,100].forEach(pct => {
+        const pts = Array.from({length:6}, (_,i) => pt(i, pct).join(',')).join(' ');
+        svg += `<polygon points="${pts}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>`;
+    });
+    for (let i = 0; i < 6; i++) {
+        const [x, y] = pt(i, 100);
+        svg += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
+    }
+    const dataPoints = ATTRS.map((a, i) => pt(i, person[a]).join(',')).join(' ');
+    svg += `<polygon points="${dataPoints}" fill="rgba(224,159,62,0.18)" stroke="var(--amber)" stroke-width="2"/>`;
+    ATTRS.forEach((a, i) => {
+        const [x, y] = pt(i, person[a]);
+        svg += `<circle cx="${x}" cy="${y}" r="3.5" fill="var(--amber)"/>`;
+    });
+    const labels = Object.values(ATTR_EMOJI);
+    for (let i = 0; i < 6; i++) {
+        const angle = (i * 60 - 90) * Math.PI / 180;
+        const r = maxR + 20;
+        const x = cx + r * Math.cos(angle);
+        const y = cy + r * Math.sin(angle);
+        svg += `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-size="15">${labels[i]}</text>`;
+    }
+    svg += '</svg>';
+    container.innerHTML = svg;
+}
+
+// ═══════════════════════════════════════
+// POPULATION GENERATION
+// ═══════════════════════════════════════
+function generatePerson(id, gender, name) {
+    const person = { id, name, gender, isUser: false };
+    person.age = clamp(normalRandom(28, 7), 18, 55);
+    ATTRS.forEach(a => { person[a] = clamp(normalRandom(50, 20), 0, 100); });
+    return person;
+}
+
+function generatePopulation() {
+    const user = {
+        id: 0, name: 'You', gender: state.userGender, isUser: true,
+        age: state.userAge, ...state.userStats
+    };
+    state.userCharacter = user;
+
+    // Random gender split — NOT exactly 50/50
+    const totalMen = clamp(Math.round(normalRandom(50, 3)), 43, 57);
+    const totalWomen = 100 - totalMen;
+
+    const oppGender = state.userGender === 'male' ? 'female' : 'male';
+    const sameNames = shuffle(state.userGender === 'male' ? MALE_NAMES : FEMALE_NAMES);
+    const oppNames = shuffle(oppGender === 'male' ? MALE_NAMES : FEMALE_NAMES);
+
+    const sameTotal = state.userGender === 'male' ? totalMen : totalWomen;
+    const oppTotal = state.userGender === 'male' ? totalWomen : totalMen;
+
+    const sameGender = [user];
+    for (let i = 0; i < sameTotal - 1; i++) sameGender.push(generatePerson(i + 1, state.userGender, sameNames[i]));
+
+    const oppGenderPeople = [];
+    for (let i = 0; i < oppTotal; i++) oppGenderPeople.push(generatePerson(i + 100, oppGender, oppNames[i]));
+
+    if (state.userGender === 'male') { state.men = sameGender; state.women = oppGenderPeople; }
+    else { state.women = sameGender; state.men = oppGenderPeople; }
+
+    state.population = [...sameGender, ...oppGenderPeople];
+
+    // Reset exit counters
+    state.totalExitedMen = 0;
+    state.totalExitedWomen = 0;
+
+    document.getElementById('population-desc').textContent =
+        `${state.population.length} people — ${totalMen} men and ${totalWomen} women — each with randomized ages and attributes. The gender split isn't perfectly even, just like real life. Can you spot yourself?`;
+
+    renderPopulation();
+
+    const section = document.getElementById('population');
+    section.classList.add('visible');
+    setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function renderPopulation() {
+    const grid = document.getElementById('population-grid');
+    grid.innerHTML = '';
+    const displayOrder = shuffle(state.population);
+
+    displayOrder.forEach(person => {
+        const card = document.createElement('div');
+        card.className = 'person-card' + (person.isUser ? ' is-user' : '');
+        const genderIcon = person.gender === 'male' ? '♂' : '♀';
+        const fillClass = person.gender === 'male' ? 'male-fill' : 'female-fill';
+        const avg = avgStat(person);
+        let barsHtml = '';
+        ATTRS.forEach(a => { barsHtml += `<div class="mini-bar"><div class="mini-bar-fill ${fillClass}" style="width:${person[a]}%"></div></div>`; });
+        card.innerHTML = `
+            <div class="card-header">
+                <span class="card-gender">${genderIcon}</span>
+                <span class="card-name">${person.name}</span>
+                <span class="card-age">${person.age}</span>
+                <span class="card-avg">${avg}</span>
+            </div>
+            <div class="mini-bars">${barsHtml}</div>`;
+        grid.appendChild(card);
+    });
+}
+
+// ═══════════════════════════════════════
+// COMPATIBILITY & MATCHING
+// ═══════════════════════════════════════
+function showMatching() {
+    const section = document.getElementById('matching');
+    section.classList.add('visible');
+    setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function updateThreshold(el) {
+    state.threshold = parseInt(el.value);
+    document.getElementById('threshold-value').textContent = el.value;
+    el.style.setProperty('--fill', ((el.value - 30) / 65 * 100) + '%');
+}
+
+function calculateCompatibility(a, b) {
+    let base = 0;
+    ATTRS.forEach(attr => {
+        const diff = Math.abs(a[attr] - b[attr]);
+        base += Math.max(0, 100 - 2 * diff);
+    });
+    base /= ATTRS.length;
+
+    // Age gap penalty
+    const ageGap = Math.abs(a.age - b.age);
+    if (ageGap > 5) base -= Math.min(20, (ageGap - 5) * 1.5);
+
+    let bonus = 0;
+    if (a.ambition > 70 && b.ambition > 70) bonus += 4;
+    if (a.awareness > 70 && b.awareness > 70) bonus += 3;
+    if (a.smartness > 65 && b.smartness > 65) bonus += 3;
+    if (a.personality > 60 && b.personality > 60) bonus += 3;
+    if (a.charisma > 75 || b.charisma > 75) bonus += 3;
+    if ((a.beauty > 80 && b.charisma > 70) || (b.beauty > 80 && a.charisma > 70)) bonus += 2;
+
+    return Math.min(100, Math.max(0, Math.round(base + bonus)));
+}
+
+function galeShapley(men, women, threshold) {
+    const menById = {};
+    men.forEach(m => menById[m.id] = m);
+
+    const menPrefs = {};
+    men.forEach(m => {
+        menPrefs[m.id] = women
+            .map(w => ({ woman: w, score: calculateCompatibility(m, w) }))
+            .filter(p => p.score >= threshold)
+            .sort((a, b) => b.score - a.score);
+    });
+
+    const proposalIdx = {};
+    const womanPartner = {};
+    const manPartner = {};
+    men.forEach(m => proposalIdx[m.id] = 0);
+
+    let freeMen = men.map(m => m.id);
+
+    while (freeMen.length > 0) {
+        const nextFree = [];
+        for (const manId of freeMen) {
+            const prefs = menPrefs[manId];
+            const idx = proposalIdx[manId];
+            if (idx >= prefs.length) continue;
+            const { woman, score } = prefs[idx];
+            proposalIdx[manId] = idx + 1;
+            if (!womanPartner[woman.id]) {
+                womanPartner[woman.id] = { manId, score };
+                manPartner[manId] = { woman, score };
+            } else if (score > womanPartner[woman.id].score) {
+                const oldManId = womanPartner[woman.id].manId;
+                delete manPartner[oldManId];
+                nextFree.push(oldManId);
+                womanPartner[woman.id] = { manId, score };
+                manPartner[manId] = { woman, score };
+            } else {
+                nextFree.push(manId);
+            }
+        }
+        freeMen = nextFree;
+    }
+
+    const matches = [];
+    men.forEach(m => {
+        if (manPartner[m.id]) matches.push({ man: m, woman: manPartner[m.id].woman, score: manPartner[m.id].score });
+    });
+    const matchedMenIds = new Set(matches.map(m => m.man.id));
+    const matchedWomenIds = new Set(matches.map(m => m.woman.id));
+    return {
+        matches: matches.sort((a, b) => b.score - a.score),
+        singleMen: men.filter(m => !matchedMenIds.has(m.id)),
+        singleWomen: women.filter(w => !matchedWomenIds.has(w.id))
+    };
+}
+
+// ═══════════════════════════════════════
+// BREAKUP PROBABILITY
+// ═══════════════════════════════════════
+function calculateBreakupProbability(couple) {
+    const { man, woman, score, yearFormed } = couple;
+    const yearsTogether = state.year - yearFormed;
+    const ageGap = Math.abs(man.age - woman.age);
+
+    // Base: inversely related to compatibility
+    let prob = 0.45 - (score / 100) * 0.40;
+
+    // Age gap modifier
+    if (ageGap > 10) prob += 0.08;
+    else if (ageGap > 7) prob += 0.04;
+
+    // Low emotional awareness
+    if (man.awareness < 35 || woman.awareness < 35) prob += 0.06;
+
+    // Personality clash
+    if (Math.abs(man.personality - woman.personality) > 40) prob += 0.05;
+
+    // Stability bonus for longer relationships
+    if (yearsTogether >= 5) prob -= 0.08;
+    else if (yearsTogether >= 3) prob -= 0.04;
+
+    return Math.max(0.02, Math.min(0.55, prob));
+}
+
+// ═══════════════════════════════════════
+// RUN INITIAL MATCHING
+// ═══════════════════════════════════════
+function runMatching() {
+    const overlay = document.getElementById('matching-overlay');
+    const btn = document.getElementById('run-matching-btn');
+    overlay.classList.add('active');
+    btn.style.display = 'none';
+
+    setTimeout(() => {
+        const result = galeShapley(state.men, state.women, state.threshold);
+
+        // Initialize year system
+        state.year = 1;
+        state.couples = result.matches.map(m => ({ man: m.man, woman: m.woman, score: m.score, yearFormed: 1 }));
+        state.singleMen = result.singleMen;
+        state.singleWomen = result.singleWomen;
+        state.history = [{
+            year: 1,
+            totalCouples: state.couples.length,
+            breakups: 0,
+            newMatches: state.couples.length,
+            singleMen: state.singleMen.length,
+            singleWomen: state.singleWomen.length,
+            breakupDetails: [],
+            newMatchDetails: state.couples
+        }];
+
+        overlay.classList.remove('active');
+        btn.style.display = 'inline-block';
+
+        renderResults(result);
+
+        const resultsSection = document.getElementById('results');
+        resultsSection.classList.add('visible');
+        setTimeout(() => {
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Reveal timeline section after a delay
+            setTimeout(() => {
+                document.getElementById('timeline').classList.add('visible');
+                renderTimeline();
+            }, 600);
+        }, 100);
+    }, 1500);
+}
+
+// ═══════════════════════════════════════
+// RENDER INITIAL RESULTS
+// ═══════════════════════════════════════
+function renderResults(result) {
+    const { matches, singleMen, singleWomen } = result;
+    const totalMatches = matches.length;
+    const avgScore = totalMatches > 0 ? Math.round(matches.reduce((s, m) => s + m.score, 0) / totalMatches) : 0;
+    const highestScore = totalMatches > 0 ? matches[0].score : 0;
+
+    document.getElementById('results-desc').textContent =
+        `Out of ${state.population.length} people, ${totalMatches} couples formed. ${singleMen.length} single men and ${singleWomen.length} single women remain.`;
+
+    // User result
+    const userResult = document.getElementById('user-result');
+    const userMatch = matches.find(m => m.man.isUser || m.woman.isUser);
+
+    if (userMatch) {
+        const partner = userMatch.man.isUser ? userMatch.woman : userMatch.man;
+        const partnerIcon = partner.gender === 'male' ? '♂' : '♀';
+        const couple = state.couples.find(c => c.man.isUser || c.woman.isUser);
+        const risk = couple ? Math.round(calculateBreakupProbability(couple) * 100) : 0;
+        userResult.innerHTML = `
+            <div class="user-result">
+                <div class="user-result-title">You Found a Match!</div>
+                <div class="user-result-subtitle">The algorithm paired you with someone compatible.</div>
+                <div class="user-match-card">
+                    <div class="match-person">
+                        <div class="match-person-name">You</div>
+                        <div class="match-person-detail">Age ${state.userCharacter.age} · Avg: ${avgStat(state.userCharacter)}</div>
+                    </div>
+                    <div style="text-align:center">
+                        <div class="match-heart">❤️</div>
+                        <div class="match-score">${userMatch.score}%</div>
+                        <div class="match-score-label">compatibility</div>
+                        <div class="match-risk">${risk}% annual breakup risk</div>
+                    </div>
+                    <div class="match-person">
+                        <div class="match-person-name">${partnerIcon} ${partner.name}</div>
+                        <div class="match-person-detail">Age ${partner.age} · Avg: ${avgStat(partner)}</div>
+                    </div>
+                </div>
+            </div>`;
+    } else {
+        userResult.innerHTML = `
+            <div class="user-result" style="border-color: var(--rose);">
+                <div class="user-result-title">You're Still Single</div>
+                <div class="user-result-subtitle">No one in the population met the compatibility threshold. Try lowering it or adjusting your attributes.</div>
+            </div>`;
+    }
+
+    // Stats
+    document.getElementById('stats-grid').innerHTML = `
+        <div class="stat-card"><div class="stat-card-value green">${totalMatches}</div><div class="stat-card-label">Couples Formed</div></div>
+        <div class="stat-card"><div class="stat-card-value amber">${avgScore}%</div><div class="stat-card-label">Avg Compatibility</div></div>
+        <div class="stat-card"><div class="stat-card-value blue">${singleMen.length}</div><div class="stat-card-label">Single Men</div></div>
+        <div class="stat-card"><div class="stat-card-value rose">${singleWomen.length}</div><div class="stat-card-label">Single Women</div></div>
+        <div class="stat-card"><div class="stat-card-value amber">${highestScore}%</div><div class="stat-card-label">Highest Match</div></div>
+        <div class="stat-card"><div class="stat-card-value amber">${state.threshold}%</div><div class="stat-card-label">Threshold</div></div>`;
+
+    // Couples
+    const couplesGrid = document.getElementById('couples-grid');
+    couplesGrid.innerHTML = '';
+    matches.forEach((match, i) => {
+        const card = document.createElement('div');
+        card.className = 'couple-card';
+        card.style.animationDelay = `${i * 0.04}s`;
+        const mIcon = match.man.gender === 'male' ? '♂' : '♀';
+        const wIcon = match.woman.gender === 'male' ? '♂' : '♀';
+        card.innerHTML = `
+            <div class="couple-person">
+                <div class="couple-person-name">${mIcon} ${match.man.name}</div>
+                <div class="couple-person-detail">Age ${match.man.age} · Avg ${avgStat(match.man)}</div>
+            </div>
+            <div class="couple-heart">
+                <div class="couple-score">${match.score}%</div>
+                <div class="couple-meta">match</div>
+            </div>
+            <div class="couple-person" style="text-align:right">
+                <div class="couple-person-name">${wIcon} ${match.woman.name}</div>
+                <div class="couple-person-detail">Age ${match.woman.age} · Avg ${avgStat(match.woman)}</div>
+            </div>`;
+        couplesGrid.appendChild(card);
+    });
+
+    renderSingles(singleMen, singleWomen);
+}
+
+function renderSingles(singleMen, singleWomen) {
+    const singlesSection = document.getElementById('singles-section');
+    if (singleMen.length + singleWomen.length > 0) {
+        let html = `
+            <div class="singles-header">The Singles</div>
+            <div class="singles-subtitle">${singleMen.length + singleWomen.length} people couldn't find a match above the ${state.threshold}% threshold.</div>
+            <div class="singles-columns"><div>
+                <div class="singles-col-title">♂ Single Men (${singleMen.length})</div><div class="singles-list">`;
+        singleMen.forEach(p => {
+            html += `<div class="single-person${p.isUser ? ' is-user' : ''}"><span>${p.name}</span><span class="single-person-age">${p.age}</span><span class="single-person-avg">Avg: ${avgStat(p)}</span></div>`;
+        });
+        html += `</div></div><div><div class="singles-col-title">♀ Single Women (${singleWomen.length})</div><div class="singles-list">`;
+        singleWomen.forEach(p => {
+            html += `<div class="single-person${p.isUser ? ' is-user' : ''}"><span>${p.name}</span><span class="single-person-age">${p.age}</span><span class="single-person-avg">Avg: ${avgStat(p)}</span></div>`;
+        });
+        html += `</div></div></div>`;
+        singlesSection.innerHTML = html;
+    } else {
+        singlesSection.innerHTML = '<p style="color:var(--text-secondary)">Everyone found a match!</p>';
+    }
+}
+
+// ═══════════════════════════════════════
+// YEAR PROGRESSION
+// ═══════════════════════════════════════
+function advanceYear() {
+    state.year++;
+
+    // Age everyone
+    state.population.forEach(p => p.age++);
+
+    // Process breakups
+    const breakups = [];
+    const survivingCouples = [];
+
+    for (const couple of state.couples) {
+        const prob = calculateBreakupProbability(couple);
+        if (Math.random() < prob) {
+            breakups.push({ ...couple, probability: prob });
+        } else {
+            survivingCouples.push(couple);
+        }
+    }
+
+    state.couples = survivingCouples;
+
+    // Build new singles pool (existing singles + newly broken up)
+    const newSingleMen = [...state.singleMen, ...breakups.map(b => b.man)];
+    const newSingleWomen = [...state.singleWomen, ...breakups.map(b => b.woman)];
+
+    // Re-match singles using Gale-Shapley
+    let newCouples = [];
+    if (newSingleMen.length > 0 && newSingleWomen.length > 0) {
+        const matchResult = galeShapley(newSingleMen, newSingleWomen, state.threshold);
+        newCouples = matchResult.matches.map(m => ({
+            man: m.man, woman: m.woman, score: m.score, yearFormed: state.year
+        }));
+        state.singleMen = matchResult.singleMen;
+        state.singleWomen = matchResult.singleWomen;
+    } else {
+        state.singleMen = newSingleMen;
+        state.singleWomen = newSingleWomen;
+    }
+
+    state.couples = [...state.couples, ...newCouples];
+
+    // Some remaining singles exit the dating pool entirely (give up, move away, etc.)
+    const exitedThisYear = { men: [], women: [] };
+    state.singleMen = state.singleMen.filter(m => {
+        let prob = 0.04;
+        if (m.ambition < 30) prob += 0.04;
+        if (m.charisma < 25) prob += 0.03;
+        if (m.age > 45) prob += 0.05;
+        if (Math.random() < prob) { exitedThisYear.men.push(m); return false; }
+        return true;
+    });
+    state.singleWomen = state.singleWomen.filter(w => {
+        let prob = 0.04;
+        if (w.ambition < 30) prob += 0.04;
+        if (w.charisma < 25) prob += 0.03;
+        if (w.age > 45) prob += 0.05;
+        if (Math.random() < prob) { exitedThisYear.women.push(w); return false; }
+        return true;
+    });
+    state.totalExitedMen += exitedThisYear.men.length;
+    state.totalExitedWomen += exitedThisYear.women.length;
+
+    // Record history
+    state.history.push({
+        year: state.year,
+        totalCouples: state.couples.length,
+        breakups: breakups.length,
+        newMatches: newCouples.length,
+        singleMen: state.singleMen.length,
+        singleWomen: state.singleWomen.length,
+        exits: exitedThisYear.men.length + exitedThisYear.women.length,
+        exitDetails: exitedThisYear,
+        breakupDetails: breakups,
+        newMatchDetails: newCouples
+    });
+
+    renderTimeline();
+}
+
+function autoPlay(numYears) {
+    if (state.autoPlaying) return;
+    state.autoPlaying = true;
+    let remaining = numYears;
+
+    document.getElementById('btn-advance').disabled = true;
+    document.getElementById('btn-auto5').disabled = true;
+    document.getElementById('btn-auto10').disabled = true;
+    document.getElementById('btn-stop').style.display = 'inline-block';
+
+    function step() {
+        if (remaining <= 0 || !state.autoPlaying) {
+            stopAutoPlay();
+            return;
+        }
+        advanceYear();
+        remaining--;
+        state.autoTimer = setTimeout(step, 350);
+    }
+    step();
+}
+
+function stopAutoPlay() {
+    state.autoPlaying = false;
+    if (state.autoTimer) clearTimeout(state.autoTimer);
+    state.autoTimer = null;
+    document.getElementById('btn-advance').disabled = false;
+    document.getElementById('btn-auto5').disabled = false;
+    document.getElementById('btn-auto10').disabled = false;
+    document.getElementById('btn-stop').style.display = 'none';
+}
+
+// ═══════════════════════════════════════
+// RENDER TIMELINE
+// ═══════════════════════════════════════
+function renderTimeline() {
+    // Current status
+    const statusEl = document.getElementById('current-status');
+    const userCouple = state.couples.find(c => c.man.isUser || c.woman.isUser);
+    const userSingle = state.singleMen.some(m => m.isUser) || state.singleWomen.some(w => w.isUser);
+
+    let userStatusHtml = '';
+    if (userCouple) {
+        const partner = userCouple.man.isUser ? userCouple.woman : userCouple.man;
+        const yrs = state.year - userCouple.yearFormed;
+        const risk = Math.round(calculateBreakupProbability(userCouple) * 100);
+        const partnerIcon = partner.gender === 'male' ? '♂' : '♀';
+        userStatusHtml = `<span class="matched">❤️ In a relationship with ${partnerIcon} ${partner.name} (${userCouple.score}% compat, ${yrs} yr${yrs !== 1 ? 's' : ''}, ${risk}% breakup risk)</span>`;
+    } else if (userSingle) {
+        userStatusHtml = `<span class="single">👤 Single — waiting in the dating pool</span>`;
+    }
+
+    statusEl.innerHTML = `
+        <div class="current-status-box">
+            <div class="status-year">Year ${state.year}</div>
+            <div class="status-row">
+                <span>❤️ <strong>${state.couples.length}</strong> couples</span>
+                <span>👤 <strong>${state.singleMen.length}</strong> single men, <strong>${state.singleWomen.length}</strong> single women</span>
+                <span>🎂 Your age: <strong>${state.userCharacter.age}</strong></span>
+            </div>
+            <div class="status-user">${userStatusHtml}</div>
+            ${(state.totalExitedMen + state.totalExitedWomen > 0) ? `<div style="margin-top:8px; font-size:0.85rem; color:var(--text-muted);">🚪 ${state.totalExitedMen} men and ${state.totalExitedWomen} women have left the dating pool entirely.</div>` : ''}
+        </div>`;
+
+    // Timeline list
+    const timelineEl = document.getElementById('timeline-list');
+    let timelineHtml = '';
+    state.history.forEach((entry, idx) => {
+        const isCurrent = idx === state.history.length - 1;
+        let summary = '';
+        if (entry.year === 1) {
+            summary = `<span class="match-count">${entry.newMatches} couples</span> formed initially`;
+        } else {
+            const parts = [];
+            if (entry.breakups > 0) parts.push(`<span class="breakup-count">${entry.breakups} breakup${entry.breakups !== 1 ? 's' : ''}</span>`);
+            if (entry.newMatches > 0) parts.push(`<span class="match-count">${entry.newMatches} new match${entry.newMatches !== 1 ? 'es' : ''}</span>`);
+            if (entry.exits > 0) parts.push(`${entry.exits} left pool`);
+            if (parts.length === 0) parts.push('no changes');
+            summary = parts.join(', ') + ` → <span class="couple-count">${entry.totalCouples} couples</span>`;
+        }
+        timelineHtml += `
+            <div class="timeline-entry${isCurrent ? ' current' : ''}">
+                <div class="timeline-entry-year">Year ${entry.year}</div>
+                <div class="timeline-entry-summary">${summary}</div>
+            </div>`;
+    });
+    timelineEl.innerHTML = timelineHtml;
+
+    // Year details (latest year only, skip year 1)
+    const detailsEl = document.getElementById('year-details');
+    const latest = state.history[state.history.length - 1];
+
+    if (latest.year === 1) {
+        detailsEl.innerHTML = '';
+        return;
+    }
+
+    let detailsHtml = '<div class="section-divider"></div>';
+
+    // Breakups
+    if (latest.breakupDetails.length > 0) {
+        detailsHtml += `
+            <div class="year-detail-section">
+                <div class="year-detail-title">💔 Breakups This Year (${latest.breakupDetails.length})</div>
+                <div class="event-grid">`;
+        latest.breakupDetails.forEach(b => {
+            const mIcon = b.man.gender === 'male' ? '♂' : '♀';
+            const wIcon = b.woman.gender === 'male' ? '♂' : '♀';
+            const yrs = state.year - b.yearFormed;
+            detailsHtml += `
+                <div class="event-card breakup-event">
+                    <span class="event-icon">💔</span>
+                    <span class="event-names">${mIcon} ${b.man.name}, ${b.man.age} & ${wIcon} ${b.woman.name}, ${b.woman.age}</span>
+                    <span class="event-detail">${b.score}% · ${yrs}yr · ${Math.round(b.probability * 100)}% risk</span>
+                </div>`;
+        });
+        detailsHtml += `</div></div>`;
+    }
+
+    // New matches
+    if (latest.newMatchDetails.length > 0) {
+        detailsHtml += `
+            <div class="year-detail-section">
+                <div class="year-detail-title">❤️ New Matches This Year (${latest.newMatchDetails.length})</div>
+                <div class="event-grid">`;
+        latest.newMatchDetails.forEach(m => {
+            const mIcon = m.man.gender === 'male' ? '♂' : '♀';
+            const wIcon = m.woman.gender === 'male' ? '♂' : '♀';
+            detailsHtml += `
+                <div class="event-card match-event">
+                    <span class="event-icon">❤️</span>
+                    <span class="event-names">${mIcon} ${m.man.name}, ${m.man.age} & ${wIcon} ${m.woman.name}, ${m.woman.age}</span>
+                    <span class="event-detail">${m.score}% compat</span>
+                </div>`;
+        });
+        detailsHtml += `</div></div>`;
+    }
+
+    // Exits
+    if (latest.exitDetails && (latest.exitDetails.men.length + latest.exitDetails.women.length > 0)) {
+        const allExits = [...latest.exitDetails.men, ...latest.exitDetails.women];
+        detailsHtml += `
+            <div class="year-detail-section">
+                <div class="year-detail-title">🚪 Left the Dating Pool (${allExits.length})</div>
+                <div class="event-grid">`;
+        allExits.forEach(p => {
+            const icon = p.gender === 'male' ? '♂' : '♀';
+            detailsHtml += `
+                <div class="event-card" style="border-left: 3px solid var(--text-muted);">
+                    <span class="event-icon">🚪</span>
+                    <span class="event-names">${icon} ${p.name}, ${p.age}</span>
+                    <span class="event-detail">Avg: ${avgStat(p)}</span>
+                </div>`;
+        });
+        detailsHtml += `</div></div>`;
+    }
+
+    if (latest.breakupDetails.length === 0 && latest.newMatchDetails.length === 0 && (!latest.exits || latest.exits === 0)) {
+        detailsHtml += `<p style="color: var(--text-muted); font-style: italic;">A quiet year — no breakups, no new matches, and no one left.</p>`;
+    }
+
+    detailsEl.innerHTML = detailsHtml;
+
+    // Scroll to current status
+    statusEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+document.querySelectorAll('input[type="range"]').forEach(el => {
+    if (el.dataset.attr === 'age') {
+        el.style.setProperty('--fill', ((el.value - 18) / 37 * 100) + '%');
+    } else if (el.id === 'threshold-slider') {
+        el.style.setProperty('--fill', ((el.value - 30) / 65 * 100) + '%');
+    } else {
+        el.style.setProperty('--fill', el.value + '%');
+    }
+});
+updatePreview();
+</script>
+</body>
+</html>

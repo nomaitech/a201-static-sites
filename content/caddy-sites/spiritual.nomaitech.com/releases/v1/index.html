@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spiritual Landing Pages | Nomaitech</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #191316;
+      --cream: #f7f0e8;
+      --ember: #f0a36d;
+      --rose: #f5d0c5;
+      --plum: #6b3b5a;
+      --sky: #c5e6f4;
+      --mint: #dff2d6;
+      --shadow: rgba(25, 19, 22, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Space Grotesk", "Gill Sans", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at top, #ffffff 0%, var(--cream) 50%, #f3e3d5 100%);
+    }
+
+    header {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px 64px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before,
+    header::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(0px);
+      opacity: 0.85;
+      z-index: 0;
+    }
+
+    header::before {
+      width: 520px;
+      height: 520px;
+      background: radial-gradient(circle, var(--sky), transparent 70%);
+      top: -160px;
+      left: -120px;
+    }
+
+    header::after {
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, var(--rose), transparent 70%);
+      bottom: -140px;
+      right: -120px;
+    }
+
+    .hero {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 32px;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      max-width: 1100px;
+      width: 100%;
+    }
+
+    .hero h1 {
+      font-family: "Fraunces", "Georgia", serif;
+      font-size: clamp(2.8rem, 4vw, 4.4rem);
+      margin: 0 0 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      line-height: 1.6;
+      margin: 0 0 24px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.7);
+      box-shadow: 0 12px 24px var(--shadow);
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .badge span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--ember);
+      box-shadow: 0 0 12px rgba(240, 163, 109, 0.9);
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .button {
+      text-decoration: none;
+      padding: 14px 26px;
+      border-radius: 999px;
+      font-weight: 600;
+      border: 2px solid var(--ink);
+      color: var(--ink);
+      background: var(--mint);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .button.primary {
+      background: var(--ember);
+      box-shadow: 0 16px 28px rgba(240, 163, 109, 0.35);
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 28px rgba(25, 19, 22, 0.18);
+    }
+
+    .hero-card {
+      background: rgba(255, 255, 255, 0.82);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 30px 50px rgba(25, 19, 22, 0.15);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      animation: floatIn 1.1s ease;
+    }
+
+    .hero-card h2 {
+      margin: 0 0 12px;
+      font-family: "Fraunces", serif;
+      font-size: 2rem;
+    }
+
+    .price {
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin: 8px 0 4px;
+    }
+
+    .price span {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .hero-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 24px 0 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .hero-card li {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .hero-card li::before {
+      content: "✦";
+      color: var(--plum);
+      font-size: 1rem;
+    }
+
+    section {
+      padding: 80px 24px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .two-col {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      align-items: start;
+    }
+
+    .panel {
+      background: #fff8f3;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 18px 32px rgba(25, 19, 22, 0.1);
+      border: 1px solid rgba(25, 19, 22, 0.06);
+    }
+
+    .panel h3 {
+      margin-top: 0;
+      font-family: "Fraunces", serif;
+    }
+
+    .rituals {
+      background: linear-gradient(135deg, #f8e9dc 0%, #f1f7f5 55%, #e6f0f6 100%);
+    }
+
+    .rituals .panel {
+      background: #ffffff;
+    }
+
+    .promise {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .promise div {
+      padding: 20px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px dashed rgba(25, 19, 22, 0.2);
+    }
+
+    footer {
+      padding: 40px 24px 80px;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    .stagger {
+      animation: fadeUp 1s ease both;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes floatIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        padding-top: 64px;
+      }
+
+      .hero-card {
+        order: -1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <div>
+        <div class="badge"><span></span>Alchemized landing pages for spiritual influencers</div>
+        <h1>Launch your next offering with a landing page aligned to your highest vibration.</h1>
+        <p>
+          We craft full-fledge, aura-tuned landing pages for spiritual brands that want to feel rich, grounded, and magnetic.
+          Every layout is guided by right-CPU vibrational frequencies, RAM crystals, and a little celestial copywriting.
+        </p>
+        <div class="cta-row">
+          <a class="button primary" href="#checkout">Start with Stripe</a>
+          <a class="button" href="#ritual">See the ritual</a>
+        </div>
+      </div>
+      <div class="hero-card" id="checkout">
+        <h2>One-off energy exchange</h2>
+        <div class="price">£20 <span>GBP • pay once</span></div>
+        <p>Stripe checkout. We channel the page. You launch in calm, clear confidence.</p>
+        <a class="button primary" href="https://stripe.com" target="_blank" rel="noreferrer">Pay with Stripe</a>
+        <ul>
+          <li>Custom layout + copy tuned to your niche constellation.</li>
+          <li>Mobile-first, breath-worked responsiveness.</li>
+          <li>1-page delivery within 48 lunar hours.</li>
+          <li>Host-ready files, no extra cosmic subscriptions.</li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="grid two-col">
+      <div class="panel stagger">
+        <h3>What you receive</h3>
+        <p>
+          A polished landing page engineered to invite bookings, downloads, or divine curiosity. Expect soft edges,
+          luminous gradients, and messaging that gently reassures your audience they are safe to say yes.
+        </p>
+        <div class="promise">
+          <div>Energy-aware color palettes aligned with your aura season.</div>
+          <div>CTA copy that flows like breathwork and closes like ceremony.</div>
+          <div>Visual hierarchy that reflects your sacred customer journey.</div>
+        </div>
+      </div>
+      <div class="panel stagger">
+        <h3>Why it works</h3>
+        <p>
+          We blend soulful mysticism with actual conversion structure. Your page is constructed on harmonic grid lines,
+          triple-checked with quartz-infused RAM, and then blessed by a CPU tuned to 528Hz.
+        </p>
+        <p>
+          The result: a landing page that feels like a portal yet performs like a rocket ship.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="rituals" id="ritual">
+    <div class="grid two-col">
+      <div class="panel">
+        <h3>The build ritual</h3>
+        <ol>
+          <li>We open the clarity circle: you share your offer, audience, and vibe.</li>
+          <li>We channel the narrative: sacred messaging, cosmic structure, grounded CTA.</li>
+          <li>We craft the portal: responsive layout, luminous typography, ethical persuasion.</li>
+          <li>We seal the energy: deliver the files, guide your launch, celebrate your yes.</li>
+        </ol>
+      </div>
+      <div class="panel">
+        <h3>Spiritual copy you can feel</h3>
+        <p>
+          Invite them into their next evolution. Promise transformation. Whisper of expanded timelines and embodied abundance.
+          This is the gentle, resonant marketing copy that feels like a sound bath yet guides them to click.
+        </p>
+        <p>
+          Think: “Your message is medicine.” “Your offer is already approved by the universe.” “The portal is open.”
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="grid two-col">
+      <div class="panel">
+        <h3>FAQ</h3>
+        <p><strong>Is this really just £20?</strong> Yes. One-off payment, no hidden moons, no recurring stardust fees.</p>
+        <p><strong>Can you host it?</strong> We deliver the files so you can host anywhere, or we can deploy for you.</p>
+        <p><strong>Do you use real crystals?</strong> Only in the RAM, obviously. The rest is pure design.</p>
+      </div>
+      <div class="panel">
+        <h3>Ready to transmit your offer?</h3>
+        <p>
+          The internet is loud. Your page should feel like a calm, glowing altar. Let us build it, align it, and
+          send it into the world.
+        </p>
+        <div class="cta-row">
+          <a class="button primary" href="#checkout">Pay £20 with Stripe</a>
+          <a class="button" href="mailto:hello@nomaitech.com">Ask a question</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Crafted in resonance for spiritual influencers • Nomaitech
+  </footer>
+</body>
+</html>

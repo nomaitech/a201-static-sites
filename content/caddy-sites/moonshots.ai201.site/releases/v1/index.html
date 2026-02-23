@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moonshots &mdash; AI Plans for Humanity's Boldest Goals</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --surface-hover: #1a1a26;
+      --surface-active: #1e1e2e;
+      --border: #2a2a3a;
+      --border-active: #4a4a6a;
+      --text: #e4e4ef;
+      --text-dim: #8888a0;
+      --text-muted: #55556a;
+      --accent: #7c6aff;
+      --accent-glow: #7c6aff40;
+      --accent-dim: #6355d0;
+      --success: #34d399;
+      --warning: #fbbf24;
+      --plan-bg: #0e0e16;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-shrink: 0;
+      background: var(--surface);
+    }
+
+    header .logo {
+      width: 2rem;
+      height: 2rem;
+      background: linear-gradient(135deg, var(--accent), #a78bfa);
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    header h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    header h1 span {
+      color: var(--text-dim);
+      font-weight: 400;
+      margin-left: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    /* ── Main Layout ── */
+    .layout {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 380px;
+      min-width: 380px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+    }
+
+    .sidebar-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-header h2 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+    }
+
+    .sidebar-header .count {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .moonshot-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.5rem;
+    }
+
+    .moonshot-list::-webkit-scrollbar { width: 6px; }
+    .moonshot-list::-webkit-scrollbar-track { background: transparent; }
+    .moonshot-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    .moonshot-item {
+      padding: 1rem 1.1rem;
+      border-radius: 0.6rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+      margin-bottom: 2px;
+    }
+
+    .moonshot-item:hover {
+      background: var(--surface-hover);
+    }
+
+    .moonshot-item.active {
+      background: var(--surface-active);
+      border-color: var(--border-active);
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .moonshot-item .icon {
+      font-size: 1.3rem;
+      margin-bottom: 0.4rem;
+      display: block;
+    }
+
+    .moonshot-item .title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      letter-spacing: -0.01em;
+    }
+
+    .moonshot-item.active .title {
+      color: #a78bfa;
+    }
+
+    .moonshot-item .subtitle {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      line-height: 1.4;
+    }
+
+    .moonshot-item .tags {
+      display: flex;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 0.65rem;
+      font-weight: 500;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.02em;
+    }
+
+    .tag.timeline { background: #1e293b; color: #93c5fd; }
+    .tag.difficulty { background: #1c1917; color: #fbbf24; }
+    .tag.category { background: #14231a; color: #6ee7b7; }
+
+    /* ── Plan Panel ── */
+    .plan-panel {
+      flex: 1;
+      overflow-y: auto;
+      background: var(--plan-bg);
+      padding: 2.5rem 3rem;
+    }
+
+    .plan-panel::-webkit-scrollbar { width: 6px; }
+    .plan-panel::-webkit-scrollbar-track { background: transparent; }
+    .plan-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    .plan-empty {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      gap: 0.75rem;
+    }
+
+    .plan-empty .arrow {
+      font-size: 2.5rem;
+      opacity: 0.3;
+    }
+
+    .plan-empty p {
+      font-size: 0.9rem;
+    }
+
+    /* Plan content */
+    .plan-header {
+      margin-bottom: 2.5rem;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .plan-header .icon-large {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .plan-header h2 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    .plan-header .description {
+      font-size: 0.95rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+      max-width: 640px;
+    }
+
+    .plan-phases {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .phase {
+      animation: slideUp 0.35s ease both;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .phase:nth-child(1) { animation-delay: 0.05s; }
+    .phase:nth-child(2) { animation-delay: 0.1s; }
+    .phase:nth-child(3) { animation-delay: 0.15s; }
+    .phase:nth-child(4) { animation-delay: 0.2s; }
+    .phase:nth-child(5) { animation-delay: 0.25s; }
+
+    .phase-head {
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-hover);
+    }
+
+    .phase-number {
+      width: 1.75rem;
+      height: 1.75rem;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      flex-shrink: 0;
+    }
+
+    .phase-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .phase-timeline {
+      margin-left: auto;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg);
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+    }
+
+    .phase-body {
+      padding: 1rem 1.25rem;
+    }
+
+    .step-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .step-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: var(--text);
+    }
+
+    .step-list li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--accent-dim);
+      border-radius: 50%;
+      margin-top: 0.45rem;
+      flex-shrink: 0;
+    }
+
+    .step-list li .detail {
+      color: var(--text-dim);
+      font-size: 0.78rem;
+      display: block;
+      margin-top: 0.15rem;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .layout { flex-direction: column; }
+      .sidebar {
+        width: 100%;
+        min-width: 100%;
+        max-height: 40vh;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .plan-panel { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">&#9790;</div>
+    <h1>Moonshots<span>AI-Powered Plans for Impossible Goals</span></h1>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>Moonshots</h2>
+        <span class="count" id="moonshot-count"></span>
+      </div>
+      <div class="moonshot-list" id="moonshot-list"></div>
+    </aside>
+
+    <main class="plan-panel" id="plan-panel">
+      <div class="plan-empty">
+        <div class="arrow">&larr;</div>
+        <p>Select a moonshot to view the AI plan</p>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const moonshots = [
+      {
+        id: 'fusion',
+        icon: '&#9762;',
+        title: 'Achieve Commercial Fusion Energy',
+        subtitle: 'Unlimited clean energy from the power of stars',
+        tags: [
+          { label: '2035-2045', type: 'timeline' },
+          { label: 'Extreme', type: 'difficulty' },
+          { label: 'Energy', type: 'category' }
+        ],
+        description: 'Develop commercially viable fusion reactors that produce net-positive energy, providing virtually unlimited clean power to the entire planet.',
+        phases: [
+          {
+            title: 'AI-Accelerated Plasma Physics',
+            timeline: 'Years 1-3',
+            steps: [
+              { text: 'Train deep learning models on decades of plasma confinement data from ITER, JET, and NIF experiments', detail: 'Use transformer architectures to predict plasma instabilities 100ms before they occur' },
+              { text: 'Deploy reinforcement learning agents to optimize magnetic field configurations in real-time', detail: 'Reduce energy loss from turbulence by 40-60%' },
+              { text: 'Build digital twin simulations of full tokamak reactors running 10,000x faster than real-time', detail: 'Enable testing of thousands of configurations per day' }
+            ]
+          },
+          {
+            title: 'Materials Discovery via AI',
+            timeline: 'Years 2-5',
+            steps: [
+              { text: 'Use generative AI to design novel superconducting materials that operate at higher temperatures', detail: 'Target: materials stable above 200K for magnet coils' },
+              { text: 'AI-driven discovery of plasma-facing materials that withstand neutron bombardment 10x longer', detail: 'Reduce reactor downtime from material degradation' },
+              { text: 'Automate materials testing through robotic labs guided by Bayesian optimization', detail: 'Accelerate the discovery-to-validation cycle from years to weeks' }
+            ]
+          },
+          {
+            title: 'Autonomous Reactor Control',
+            timeline: 'Years 4-7',
+            steps: [
+              { text: 'Develop multi-agent AI systems that manage all reactor subsystems simultaneously', detail: 'Heating, fueling, magnetic fields, diagnostics coordinated in real-time' },
+              { text: 'Implement predictive maintenance AI that schedules component replacement before failures', detail: 'Target 95%+ reactor uptime' },
+              { text: 'Create self-optimizing control loops that continuously improve energy output over time', detail: 'Each reactor gets better the longer it operates' }
+            ]
+          },
+          {
+            title: 'Grid Integration & Scale',
+            timeline: 'Years 6-10',
+            steps: [
+              { text: 'Deploy AI-optimized compact fusion reactors at pilot scale (50-200 MW)', detail: 'First grid-connected fusion plants' },
+              { text: 'Use AI to manage fusion-grid integration, balancing supply with demand patterns', detail: 'Coordinate with existing renewable and storage infrastructure' },
+              { text: 'Automate manufacturing of reactor components using AI-designed production lines', detail: 'Drive unit cost below $3/W installed' },
+              { text: 'Scale to commercial deployment: 100+ reactors generating gigawatts of baseload power', detail: 'Target: fusion supplies 10% of global electricity by 2045' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'aging',
+        icon: '&#9883;',
+        title: 'Reverse Human Aging',
+        subtitle: 'Extend healthy human lifespan to 150+ years',
+        tags: [
+          { label: '2030-2050', type: 'timeline' },
+          { label: 'Extreme', type: 'difficulty' },
+          { label: 'Biotech', type: 'category' }
+        ],
+        description: 'Use AI to decode the mechanisms of aging and develop therapies that repair, prevent, and reverse biological damage, extending healthy human lifespan dramatically.',
+        phases: [
+          {
+            title: 'Map the Aging Genome',
+            timeline: 'Years 1-3',
+            steps: [
+              { text: 'Train foundation models on multi-omics data from millions of patients across all age groups', detail: 'Integrate genomics, proteomics, metabolomics, and epigenomics' },
+              { text: 'Identify the 50 most impactful genetic and epigenetic drivers of aging', detail: 'Use causal inference models to distinguish correlation from causation' },
+              { text: 'Build predictive biological age clocks accurate to within 6 months', detail: 'Enable precise measurement of anti-aging intervention effectiveness' }
+            ]
+          },
+          {
+            title: 'AI Drug Discovery for Longevity',
+            timeline: 'Years 2-5',
+            steps: [
+              { text: 'Use generative chemistry AI to design senolytic drugs that clear damaged cells with zero side effects', detail: 'Target the 12 known categories of senescent cells' },
+              { text: 'Develop AI-designed gene therapies that reset epigenetic clocks in specific tissues', detail: 'Partial reprogramming using Yamanaka factors with precision control' },
+              { text: 'Create personalized anti-aging drug cocktails optimized by AI for each individual\'s biology', detail: 'Account for genetic variants, microbiome, lifestyle factors' }
+            ]
+          },
+          {
+            title: 'Regenerative Medicine at Scale',
+            timeline: 'Years 4-8',
+            steps: [
+              { text: 'Deploy AI to design and 3D-print replacement organs from patient stem cells', detail: 'Hearts, kidneys, livers grown to order in weeks' },
+              { text: 'Develop AI-guided nanobots that repair cellular damage in-vivo', detail: 'Clear arterial plaque, repair DNA damage, remove protein aggregates' },
+              { text: 'Create AI systems that monitor and maintain telomere length in real-time', detail: 'Prevent chromosomal degradation without cancer risk' }
+            ]
+          },
+          {
+            title: 'Clinical Deployment',
+            timeline: 'Years 6-15',
+            steps: [
+              { text: 'Run AI-optimized clinical trials with adaptive protocols that converge 5x faster', detail: 'Use synthetic control arms and real-world evidence' },
+              { text: 'Deploy personalized longevity programs guided by continuous AI health monitoring', detail: 'Wearables + blood biomarkers feed real-time optimization' },
+              { text: 'Establish global longevity clinics offering evidence-based age reversal therapies', detail: 'Target: reduce biological age by 20 years in the first decade of treatment' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'mars',
+        icon: '&#9795;',
+        title: 'Build a Self-Sustaining Mars Colony',
+        subtitle: 'Make humanity a multi-planetary species',
+        tags: [
+          { label: '2035-2060', type: 'timeline' },
+          { label: 'Extreme', type: 'difficulty' },
+          { label: 'Space', type: 'category' }
+        ],
+        description: 'Establish a permanent, self-sustaining human settlement on Mars with 10,000+ residents, capable of surviving independently from Earth.',
+        phases: [
+          {
+            title: 'AI Mission Planning & Robotics',
+            timeline: 'Years 1-4',
+            steps: [
+              { text: 'Deploy AI-controlled robotic scouts to map optimal colony sites using orbital and surface data', detail: 'Evaluate lava tubes, ice deposits, radiation shielding, and solar exposure' },
+              { text: 'Use AI to optimize spacecraft trajectories, reducing transit time to 4 months', detail: 'Continuous thrust optimization with real-time course corrections' },
+              { text: 'Train autonomous construction robots to build habitats from Martian regolith before humans arrive', detail: '3D-print radiation-shielded structures using in-situ materials' }
+            ]
+          },
+          {
+            title: 'Life Support & Agriculture AI',
+            timeline: 'Years 3-7',
+            steps: [
+              { text: 'Develop closed-loop life support systems managed by AI that recycle 99.5%+ of water and air', detail: 'Predict and prevent system failures before they become critical' },
+              { text: 'Use AI to engineer crops optimized for Martian soil, low gravity, and artificial light', detail: 'Generative biology to design plants with 3x yield and radiation resistance' },
+              { text: 'Create AI-managed underground hydroponic farms that feed 100 people per hectare', detail: 'Continuous optimization of nutrients, light spectra, and growth cycles' }
+            ]
+          },
+          {
+            title: 'Manufacturing & Energy Independence',
+            timeline: 'Years 5-10',
+            steps: [
+              { text: 'Build AI-designed nuclear microreactors that operate autonomously for 20+ years', detail: 'Combined with solar arrays for redundant power generation' },
+              { text: 'Deploy AI-controlled mining and refining operations to extract metals, water, and fuel from Mars', detail: 'Produce rocket fuel (methane + oxygen) from atmospheric CO2 and subsurface ice' },
+              { text: 'Establish AI-managed 3D printing factories that manufacture tools, parts, and electronics locally', detail: 'Reduce Earth-dependency for manufactured goods by 80%' }
+            ]
+          },
+          {
+            title: 'Colony Growth & Governance',
+            timeline: 'Years 8-20',
+            steps: [
+              { text: 'Use AI logistics to coordinate regular Earth-Mars cargo missions during optimal windows', detail: 'Autonomous supply chain management across planetary distances' },
+              { text: 'Deploy AI medical systems capable of diagnosing and treating conditions without Earth consultation', detail: '20-minute communication delay makes real-time telemedicine impossible' },
+              { text: 'Grow colony from 100 to 10,000 residents with AI-optimized expansion planning', detail: 'Balance population growth with resource production capacity' },
+              { text: 'Establish Mars-born AI systems that evolve and adapt to uniquely Martian challenges', detail: 'Colony becomes intellectually self-sufficient, not just physically' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'ocean',
+        icon: '&#127754;',
+        title: 'Clean Every Ocean on Earth',
+        subtitle: 'Remove all plastic and pollutants from the seas',
+        tags: [
+          { label: '2028-2040', type: 'timeline' },
+          { label: 'High', type: 'difficulty' },
+          { label: 'Environment', type: 'category' }
+        ],
+        description: 'Deploy AI-coordinated autonomous systems to locate, collect, and recycle all plastic waste and major pollutants from every ocean, restoring marine ecosystems.',
+        phases: [
+          {
+            title: 'Ocean Mapping & Detection',
+            timeline: 'Years 1-2',
+            steps: [
+              { text: 'Train computer vision models on satellite imagery to map all visible ocean plastic in real-time', detail: 'Process petabytes of Sentinel-2 and commercial satellite data daily' },
+              { text: 'Deploy AI-equipped autonomous underwater vehicles (AUVs) to detect microplastics at depth', detail: 'Map the 3D distribution of ocean pollution from surface to seafloor' },
+              { text: 'Build predictive models of ocean current patterns to forecast where debris will accumulate', detail: 'Enable proactive collection before plastic reaches sensitive ecosystems' }
+            ]
+          },
+          {
+            title: 'Autonomous Collection Fleet',
+            timeline: 'Years 2-5',
+            steps: [
+              { text: 'Design AI-optimized collection vessels that operate 24/7 without human crews', detail: 'Solar and wind-powered for zero-emission operation' },
+              { text: 'Deploy swarms of small autonomous drones for river-mouth interception', detail: '80% of ocean plastic enters through 1,000 rivers — intercept it at the source' },
+              { text: 'Use reinforcement learning to continuously optimize collection routes and methods', detail: 'Each vessel learns from the fleet, improving efficiency over time' },
+              { text: 'Scale fleet to 10,000+ autonomous collectors operating across all five oceans', detail: 'Coordinate via satellite mesh network with AI traffic control' }
+            ]
+          },
+          {
+            title: 'AI-Powered Recycling & Processing',
+            timeline: 'Years 3-6',
+            steps: [
+              { text: 'Build floating recycling platforms that sort and process collected waste at sea', detail: 'AI vision systems classify 200+ material types at 99.5% accuracy' },
+              { text: 'Use AI to develop novel enzymes that break down ocean plastics into reusable monomers', detail: 'Protein-folding AI designs custom enzymes for each plastic type' },
+              { text: 'Convert processed materials into useful products: construction materials, fuel, and new plastics', detail: 'Create circular economy where ocean waste becomes valuable feedstock' }
+            ]
+          },
+          {
+            title: 'Ecosystem Restoration & Prevention',
+            timeline: 'Years 4-10',
+            steps: [
+              { text: 'Deploy AI monitoring networks to track marine ecosystem recovery in real-time', detail: 'Acoustic sensors, underwater cameras, and eDNA sampling' },
+              { text: 'Use AI to identify and shut down the largest sources of ocean pollution worldwide', detail: 'Predictive enforcement — detect illegal dumping before it happens' },
+              { text: 'Establish permanent AI-managed ocean health monitoring covering 100% of marine waters', detail: 'Early warning system for pollution, acidification, and ecosystem stress' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'education',
+        icon: '&#127891;',
+        title: 'Personalized Education for Every Human',
+        subtitle: 'World-class AI tutors for 8 billion people',
+        tags: [
+          { label: '2026-2035', type: 'timeline' },
+          { label: 'High', type: 'difficulty' },
+          { label: 'Education', type: 'category' }
+        ],
+        description: 'Create AI tutoring systems that provide personalized, world-class education to every person on Earth, regardless of location, language, or economic status.',
+        phases: [
+          {
+            title: 'Foundation Model for Education',
+            timeline: 'Years 1-2',
+            steps: [
+              { text: 'Train a multilingual education AI on the complete works of every major knowledge domain', detail: 'Cover 200+ languages with native-speaker fluency and cultural context' },
+              { text: 'Develop adaptive assessment AI that identifies each learner\'s exact knowledge gaps in minutes', detail: 'Not standardized tests — dynamic, personalized diagnostic conversations' },
+              { text: 'Build AI that can explain any concept in 10 different ways, adapting to the learner\'s style', detail: 'Visual, verbal, kinesthetic, mathematical, story-based approaches' }
+            ]
+          },
+          {
+            title: 'Socratic AI Tutoring System',
+            timeline: 'Years 2-4',
+            steps: [
+              { text: 'Create AI tutors that use the Socratic method — guiding through questions, never just giving answers', detail: 'Develop genuine understanding, not memorization' },
+              { text: 'Build emotional intelligence into tutors: detect frustration, boredom, and confusion in real-time', detail: 'Adjust pace, difficulty, and approach based on learner emotional state' },
+              { text: 'Develop mastery-based progression where AI ensures deep understanding before advancing', detail: 'No student moves on with gaps — every concept is truly learned' }
+            ]
+          },
+          {
+            title: 'Global Access Infrastructure',
+            timeline: 'Years 2-5',
+            steps: [
+              { text: 'Build ultra-lightweight AI models that run on $30 smartphones offline', detail: 'Edge AI enables learning even without internet connectivity' },
+              { text: 'Partner with mobile networks to provide zero-rated education data in developing nations', detail: 'Learning should never cost data fees' },
+              { text: 'Create AI-generated interactive textbooks that update in real-time with latest knowledge', detail: 'Replace static, expensive textbooks with living, adaptive content' },
+              { text: 'Deploy solar-powered community learning hubs with shared AI tutoring access', detail: 'Serve areas with no electricity or internet as shared learning centers' }
+            ]
+          },
+          {
+            title: 'Outcomes & Continuous Improvement',
+            timeline: 'Years 3-8',
+            steps: [
+              { text: 'Track learning outcomes across millions of students to continuously improve AI teaching methods', detail: 'Federated learning protects privacy while enabling global optimization' },
+              { text: 'AI identifies and nurtures exceptional talent regardless of socioeconomic background', detail: 'Find the next Einstein in a village with no school' },
+              { text: 'Connect learners to mentors, peers, and opportunities matched by AI', detail: 'Education doesn\'t end with knowledge — it opens doors' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'food',
+        icon: '&#127805;',
+        title: 'End World Hunger Permanently',
+        subtitle: 'Sustainable food abundance for all of humanity',
+        tags: [
+          { label: '2028-2040', type: 'timeline' },
+          { label: 'High', type: 'difficulty' },
+          { label: 'Agriculture', type: 'category' }
+        ],
+        description: 'Use AI to revolutionize agriculture, food distribution, and nutrition, ensuring no human ever goes hungry again while regenerating the planet\'s ecosystems.',
+        phases: [
+          {
+            title: 'Precision Agriculture AI',
+            timeline: 'Years 1-3',
+            steps: [
+              { text: 'Deploy AI-analyzed satellite and drone monitoring for every farm field on Earth', detail: 'Real-time crop health, soil moisture, and pest detection at 1m resolution' },
+              { text: 'Build AI advisory systems that give smallholder farmers personalized recommendations via SMS', detail: 'When to plant, water, fertilize, and harvest — optimized per field' },
+              { text: 'Use AI weather models to provide hyper-local 30-day forecasts for agricultural planning', detail: 'Reduce crop losses from unexpected weather events by 60%' }
+            ]
+          },
+          {
+            title: 'AI Crop Engineering',
+            timeline: 'Years 2-5',
+            steps: [
+              { text: 'Use protein-folding AI to design crops that fix their own nitrogen, eliminating fertilizer need', detail: 'Engineer the nitrogenase pathway into wheat, rice, and corn' },
+              { text: 'AI-design drought-resistant crop varieties tailored to each microclimate', detail: 'Maintain yields even as climate patterns shift' },
+              { text: 'Develop AI-optimized vertical farming systems that produce 100x yield per acre', detail: 'Urban food production eliminates transportation waste' }
+            ]
+          },
+          {
+            title: 'Smart Distribution Networks',
+            timeline: 'Years 3-6',
+            steps: [
+              { text: 'Build AI logistics that predict food demand and route supply to prevent waste and shortages', detail: '30% of food is currently wasted — AI can cut this to under 5%' },
+              { text: 'Create AI-managed community food networks that connect local surplus to local need in real-time', detail: 'Hyperlocal redistribution before food expires' },
+              { text: 'Deploy autonomous delivery systems for last-mile food distribution in remote areas', detail: 'Drones and autonomous vehicles reach communities that trucks cannot' }
+            ]
+          },
+          {
+            title: 'Sustainable Food Systems',
+            timeline: 'Years 4-10',
+            steps: [
+              { text: 'Use AI to design regenerative farming practices that restore soil health while producing food', detail: 'Convert degraded land back to productive farmland' },
+              { text: 'AI-optimize alternative proteins (lab-grown meat, precision fermentation) for taste and cost', detail: 'Achieve price parity with conventional meat by 2032' },
+              { text: 'Establish AI-monitored global food security system that detects and responds to crises before famine', detail: 'No famine should ever catch the world by surprise again' },
+              { text: 'Create personalized AI nutrition advisors that help every person optimize their diet for health', detail: 'Account for genetics, gut microbiome, local food availability, and cultural preferences' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'disease',
+        icon: '&#129516;',
+        title: 'Cure All Cancers',
+        subtitle: 'Make cancer a fully treatable condition',
+        tags: [
+          { label: '2028-2040', type: 'timeline' },
+          { label: 'Extreme', type: 'difficulty' },
+          { label: 'Medicine', type: 'category' }
+        ],
+        description: 'Leverage AI to understand, detect, and treat every form of cancer, transforming it from a deadly disease into a manageable condition with 99%+ survival rates.',
+        phases: [
+          {
+            title: 'Universal Early Detection',
+            timeline: 'Years 1-3',
+            steps: [
+              { text: 'Train AI on millions of medical images to detect cancer years before symptoms appear', detail: 'Radiology AI that outperforms human specialists at catching early-stage tumors' },
+              { text: 'Develop AI-analyzed liquid biopsy tests that detect any cancer from a single blood draw', detail: 'Screen for 50+ cancer types simultaneously with 99% sensitivity' },
+              { text: 'Build AI risk models that predict individual cancer probability and recommend screening schedules', detail: 'Personalized prevention based on genetics, lifestyle, and environmental exposure' }
+            ]
+          },
+          {
+            title: 'AI-Designed Immunotherapies',
+            timeline: 'Years 2-5',
+            steps: [
+              { text: 'Use AI to design personalized cancer vaccines based on each tumor\'s unique mutation profile', detail: 'mRNA vaccines custom-generated within 48 hours of biopsy' },
+              { text: 'Engineer AI-designed CAR-T cells that target multiple cancer antigens simultaneously', detail: 'Prevent tumor escape through multi-target attack strategies' },
+              { text: 'Develop AI-optimized combination therapies that adapt in real-time to tumor evolution', detail: 'Treatment plans that evolve as fast as the cancer does' }
+            ]
+          },
+          {
+            title: 'Drug Discovery Acceleration',
+            timeline: 'Years 2-6',
+            steps: [
+              { text: 'Use generative AI to design novel anti-cancer molecules and predict their efficacy in silico', detail: 'Reduce drug development timeline from 10 years to 2 years' },
+              { text: 'AI-driven identification of existing drugs that can be repurposed for cancer treatment', detail: 'Screen entire pharmacopeia for hidden anti-cancer properties' },
+              { text: 'Build AI models that predict drug resistance before it develops and design preemptive strategies', detail: 'Stay ahead of tumor evolution with predictive oncology' }
+            ]
+          },
+          {
+            title: 'Global Treatment Access',
+            timeline: 'Years 5-10',
+            steps: [
+              { text: 'Deploy AI diagnostic systems in every clinic worldwide, including rural and underserved areas', detail: 'Smartphone-based cancer screening accessible to everyone' },
+              { text: 'Use AI to optimize cancer treatment protocols for resource-limited settings', detail: 'Maximum efficacy with locally available drugs and equipment' },
+              { text: 'Establish AI-coordinated global cancer data network for continuous learning', detail: 'Every treated patient improves outcomes for future patients' },
+              { text: 'Achieve 99% 5-year survival rates for all cancer types through AI-personalized treatment', detail: 'Cancer becomes like diabetes — serious but manageable' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'climate',
+        icon: '&#127777;',
+        title: 'Reverse Climate Change',
+        subtitle: 'Return CO2 to pre-industrial levels',
+        tags: [
+          { label: '2026-2050', type: 'timeline' },
+          { label: 'Extreme', type: 'difficulty' },
+          { label: 'Climate', type: 'category' }
+        ],
+        description: 'Deploy AI-optimized carbon capture, clean energy, and ecosystem restoration at planetary scale to not just halt, but reverse global warming.',
+        phases: [
+          {
+            title: 'AI Climate Modeling',
+            timeline: 'Years 1-2',
+            steps: [
+              { text: 'Build AI climate models 1000x more detailed than current systems, running on exascale computers', detail: 'Simulate climate at 1km resolution globally, updated hourly' },
+              { text: 'Use AI to identify the highest-impact interventions and optimal deployment locations', detail: 'Not all carbon removal is equal — optimize for maximum planetary cooling' },
+              { text: 'Create real-time global emissions monitoring using AI analysis of satellite data', detail: 'Track every major emission source on Earth continuously' }
+            ]
+          },
+          {
+            title: 'AI-Accelerated Carbon Capture',
+            timeline: 'Years 2-5',
+            steps: [
+              { text: 'Use AI to design novel carbon capture materials 100x more efficient than current technology', detail: 'Generative chemistry discovers sorbents with ideal thermodynamic properties' },
+              { text: 'Deploy AI-optimized direct air capture plants powered by clean energy at gigatonne scale', detail: 'Target: remove 10 billion tonnes of CO2 per year by 2035' },
+              { text: 'Develop AI-engineered enhanced weathering processes that permanently sequester carbon in minerals', detail: 'Spread AI-optimized mineral mixtures on agricultural land — sequesters carbon while improving soil' }
+            ]
+          },
+          {
+            title: 'Clean Energy Transition',
+            timeline: 'Years 1-8',
+            steps: [
+              { text: 'Use AI to optimize global renewable energy deployment: site selection, grid design, storage', detail: 'Maximize clean energy output per dollar invested worldwide' },
+              { text: 'Deploy AI-managed smart grids that balance intermittent renewables with storage and demand response', detail: 'Eliminate the need for fossil fuel backup generation' },
+              { text: 'AI-design next-generation battery chemistries that store energy 10x cheaper than lithium-ion', detail: 'Solve the storage problem that limits renewable adoption' }
+            ]
+          },
+          {
+            title: 'Ecosystem Restoration',
+            timeline: 'Years 3-15',
+            steps: [
+              { text: 'Use AI drone swarms to plant 1 trillion trees in optimal locations for carbon absorption', detail: 'Species and placement optimized by AI for local climate and ecology' },
+              { text: 'Deploy AI to restore ocean carbon sinks: kelp forests, seagrass meadows, and mangroves', detail: 'Marine ecosystems absorb 5x more carbon per acre than forests' },
+              { text: 'Create AI-managed rewilding programs that restore ecosystems to their natural carbon-absorbing state', detail: 'Coordinate land use changes across millions of hectares' },
+              { text: 'Achieve net-negative global emissions by 2040, returning to 350 ppm CO2 by 2060', detail: 'Not just stopping the damage — healing the planet' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'brain',
+        icon: '&#129504;',
+        title: 'Decode the Human Brain',
+        subtitle: 'Fully map and understand human consciousness',
+        tags: [
+          { label: '2030-2055', type: 'timeline' },
+          { label: 'Extreme', type: 'difficulty' },
+          { label: 'Neuroscience', type: 'category' }
+        ],
+        description: 'Use AI to create a complete map and functional model of the human brain, unlocking cures for neurological diseases and a deeper understanding of consciousness.',
+        phases: [
+          {
+            title: 'AI-Powered Brain Mapping',
+            timeline: 'Years 1-4',
+            steps: [
+              { text: 'Train AI on petabytes of electron microscopy data to map every neuron and synapse in a human brain', detail: '86 billion neurons, 100 trillion connections — only AI can process this scale' },
+              { text: 'Develop AI that can trace individual neural circuits and identify their functions', detail: 'Map the wiring diagram of memory, emotion, perception, and decision-making' },
+              { text: 'Build real-time brain activity decoders using AI analysis of fMRI and EEG data', detail: 'Read neural patterns as they happen with millisecond precision' }
+            ]
+          },
+          {
+            title: 'Computational Brain Models',
+            timeline: 'Years 3-7',
+            steps: [
+              { text: 'Create AI simulations of brain regions that accurately reproduce observed neural behavior', detail: 'Start with hippocampus (memory) and visual cortex (perception)' },
+              { text: 'Develop AI models that predict how neural circuits change during learning and development', detail: 'Understand neuroplasticity at the computational level' },
+              { text: 'Build whole-brain computational models that integrate all regions into a unified simulation', detail: 'The first digital brain — test hypotheses about consciousness itself' }
+            ]
+          },
+          {
+            title: 'Neurological Disease Cures',
+            timeline: 'Years 4-10',
+            steps: [
+              { text: 'Use brain models to identify the exact circuit failures behind Alzheimer\'s, Parkinson\'s, and depression', detail: 'Move from symptom management to root cause treatment' },
+              { text: 'AI-design targeted neural therapies: drugs, gene therapies, and neuromodulation protocols', detail: 'Precise interventions that fix specific circuits without side effects' },
+              { text: 'Develop AI-guided brain-computer interfaces for paralysis, blindness, and deafness', detail: 'Restore lost function by bridging damaged neural pathways' }
+            ]
+          },
+          {
+            title: 'Understanding Consciousness',
+            timeline: 'Years 8-20',
+            steps: [
+              { text: 'Use AI to test competing theories of consciousness against whole-brain simulation data', detail: 'Integrated Information Theory, Global Workspace Theory, and beyond' },
+              { text: 'Develop AI-enhanced cognitive abilities: perfect memory, accelerated learning, enhanced creativity', detail: 'Safe neural augmentation that expands human cognitive potential' },
+              { text: 'Establish ethical frameworks for brain technology, informed by deep AI understanding of neural function', detail: 'Ensure brain technology serves humanity without compromising identity or autonomy' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'poverty',
+        icon: '&#127758;',
+        title: 'Eliminate Global Poverty',
+        subtitle: 'Raise every human above the poverty line',
+        tags: [
+          { label: '2027-2040', type: 'timeline' },
+          { label: 'High', type: 'difficulty' },
+          { label: 'Economics', type: 'category' }
+        ],
+        description: 'Use AI to optimize economic systems, create opportunities, and deliver services at scale, lifting every person on Earth out of poverty permanently.',
+        phases: [
+          {
+            title: 'AI Economic Intelligence',
+            timeline: 'Years 1-2',
+            steps: [
+              { text: 'Build AI models that map global poverty in real-time at household resolution using satellite + mobile data', detail: 'Know exactly who needs help, where, and what kind' },
+              { text: 'Use AI to identify the most cost-effective poverty interventions for each specific context', detail: 'Cash transfers, job training, microfinance, infrastructure — optimize the mix' },
+              { text: 'Create AI simulations of economic policy changes to predict impacts before implementation', detail: 'Test anti-poverty programs in silico before spending real resources' }
+            ]
+          },
+          {
+            title: 'AI-Powered Financial Inclusion',
+            timeline: 'Years 1-4',
+            steps: [
+              { text: 'Deploy AI credit scoring that works for the 1.4 billion unbanked people worldwide', detail: 'Use alternative data (mobile usage, social connections) instead of credit history' },
+              { text: 'Build AI financial advisors accessible via basic mobile phones in any language', detail: 'Help people save, invest, and grow wealth with personalized guidance' },
+              { text: 'Create AI fraud detection that makes digital payments safe in regions with weak institutions', detail: 'Trust is the foundation of financial systems — AI can provide it' }
+            ]
+          },
+          {
+            title: 'AI Job Creation & Training',
+            timeline: 'Years 2-6',
+            steps: [
+              { text: 'Use AI to identify emerging economic opportunities in every region and match people to them', detail: 'New markets, skills gaps, and entrepreneurship opportunities mapped in real-time' },
+              { text: 'Deploy AI vocational training systems that prepare workers for high-demand skills in weeks', detail: 'Personalized, practical skill-building that leads directly to employment' },
+              { text: 'Build AI platforms that connect rural artisans and producers directly to global markets', detail: 'Remove middlemen and let value flow to those who create it' }
+            ]
+          },
+          {
+            title: 'Systemic Change & Sustainability',
+            timeline: 'Years 4-12',
+            steps: [
+              { text: 'Use AI to optimize delivery of healthcare, education, and clean water in underserved areas', detail: 'Maximize impact of limited infrastructure investment' },
+              { text: 'Deploy AI governance tools that reduce corruption and improve resource allocation', detail: 'Transparent, data-driven decision-making for public spending' },
+              { text: 'Create AI-powered early warning systems for economic crises, famines, and conflicts', detail: 'Prevent poverty-causing disasters before they spiral' },
+              { text: 'Build self-sustaining local AI ecosystems that continue optimizing economic development autonomously', detail: 'Communities gain the tools to drive their own prosperity' }
+            ]
+          }
+        ]
+      }
+    ];
+
+    // ── Render ──
+    const listEl = document.getElementById('moonshot-list');
+    const panelEl = document.getElementById('plan-panel');
+    const countEl = document.getElementById('moonshot-count');
+
+    countEl.textContent = moonshots.length + ' goals';
+
+    let activeId = null;
+
+    function renderList() {
+      listEl.innerHTML = moonshots.map(m => `
+        <div class="moonshot-item ${m.id === activeId ? 'active' : ''}" data-id="${m.id}">
+          <span class="icon">${m.icon}</span>
+          <div class="title">${m.title}</div>
+          <div class="subtitle">${m.subtitle}</div>
+          <div class="tags">
+            ${m.tags.map(t => `<span class="tag ${t.type}">${t.label}</span>`).join('')}
+          </div>
+        </div>
+      `).join('');
+
+      listEl.querySelectorAll('.moonshot-item').forEach(el => {
+        el.addEventListener('click', () => {
+          activeId = el.dataset.id;
+          renderList();
+          renderPlan(moonshots.find(m => m.id === activeId));
+        });
+      });
+    }
+
+    function renderPlan(m) {
+      panelEl.innerHTML = `
+        <div class="plan-header">
+          <span class="icon-large">${m.icon}</span>
+          <h2>${m.title}</h2>
+          <p class="description">${m.description}</p>
+        </div>
+        <div class="plan-phases">
+          ${m.phases.map((p, i) => `
+            <div class="phase">
+              <div class="phase-head">
+                <div class="phase-number">${i + 1}</div>
+                <div class="phase-title">${p.title}</div>
+                <div class="phase-timeline">${p.timeline}</div>
+              </div>
+              <div class="phase-body">
+                <ul class="step-list">
+                  ${p.steps.map(s => `
+                    <li>
+                      <span>
+                        ${s.text}
+                        <span class="detail">${s.detail}</span>
+                      </span>
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      panelEl.scrollTop = 0;
+    }
+
+    renderList();
+  </script>
+</body>
+</html>
