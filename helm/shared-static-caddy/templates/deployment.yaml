@@ -34,8 +34,7 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - name: caddy-config
-              mountPath: /etc/caddy/Caddyfile
-              subPath: Caddyfile
+              mountPath: /etc/caddy
               readOnly: true
             - name: site-content
               mountPath: /srv/sites
@@ -59,8 +58,7 @@ spec:
               done
           volumeMounts:
             - name: caddy-config
-              mountPath: /etc/caddy/Caddyfile
-              subPath: Caddyfile
+              mountPath: /etc/caddy
               readOnly: true
         {{- end }}
       volumes:
