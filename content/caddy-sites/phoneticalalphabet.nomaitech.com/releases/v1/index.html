@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Phone Spelling Helper</title>
+  <style>
+    :root {
+      --ink: #0f1b2d;
+      --muted: #4d5b74;
+      --accent: #ff6b35;
+      --accent-2: #1b9aaa;
+      --paper: #f6f1e9;
+      --card: #fffaf2;
+      --border: rgba(15, 27, 45, 0.18);
+      --shadow: 0 18px 40px rgba(15, 27, 45, 0.16);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Fraunces", "Palatino Linotype", "Book Antiqua", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(800px 420px at 12% 5%, #ffd6ba 0%, rgba(255, 214, 186, 0) 70%),
+        radial-gradient(640px 420px at 88% 0%, #c9f1f4 0%, rgba(201, 241, 244, 0) 68%),
+        linear-gradient(135deg, #fff9f0 0%, #f2f6f7 100%);
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 24px 20px;
+      overflow-x: hidden;
+    }
+
+    .shell {
+      width: min(980px, 100%);
+      background: var(--card);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      max-height: calc(100vh - 48px);
+    }
+
+    .shell::after {
+      content: "";
+      position: absolute;
+      inset: -120px auto auto -120px;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(255, 107, 53, 0.16) 0%, rgba(255, 107, 53, 0) 70%);
+      pointer-events: none;
+    }
+
+    header {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 28px;
+      position: relative;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3rem);
+      letter-spacing: -0.02em;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      font-family: "Alegreya Sans", "Trebuchet MS", sans-serif;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .input-card {
+      display: grid;
+      gap: 12px;
+      background: #ffffff;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      padding: 18px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    label {
+      font-family: "Alegreya Sans", "Trebuchet MS", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    input {
+      font-family: "Alegreya Sans", "Trebuchet MS", sans-serif;
+      font-size: 1.1rem;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 2px solid transparent;
+      background: #f8f5ef;
+      transition: border 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 70px 1fr;
+      gap: 16px;
+      align-items: center;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: #fff;
+      border: 1px solid rgba(15, 27, 45, 0.1);
+      font-family: "Alegreya Sans", "Trebuchet MS", sans-serif;
+      animation: rise 0.35s ease;
+    }
+
+    .row .char {
+      display: inline-flex;
+      width: 54px;
+      height: 54px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(27, 154, 170, 0.25), rgba(27, 154, 170, 0.05));
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--ink);
+    }
+
+    .row .word {
+      font-size: 1.2rem;
+      font-weight: 600;
+      word-break: break-word;
+    }
+
+    .row .note {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .hint {
+      font-size: 0.95rem;
+      color: var(--muted);
+      font-family: "Alegreya Sans", "Trebuchet MS", sans-serif;
+      border-left: 4px solid var(--accent-2);
+      padding-left: 12px;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 18px 12px 24px;
+      }
+
+      .shell {
+        padding: 22px;
+        max-height: none;
+      }
+
+      .input-card {
+        padding: 16px;
+      }
+
+      .grid {
+        overflow-y: visible;
+        padding-right: 0;
+      }
+
+      .row {
+        grid-template-columns: 48px 1fr;
+        padding: 12px 14px;
+      }
+
+      .row .char {
+        width: 44px;
+        height: 44px;
+        font-size: 1.25rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: clamp(1.7rem, 6vw, 2.4rem);
+      }
+
+      .row {
+        gap: 12px;
+      }
+
+      input {
+        font-size: 1rem;
+        padding: 12px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <h1>Spell it clearly on the phone.</h1>
+      <p>Type an email, name, or order code and read each character out loud with the phonetic alphabet.</p>
+    </header>
+
+    <section class="input-card">
+      <label for="phrase">Your text</label>
+      <input id="phrase" type="text" placeholder="name@example.com" autocomplete="off" />
+      <div class="hint">Every character shows up below, ready for a clear phone readout.</div>
+    </section>
+
+    <section id="output" class="grid" aria-live="polite"></section>
+  </main>
+
+  <script>
+    const NATO = {
+      A: "Alpha",
+      B: "Bravo",
+      C: "Charlie",
+      D: "Delta",
+      E: "Echo",
+      F: "Foxtrot",
+      G: "Golf",
+      H: "Hotel",
+      I: "India",
+      J: "Juliett",
+      K: "Kilo",
+      L: "Lima",
+      M: "Mike",
+      N: "November",
+      O: "Oscar",
+      P: "Papa",
+      Q: "Quebec",
+      R: "Romeo",
+      S: "Sierra",
+      T: "Tango",
+      U: "Uniform",
+      V: "Victor",
+      W: "Whiskey",
+      X: "X-ray",
+      Y: "Yankee",
+      Z: "Zulu",
+      0: "Zero",
+      1: "One",
+      2: "Two",
+      3: "Three",
+      4: "Four",
+      5: "Five",
+      6: "Six",
+      7: "Seven",
+      8: "Eight",
+      9: "Nine"
+    };
+
+    const SYMBOLS = {
+      "@": "at sign",
+      ".": "dot",
+      "-": "dash",
+      "_": "underscore",
+      "+": "plus",
+      "#": "hash",
+      "!": "exclamation",
+      "$": "dollar",
+      "%": "percent",
+      "&": "ampersand",
+      "'": "apostrophe",
+      "*": "asterisk",
+      "/": "slash"
+    };
+
+    const input = document.querySelector("#phrase");
+    const output = document.querySelector("#output");
+
+    function renderRows(text) {
+      output.innerHTML = "";
+      if (!text) {
+        return;
+      }
+
+      [...text].forEach((char) => {
+        const normalized = char.toUpperCase();
+        const word = NATO[normalized] || SYMBOLS[char] || "Symbol";
+        if (char === " ") {
+          return;
+        }
+
+        const row = document.createElement("div");
+        row.className = "row";
+        row.innerHTML = `
+          <div class="char">${char}</div>
+          <div>
+            <div class="word">${word}</div>
+          </div>
+        `;
+        output.appendChild(row);
+      });
+    }
+
+    input.addEventListener("input", (event) => {
+      renderRows(event.target.value.trim());
+    });
+  </script>
+</body>
+</html>

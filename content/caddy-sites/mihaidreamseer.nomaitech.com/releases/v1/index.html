@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mihai Dream Seer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Courier+Prime:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #0b0b12;
+        --ivory: #f7f0d9;
+        --gold: #ffcc55;
+        --teal: #1dd5d2;
+        --magenta: #ff4fd8;
+        --deep: #0b0820;
+        --glow: rgba(255, 204, 85, 0.6);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ivory);
+        background:
+          radial-gradient(circle at 20% 20%, rgba(255, 79, 216, 0.25), transparent 45%),
+          radial-gradient(circle at 80% 10%, rgba(29, 213, 210, 0.25), transparent 40%),
+          linear-gradient(135deg, #05050d 0%, #1b0f2e 45%, #090913 100%);
+        font-family: "Courier Prime", "Courier New", monospace;
+        min-height: 100vh;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          radial-gradient(rgba(255, 255, 255, 0.35) 1px, transparent 1px),
+          radial-gradient(rgba(255, 204, 85, 0.25) 1px, transparent 1px);
+        background-size: 60px 60px, 120px 120px;
+        background-position: 0 0, 30px 30px;
+        opacity: 0.35;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      main {
+        position: relative;
+        z-index: 1;
+      }
+
+      .marquee {
+        background: linear-gradient(90deg, rgba(255, 79, 216, 0.35), rgba(29, 213, 210, 0.35));
+        border-bottom: 2px solid var(--gold);
+        color: var(--ivory);
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        padding: 10px 0;
+      }
+
+      .marquee span {
+        text-shadow: 0 0 8px var(--glow);
+      }
+
+      .hero {
+        padding: 64px 7vw 48px;
+        display: grid;
+        gap: 32px;
+        align-items: center;
+      }
+
+      .hero-card {
+        background: rgba(11, 8, 32, 0.85);
+        border: 3px solid var(--gold);
+        box-shadow: 0 0 30px rgba(255, 204, 85, 0.3), inset 0 0 30px rgba(29, 213, 210, 0.2);
+        padding: 32px 28px;
+        border-radius: 12px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-family: "Cinzel Decorative", "Times New Roman", serif;
+        margin: 0 0 16px;
+        text-shadow: 0 0 12px rgba(255, 79, 216, 0.5);
+      }
+
+      h1 {
+        font-size: clamp(2.2rem, 4vw, 3.8rem);
+        letter-spacing: 0.05em;
+      }
+
+      h2 {
+        font-size: clamp(1.5rem, 3vw, 2.4rem);
+      }
+
+      .tagline {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        align-items: center;
+      }
+
+      .cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 20px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        background: linear-gradient(120deg, var(--gold), var(--magenta));
+        color: var(--ink);
+        border: 2px solid var(--ivory);
+        box-shadow: 0 0 18px rgba(255, 204, 85, 0.6);
+        text-decoration: none;
+      }
+
+      .cta.secondary {
+        background: transparent;
+        color: var(--ivory);
+        border: 2px dashed var(--teal);
+      }
+
+      .badge {
+        padding: 6px 10px;
+        border: 1px solid var(--magenta);
+        color: var(--magenta);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 20px;
+      }
+
+      .panel {
+        background: rgba(10, 10, 20, 0.8);
+        border: 2px solid var(--teal);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: inset 0 0 18px rgba(29, 213, 210, 0.2);
+      }
+
+      .panel h3 {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+      }
+
+      .features {
+        padding: 0 7vw 48px;
+      }
+
+      .spellbook {
+        margin: 0 7vw 48px;
+        border: 3px solid var(--magenta);
+        padding: 24px;
+        background: rgba(10, 4, 18, 0.9);
+        position: relative;
+      }
+
+      .spellbook::before {
+        content: "* * *";
+        position: absolute;
+        top: -14px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--deep);
+        color: var(--gold);
+        padding: 2px 12px;
+        letter-spacing: 0.5em;
+      }
+
+      .schedule {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin-top: 18px;
+      }
+
+      .schedule div {
+        border: 1px solid var(--gold);
+        padding: 12px;
+        text-align: center;
+      }
+
+      .footer {
+        padding: 32px 7vw 40px;
+        text-align: center;
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
+      .sparkle {
+        animation: shimmer 3s infinite;
+      }
+
+      @keyframes shimmer {
+        0% {
+          text-shadow: 0 0 6px rgba(255, 204, 85, 0.4);
+        }
+        50% {
+          text-shadow: 0 0 16px rgba(255, 79, 216, 0.7);
+        }
+        100% {
+          text-shadow: 0 0 6px rgba(255, 204, 85, 0.4);
+        }
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .crystal {
+        display: inline-block;
+        animation: float 4s ease-in-out infinite;
+      }
+
+      @media (min-width: 900px) {
+        .hero {
+          grid-template-columns: 1.1fr 0.9fr;
+        }
+      }
+
+      @media (max-width: 700px) {
+        .cta-row {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .cta {
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="marquee">
+      <marquee behavior="scroll" direction="left" scrollamount="8">
+        <span>Welcome to Mihai's Dream Seer Hotline</span>
+        <span> | Midnight visions | Astral decoding | Future insight | </span>
+        <span>Call for a destiny reading</span>
+      </marquee>
+    </div>
+
+    <main>
+      <section class="hero">
+        <div class="hero-card">
+          <div class="badge">Dream Seer 2000</div>
+          <h1 class="sparkle">Mihai: Keeper of the Night's Messages</h1>
+          <p class="tagline">
+            Step into the velvet haze of prophecy. Mihai dreams on your behalf, then
+            decodes his own visions to reveal the future you are walking toward. Book
+            a reading and uncover the hidden map inside his sleep.
+          </p>
+          <div class="cta-row">
+            <a class="cta" href="#book">Book a Vision Session</a>
+            <a class="cta secondary" href="#rituals">See the Rituals</a>
+          </div>
+          <p class="tagline">
+            <span class="crystal">Crystal sphere synced</span> | Lunar calendar updated | 24-hour
+            response for urgent destiny alerts.
+          </p>
+        </div>
+
+        <div class="hero-card">
+          <h2>Who Is Mihai?</h2>
+          <p class="tagline">
+            A modern oracle in a retro age. Mihai enters a guided trance, dreams the
+            client's future, and translates what he sees into clear, confident readings
+            for love, career, and destiny shifts.
+          </p>
+          <div class="schedule">
+            <div>
+              <strong>Live Hotline</strong>
+              <p>Fri & Sat | 9 PM - 3 AM</p>
+            </div>
+            <div>
+              <strong>Dream Reports</strong>
+              <p>Delivered within 48 hours</p>
+            </div>
+            <div>
+              <strong>Destiny Signals</strong>
+              <p>Private, encrypted, discreet</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="features" id="rituals">
+        <div class="grid">
+          <div class="panel">
+            <h3>The Star Map Decode</h3>
+            <p>
+              A guided walkthrough of your dream symbols, aligned with the current
+              planetary arc.
+            </p>
+          </div>
+          <div class="panel">
+            <h3>Lucid Path Forecast</h3>
+            <p>
+              Discover the next three turning points in love, career, and power.
+            </p>
+          </div>
+          <div class="panel">
+            <h3>Midnight Protection</h3>
+            <p>
+              Protective visualizations and intention scripts to keep your dreams clean
+              and clear.
+            </p>
+          </div>
+          <div class="panel">
+            <h3>Dream Journal Repair</h3>
+            <p>
+              Restore fragmented memories and reconnect with the scenes you forgot.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="spellbook" id="book">
+        <h2>Book a Vision Session</h2>
+        <p class="tagline">
+          Email your name and a question or call the hotline to start. Mihai will
+          dream your future, then reply with a custom ritual, timeline reading, and a
+          glowing next-step prophecy.
+        </p>
+        <div class="cta-row">
+          <a class="cta" href="mailto:visions@mihaidreamseer.com">visions@mihaidreamseer.com</a>
+          <a class="cta secondary" href="tel:+15551234567">Call 555-123-4567</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>1999-2000 Mihai Dream Seer Network. All visions sealed and sacred.</p>
+    </footer>
+  </body>
+</html>
