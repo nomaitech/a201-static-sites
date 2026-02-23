@@ -1,7 +1,4 @@
 .git
 .gitignore
 content
-k8s
-docker-compose.yml
 README.md
-

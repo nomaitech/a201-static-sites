@@ -18,7 +18,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
 namespace="${NAMESPACE:-${USER}}"
-release="${RELEASE_NAME:-shared-static-sites}"
+release="${RELEASE_NAME:-shared-static-caddy}"
 helper_pod="${HELPER_POD_NAME:-${release}-content-sync}"
 helper_image="${HELPER_IMAGE:-alpine:3.20}"
 claim_name="${PVC_NAME:-}"

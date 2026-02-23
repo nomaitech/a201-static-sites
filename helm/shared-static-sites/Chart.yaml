@@ -1,7 +1,0 @@
-apiVersion: v2
-name: shared-static-sites
-description: Shared nginx serving multiple static sites from a PVC
-type: application
-version: 0.1.0
-appVersion: "1.27"
-
