@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What's Real</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #1c1a13;
+      --surface: #242119;
+      --border: rgba(245, 238, 220, 0.1);
+      --border-hover: rgba(245, 238, 220, 0.3);
+      --text: #f5eedc;
+      --text-dim: rgba(245, 238, 220, 0.55);
+      --text-mid: rgba(245, 238, 220, 0.75);
+      --green: #4dff8c;
+      --green-dim: rgba(77, 255, 140, 0.15);
+      --red: #ff4444;
+      --red-dim: rgba(255, 68, 68, 0.12);
+      --serif: 'Playfair Display', Georgia, serif;
+      --mono: 'JetBrains Mono', 'Courier New', monospace;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* Film grain */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── HEADER ── */
+    header {
+      padding: 2.5rem 3rem 2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 1.1rem;
+      position: relative;
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 500;
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      letter-spacing: -0.01em;
+      line-height: 1;
+      color: var(--text);
+    }
+
+    h1 em {
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    .tagline {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 500;
+      font-size: clamp(0.78rem, 1.5vw, 0.92rem);
+      color: var(--text-dim);
+      letter-spacing: 0.01em;
+      max-width: 520px;
+      line-height: 1.6;
+    }
+
+    .tagline cite {
+      font-style: normal;
+      font-size: 0.72em;
+      font-family: var(--mono);
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: rgba(245, 238, 220, 0.38);
+      display: block;
+      margin-top: 0.3rem;
+    }
+
+    .score-row {
+      position: absolute;
+      right: 3rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--text-dim);
+      text-align: right;
+      line-height: 2;
+      text-transform: uppercase;
+    }
+
+    .score-row strong {
+      font-weight: 500;
+      color: var(--text);
+      font-size: 1.15em;
+    }
+
+    /* ── PROGRESS ── */
+    .progress-track {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--green);
+      width: 0%;
+      transition: width 0.6s ease;
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    /* ── MAIN GAME ── */
+    main {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 3rem 2.5rem 5rem;
+    }
+
+    .round-head {
+      text-align: center;
+      margin-bottom: 2.8rem;
+    }
+
+    .round-meta {
+      font-size: 0.58rem;
+      letter-spacing: 0.3em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .round-category {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(1.3rem, 2.5vw, 1.9rem);
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 0.6rem;
+    }
+
+    .round-question {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      color: var(--text-mid);
+      text-transform: uppercase;
+      margin-top: 0.2rem;
+    }
+
+    .round-cta {
+      display: inline-block;
+      margin-top: 0.9rem;
+      font-size: 0.62rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--green);
+      border: 1px solid rgba(26, 122, 60, 0.35);
+      padding: 0.4rem 1.1rem;
+    }
+
+    /* ── IMAGE GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+      position: relative;
+    }
+
+    .card {
+      position: relative;
+      cursor: crosshair;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      background: var(--surface);
+      transition: border-color 0.25s ease, transform 0.25s ease;
+      user-select: none;
+    }
+
+    .card:not(.revealed):hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease, filter 0.4s ease, opacity 0.4s ease;
+      opacity: 0;
+    }
+
+    .card img.loaded { opacity: 1; }
+
+    .card:not(.revealed):hover img { transform: scale(1.025); }
+
+    /* Hover CTA */
+    .card-cta {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(12, 11, 9, 0.45);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .card:not(.revealed):hover .card-cta { opacity: 1; }
+
+    .card-cta span {
+      font-size: 0.58rem;
+      font-weight: 500;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      border: 1px solid rgba(245, 238, 220, 0.45);
+      padding: 0.55rem 1.4rem;
+      color: var(--text);
+      background: rgba(12, 11, 9, 0.5);
+    }
+
+    /* Specimen label */
+    .card-id {
+      position: absolute;
+      top: 0.9rem;
+      left: 0.9rem;
+      z-index: 6;
+      font-size: 0.5rem;
+      letter-spacing: 0.25em;
+      color: rgba(245, 238, 220, 0.3);
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+
+    /* Scan-line texture */
+    .card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(12, 11, 9, 0.05) 3px,
+        rgba(12, 11, 9, 0.05) 4px
+      );
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    /* ── REVEALED STATES ── */
+    .card.revealed { cursor: default; transform: none !important; }
+
+    .card.is-real {
+      border-color: var(--green);
+      box-shadow: 0 0 0 1px var(--green), 0 0 50px rgba(77, 255, 140, 0.12);
+    }
+
+    .card.is-fake {
+      border-color: var(--red);
+    }
+
+    .card.is-fake img { filter: grayscale(35%) brightness(0.65); }
+
+    /* Green sweep on real */
+    @keyframes sweep {
+      0%   { top: -4%; opacity: 1; }
+      80%  { opacity: 0.8; }
+      100% { top: 108%; opacity: 0; }
+    }
+
+    .sweep-line {
+      position: absolute;
+      left: 0; right: 0;
+      height: 2px;
+      background: var(--green);
+      box-shadow: 0 0 16px var(--green), 0 0 40px var(--green);
+      top: -4%;
+      z-index: 10;
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    .card.is-real .sweep-line { animation: sweep 0.9s ease-out forwards; }
+
+    /* Red grid on fake */
+    .fake-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 68, 68, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 68, 68, 0.06) 1px, transparent 1px);
+      background-size: 28px 28px;
+      opacity: 0;
+      z-index: 6;
+      pointer-events: none;
+      transition: opacity 0.5s ease 0.1s;
+    }
+
+    .card.is-fake .fake-grid { opacity: 1; }
+
+    /* Result badge */
+    .badge {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      z-index: 12;
+      font-size: 0.62rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      padding: 0.7rem 1.8rem;
+      font-weight: 400;
+      transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .badge-real { background: var(--green); color: #000; }
+    .badge-fake { background: var(--red); color: #fff; }
+
+    .card.is-real .badge-real,
+    .card.is-fake .badge-fake {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* Metadata on cards (hidden until reveal) */
+    .card-meta {
+      position: absolute;
+      bottom: 0;
+      left: 0; right: 0;
+      padding: 1.8rem 1rem 0.8rem;
+      background: linear-gradient(transparent, rgba(28, 26, 19, 0.92));
+      font-size: 0.48rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      color: rgba(245, 238, 220, 0.55);
+      line-height: 1.9;
+      text-transform: uppercase;
+      z-index: 7;
+      opacity: 0;
+      transition: opacity 0.5s ease 0.4s;
+      pointer-events: none;
+    }
+
+    .card.revealed .card-meta { opacity: 1; }
+
+    /* Flash on wrong pick */
+    @keyframes wrongFlash {
+      0%   { opacity: 0.35; }
+      50%  { opacity: 0.15; }
+      100% { opacity: 0; }
+    }
+
+    .card-flash {
+      position: absolute;
+      inset: 0;
+      background: var(--red);
+      opacity: 0;
+      z-index: 15;
+      pointer-events: none;
+    }
+
+    .card-flash.active { animation: wrongFlash 0.45s ease forwards; }
+
+    /* or divider */
+    .or-mark {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 20;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      background: var(--bg);
+      padding: 0.4rem 0.2rem;
+      pointer-events: none;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── SHARE BUTTON ── */
+    .share-btn {
+      background: var(--green);
+      border: none;
+      color: #000;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      padding: 1rem 3.2rem;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+      display: inline-block;
+    }
+
+    .share-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    .share-btn.copied {
+      background: rgba(77, 255, 140, 0.25);
+      color: var(--green);
+    }
+
+    .restart-link {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.4rem 0;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      text-decoration-color: rgba(245, 238, 220, 0.2);
+      margin-top: 1rem;
+      transition: color 0.2s;
+      display: block;
+    }
+
+    .restart-link:hover { color: var(--text); }
+
+    /* ── FEEDBACK ── */
+    .feedback {
+      margin-top: 2.5rem;
+      text-align: center;
+      min-height: 5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+    }
+
+    .fb-main {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(1.6rem, 3vw, 2.5rem);
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.4s ease 0.25s, transform 0.4s ease 0.25s;
+    }
+
+    .fb-main.show { opacity: 1; transform: translateY(0); }
+    .fb-main.correct { color: var(--green); }
+    .fb-main.wrong { color: var(--red); }
+
+    .fb-sub {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      opacity: 0;
+      transition: opacity 0.4s ease 0.5s;
+      max-width: 600px;
+      line-height: 1.7;
+    }
+
+    .fb-sub.show { opacity: 1; }
+
+    /* ── NEXT BUTTON ── */
+    .next-btn {
+      display: none;
+      margin: 1.8rem auto 0;
+      background: transparent;
+      border: 1px solid rgba(245, 238, 220, 0.25);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      padding: 0.9rem 2.8rem;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, color 0.3s;
+    }
+
+    .next-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--green);
+      transform: translateX(-101%);
+      transition: transform 0.3s ease;
+      z-index: 0;
+    }
+
+    .next-btn:hover { border-color: var(--green); color: #000; }
+    .next-btn:hover::before { transform: translateX(0); }
+
+    .next-btn span { position: relative; z-index: 1; }
+    .next-btn.show { display: block; }
+
+    /* ── END SCREEN ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    #end-screen {
+      display: none;
+      text-align: center;
+      padding: 7rem 2rem;
+      animation: fadeUp 0.7s ease forwards;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    #end-screen.show { display: block; }
+
+    .end-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 0.6rem;
+    }
+
+    .end-score {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(4rem, 10vw, 7rem);
+      font-weight: 400;
+      line-height: 1;
+      color: var(--green);
+      margin-bottom: 0.4rem;
+    }
+
+    .end-title {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    .end-verdict {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      line-height: 1.9;
+      max-width: 420px;
+      margin: 0 auto 3rem;
+    }
+
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      header { padding: 2rem 1.5rem 1.5rem; }
+      .score-row { position: static; transform: none; text-align: center; }
+      main { padding: 2rem 1.2rem 4rem; }
+      .grid { grid-template-columns: 1fr; }
+      .or-mark { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-wrap">
+      <h1><em>What's</em> Real</h1>
+    </div>
+    <p class="tagline">
+      "nothing is real — the internet is an imagination vortex"
+      <cite>— Matt Carroll</cite>
+    </p>
+    <div class="score-row">
+      <div>Correct &nbsp;<strong id="s-correct">0</strong></div>
+      <div>Wrong &nbsp;<strong id="s-wrong">0</strong></div>
+      <div>Round &nbsp;<strong id="s-round">1</strong> / <strong id="s-total">8</strong></div>
+    </div>
+  </header>
+
+  <div class="progress-track">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+
+  <main id="game-main">
+    <div class="round-head">
+      <div class="round-meta">Round <span id="r-num">1</span> of <span id="r-total">8</span></div>
+      <div class="round-category" id="r-category">Loading...</div>
+      <div class="round-question">One was captured by a camera. One was AI-generated. Which is real?</div>
+      <span class="round-cta">↓ Click the real one ↓</span>
+    </div>
+
+    <div class="grid" id="grid">
+      <!-- Card A -->
+      <div class="card" id="card-a">
+        <span class="card-id">Specimen A</span>
+        <img id="img-a" src="" alt="Specimen A">
+        <div class="card-cta"><span>This is real</span></div>
+        <div class="badge badge-real">Authentic</div>
+        <div class="badge badge-fake">Synthetic</div>
+        <div class="fake-grid"></div>
+        <div class="sweep-line"></div>
+        <div class="card-flash" id="flash-a"></div>
+        <div class="card-meta" id="meta-a"></div>
+      </div>
+
+      <div class="or-mark">or</div>
+
+      <!-- Card B -->
+      <div class="card" id="card-b">
+        <span class="card-id">Specimen B</span>
+        <img id="img-b" src="" alt="Specimen B">
+        <div class="card-cta"><span>This is real</span></div>
+        <div class="badge badge-real">Authentic</div>
+        <div class="badge badge-fake">Synthetic</div>
+        <div class="fake-grid"></div>
+        <div class="sweep-line"></div>
+        <div class="card-flash" id="flash-b"></div>
+        <div class="card-meta" id="meta-b"></div>
+      </div>
+    </div>
+
+    <div class="feedback">
+      <div class="fb-main" id="fb-main"></div>
+      <div class="fb-sub"  id="fb-sub"></div>
+      <button class="next-btn" id="next-btn"><span>Next specimen →</span></button>
+    </div>
+  </main>
+
+  <!-- End screen -->
+  <div id="end-screen">
+    <div class="end-label">Final Score</div>
+    <div class="end-score" id="end-score"></div>
+    <div class="end-title" id="end-title"></div>
+    <div class="end-verdict" id="end-verdict"></div>
+    <button class="share-btn" id="share-btn" onclick="shareResults()">Copy results to share</button>
+    <button class="restart-link" onclick="restart()">Play again</button>
+  </div>
+
+  <script>
+    const ROUNDS = [
+      {
+        category: "Tea Service",
+        real: 'a',
+        a: {
+          url: 'IMG_20260222_122655_844.jpg',
+          meta: 'Photograph · Camera Phone · 2026\nf/1.8  1/120s  ISO 200'
+        },
+        b: {
+          url: 'IMG_20260222_122658_024.jpg',
+          meta: 'Generated · Midjourney v6 · Seed 84729\nSteps: 50  CFG: 7.5  Quality: 2'
+        }
+      },
+      {
+        category: "Mountain Light",
+        real: 'b',
+        a: {
+          url: 'https://picsum.photos/seed/synth-peak/900/675',
+          meta: 'Generated · Stable Diffusion XL · 2024\nSteps: 80  CFG: 9.0  Sampler: DPM++'
+        },
+        b: {
+          url: 'https://picsum.photos/seed/realalpine/900/675',
+          meta: 'Photograph · Nikon Z9 · Rocky Mountains 2022\nf/8  1/250s  ISO 200  24mm'
+        }
+      },
+      {
+        category: "Forest Interior",
+        real: 'a',
+        a: {
+          url: 'https://picsum.photos/seed/oldgrowth/900/675',
+          meta: 'Photograph · Fujifilm X-T5 · Olympic NP 2023\nf/5.6  1/60s  ISO 1600  23mm'
+        },
+        b: {
+          url: 'https://picsum.photos/seed/aiforest9/900/675',
+          meta: 'Generated · DALL·E 3 · 2024\nPrompt: "misty old-growth forest, cinematic"'
+        }
+      },
+      {
+        category: "Urban Dusk",
+        real: 'b',
+        a: {
+          url: 'https://picsum.photos/seed/fakecity1/900/675',
+          meta: 'Generated · Firefly v2 · Adobe 2024\nStrength: 0.85  Steps: 40  Style: Photographic'
+        },
+        b: {
+          url: 'https://picsum.photos/seed/downtown7/900/675',
+          meta: 'Photograph · Sony A7IV · Chicago 2022\nf/8  1/200s  ISO 400  35mm'
+        }
+      },
+      {
+        category: "Desert Dunes",
+        real: 'a',
+        a: {
+          url: 'https://picsum.photos/seed/sahara22/900/675',
+          meta: 'Photograph · Canon R5 · Sahara 2021\nf/16  1/1000s  ISO 100  70mm'
+        },
+        b: {
+          url: 'https://picsum.photos/seed/aisand44/900/675',
+          meta: 'Generated · Midjourney v5.2 · 2024\nSeed: 29847  Quality: 2  Style: raw'
+        }
+      },
+      {
+        category: "Winter Silence",
+        real: 'b',
+        a: {
+          url: 'https://picsum.photos/seed/aisnow77/900/675',
+          meta: 'Generated · Stable Diffusion XL · 2024\nSteps: 60  CFG: 8.0  LoRA: winter-v3'
+        },
+        b: {
+          url: 'https://picsum.photos/seed/lapland33/900/675',
+          meta: 'Photograph · Leica Q3 · Swedish Lapland 2023\nf/8  1/500s  ISO 320  28mm'
+        }
+      },
+      {
+        category: "Autumn Path",
+        real: 'a',
+        a: {
+          url: 'https://picsum.photos/seed/vermont8/900/675',
+          meta: 'Photograph · Pentax K-3 · Vermont 2021\nf/5.6  1/125s  ISO 400  50mm'
+        },
+        b: {
+          url: 'https://picsum.photos/seed/aifall55/900/675',
+          meta: 'Generated · DALL·E 3 · 2024\nPrompt: "golden hour autumn forest path, photorealistic"'
+        }
+      },
+      {
+        category: "Night Sky",
+        real: 'b',
+        a: {
+          url: 'https://picsum.photos/seed/aispace2/900/675',
+          meta: 'Generated · Midjourney v6 · 2024\nSeed: 77234  Quality: 2  --ar 4:3'
+        },
+        b: {
+          url: 'https://picsum.photos/seed/milkyway/900/675',
+          meta: 'Photograph · Canon 5D IV · Death Valley 2020\nf/2.8  25s  ISO 3200  14mm'
+        }
+      }
+    ];
+
+    let queue = [];
+    let idx = 0;
+    let score = { correct: 0, wrong: 0 };
+    let picked = false;
+    let roundResults = []; // 'correct' or 'wrong' per round
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function loadRound() {
+      picked = false;
+      const r = queue[idx];
+
+      document.getElementById('r-num').textContent = idx + 1;
+      document.getElementById('r-total').textContent = queue.length;
+      document.getElementById('s-round').textContent = idx + 1;
+      document.getElementById('r-category').textContent = r.category;
+      document.getElementById('progress-fill').style.width = (idx / queue.length * 100) + '%';
+
+      // Reset cards
+      ['a','b'].forEach(k => {
+        const card = document.getElementById('card-' + k);
+        card.className = 'card';
+        card.onclick = () => pick(k);
+
+        const img = document.getElementById('img-' + k);
+        img.className = '';
+        img.src = r[k].url;
+        img.onload = () => img.classList.add('loaded');
+        img.onerror = () => img.classList.add('loaded');
+
+        document.getElementById('meta-' + k).textContent = r[k].meta;
+        document.getElementById('flash-' + k).className = 'card-flash';
+      });
+
+      // Reset feedback
+      const fbm = document.getElementById('fb-main');
+      const fbs = document.getElementById('fb-sub');
+      fbm.className = 'fb-main';
+      fbm.textContent = '';
+      fbs.className = 'fb-sub';
+      fbs.textContent = '';
+      document.getElementById('next-btn').className = 'next-btn';
+    }
+
+    function pick(choice) {
+      if (picked) return;
+      picked = true;
+
+      const r = queue[idx];
+      const correct = choice === r.real;
+
+      document.getElementById('card-a').onclick = null;
+      document.getElementById('card-b').onclick = null;
+
+      const realCard = document.getElementById('card-' + r.real);
+      const fakeKey = r.real === 'a' ? 'b' : 'a';
+      const fakeCard = document.getElementById('card-' + fakeKey);
+
+      setTimeout(() => {
+        realCard.classList.add('revealed', 'is-real');
+        fakeCard.classList.add('revealed', 'is-fake');
+
+        const fbm = document.getElementById('fb-main');
+        const fbs = document.getElementById('fb-sub');
+
+        if (correct) {
+          score.correct++;
+          roundResults.push('correct');
+          fbm.textContent = 'Authenticated.';
+          fbm.className = 'fb-main correct show';
+          fbs.textContent = r[r.real].meta.split('\n')[0];
+        } else {
+          score.wrong++;
+          roundResults.push('wrong');
+          fbm.textContent = 'Deceived.';
+          fbm.className = 'fb-main wrong show';
+          fbs.textContent = 'The real image: ' + r[r.real].meta.split('\n')[0];
+          document.getElementById('flash-' + choice).classList.add('active');
+        }
+
+        fbs.className = 'fb-sub show';
+        document.getElementById('s-correct').textContent = score.correct;
+        document.getElementById('s-wrong').textContent = score.wrong;
+
+        setTimeout(() => {
+          document.getElementById('next-btn').classList.add('show');
+        }, 500);
+      }, 120);
+    }
+
+    function next() {
+      idx++;
+      if (idx >= queue.length) {
+        showEnd();
+      } else {
+        loadRound();
+      }
+    }
+
+    function showEnd() {
+      document.getElementById('progress-fill').style.width = '100%';
+      setTimeout(() => {
+        document.getElementById('game-main').style.display = 'none';
+        const end = document.getElementById('end-screen');
+        end.classList.add('show');
+
+        const total = queue.length;
+        const pct = score.correct / total;
+        document.getElementById('end-score').textContent = score.correct + ' / ' + total;
+
+        let title, verdict;
+        if (pct >= 0.88) {
+          title = 'Uncanny clarity.';
+          verdict = 'The synthetic world cannot fool you. Your perception cuts through fabrication with unsettling precision.';
+        } else if (pct >= 0.63) {
+          title = 'Sharp enough.';
+          verdict = 'You can still read the signal through the noise. Reality has not entirely dissolved for you.';
+        } else if (pct >= 0.38) {
+          title = 'Slipping.';
+          verdict = 'The machines are learning faster than you are. The border between real and imagined is thinning.';
+        } else {
+          title = 'Fully deceived.';
+          verdict = 'You exist inside an imagination vortex. Nothing you see online can be trusted — including this score.';
+        }
+
+        document.getElementById('end-title').textContent = title;
+        document.getElementById('end-verdict').textContent = verdict;
+      }, 400);
+    }
+
+    function shareResults() {
+      const total = queue.length;
+      const emojis = roundResults.map(r => r === 'correct' ? '🟩' : '🟥').join('');
+      const pct = Math.round(score.correct / total * 100);
+      const title = document.getElementById('end-title').textContent;
+
+      const text = [
+        `What's Real — ${score.correct}/${total} (${pct}%)`,
+        `"nothing is real — the internet is an imagination vortex"`,
+        `— Matt Carroll`,
+        ``,
+        emojis,
+        ``,
+        title,
+        `whatisreal.ai201.site`
+      ].join('\n');
+
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('share-btn');
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy results to share';
+          btn.classList.remove('copied');
+        }, 2500);
+      }).catch(() => {
+        // Fallback: select a temp textarea
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        const btn = document.getElementById('share-btn');
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy results to share';
+          btn.classList.remove('copied');
+        }, 2500);
+      });
+    }
+
+    function restart() {
+      score = { correct: 0, wrong: 0 };
+      roundResults = [];
+      idx = 0;
+      document.getElementById('s-correct').textContent = 0;
+      document.getElementById('s-wrong').textContent = 0;
+      document.getElementById('end-screen').classList.remove('show');
+      document.getElementById('game-main').style.display = '';
+      queue = shuffle(ROUNDS);
+      loadRound();
+    }
+
+    // Wire next button
+    document.getElementById('next-btn').addEventListener('click', next);
+
+    // Start
+    queue = shuffle(ROUNDS);
+    document.getElementById('s-total').textContent = ROUNDS.length;
+    document.getElementById('r-total').textContent = ROUNDS.length;
+    loadRound();
+  </script>
+</body>
+</html>
