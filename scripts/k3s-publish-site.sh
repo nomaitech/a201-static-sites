@@ -21,8 +21,17 @@ namespace="${NAMESPACE:-${USER}}"
 release="${RELEASE_NAME:-shared-static-sites}"
 helper_pod="${HELPER_POD_NAME:-${release}-content-sync}"
 helper_image="${HELPER_IMAGE:-alpine:3.20}"
-claim_name="${PVC_NAME:-${release}-shared-static-sites-content}"
+claim_name="${PVC_NAME:-}"
 release_id="${RELEASE_ID:-$(date +%Y%m%d%H%M%S)}"
+
+if [[ -z "$claim_name" ]]; then
+  claim_name="$(kubectl get pvc -n "$namespace" -l app.kubernetes.io/instance="$release" -o jsonpath='{.items[0].metadata.name}')"
+fi
+
+if [[ -z "$claim_name" ]]; then
+  echo "Could not determine PVC for release '$release' in namespace '$namespace'. Set PVC_NAME." >&2
+  exit 1
+fi
 
 cat <<EOF | kubectl apply -n "$namespace" -f -
 apiVersion: v1
@@ -54,4 +63,3 @@ kubectl exec -n "$namespace" "$helper_pod" -- sh -lc "ls -l /srv/sites/${site}"
 echo "Published ${site} -> releases/${release_id} on PVC ${claim_name} (namespace ${namespace})"
 echo "Deleting helper pod ${helper_pod}"
 kubectl delete pod -n "$namespace" "$helper_pod" --wait=true
-

@@ -9,8 +9,16 @@ release="${RELEASE_NAME:-shared-static-sites}"
 helper_pod="${HELPER_POD_NAME:-${release}-content-sync}"
 helper_image="${HELPER_IMAGE:-alpine:3.20}"
 content_root="${CONTENT_ROOT:-content/sites}"
+claim_name="${PVC_NAME:-}"
 
-claim_name="${PVC_NAME:-${release}-shared-static-sites-content}"
+if [[ -z "$claim_name" ]]; then
+  claim_name="$(kubectl get pvc -n "$namespace" -l app.kubernetes.io/instance="$release" -o jsonpath='{.items[0].metadata.name}')"
+fi
+
+if [[ -z "$claim_name" ]]; then
+  echo "Could not determine PVC for release '$release' in namespace '$namespace'. Set PVC_NAME." >&2
+  exit 1
+fi
 
 cat <<EOF | kubectl apply -n "$namespace" -f -
 apiVersion: v1
