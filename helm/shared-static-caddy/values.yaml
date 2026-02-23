@@ -31,9 +31,14 @@ ingress:
   className: ""
   annotations:
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-  host: "*.shared.ai201.site"
+  hosts:
+    - hello1.ai201.site
+    - hello2.ai201.site
+    - hello3.ai201.site
   tls: []
 
 caddy:
-  wildcardHost: "*.shared.ai201.site"
-
+  allowedHosts:
+    - hello1.ai201.site
+    - hello2.ai201.site
+    - hello3.ai201.site

@@ -12,12 +12,11 @@ data:
     }
 
     :80 {
-      @wildcard host {{ .Values.caddy.wildcardHost }}
-      handle @wildcard {
+      @allowed host {{ join " " .Values.caddy.allowedHosts }}
+      handle @allowed {
         root * /srv/sites/{host}/current
         file_server
       }
 
       respond "Not found" 404
     }
-
