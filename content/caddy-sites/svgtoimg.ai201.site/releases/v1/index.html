@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SVG to PNG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f1320;
+      --bg-accent: #1b243a;
+      --card: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.16);
+      --text: #f4f6ff;
+      --muted: #b8c0d9;
+      --accent: #ffb347;
+      --accent-2: #54d2ff;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Space Grotesk", "Avenir Next", sans-serif;
+      background: radial-gradient(1200px circle at 10% 20%, #223253 0%, transparent 55%),
+        radial-gradient(1200px circle at 90% 10%, #2d1e40 0%, transparent 45%),
+        linear-gradient(135deg, #0b0f1d 0%, #11192b 40%, #0f1320 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 20px 64px;
+    }
+
+    .page {
+      width: min(1100px, 100%);
+      display: grid;
+      gap: 28px;
+      animation: rise 0.8s ease-out;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: left;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 640px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 1.2rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px dashed var(--card-border);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 240px;
+      resize: vertical;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+      background: rgba(9, 12, 22, 0.7);
+      color: var(--text);
+      font-family: "Space Grotesk", "Avenir Next", sans-serif;
+      font-size: 0.95rem;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 22px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      color: #0e0f14;
+      background: linear-gradient(120deg, var(--accent), var(--accent-2));
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(84, 210, 255, 0.25);
+    }
+
+    .secondary {
+      background: rgba(255, 255, 255, 0.12);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+    }
+
+    .status {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      min-height: 1.2rem;
+    }
+
+    .output {
+      display: grid;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .output img {
+      width: 100%;
+      border-radius: 16px;
+      background: #0b0f1d;
+      border: 1px solid var(--card-border);
+      padding: 12px;
+    }
+
+    .download {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      border-bottom: 1px solid transparent;
+      width: fit-content;
+    }
+
+    .download:hover {
+      border-bottom-color: var(--accent-2);
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 700px) {
+      body {
+        padding: 32px 16px 48px;
+      }
+
+      .controls {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <h1>SVG to PNG Studio</h1>
+      <p class="subtitle">Upload an SVG file or paste SVG code, then export a crisp PNG. Everything stays in your browser.</p>
+    </header>
+
+    <section class="grid">
+      <div class="card">
+        <h2>Source</h2>
+        <label for="svgFile">Upload SVG</label>
+        <input id="svgFile" type="file" accept="image/svg+xml" />
+
+        <label for="svgText" style="margin-top: 16px;">Or paste SVG code</label>
+        <textarea id="svgText" placeholder="<svg viewBox=\"0 0 200 200\"> ..."></textarea>
+
+        <div class="controls">
+          <button id="convertBtn">Convert to PNG</button>
+          <button id="clearBtn" class="secondary">Clear</button>
+        </div>
+        <div class="status" id="status"></div>
+      </div>
+
+      <div class="card output">
+        <h2>Output</h2>
+        <img id="preview" alt="PNG preview will appear here" />
+        <a id="downloadLink" class="download" href="#" download="converted.png">Download PNG</a>
+      </div>
+    </section>
+  </main>
+
+  <canvas id="canvas" hidden></canvas>
+
+  <script>
+    const fileInput = document.getElementById("svgFile");
+    const svgText = document.getElementById("svgText");
+    const convertBtn = document.getElementById("convertBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const statusEl = document.getElementById("status");
+    const preview = document.getElementById("preview");
+    const downloadLink = document.getElementById("downloadLink");
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    function setStatus(message, isError = false) {
+      statusEl.textContent = message;
+      statusEl.style.color = isError ? "#ff9b9b" : "var(--muted)";
+    }
+
+    function readFileAsText(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("Failed to read the SVG file."));
+        reader.readAsText(file);
+      });
+    }
+
+    function normalizeSvg(svgString) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(svgString, "image/svg+xml");
+      const svgEl = doc.querySelector("svg");
+
+      if (!svgEl) {
+        throw new Error("The provided text does not look like valid SVG.");
+      }
+
+      if (!svgEl.getAttribute("xmlns")) {
+        svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+      }
+
+      let width = parseFloat(svgEl.getAttribute("width"));
+      let height = parseFloat(svgEl.getAttribute("height"));
+
+      if (!width || !height) {
+        const viewBox = svgEl.getAttribute("viewBox");
+        if (viewBox) {
+          const parts = viewBox.split(/[\s,]+/).map(Number);
+          if (parts.length === 4) {
+            width = parts[2];
+            height = parts[3];
+          }
+        }
+      }
+
+      if (!width || !height) {
+        width = 512;
+        height = 512;
+      }
+
+      svgEl.setAttribute("width", width);
+      svgEl.setAttribute("height", height);
+
+      const serialized = new XMLSerializer().serializeToString(svgEl);
+      return { serialized, width, height };
+    }
+
+    async function handleConvert() {
+      try {
+        setStatus("Preparing SVG...");
+        let svgSource = "";
+
+        if (fileInput.files && fileInput.files[0]) {
+          svgSource = await readFileAsText(fileInput.files[0]);
+          svgText.value = svgSource;
+        } else {
+          svgSource = svgText.value.trim();
+        }
+
+        if (!svgSource) {
+          setStatus("Add an SVG file or paste SVG markup first.", true);
+          return;
+        }
+
+        const { serialized, width, height } = normalizeSvg(svgSource);
+        const svgDataUrl = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(serialized);
+
+        const img = new Image();
+        img.onload = () => {
+          canvas.width = width;
+          canvas.height = height;
+          ctx.clearRect(0, 0, width, height);
+          ctx.drawImage(img, 0, 0, width, height);
+          const pngUrl = canvas.toDataURL("image/png");
+          preview.src = pngUrl;
+          downloadLink.href = pngUrl;
+          setStatus(`Rendered ${Math.round(width)}x${Math.round(height)} PNG.`);
+        };
+        img.onerror = () => {
+          setStatus("Could not render that SVG. Check for unsupported elements.", true);
+        };
+        img.src = svgDataUrl;
+      } catch (error) {
+        setStatus(error.message || "Something went wrong.", true);
+      }
+    }
+
+    function handleClear() {
+      fileInput.value = "";
+      svgText.value = "";
+      preview.removeAttribute("src");
+      downloadLink.href = "#";
+      setStatus("");
+    }
+
+    convertBtn.addEventListener("click", handleConvert);
+    clearBtn.addEventListener("click", handleClear);
+  </script>
+</body>
+</html>

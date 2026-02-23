@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHILOSOFRIENDS* - Global Philosophy Meetup Network</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cinzel+Decorative:wght@400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="globe"></canvas>
+
+    <div class="container">
+        <header>
+            <h1 class="logo">PHILOSOFRIENDS*</h1>
+            <div class="emoji-bar">🏛️ 📜 🦉 💭 🫒 ⚱️</div>
+            <p class="tagline">
+                A global network of philosophy enthusiasts organizing local meetups to discuss ideas,
+                challenge assumptions, and explore life's biggest questions together.
+            </p>
+            <p class="cta">
+                Want to start a philosophy meetup in your city? <a href="#start">Get started below</a> or
+                <a href="https://github.com/your-repo/philosofriends" target="_blank">contribute on GitHub</a>.
+            </p>
+        </header>
+
+        <section id="nodes">
+            <h2 class="section-title">// NODES</h2>
+            <p class="section-desc">Philosophy circles around the world. Click to join or learn more.</p>
+            <div class="nodes-grid" id="nodes-grid">
+                <!-- Nodes will be populated by JS -->
+            </div>
+        </section>
+
+        <section id="people">
+            <h2 class="section-title">// THINKERS</h2>
+            <p class="section-desc">Meet the philosophers in the network.</p>
+            <div class="filters">
+                <select id="node-filter">
+                    <option value="">All Nodes</option>
+                </select>
+                <input type="text" id="search" placeholder="Search by name or topic...">
+            </div>
+            <div class="people-table" id="people-table">
+                <!-- People will be populated by JS -->
+            </div>
+        </section>
+
+        <section id="meetups">
+            <h2 class="section-title">// RECENT GATHERINGS</h2>
+            <p class="section-desc">Moments from our philosophy discussions.</p>
+            <div class="photo-grid" id="photo-grid">
+                <!-- Photos will be populated by JS -->
+            </div>
+        </section>
+
+        <section id="start">
+            <h2 class="section-title">// START A NODE</h2>
+            <p class="section-desc">Want to bring philosophical discourse to your city?</p>
+            <div class="start-guide">
+                <div class="step">
+                    <span class="step-num">01</span>
+                    <div class="step-content">
+                        <h3>Pick a Venue</h3>
+                        <p>Coffee shops, libraries, parks, or pubs work great. Anywhere people can talk freely.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <span class="step-num">02</span>
+                    <div class="step-content">
+                        <h3>Choose a Format</h3>
+                        <p>Socratic dialogue, book discussions, debate nights, or free-form philosophy walks.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <span class="step-num">03</span>
+                    <div class="step-content">
+                        <h3>Spread the Word</h3>
+                        <p>Share on social media, local forums, or university bulletin boards.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <span class="step-num">04</span>
+                    <div class="step-content">
+                        <h3>Join the Network</h3>
+                        <p>Submit a PR to add your node, or <a href="mailto:hello@philosofriends.network">email us</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>PHILOSOFRIENDS* is an open network. <a href="https://github.com/your-repo/philosofriends">Fork, modify, improve.</a></p>
+            <p class="footer-quote">"The unexamined life is not worth living." — Socrates</p>
+        </footer>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightbox-close">&times;</button>
+        <img src="" alt="" id="lightbox-img">
+        <p class="lightbox-caption" id="lightbox-caption"></p>
+    </div>
+
+    <!-- Tooltip -->
+    <div class="tooltip" id="tooltip"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

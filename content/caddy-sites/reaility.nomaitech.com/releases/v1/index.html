@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>reaility</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0a0a0a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    /* Nav bar - hidden initially */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 2.5rem;
+      z-index: 20;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.6s ease;
+    }
+
+    .navbar.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .nav-logo {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #e8e8e8;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+    }
+
+    .nav-logo .logo-ai {
+      color: #ff1a1a;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+    }
+
+    .nav-links a {
+      color: #888;
+      text-decoration: none;
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-family: 'Courier New', Courier, monospace;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: #e8e8e8;
+    }
+
+    /* The animated word */
+    .word {
+      font-weight: 500;
+      color: #e8e8e8;
+      letter-spacing: 0.01em;
+      position: fixed;
+      user-select: none;
+      white-space: nowrap;
+      font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+      z-index: 30;
+
+      /* Start centered */
+      font-size: clamp(3rem, 12vw, 10rem);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      transition: none;
+    }
+
+    .word.move-to-headword {
+      transition: all 0.9s cubic-bezier(0.25, 0.1, 0.25, 1);
+      line-height: 1.1;
+    }
+
+    .word.arrived {
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    .char {
+      display: inline;
+      position: relative;
+    }
+
+    .char.red {
+      color: #ff1a1a;
+    }
+
+    /* Glitch pseudo-elements on the middle section */
+    .glitch-zone {
+      display: inline;
+      position: relative;
+    }
+
+    .glitch-zone::before,
+    .glitch-zone::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .glitch-zone::before {
+      color: #00ffff;
+      z-index: -1;
+    }
+
+    .glitch-zone::after {
+      color: #ff00ff;
+      z-index: -1;
+    }
+
+    /* Phase 1: stable */
+    .phase-stable .glitch-zone::before,
+    .phase-stable .glitch-zone::after {
+      clip-path: inset(0 0 100% 0);
+    }
+
+    /* Phase 2: glitching */
+    .phase-glitch .glitch-zone::before {
+      animation: glitch-top 0.08s infinite linear alternate-reverse;
+    }
+
+    .phase-glitch .glitch-zone::after {
+      animation: glitch-bottom 0.08s infinite linear alternate-reverse;
+    }
+
+    .phase-glitch .glitch-zone .char {
+      animation: jitter 0.06s infinite;
+    }
+
+    /* Phase 3: resolved */
+    .phase-resolved .glitch-zone::before,
+    .phase-resolved .glitch-zone::after {
+      clip-path: inset(0 0 100% 0);
+    }
+
+    @keyframes glitch-top {
+      0%   { clip-path: inset(0 0 60% 0); transform: translate(-3px, -2px); }
+      20%  { clip-path: inset(20% 0 40% 0); transform: translate(4px, 1px); }
+      40%  { clip-path: inset(50% 0 10% 0); transform: translate(-2px, 3px); }
+      60%  { clip-path: inset(10% 0 70% 0); transform: translate(3px, -1px); }
+      80%  { clip-path: inset(40% 0 20% 0); transform: translate(-4px, 2px); }
+      100% { clip-path: inset(0 0 50% 0); transform: translate(2px, -3px); }
+    }
+
+    @keyframes glitch-bottom {
+      0%   { clip-path: inset(60% 0 0 0); transform: translate(3px, 2px); }
+      20%  { clip-path: inset(40% 0 20% 0); transform: translate(-4px, -1px); }
+      40%  { clip-path: inset(10% 0 50% 0); transform: translate(2px, -3px); }
+      60%  { clip-path: inset(70% 0 10% 0); transform: translate(-3px, 1px); }
+      80%  { clip-path: inset(20% 0 40% 0); transform: translate(4px, -2px); }
+      100% { clip-path: inset(50% 0 0 0); transform: translate(-2px, 3px); }
+    }
+
+    @keyframes jitter {
+      0%   { transform: translate(0, 0); }
+      25%  { transform: translate(-2px, 1px); }
+      50%  { transform: translate(3px, -2px); }
+      75%  { transform: translate(-1px, 2px); }
+      100% { transform: translate(2px, -1px); }
+    }
+
+    /* Scanline overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.08) 2px,
+        rgba(0, 0, 0, 0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* Red glow on resolved ai */
+    .phase-resolved .char.red {
+      text-shadow: 0 0 10px rgba(255, 26, 26, 0.6), 0 0 30px rgba(255, 26, 26, 0.3);
+    }
+
+    /* ── Dictionary definition main content ── */
+    .definition {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 6rem 2rem 4rem;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1s ease;
+    }
+
+    .definition.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .definition-card {
+      max-width: 640px;
+      width: 100%;
+      color: #e0e0e0;
+      font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .def-headword {
+      font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+      font-size: 51.2px;
+      font-weight: 500;
+      color: #e8e8e8;
+      letter-spacing: 0.01em;
+      line-height: 1.1;
+      margin-bottom: 0.15em;
+      visibility: hidden;
+    }
+
+    .def-headword.visible {
+      visibility: visible;
+    }
+
+    .def-headword .hw-ai {
+      color: #ff1a1a;
+    }
+
+    .def-phonetic {
+      font-size: 1rem;
+      color: #aaa;
+      font-style: normal;
+      letter-spacing: 0.04em;
+      margin-bottom: 1.4rem;
+    }
+
+    .def-divider {
+      border: none;
+      border-top: 1px solid #333;
+      margin: 1.2rem 0;
+    }
+
+    .def-pos {
+      font-style: italic;
+      color: #bbb;
+      font-size: 1rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .def-entry {
+      margin-bottom: 1.6rem;
+    }
+
+    .def-number {
+      color: #999;
+      font-weight: 600;
+      margin-right: 0.4em;
+    }
+
+    .def-text {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: #e0e0e0;
+      font-weight: 300;
+    }
+
+    .def-example {
+      display: block;
+      margin-top: 0.5rem;
+      margin-left: 1.6rem;
+      font-style: italic;
+      color: #aaa;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .def-example::before {
+      content: "\201C";
+    }
+
+    .def-example::after {
+      content: "\201D";
+    }
+
+    .def-origin {
+      margin-top: 1.8rem;
+      padding-top: 1rem;
+      border-top: 1px solid #333;
+    }
+
+    .def-origin-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #888;
+      font-family: 'Courier New', Courier, monospace;
+      margin-bottom: 0.5rem;
+    }
+
+    .def-origin-text {
+      font-size: 1rem;
+      color: #bbb;
+      line-height: 1.6;
+      font-style: italic;
+      font-weight: 300;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav bar (hidden until animation completes) -->
+  <nav class="navbar" id="navbar">
+    <div></div>
+    <div class="nav-links">
+      <a href="/what-we-do.html">What do we do</a>
+    </div>
+  </nav>
+
+  <!-- Animated word -->
+  <div class="word phase-stable" id="word">
+    <span class="char">r</span><span class="glitch-zone" data-text="eal"><span class="char">e</span><span class="char">a</span><span class="char">l</span></span><span class="char">i</span><span class="char">t</span><span class="char">y</span>
+  </div>
+
+  <!-- Dictionary definition content -->
+  <div class="definition" id="definition">
+    <div class="definition-card">
+      <div class="def-headword" id="defHeadword">re<span class="hw-ai">ai</span>lity</div>
+      <div class="def-phonetic">/re&#183;<span style="color:#ff1a1a;">ai</span>&#183;li&#183;ty/ &nbsp; <span style="color:#555">|</span> &nbsp; noun</div>
+
+      <hr class="def-divider">
+
+      <div class="def-pos">noun &mdash; plural <em>reailities</em></div>
+
+      <div class="def-entry">
+        <p class="def-text">
+          <span class="def-number">1.</span>
+          The emergent state of the world as it is increasingly shaped, perceived, and mediated by artificial intelligence; reality as filtered through machine cognition.
+        </p>
+        <span class="def-example">We no longer simply observe reality &mdash; we inhabit a reaility, contoured by algorithms we cannot see.</span>
+      </div>
+
+      <div class="def-entry">
+        <p class="def-text">
+          <span class="def-number">2.</span>
+          A condition in which the boundaries between human experience and AI-generated constructs become indistinguishable.
+        </p>
+        <span class="def-example">The photograph looked authentic, but it was a product of reaility &mdash; synthesised, plausible, and entirely fabricated.</span>
+      </div>
+
+      <div class="def-entry">
+        <p class="def-text">
+          <span class="def-number">3.</span>
+          The philosophical acknowledgment that intelligence &mdash; artificial or otherwise &mdash; is now an inseparable component of what we call real.
+        </p>
+        <span class="def-example">To deny reaility is to pretend the mirror has no reflection.</span>
+      </div>
+
+      <div class="def-origin">
+        <div class="def-origin-label">Origin</div>
+        <p class="def-origin-text">
+          Early 21st century: a portmanteau of <em>reality</em> and <em>AI</em> (artificial intelligence). First attested in digital discourse, c. 2024, denoting the inseparable entanglement of lived experience with machine intelligence.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const word = document.getElementById('word');
+    const navbar = document.getElementById('navbar');
+    const definition = document.getElementById('definition');
+    const defHeadword = document.getElementById('defHeadword');
+
+    function buildWord(resolved) {
+      if (!resolved) {
+        return '<span class="char">r</span><span class="glitch-zone" data-text="eal"><span class="char">e</span><span class="char">a</span><span class="char">l</span></span><span class="char">i</span><span class="char">t</span><span class="char">y</span>';
+      } else {
+        return '<span class="char">r</span><span class="char">e</span><span class="glitch-zone" data-text="ai"><span class="char red">a</span><span class="char red">i</span></span><span class="char">l</span><span class="char">i</span><span class="char">t</span><span class="char">y</span>';
+      }
+    }
+
+    // Phase 1: stable "reality" for 2s
+    word.className = 'word phase-stable';
+    word.innerHTML = buildWord(false);
+
+    setTimeout(() => {
+      // Phase 2: glitch for 1.2s
+      word.className = 'word phase-glitch';
+
+      setTimeout(() => {
+        // Phase 3: resolve to "reaility" with red "ai"
+        word.className = 'word phase-resolved';
+        word.innerHTML = buildWord(true);
+
+        // Phase 4: show definition (headword invisible) + navbar, then move word to headword position
+        setTimeout(() => {
+          // Show the definition card and navbar (headword stays invisible)
+          definition.classList.add('visible');
+          navbar.classList.add('visible');
+
+          // Wait a frame for layout to settle, then measure headword position
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              const rect = defHeadword.getBoundingClientRect();
+
+              // Animate the word to the headword's exact position
+              word.classList.add('move-to-headword');
+              word.style.fontSize = '51.2px';
+              word.style.top = rect.top + 'px';
+              word.style.left = rect.left + 'px';
+              word.style.transform = 'translate(0, 0)';
+
+              // After transition completes, swap: hide animated word, show real headword
+              setTimeout(() => {
+                word.classList.add('arrived');
+                defHeadword.classList.add('visible');
+              }, 950);
+            });
+          });
+        }, 1500);
+      }, 1200);
+    }, 2000);
+  </script>
+</body>
+</html>
