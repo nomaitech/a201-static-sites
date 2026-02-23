@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="bTk1LKTMOw_XJPjSZFFsQ3FeMhdOqQrERJUSracIwDg" />
+    <title>Chat Timeline Visualizer</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex: 1;
+        }
+        .chart-container {
+            margin: 20px 0;
+            position: relative;
+            height: 400px;
+        }
+        .section-subtitle {
+            margin: 6px 0 0 0;
+            color: #6c757d;
+            font-size: 0.95em;
+        }
+        .weekly-dashboard {
+            margin-top: 26px;
+        }
+        .weekly-chart-container {
+            height: 360px;
+        }
+        .topic-dashboards {
+            margin-top: 30px;
+        }
+        .topic-dashboard-heading {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            font-size: 1.25em;
+        }
+        .topic-dashboard-empty {
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            padding: 12px 16px;
+            color: #6c757d;
+        }
+        .topic-section {
+            border-top: 1px solid #e9ecef;
+            margin-top: 18px;
+            padding-top: 18px;
+        }
+        .topic-section h4 {
+            margin: 0 0 10px 0;
+            color: #495057;
+        }
+        .topic-chart-container {
+            height: 320px;
+        }
+        .topic-line-container {
+            height: 260px;
+            margin-top: 14px;
+        }
+        .topic-weekly-container {
+            height: 260px;
+            margin-top: 14px;
+        }
+        .topic-heatmap {
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+        .topic-heatmap-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        .topic-heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(24, 1fr);
+            gap: 4px;
+        }
+        .topic-heatmap-cell {
+            width: 100%;
+            padding-top: 100%;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .topic-heatmap-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px;
+            font-size: 11px;
+            color: #6c757d;
+        }
+        .hour-heatmap {
+            margin-top: 18px;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+        .hour-heatmap-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        .hour-heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(24, 1fr);
+            gap: 4px;
+        }
+        .hour-heatmap-cell {
+            width: 100%;
+            padding-top: 100%;
+            border-radius: 3px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .hour-heatmap-hours {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px;
+            font-size: 11px;
+            color: #6c757d;
+        }
+        .member-clouds {
+            margin-top: 26px;
+        }
+        .member-clouds-heading {
+            margin: 0 0 12px 0;
+            color: #2c3e50;
+            font-size: 1.2em;
+        }
+        .member-clouds-grid {
+            display: grid;
+            gap: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        }
+        .member-cloud-card {
+            padding: 12px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            min-height: 140px;
+        }
+        .member-cloud-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #495057;
+            font-size: 14px;
+        }
+        .member-cloud-words {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 8px;
+            line-height: 1.2;
+        }
+        .member-cloud-word {
+            color: #0d6efd;
+            white-space: nowrap;
+        }
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .app-layout {
+            display: flex;
+            gap: 20px;
+        }
+        .sidebar {
+            width: 210px;
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 16px;
+            height: fit-content;
+        }
+        .sidebar-title {
+            margin: 0 0 12px 0;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #6c757d;
+        }
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .content-area {
+            flex: 1;
+            min-width: 0;
+        }
+        .tab-button {
+            padding: 10px 16px;
+            border: 1px solid #ced4da;
+            background-color: #f1f3f5;
+            color: #495057;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .tab-button.active {
+            background-color: #0d6efd;
+            color: white;
+            border-color: #0d6efd;
+        }
+        .tab-panel {
+            display: none;
+        }
+        .tab-panel.active {
+            display: block;
+        }
+        @media (max-width: 900px) {
+            .app-layout {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+            }
+            .sidebar-nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+        }
+        select, input[type="file"] {
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .file-input-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .file-input-container label {
+            font-weight: bold;
+        }
+        .error-message {
+            color: #dc3545;
+            margin-top: 10px;
+            display: none;
+        }
+        .uploaded-files {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .uploaded-files h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+        }
+        .file-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .file-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 0;
+        }
+        .file-list li button {
+            padding: 2px 8px;
+            font-size: 12px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .file-list li button:hover {
+            background-color: #c82333;
+        }
+        .privacy-notice, .instructions-notice {
+            background-color: #e9ecef;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin: 10px 0 20px 0;
+            font-size: 14px;
+            color: #495057;
+            border-left: 4px solid #6c757d;
+        }
+        .instructions-notice {
+            border-left-color: #0d6efd;
+        }
+        .instructions-notice ol {
+            margin: 10px 0 0 0;
+            padding-left: 20px;
+        }
+        .instructions-notice li {
+            margin-bottom: 5px;
+        }
+        .instructions-notice li:last-child {
+            margin-bottom: 0;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 2.5em;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            color: #6c757d;
+            font-size: 1.1em;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            font-size: 14px;
+        }
+        .footer a {
+            color: #0d6efd;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        .source-verify {
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            font-size: 13px;
+        }
+        .verify-button {
+            padding: 6px 10px;
+            font-size: 12px;
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+        .verify-button:hover {
+            background-color: #e9ecef;
+        }
+        .verify-status {
+            padding: 3px 8px;
+            border-radius: 999px;
+            background-color: #e9ecef;
+            color: #495057;
+            font-weight: 600;
+        }
+        .verify-status[data-state="checking"] {
+            background-color: #fff3cd;
+            color: #664d03;
+        }
+        .verify-status[data-state="ok"] {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+        .verify-status[data-state="fail"] {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Chat Timeline Visualizer</h1>
+            <p>Compare Telegram and AI chat activity patterns over time</p>
+        </div>
+        <div class="app-layout">
+            <aside class="sidebar" role="navigation" aria-label="Analysis tabs">
+                <div class="sidebar-title">Dashboards</div>
+                <div class="sidebar-nav">
+                    <button class="tab-button active" data-tab="telegram" role="tab" aria-selected="true">Telegram analysis</button>
+                    <button class="tab-button" data-tab="ai" role="tab" aria-selected="false">AI analysis</button>
+                </div>
+            </aside>
+            <div class="content-area">
+                <div id="telegramTab" class="tab-panel active" role="tabpanel">
+                    <div class="privacy-notice">
+                        🔒 Privacy Notice: All data processing happens locally in your browser. Your files are not stored or sent anywhere. Once you close this page, all data is cleared.
+                    </div>
+                    <div class="instructions-notice">
+                        📱 How to export your Telegram chat history:
+                        <ol>
+                            <li>Open Telegram Desktop</li>
+                            <li>Go to the conversation you want to analyze</li>
+                            <li>Click the three dots menu (⋮) in the top right</li>
+                            <li>Select "Export chat history"</li>
+                            <li>In the export options, unselect all media types to keep only text</li>
+                            <li>Choose "JSON" as the format</li>
+                            <li>Click "Export" and upload the resulting file here</li>
+                        </ol>
+                    </div>
+                    <div class="controls">
+                        <div class="file-input-container">
+                            <label for="jsonFile">Upload JSON File:</label>
+                            <input type="file" id="jsonFile" accept=".json">
+                        </div>
+                        <select id="chatSelector" disabled>
+                            <option value="">Select a chat</option>
+                        </select>
+                        <select id="timePeriod" disabled>
+                            <option value="month">Monthly View</option>
+                            <option value="year">Yearly View</option>
+                        </select>
+                    </div>
+                    <div id="errorMessage" class="error-message"></div>
+                    <div class="uploaded-files">
+                        <h3>Uploaded Files</h3>
+                        <ul id="fileList" class="file-list"></ul>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="messageChart"></canvas>
+                    </div>
+                    <div class="weekly-dashboard">
+                        <h3>Weekly channel growth</h3>
+                        <p class="section-subtitle">Compare weekly message volume across all uploaded channels.</p>
+                        <div class="chart-container weekly-chart-container">
+                            <canvas id="weeklyChannelChart"></canvas>
+                        </div>
+                    </div>
+                    <div id="hourHeatmap" class="hour-heatmap"></div>
+                    <div id="topicDashboards" class="topic-dashboards"></div>
+                    <div id="memberWordClouds" class="member-clouds"></div>
+                </div>
+                <div id="aiTab" class="tab-panel" role="tabpanel">
+                    <div class="privacy-notice">
+                        🔒 Privacy Notice: Your AI chat files stay in your browser and are never uploaded.
+                    </div>
+                    <div class="instructions-notice">
+                        🤖 Claude and OpenAI export tips:
+                        <ol>
+                            <li>Download your Claude or OpenAI data export</li>
+                            <li>Upload the <strong>conversations.json</strong> file from the export</li>
+                            <li>See a daily histogram with separate colors per provider</li>
+                        </ol>
+                    </div>
+                    <div class="controls">
+                        <div class="file-input-container">
+                            <label for="aiJsonFile">Upload conversations.json (Claude or OpenAI):</label>
+                            <input type="file" id="aiJsonFile" accept=".json">
+                        </div>
+                        <select id="aiChatSelector" disabled>
+                            <option value="">Select a chat</option>
+                        </select>
+                        <select id="aiTimePeriod" disabled>
+                            <option value="day">Daily View</option>
+                            <option value="month">Monthly View</option>
+                        </select>
+                        <select id="aiChartStyle" disabled>
+                            <option value="stacked">Stacked Bars</option>
+                            <option value="grouped">Side-by-Side Bars</option>
+                            <option value="line">Line Chart</option>
+                        </select>
+                        <label class="file-input-container">
+                            <input type="checkbox" id="aiMovingAverage" disabled>
+                            Show moving average
+                        </label>
+                    </div>
+                    <div id="aiErrorMessage" class="error-message"></div>
+                    <div class="uploaded-files">
+                        <h3>Uploaded Files</h3>
+                        <ul id="aiFileList" class="file-list"></ul>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="aiMessageChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        <a href="https://github.com/jonbesga/telegram-chats-timeline" target="_blank" rel="noopener noreferrer">
+            <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+            </svg>
+            View source code on GitHub
+        </a>
+        <div class="source-verify" data-source-verify data-repo="jonbesga/telegram-chats-timeline">
+            <span>Source:</span>
+            <a class="source-link" href="https://github.com/jonbesga/telegram-chats-timeline" target="_blank" rel="noopener noreferrer">loading</a>
+            <button class="verify-button" type="button">Verify against GitHub</button>
+            <span class="verify-status" data-state="idle">Not checked</span>
+        </div>
+    </footer>
+    <script src="timeline.js"></script>
+</body>
+</html> 
