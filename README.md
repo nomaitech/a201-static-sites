@@ -9,6 +9,7 @@ Shared Caddy deployment serving multiple static sites from one PVC. Each site us
 - `content/caddy-sites/<host>/current`: active release symlink
 - `scripts/k3s-sync-content.sh`: sync seed content into the PVC
 - `scripts/k3s-publish-site.sh`: publish one host's content with atomic symlink switch
+- `scripts/k3s-prune-content.sh`: remove PVC site directories not present in `content/caddy-sites/` (dry-run by default)
 
 ## Deploy to k3s
 
@@ -42,6 +43,15 @@ Publish a new release for an existing host directly into the shared PVC:
 ```
 
 This updates only that host's `current` symlink. Caddy pods do not restart.
+
+## Prune Removed Sites From PVC
+
+`k3s-sync-content.sh` is additive. If you delete a site folder locally, you can prune stale PVC directories:
+
+```bash
+./scripts/k3s-prune-content.sh
+APPLY=1 ./scripts/k3s-prune-content.sh
+```
 
 ## Adding a New Site
 
