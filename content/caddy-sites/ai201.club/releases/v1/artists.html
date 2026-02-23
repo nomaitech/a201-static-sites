@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://plausible.nomaitech.com/js/pa-VFDAKtiOaj8cG0NQU4DWq.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artists — ai201.club</title>
+    <meta name="description" content="AI-powered visual art, generative design, and creative coding. Where pixels meet prompts and art gets weird.">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="canonical" href="https://ai201.club/artists">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Artists — ai201.club">
+    <meta property="og:description" content="AI-powered visual art, generative design, and creative coding. Where pixels meet prompts and art gets weird.">
+    <meta property="og:url" content="https://ai201.club/artists">
+    <meta property="og:site_name" content="ai201.club">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Artists — ai201.club">
+    <meta name="twitter:description" content="AI-powered visual art, generative design, and creative coding. Where pixels meet prompts and art gets weird.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-green: #00ff41;
+            --hot-pink: #ff006e;
+            --electric-blue: #3a86ff;
+            --bright-yellow: #ffbe0b;
+            --acid-orange: #ff5400;
+            --deep-purple: #7b2ff7;
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --text-primary: #f0f0f0;
+            --text-muted: #8888aa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            overflow-x: hidden;
+        }
+
+        ::selection {
+            background: var(--hot-pink);
+            color: var(--bg-dark);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 2rem;
+            background: rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .nav-logo {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: 1.4rem;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-logo .blink { animation: blink 1s step-end infinite; }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--neon-green);
+            text-shadow: 0 0 20px var(--neon-green);
+        }
+
+        /* PAGE HEADER */
+        .page-header {
+            padding: 8rem 2rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .page-header .section-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            color: var(--hot-pink);
+            border: 1px solid var(--hot-pink);
+            padding: 0.4rem 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .page-header h1 {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .page-header h1 em {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-weight: 400;
+            color: var(--hot-pink);
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            max-width: 560px;
+            line-height: 1.7;
+        }
+
+        /* HERO BLOB */
+        .hero-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.3;
+            animation: float 8s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        .hero-blob-1 {
+            width: 400px; height: 400px;
+            background: var(--hot-pink);
+            top: -100px; right: 10%;
+        }
+
+        .hero-blob-2 {
+            width: 300px; height: 300px;
+            background: var(--deep-purple);
+            top: 50px; right: 30%;
+            animation-delay: -3s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -20px) scale(1.05); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+
+        /* INTRO */
+        .intro-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 2rem 6rem;
+        }
+
+        .intro-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.06);
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .intro-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 4px;
+            background: linear-gradient(90deg, var(--hot-pink), var(--deep-purple), var(--bright-yellow));
+        }
+
+        .intro-card p {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text-muted);
+            max-width: 700px;
+        }
+
+        .intro-card p strong {
+            color: var(--text-primary);
+        }
+
+        /* ART FORMS */
+        .art-forms {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem 6rem;
+        }
+
+        .art-forms h2 {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+            margin-bottom: 0.5rem;
+        }
+
+        .art-forms > p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 3rem;
+        }
+
+        .art-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .art-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.06);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .art-card:hover {
+            border-color: rgba(255,255,255,0.15);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        .art-card-preview {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .art-card-preview.generative {
+            background: linear-gradient(135deg, #0a0020, #1a0040);
+            background-image:
+                radial-gradient(circle at 20% 50%, var(--hot-pink) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, var(--electric-blue) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, var(--neon-green) 0%, transparent 40%);
+            opacity: 0.8;
+        }
+
+        .art-card-preview.pixel {
+            background: var(--bg-dark);
+            background-image:
+                repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 16px),
+                repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 16px);
+        }
+
+        .art-card-preview.glitch {
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+        }
+
+        .art-card-preview.aiart {
+            background: linear-gradient(135deg, #1a0030, #0d0d2b, #001a1a);
+            background-image:
+                radial-gradient(circle at 30% 30%, rgba(123, 47, 247, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(255, 190, 11, 0.2) 0%, transparent 50%);
+        }
+
+        .art-card-preview .emoji-float {
+            font-size: 3rem;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .art-card-info {
+            padding: 1.5rem;
+        }
+
+        .art-card-info h3 {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .art-card-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        /* TOOLS */
+        .tools-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem 6rem;
+        }
+
+        .tools-section h2 {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+            margin-bottom: 0.5rem;
+        }
+
+        .tools-section > p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 3rem;
+        }
+
+        .tools-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .tool-row {
+            display: grid;
+            grid-template-columns: 200px 1fr auto;
+            gap: 2rem;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.3s;
+        }
+
+        .tool-row:hover {
+            background: var(--bg-card);
+            padding-left: 2.5rem;
+        }
+
+        .tool-row-name {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .tool-row-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .tool-row-tag {
+            font-size: 0.6rem;
+            padding: 0.2rem 0.6rem;
+            border: 1px solid;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        .tool-row:nth-child(1) .tool-row-tag { border-color: var(--hot-pink); color: var(--hot-pink); }
+        .tool-row:nth-child(2) .tool-row-tag { border-color: var(--electric-blue); color: var(--electric-blue); }
+        .tool-row:nth-child(3) .tool-row-tag { border-color: var(--neon-green); color: var(--neon-green); }
+        .tool-row:nth-child(4) .tool-row-tag { border-color: var(--bright-yellow); color: var(--bright-yellow); }
+        .tool-row:nth-child(5) .tool-row-tag { border-color: var(--deep-purple); color: var(--deep-purple); }
+        .tool-row:nth-child(6) .tool-row-tag { border-color: var(--acid-orange); color: var(--acid-orange); }
+
+        /* GALLERY */
+        .gallery-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem 6rem;
+        }
+
+        .gallery-section h2 {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+            margin-bottom: 0.5rem;
+        }
+
+        .gallery-section > p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 3rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .gallery-item {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            z-index: 2;
+        }
+
+        .gallery-item:nth-child(1) { background: linear-gradient(135deg, var(--hot-pink), var(--deep-purple)); }
+        .gallery-item:nth-child(2) { background: linear-gradient(135deg, var(--electric-blue), var(--neon-green)); }
+        .gallery-item:nth-child(3) { background: linear-gradient(135deg, var(--bright-yellow), var(--acid-orange)); }
+        .gallery-item:nth-child(4) { background: linear-gradient(135deg, var(--deep-purple), var(--electric-blue)); }
+        .gallery-item:nth-child(5) { background: linear-gradient(135deg, var(--neon-green), var(--bright-yellow)); }
+        .gallery-item:nth-child(6) { background: linear-gradient(135deg, var(--acid-orange), var(--hot-pink)); }
+
+        .gallery-item-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            font-size: 0.7rem;
+            color: white;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:hover .gallery-item-label {
+            transform: translateY(0);
+        }
+
+        /* CTA */
+        .cta-section {
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, rgba(255, 0, 110, 0.06) 0%, transparent 70%);
+        }
+
+        .cta-text {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            position: relative;
+            z-index: 2;
+            margin-bottom: 1rem;
+        }
+
+        .cta-text em {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-weight: 400;
+            color: var(--hot-pink);
+        }
+
+        .cta-sub {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2.5rem;
+            background: var(--hot-pink);
+            color: white;
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s;
+            clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+        }
+
+        .btn-primary:hover {
+            background: var(--deep-purple);
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0 var(--hot-pink);
+        }
+
+        .section-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            color: var(--hot-pink);
+            border: 1px solid var(--hot-pink);
+            padding: 0.4rem 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        footer a {
+            color: var(--hot-pink);
+            text-decoration: none;
+        }
+
+        /* REVEAL */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+
+        /* HAMBURGER MENU */
+        .nav-hamburger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .nav-hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: white;
+            margin: 5px 0;
+            transition: all 0.3s;
+        }
+
+        .nav-hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .nav-hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .nav-hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 10, 15, 0.97);
+            z-index: 999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .mobile-menu.open {
+            display: flex;
+        }
+
+        .mobile-menu a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            transition: color 0.2s;
+        }
+
+        .mobile-menu a:hover {
+            color: var(--neon-green);
+        }
+
+        @media (max-width: 768px) {
+            .nav-hamburger { display: block; }
+            .nav-links { display: none; }
+            .art-grid { grid-template-columns: 1fr; }
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+            .tool-row { grid-template-columns: 1fr; gap: 0.5rem; padding: 1.25rem; }
+            .tool-row-tag { justify-self: start; }
+        }
+        .skip-link {
+            position: absolute;
+            top: -100%;
+            left: 0;
+            background: var(--neon-green);
+            color: var(--bg-dark);
+            padding: 0.5rem 1rem;
+            z-index: 10000;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <nav>
+        <a href="/" class="nav-logo">ai201<span class="blink">_</span></a>
+        <ul class="nav-links">
+            <li><a href="/#about">About</a></li>
+            <li><a href="/vibecoders">Vibecoders</a></li>
+            <li><a href="/artists" class="active">Artists</a></li>
+            <li><a href="/musicians">Musicians</a></li>
+            <li><a href="/projects">Projects</a></li>
+            <li><a href="/creators">Creators</a></li>
+            <li><a href="/events">Events</a></li>
+            <li><a href="/#join">Join</a></li>
+        </ul>
+        <button class="nav-hamburger" aria-label="Toggle menu" onclick="toggleMobileMenu()">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="/#about">About</a>
+        <a href="/vibecoders">Vibecoders</a>
+        <a href="/artists">Artists</a>
+        <a href="/musicians">Musicians</a>
+        <a href="/projects">Projects</a>
+        <a href="/creators">Creators</a>
+        <a href="/events">Events</a>
+        <a href="/#join">Join</a>
+    </div>
+
+    <header class="page-header" id="main-content">
+        <div class="hero-blob hero-blob-1"></div>
+        <div class="hero-blob hero-blob-2"></div>
+        <div class="section-tag reveal">// Visual chaos</div>
+        <h1 class="reveal">Art made with<br><em>AI &amp; attitude.</em></h1>
+        <p class="reveal">
+            Generative art, AI-powered visuals, CSS sorcery, and creative coding experiments. We make pixels do things they weren't designed to do.
+        </p>
+    </header>
+
+    <!-- INTRO -->
+    <section class="intro-section">
+        <div class="intro-card reveal">
+            <p>
+                The ai201 art scene isn't about gallery walls or NFT floors. It's about <strong>making visual things that didn't exist before</strong> — using code, AI, and a healthy disrespect for conventional aesthetics. We generate, glitch, animate, and distort. We turn prompts into paintings and CSS into sculptures. If it looks weird and makes you feel something, it belongs here.
+            </p>
+        </div>
+    </section>
+
+    <!-- ART FORMS -->
+    <section class="art-forms">
+        <div class="section-tag reveal">// What we make</div>
+        <h2 class="reveal">Forms of creative chaos</h2>
+        <p class="reveal">All the ways our artists bend pixels to their will.</p>
+
+        <div class="art-grid">
+            <div class="art-card reveal">
+                <div class="art-card-preview generative">
+                    <span class="emoji-float">🌀</span>
+                </div>
+                <div class="art-card-info">
+                    <h3>Generative Art</h3>
+                    <p>Code that creates art. Algorithms that produce unexpected beauty. Randomness as an aesthetic choice. Think Processing, p5.js, and shader magic.</p>
+                </div>
+            </div>
+
+            <div class="art-card reveal">
+                <div class="art-card-preview aiart">
+                    <span class="emoji-float">🤖</span>
+                </div>
+                <div class="art-card-info">
+                    <h3>AI-Generated Art</h3>
+                    <p>Midjourney, DALL-E, Stable Diffusion — the new paintbrushes. Prompt engineering as an art form. The artist's role is curator, director, and chaos agent.</p>
+                </div>
+            </div>
+
+            <div class="art-card reveal">
+                <div class="art-card-preview glitch">
+                    <span class="emoji-float">📺</span>
+                </div>
+                <div class="art-card-info">
+                    <h3>Glitch Art</h3>
+                    <p>Intentional errors as beauty. Data bending, pixel sorting, compression artifacts elevated to fine art. The aesthetics of broken things.</p>
+                </div>
+            </div>
+
+            <div class="art-card reveal">
+                <div class="art-card-preview pixel">
+                    <span class="emoji-float">🎨</span>
+                </div>
+                <div class="art-card-info">
+                    <h3>CSS & Web Art</h3>
+                    <p>Pure CSS paintings. SVG animations. WebGL experiments. The browser as a canvas — no plugins, no frameworks, just the raw web platform pushed to its limits.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TOOLS -->
+    <section class="tools-section">
+        <div class="section-tag reveal">// The palette</div>
+        <h2 class="reveal">Tools for AI artists</h2>
+        <p class="reveal">Your digital studio awaits. All you need is curiosity and questionable taste.</p>
+
+        <div class="tools-list">
+            <div class="tool-row reveal">
+                <div class="tool-row-name">Midjourney</div>
+                <div class="tool-row-desc">The king of AI image generation. Stunning results from text prompts. Perfect for concept art, backgrounds, and things that make you go "whoa."</div>
+                <div class="tool-row-tag">Image Gen</div>
+            </div>
+            <div class="tool-row reveal">
+                <div class="tool-row-name">p5.js</div>
+                <div class="tool-row-desc">Creative coding library for the browser. The spiritual successor to Processing. Vibecode your generative art with simple JavaScript.</div>
+                <div class="tool-row-tag">Creative Code</div>
+            </div>
+            <div class="tool-row reveal">
+                <div class="tool-row-name">Stable Diffusion</div>
+                <div class="tool-row-desc">Open-source AI image generation. Run it locally, fine-tune it, break it. The tinkerer's choice for AI art.</div>
+                <div class="tool-row-tag">Open Source</div>
+            </div>
+            <div class="tool-row reveal">
+                <div class="tool-row-name">Three.js / WebGL</div>
+                <div class="tool-row-desc">3D graphics in the browser. Build immersive worlds, particle systems, and interactive installations with nothing but JavaScript.</div>
+                <div class="tool-row-tag">3D / WebGL</div>
+            </div>
+            <div class="tool-row reveal">
+                <div class="tool-row-name">DALL-E / GPT-4 Vision</div>
+                <div class="tool-row-desc">OpenAI's image generation and understanding. Generate, edit, and iterate on visuals through conversation.</div>
+                <div class="tool-row-tag">Image Gen</div>
+            </div>
+            <div class="tool-row reveal">
+                <div class="tool-row-name">Figma + AI Plugins</div>
+                <div class="tool-row-desc">Design tool meets AI. Auto-generate layouts, colour palettes, and entire design systems from a single prompt.</div>
+                <div class="tool-row-tag">Design</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GALLERY PREVIEW -->
+    <section class="gallery-section">
+        <div class="section-tag reveal">// The gallery</div>
+        <h2 class="reveal">Visual experiments</h2>
+        <p class="reveal">A taste of what our artists have been making. Hover for details.</p>
+
+        <div class="gallery-grid">
+            <div class="gallery-item reveal">
+                🌀
+                <div class="gallery-item-label">Recursive spiral — generative p5.js sketch</div>
+            </div>
+            <div class="gallery-item reveal">
+                🖼️
+                <div class="gallery-item-label">AI dreamscape — Midjourney v6 + post-processing</div>
+            </div>
+            <div class="gallery-item reveal">
+                📺
+                <div class="gallery-item-label">Corrupted feed — data-bent video still</div>
+            </div>
+            <div class="gallery-item reveal">
+                ✨
+                <div class="gallery-item-label">Particle galaxy — Three.js particle system</div>
+            </div>
+            <div class="gallery-item reveal">
+                🎭
+                <div class="gallery-item-label">CSS-only portrait — pure HTML/CSS</div>
+            </div>
+            <div class="gallery-item reveal">
+                🔮
+                <div class="gallery-item-label">Neural texture — Stable Diffusion experiment</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="cta-text reveal">Make something <em>beautiful.</em></div>
+        <p class="cta-sub reveal">Or beautifully ugly. We don't judge. Join 201+ creators pushing pixels in weird directions.</p>
+        <a href="/#join" class="btn-primary reveal">Join the club &rarr;</a>
+    </section>
+
+    <footer>
+        <span>&copy; 2026 ai201.club &mdash; Made with <a href="/">questionable judgment</a> in London</span>
+        <span>est. by vibecoders, for vibecoders</span>
+    </footer>
+
+    <script>
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('open');
+            document.querySelector('.nav-hamburger').classList.toggle('active');
+        }
+
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => entry.target.classList.add('visible'), i * 60);
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        revealElements.forEach(el => revealObserver.observe(el));
+    </script>
+
+</body>
+</html>
