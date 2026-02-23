@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Mihai Fund</title>
+  <meta name="description" content="A small fund backing ambitious creatives working in and out of screens. £220 available now.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --border: #222;
+      --text: #e8e4df;
+      --text-muted: #8a8680;
+      --accent: #d4a853;
+      --accent-dim: #b8923f;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Nav */
+    nav {
+      padding: 32px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .fund-badge {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      border: 1px solid var(--accent-dim);
+      padding: 4px 12px;
+      border-radius: 100px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 80px 0 64px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(40px, 7vw, 64px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 32px;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent);
+    }
+
+    .hero-text {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 520px;
+      line-height: 1.7;
+    }
+
+    /* Balance card */
+    .balance-section {
+      padding: 64px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .balance-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px;
+      text-align: center;
+    }
+
+    .balance-label {
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .balance-amount {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(56px, 10vw, 80px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .balance-note {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* What we fund */
+    .what-section {
+      padding: 64px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+
+    .what-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 32px;
+      line-height: 1.2;
+    }
+
+    .what-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 520px) {
+      .what-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .what-item {
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: border-color 0.3s;
+    }
+
+    .what-item:hover {
+      border-color: var(--accent-dim);
+    }
+
+    .what-item-title {
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .what-item-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* How section */
+    .how-section {
+      padding: 64px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .how-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 40px;
+      line-height: 1.2;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .step {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--accent-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .step-content h3 {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .step-content p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Ethos */
+    .ethos-section {
+      padding: 64px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ethos-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      line-height: 1.2;
+    }
+
+    .ethos-text {
+      font-size: 16px;
+      color: var(--text-muted);
+      line-height: 1.8;
+      max-width: 560px;
+    }
+
+    .ethos-text + .ethos-text {
+      margin-top: 16px;
+    }
+
+    /* CTA */
+    .cta-section {
+      padding: 80px 0;
+      text-align: center;
+    }
+
+    .cta-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .cta-section p {
+      font-size: 16px;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+      max-width: 440px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--bg);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 16px 40px;
+      border-radius: 100px;
+      text-decoration: none;
+      letter-spacing: -0.01em;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .cta-btn:hover {
+      background: var(--accent-dim);
+      transform: translateY(-1px);
+    }
+
+    .cta-btn:active {
+      transform: translateY(0);
+    }
+
+    .cta-btn-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent-dim);
+      margin-left: 12px;
+    }
+
+    .cta-btn-outline:hover {
+      background: rgba(212, 168, 83, 0.1);
+    }
+
+    @media (max-width: 520px) {
+      .cta-btn-outline {
+        margin-left: 0;
+        margin-top: 12px;
+      }
+    }
+
+    /* Footer */
+    footer {
+      padding: 32px 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    footer p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Fade-in animations */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <nav>
+      <div class="logo">The Mihai Fund</div>
+      <div class="fund-badge">Open</div>
+    </nav>
+
+    <section class="hero fade-up">
+      <h1>Small fund.<br>Big <em>ambition</em>.</h1>
+      <p class="hero-text">
+        The Mihai Fund backs promising individuals doing creative work in and out of screens. No committees. No bureaucracy. Just a direct bet on people with ideas worth pursuing.
+      </p>
+    </section>
+
+    <section class="balance-section fade-up">
+      <div class="balance-card">
+        <div class="balance-label">Current Fund Balance</div>
+        <div class="balance-amount">&pound;220</div>
+        <div class="balance-note">Available now &mdash; and growing with donations</div>
+      </div>
+    </section>
+
+    <section class="what-section fade-up">
+      <div class="section-label">What We Fund</div>
+      <h2>Creative work that matters</h2>
+      <div class="what-grid">
+        <div class="what-item">
+          <div class="what-item-title">On Screen</div>
+          <div class="what-item-desc">Software, digital art, films, games, apps, websites, interactive experiences, generative work.</div>
+        </div>
+        <div class="what-item">
+          <div class="what-item-title">Off Screen</div>
+          <div class="what-item-desc">Zines, physical art, installations, craft, photography, community projects, experiments.</div>
+        </div>
+        <div class="what-item">
+          <div class="what-item-title">In Between</div>
+          <div class="what-item-desc">Work that blurs boundaries. Hardware meets software. Physical meets digital. Unexpected combinations.</div>
+        </div>
+        <div class="what-item">
+          <div class="what-item-title">Early Stage</div>
+          <div class="what-item-desc">The idea doesn't need to be finished. We fund the spark, not the polish.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="how-section fade-up">
+      <div class="section-label">How It Works</div>
+      <h2>Deliberately simple</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>Tell us what you're making</h3>
+            <p>A short message is enough. No pitch decks, no formal applications. Just describe what you're working on and why it excites you.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>We decide quickly</h3>
+            <p>No review boards. No six-week timelines. If the work is compelling, you'll hear back fast.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3>Money lands, you build</h3>
+            <p>No strings attached. No equity. No reporting requirements. Use it however your project needs.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ethos-section fade-up">
+      <div class="section-label">Ethos</div>
+      <h2>Why this exists</h2>
+      <p class="ethos-text">
+        Most funding is designed for people who already know how to get funded. The Mihai Fund is for everyone else &mdash; the person with a half-built prototype, the artist between projects, the maker who just needs a small push.
+      </p>
+      <p class="ethos-text">
+        The fund grows with every donation. What starts as materials money, a domain name, or a train ticket to a workshop compounds into something bigger over time. Every contribution helps the next creator get started.
+      </p>
+    </section>
+
+    <section class="cta-section fade-up">
+      <h2>Working on something?</h2>
+      <p>Tell us about it. The bar is ambition and craft, not credentials.</p>
+      <a href="mailto:mihaifund@nomaitech.com" class="cta-btn">Apply for Funding</a>
+      <a href="mailto:mihaifund@nomaitech.com?subject=I%20want%20to%20donate" class="cta-btn cta-btn-outline">Donate to the Fund</a>
+    </section>
+
+    <footer>
+      <p>The Mihai Fund &middot; A Nomai Tech initiative</p>
+    </footer>
+
+  </div>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
