@@ -34,11 +34,9 @@ ingress:
   hosts:
     - hello1.ai201.site
     - hello2.ai201.site
-    - hello3.ai201.site
   tls: []
 
 caddy:
   allowedHosts:
     - hello1.ai201.site
     - hello2.ai201.site
-    - hello3.ai201.site

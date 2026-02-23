@@ -10,7 +10,6 @@ image_repo="${IMAGE_REPO:-pdr.jonbesga.com/shared-static-caddy-demo}"
 image_tag="${IMAGE_TAG:-$(git rev-parse --short HEAD)}"
 host1="${HELLO1_HOST:-hello1.ai201.site}"
 host2="${HELLO2_HOST:-hello2.ai201.site}"
-host3="${HELLO3_HOST:-hello3.ai201.site}"
 
 helm upgrade --install "$release" ./helm/shared-static-caddy \
   --namespace "$namespace" \
@@ -19,12 +18,10 @@ helm upgrade --install "$release" ./helm/shared-static-caddy \
   --set image.tag="$image_tag" \
   --set-string "ingress.hosts[0]=$host1" \
   --set-string "ingress.hosts[1]=$host2" \
-  --set-string "ingress.hosts[2]=$host3" \
   --set-string "caddy.allowedHosts[0]=$host1" \
-  --set-string "caddy.allowedHosts[1]=$host2" \
-  --set-string "caddy.allowedHosts[2]=$host3"
+  --set-string "caddy.allowedHosts[1]=$host2"
 
 echo "Release: $release"
 echo "Namespace: $namespace"
 echo "Image: ${image_repo}:${image_tag}"
-echo "Hosts: $host1, $host2, $host3"
+echo "Hosts: $host1, $host2"

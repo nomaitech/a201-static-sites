@@ -24,7 +24,6 @@ Shared Caddy deployment serving multiple static sites from one PVC. Each site us
 IMAGE_TAG=<pushed-tag> \
 HELLO1_HOST=hello1.ai201.site \
 HELLO2_HOST=hello2.ai201.site \
-HELLO3_HOST=hello3.ai201.site \
 ./scripts/helm-deploy-caddy-k3s.sh
 ```
 
