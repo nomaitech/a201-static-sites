@@ -8,20 +8,38 @@ namespace="${NAMESPACE:-${USER}}"
 release="${RELEASE_NAME:-shared-static-caddy}"
 image_repo="${IMAGE_REPO:-pdr.jonbesga.com/shared-static-caddy-demo}"
 image_tag="${IMAGE_TAG:-$(git rev-parse --short HEAD)}"
-host1="${HELLO1_HOST:-hello1.ai201.site}"
-host2="${HELLO2_HOST:-hello2.ai201.site}"
+content_root="${CONTENT_ROOT:-content/caddy-sites}"
 
-helm upgrade --install "$release" ./helm/shared-static-caddy \
-  --namespace "$namespace" \
-  --create-namespace \
-  --set image.repository="$image_repo" \
-  --set image.tag="$image_tag" \
-  --set-string "ingress.hosts[0]=$host1" \
-  --set-string "ingress.hosts[1]=$host2" \
-  --set-string "caddy.allowedHosts[0]=$host1" \
-  --set-string "caddy.allowedHosts[1]=$host2"
+if [[ ! -d "$content_root" ]]; then
+  echo "Content root not found: $content_root" >&2
+  exit 1
+fi
+
+mapfile -t hosts < <(find "$content_root" -maxdepth 1 -mindepth 1 -type d -printf '%f\n' | sort)
+
+if [[ ${#hosts[@]} -eq 0 ]]; then
+  echo "No site folders found in $content_root" >&2
+  exit 1
+fi
+
+helm_args=(
+  upgrade --install "$release" ./helm/shared-static-caddy
+  --namespace "$namespace"
+  --create-namespace
+  --set "image.repository=$image_repo"
+  --set "image.tag=$image_tag"
+)
+
+for i in "${!hosts[@]}"; do
+  host="${hosts[$i]}"
+  helm_args+=(--set-string "ingress.hosts[$i]=$host")
+  helm_args+=(--set-string "caddy.allowedHosts[$i]=$host")
+done
+
+"${helm_args[@]}"
 
 echo "Release: $release"
 echo "Namespace: $namespace"
 echo "Image: ${image_repo}:${image_tag}"
-echo "Hosts: $host1, $host2"
+echo "Content root: $content_root"
+echo "Hosts: ${hosts[*]}"

@@ -18,14 +18,14 @@ Shared Caddy deployment serving multiple static sites from one PVC. Each site us
 ./scripts/build-and-push-caddy-image.sh
 ```
 
-2. Deploy Caddy with explicit hosts (defaults shown):
+2. Deploy Caddy with explicit hosts discovered from `content/caddy-sites/`:
 
 ```bash
 IMAGE_TAG=<pushed-tag> \
-HELLO1_HOST=hello1.ai201.site \
-HELLO2_HOST=hello2.ai201.site \
 ./scripts/helm-deploy-caddy-k3s.sh
 ```
+
+The script reads hostnames from the folder names in `content/caddy-sites/` (for example `hello1.ai201.site/`, `hello2.ai201.site/`) and passes them into Helm.
 
 3. Seed the PVC with demo content:
 
@@ -48,7 +48,7 @@ This updates only that host's `current` symlink. Caddy pods do not restart.
 With the current explicit-host setup, adding `hello4.ai201.site` requires:
 
 1. Add `hello4.ai201.site` to Caddy allowed hosts and ingress hosts (Helm values/script)
-2. Helm upgrade Caddy (config change)
+2. Run `./scripts/helm-deploy-caddy-k3s.sh` (it re-reads folder names and updates explicit hosts)
 3. Publish `hello4.ai201.site` content to the PVC
 
 That is the tradeoff for explicit host safety (no wildcard ingress).

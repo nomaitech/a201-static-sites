@@ -6,6 +6,9 @@ metadata:
     {{- include "shared-static-caddy.labels" . | nindent 4 }}
 data:
   Caddyfile: |
+    {{- if eq (len .Values.caddy.allowedHosts) 0 }}
+    {{- fail "caddy.allowedHosts must contain at least one host (generated from content/caddy-sites by the deploy script)" }}
+    {{- end }}
     {
       auto_https off
       admin off
