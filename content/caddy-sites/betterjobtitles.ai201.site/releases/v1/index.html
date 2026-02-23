@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Better Job Titles — LinkedIn Edition</title>
+  <meta name="description" content="Every job deserves a title that slaps on LinkedIn. 400 traditional job titles translated into LinkedIn-optimized personal branding gold." />
+
+  <!-- Open Graph / LinkedIn -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://betterjobtitles.ai201.site/" />
+  <meta property="og:title" content="Better Job Titles — LinkedIn Edition" />
+  <meta property="og:description" content="Every job deserves a title that slaps on LinkedIn. 400 traditional job titles translated into LinkedIn-optimized personal branding gold." />
+  <meta property="og:image" content="https://betterjobtitles.ai201.site/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="Better Job Titles" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://betterjobtitles.ai201.site/" />
+  <meta name="twitter:title" content="Better Job Titles — LinkedIn Edition" />
+  <meta name="twitter:description" content="Every job deserves a title that slaps on LinkedIn. 400 traditional job titles translated into LinkedIn-optimized personal branding gold." />
+  <meta name="twitter:image" content="https://betterjobtitles.ai201.site/og.png" />
+  <!-- Privacy-friendly analytics by Plausible -->
+  <script async src="https://plausible.nomaitech.com/js/pa-vkef1HlxGFgedDeo-r-dL.js"></script>
+  <script>
+    window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+    plausible.init()
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --surface2: #1a1a26;
+      --border: #2a2a3d;
+      --accent: #6366f1;
+      --accent2: #8b5cf6;
+      --text: #e2e2f0;
+      --muted: #6b6b8a;
+      --highlight: rgba(99,102,241,0.15);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      text-align: center;
+      padding: 3.5rem 1rem 2.5rem;
+      background: linear-gradient(180deg, rgba(99,102,241,0.08) 0%, transparent 100%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(99,102,241,0.12);
+      border: 1px solid rgba(99,102,241,0.3);
+      border-radius: 99px;
+      padding: .3rem .9rem;
+      margin-bottom: 1.2rem;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -.03em;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #fff 30%, var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: .75rem;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 420px;
+      margin: 0 auto 1rem;
+      line-height: 1.5;
+    }
+
+    .emoji-banner {
+      display: inline-block;
+      margin: .85rem auto 1rem;
+      padding: .7rem 1rem;
+      border-radius: 10px;
+      font-size: .9rem;
+      background: rgba(16,185,129,.12);
+      border: 1px solid rgba(16,185,129,.35);
+      color: #d1fae5;
+    }
+
+    .emoji-banner a {
+      color: #a7f3d0;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .emoji-banner a:hover {
+      text-decoration: underline;
+    }
+
+    .tagline {
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 auto 2rem;
+    }
+
+    /* ── SEARCH ── */
+    .search-wrap {
+      max-width: 520px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 1.1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+      flex-shrink: 0;
+    }
+
+    #search {
+      width: 100%;
+      padding: .85rem 1rem .85rem 3rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    #search::placeholder { color: var(--muted); }
+
+    #search:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.2);
+    }
+
+    /* ── MAIN CONTENT ── */
+    main {
+      max-width: 960px;
+      margin: 2.5rem auto;
+      padding: 0 1rem 4rem;
+    }
+
+    /* ── COLUMN HEADERS ── */
+    .col-headers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: .75rem;
+      padding: 0 .5rem;
+    }
+
+    .col-label {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── COUNT ── */
+    #count {
+      font-size: .8rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      padding: 0 .5rem;
+    }
+
+    #count span { color: var(--accent); font-weight: 600; }
+
+    /* ── TABLE ── */
+    #list { display: flex; flex-direction: column; gap: .45rem; }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .8rem 1rem;
+      transition: border-color .15s, background .15s;
+    }
+
+    .row:hover {
+      border-color: rgba(99,102,241,0.4);
+      background: var(--surface2);
+    }
+
+    .row.hidden { display: none; }
+
+    .cell-left {
+      font-size: .9rem;
+      color: #a0a0b8;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .cell-left::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .cell-right {
+      font-size: .9rem;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .cell-right::before {
+      content: '→';
+      color: var(--accent);
+      font-size: .8rem;
+      flex-shrink: 0;
+    }
+
+    mark {
+      background: rgba(99,102,241,0.3);
+      color: #fff;
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+
+    /* ── EMPTY STATE ── */
+    #empty {
+      display: none;
+      text-align: center;
+      padding: 4rem 1rem;
+      color: var(--muted);
+    }
+
+    #empty svg { margin: 0 auto 1rem; opacity: .4; }
+    #empty p { font-size: .95rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--muted);
+      font-size: .8rem;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 560px) {
+      .row { grid-template-columns: 1fr; gap: .3rem; }
+      .col-headers { display: none; }
+      .cell-right::before { content: ''; }
+      .cell-left { color: var(--muted); font-size: .8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="badge">400 Titles</div>
+  <h1>Better Job Titles</h1>
+  <p class="subtitle">Transform your boring job title into LinkedIn-optimized personal branding gold.</p>
+  <p class="tagline">Every job deserves a title that slaps on LinkedIn.</p>
+  <div class="search-wrap">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+    <input id="search" type="text" placeholder="Search any job title…" autocomplete="off" />
+  </div>
+  <p class="emoji-banner">Looking for the perfect emoji to accompany your title? check <a href="https://linkedinemojis.ai201.site" target="_blank" rel="noopener noreferrer">linkedinemojis.ai201.site</a></p>
+</header>
+
+<main>
+  <div class="col-headers">
+    <div class="col-label">Traditional Title</div>
+    <div class="col-label">LinkedIn Title</div>
+  </div>
+  <div id="count">Showing <span id="visible">400</span> of 400 titles</div>
+  <div id="list"></div>
+  <div id="empty">
+    <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+    <p>No titles match your search. Try a different term.</p>
+  </div>
+</main>
+
+<footer>
+  Every job deserves a title that slaps on LinkedIn. &copy; 2026
+</footer>
+
+<script>
+const TITLES = [
+  ["Barber", "Hair Optimization Specialist"],
+  ["Cashier", "Cashflow Management Professional"],
+  ["Janitor", "Sanitation Engineer"],
+  ["Waiter", "Culinary Experience Facilitator"],
+  ["Garbage Collector", "Waste Removal Technician"],
+  ["Plumber", "Fluid Systems Engineer"],
+  ["Electrician", "Power Infrastructure Specialist"],
+  ["Carpenter", "Wood Fabrication Expert"],
+  ["Cook", "Culinary Execution Artist"],
+  ["Security Guard", "Asset Protection Specialist"],
+  ["Bus Driver", "Mass Transit Operations Expert"],
+  ["Taxi Driver", "Personal Transportation Specialist"],
+  ["Librarian", "Knowledge Resource Curator"],
+  ["Receptionist", "First Impressions Coordinator"],
+  ["Data Entry Clerk", "Information Input Specialist"],
+  ["Parking Attendant", "Vehicle Storage Coordinator"],
+  ["Dishwasher", "Culinary Equipment Hygiene Technician"],
+  ["Dog Walker", "Canine Exercise Facilitator"],
+  ["Window Cleaner", "Optical Surface Clarity Specialist"],
+  ["Pest Control Worker", "Biological Threat Elimination Expert"],
+  ["Landscaper", "Green Space Optimization Specialist"],
+  ["Painter", "Surface Transformation Artist"],
+  ["Mechanic", "Automotive Systems Engineer"],
+  ["Teacher", "Learning Experience Architect"],
+  ["Nurse", "Patient Wellness Coordinator"],
+  ["Secretary", "Executive Support Specialist"],
+  ["Accountant", "Financial Data Accuracy Manager"],
+  ["Salesperson", "Revenue Generation Specialist"],
+  ["Delivery Driver", "Last-Mile Logistics Coordinator"],
+  ["Warehouse Worker", "Inventory Management Specialist"],
+  ["Factory Worker", "Production Line Optimization Technician"],
+  ["Farmer", "Agricultural Yield Optimization Specialist"],
+  ["Fisherman", "Aquatic Resource Procurement Specialist"],
+  ["Miner", "Subsurface Resource Extraction Engineer"],
+  ["Construction Worker", "Infrastructure Development Specialist"],
+  ["Welder", "Metal Fusion Artisan"],
+  ["Truck Driver", "Long-Haul Freight Transportation Specialist"],
+  ["Pilot", "Aerial Navigation Systems Commander"],
+  ["Flight Attendant", "In-Flight Experience Curator"],
+  ["Hotel Housekeeper", "Hospitality Environment Restoration Specialist"],
+  ["Retail Worker", "Consumer Engagement Specialist"],
+  ["Bank Teller", "Financial Transaction Facilitation Expert"],
+  ["Call Center Agent", "Customer Interaction Resolution Specialist"],
+  ["Telemarketer", "Outbound Revenue Engagement Specialist"],
+  ["Photographer", "Visual Moment Capture Artist"],
+  ["Graphic Designer", "Visual Communication Architect"],
+  ["Web Developer", "Digital Experience Engineer"],
+  ["IT Support", "Technology Wellness Coordinator"],
+  ["Lawyer", "Legal Strategy Navigator"],
+  ["Doctor", "Health Optimization Practitioner"],
+  ["Dentist", "Oral Health Excellence Provider"],
+  ["Pharmacist", "Medication Distribution Specialist"],
+  ["Veterinarian", "Animal Health Optimization Practitioner"],
+  ["Social Worker", "Community Wellness Advocate"],
+  ["Firefighter", "Emergency Response & Risk Mitigation Specialist"],
+  ["Police Officer", "Public Safety & Order Maintenance Professional"],
+  ["Soldier", "National Defense Operations Specialist"],
+  ["Postman", "Physical Communication Delivery Specialist"],
+  ["Real Estate Agent", "Property Acquisition Specialist"],
+  ["Insurance Agent", "Risk Management Solutions Provider"],
+  ["Financial Advisor", "Wealth Growth Strategist"],
+  ["Marketing Manager", "Brand Experience Architect"],
+  ["HR Manager", "Talent Ecosystem Developer"],
+  ["Supply Chain Manager", "Logistics Flow Optimization Director"],
+  ["Project Manager", "Cross-Functional Initiative Leader"],
+  ["Product Manager", "Innovation Roadmap Curator"],
+  ["Data Analyst", "Insights Extraction Specialist"],
+  ["Software Engineer", "Digital Solution Architect"],
+  ["Cybersecurity Analyst", "Digital Threat Intelligence Specialist"],
+  ["UX Designer", "Human-Centered Experience Architect"],
+  ["Content Writer", "Strategic Narrative Specialist"],
+  ["Journalist", "Truth-Seeking Information Curator"],
+  ["Editor", "Content Excellence Guardian"],
+  ["Publisher", "Knowledge Distribution Executive"],
+  ["Translator", "Cross-Cultural Communication Bridge"],
+  ["Tour Guide", "Cultural Experience Facilitator"],
+  ["Travel Agent", "Journey Experience Curator"],
+  ["Event Planner", "Experience Architecture Specialist"],
+  ["Wedding Planner", "Matrimonial Experience Director"],
+  ["Interior Designer", "Space Optimization Visionary"],
+  ["Fashion Designer", "Wearable Art Innovator"],
+  ["Chef", "Culinary Innovation Director"],
+  ["Baker", "Artisanal Food Craft Specialist"],
+  ["Butcher", "Protein Acquisition & Preparation Expert"],
+  ["Florist", "Botanical Aesthetic Specialist"],
+  ["Jeweler", "Precious Materials Artisan"],
+  ["Watchmaker", "Temporal Precision Engineer"],
+  ["Locksmith", "Access Solutions Specialist"],
+  ["Chimney Sweep", "Combustion Pathway Maintenance Specialist"],
+  ["Pool Cleaner", "Aquatic Leisure Maintenance Technician"],
+  ["Carpet Cleaner", "Textile Surface Restoration Specialist"],
+  ["Exterminator", "Integrated Pest Management Professional"],
+  ["Tailor", "Custom Garment Optimization Specialist"],
+  ["Shoemaker", "Footwear Restoration Artisan"],
+  ["Hairdresser", "Hair Architecture Specialist"],
+  ["Makeup Artist", "Aesthetic Enhancement Specialist"],
+  ["Massage Therapist", "Musculoskeletal Relief Practitioner"],
+  ["Personal Trainer", "Human Performance Optimization Coach"],
+  ["Nutritionist", "Dietary Optimization Advisor"],
+  ["Yoga Instructor", "Mind-Body Alignment Facilitator"],
+  ["Life Coach", "Personal Growth Trajectory Specialist"],
+  ["Therapist", "Cognitive Wellness Navigator"],
+  ["Psychologist", "Mental Performance Specialist"],
+  ["Astrologer", "Celestial Pattern Interpretation Specialist"],
+  ["Fortune Teller", "Future Scenario Consultant"],
+  ["Magician", "Illusionary Experience Creator"],
+  ["Clown", "Jovial Atmosphere Specialist"],
+  ["Comedian", "Humor Experience Architect"],
+  ["Actor", "Emotional Narrative Embodiment Artist"],
+  ["Musician", "Auditory Experience Creator"],
+  ["Singer", "Vocal Performance Artist"],
+  ["DJ", "Sonic Atmosphere Curator"],
+  ["Dancer", "Kinetic Expression Artist"],
+  ["Choreographer", "Movement Architecture Designer"],
+  ["Film Director", "Visual Storytelling Orchestrator"],
+  ["Screenwriter", "Narrative Architecture Specialist"],
+  ["Producer", "Creative Project Execution Lead"],
+  ["Video Editor", "Visual Narrative Refinement Specialist"],
+  ["Sound Engineer", "Auditory Quality Optimization Technician"],
+  ["Animator", "Digital Motion Storytelling Artist"],
+  ["Game Developer", "Interactive Experience Engineer"],
+  ["Archivist", "Historical Data Preservation Specialist"],
+  ["Museum Curator", "Cultural Artifact Experience Designer"],
+  ["Art Director", "Visual Brand Ecosystem Leader"],
+  ["Illustrator", "Visual Concept Realization Artist"],
+  ["Tattoo Artist", "Permanent Skin Narrative Specialist"],
+  ["Graffiti Artist", "Urban Visual Expression Creator"],
+  ["Sculptor", "Three-Dimensional Form Artist"],
+  ["Potter", "Ceramic Form Specialist"],
+  ["Glassblower", "Molten Material Transformation Artist"],
+  ["Blacksmith", "Metal Forging Artisan"],
+  ["Furniture Maker", "Custom Living Space Object Specialist"],
+  ["Toymaker", "Childhood Experience Object Creator"],
+  ["Bookbinder", "Literary Object Preservation Craftsperson"],
+  ["Calligrapher", "Handwritten Visual Communication Specialist"],
+  ["Cartographer", "Spatial Data Visualization Expert"],
+  ["Geologist", "Earth Systems Analysis Specialist"],
+  ["Meteorologist", "Atmospheric Condition Forecast Specialist"],
+  ["Marine Biologist", "Aquatic Ecosystem Research Specialist"],
+  ["Astronomer", "Celestial Object Research Specialist"],
+  ["Biologist", "Living Systems Research Specialist"],
+  ["Chemist", "Molecular Composition Analysis Specialist"],
+  ["Physicist", "Fundamental Forces Research Specialist"],
+  ["Mathematician", "Quantitative Pattern Analysis Specialist"],
+  ["Statistician", "Data Distribution Insight Specialist"],
+  ["Economist", "Market Behavior Analysis Specialist"],
+  ["Sociologist", "Human Behavior Ecosystem Researcher"],
+  ["Anthropologist", "Cultural Evolution Research Specialist"],
+  ["Archaeologist", "Historical Artifact Discovery Specialist"],
+  ["Historian", "Temporal Context Documentation Specialist"],
+  ["Philosopher", "Existential Framework Developer"],
+  ["Theologian", "Spiritual Systems Analyst"],
+  ["Politician", "Public Policy Direction Specialist"],
+  ["Diplomat", "International Relations Harmony Facilitator"],
+  ["Ambassador", "Cross-Border Relationship Excellence Representative"],
+  ["Judge", "Legal Outcome Arbitration Specialist"],
+  ["Bailiff", "Courtroom Order Maintenance Professional"],
+  ["Court Reporter", "Legal Proceedings Transcription Specialist"],
+  ["Paralegal", "Legal Research Support Specialist"],
+  ["Tax Collector", "Public Revenue Compliance Officer"],
+  ["Customs Officer", "National Trade Compliance Specialist"],
+  ["Border Agent", "Territorial Security Management Specialist"],
+  ["Prison Warden", "Correctional Facility Operations Director"],
+  ["Probation Officer", "Community Reintegration Specialist"],
+  ["Social Media Manager", "Digital Community Engagement Architect"],
+  ["SEO Specialist", "Search Visibility Optimization Expert"],
+  ["Email Marketer", "Direct Audience Engagement Specialist"],
+  ["Copywriter", "Persuasive Narrative Specialist"],
+  ["Brand Strategist", "Identity Architecture Director"],
+  ["Market Researcher", "Consumer Insight Extraction Specialist"],
+  ["Business Analyst", "Operational Efficiency Discovery Specialist"],
+  ["Management Consultant", "Organizational Transformation Advisor"],
+  ["Executive Assistant", "C-Suite Productivity Optimization Specialist"],
+  ["Office Manager", "Workplace Operations Excellence Coordinator"],
+  ["Procurement Manager", "Strategic Acquisition Specialist"],
+  ["Quality Assurance Tester", "Excellence Standards Verification Specialist"],
+  ["Safety Officer", "Risk Mitigation & Compliance Specialist"],
+  ["Environmental Consultant", "Sustainability Impact Optimization Specialist"],
+  ["Urban Planner", "Community Space Architecture Specialist"],
+  ["Civil Engineer", "Infrastructure Systems Designer"],
+  ["Structural Engineer", "Load-Bearing Systems Specialist"],
+  ["Mechanical Engineer", "Physical Systems Optimization Engineer"],
+  ["Chemical Engineer", "Molecular Process Optimization Specialist"],
+  ["Aerospace Engineer", "Atmospheric & Space Vehicle Systems Designer"],
+  ["Biomedical Engineer", "Life-Enhancing Technology Developer"],
+  ["Network Engineer", "Connectivity Infrastructure Specialist"],
+  ["Database Administrator", "Data Architecture Optimization Specialist"],
+  ["Systems Administrator", "IT Infrastructure Reliability Specialist"],
+  ["DevOps Engineer", "Continuous Delivery Pipeline Specialist"],
+  ["Machine Learning Engineer", "Predictive Algorithm Developer"],
+  ["Data Scientist", "Insight-Driven Decision Enablement Specialist"],
+  ["AI Researcher", "Cognitive Systems Advancement Specialist"],
+  ["Robotics Engineer", "Autonomous Systems Developer"],
+  ["Blockchain Developer", "Decentralized Systems Architect"],
+  ["Cloud Architect", "Scalable Infrastructure Design Specialist"],
+  ["Penetration Tester", "Ethical Vulnerability Discovery Specialist"],
+  ["Inventory Manager", "Stock Optimization Specialist"],
+  ["Bartender", "Liquid Experience Curator"],
+  ["Cashier Supervisor", "Transactional Flow Oversight Manager"],
+  ["Night Watchman", "Nocturnal Security Presence Specialist"],
+  ["Lifeguard", "Aquatic Safety & Emergency Response Specialist"],
+  ["Crossing Guard", "Pedestrian Safety Navigation Specialist"],
+  ["Meter Reader", "Utility Consumption Data Acquisition Specialist"],
+  ["Toll Collector", "Highway Revenue Processing Specialist"],
+  ["Valet", "Premium Vehicle Stewardship Specialist"],
+  ["Bellhop", "Guest Luggage Journey Coordinator"],
+  ["Concierge", "Bespoke Guest Experience Architect"],
+  ["Sommelier", "Wine Excellence Curation Specialist"],
+  ["Barista", "Specialty Coffee Experience Engineer"],
+  ["Street Vendor", "Mobile Commerce Activation Specialist"],
+  ["Pawnbroker", "Asset Liquidity Solutions Provider"],
+  ["Auctioneer", "Competitive Price Discovery Facilitator"],
+  ["Repo Man", "Collateral Recovery Specialist"],
+  ["Bounty Hunter", "Fugitive Recovery Solutions Expert"],
+  ["Bouncer", "Venue Atmosphere Integrity Specialist"],
+  ["Croupier", "Gaming Revenue Flow Specialist"],
+  ["Bookkeeper", "Financial Ledger Accuracy Custodian"],
+  ["Proofreader", "Written Content Integrity Specialist"],
+  ["Ghostwriter", "Attributed Narrative Production Specialist"],
+  ["Voiceover Artist", "Vocal Brand Communication Specialist"],
+  ["Stuntman", "High-Risk Physical Performance Specialist"],
+  ["Extra", "Background Atmosphere Realization Specialist"],
+  ["Puppeteer", "Character Animation Performance Specialist"],
+  ["Sign Spinner", "Kinetic Brand Visibility Specialist"],
+
+  // Batch 2 — 200 more
+  ["Uber Driver", "Gig Economy Mobility Disruptor"],
+  ["Nanny", "Domestic Childhood Development Executive"],
+  ["Babysitter", "Off-Hours Youth Containment Specialist"],
+  ["Groundskeeper", "Outdoor Terrain Stewardship Executive"],
+  ["Gravedigger", "Permanent Residential Plot Preparation Specialist"],
+  ["Mortician", "Post-Life Aesthetic Restoration Artist"],
+  ["Funeral Director", "End-of-Journey Experience Architect"],
+  ["Taxidermist", "Deceased Biological Form Preservation Artist"],
+  ["Dog Groomer", "Canine Aesthetic Transformation Technician"],
+  ["Horse Trainer", "Equine Behavioral Optimization Coach"],
+  ["Zookeeper", "Multi-Species Stakeholder Management Professional"],
+  ["Animal Control Officer", "Roaming Pet Community Re-Integration Specialist"],
+  ["Beekeeper", "Pollinator Productivity Ecosystem Director"],
+  ["Chicken Farmer", "Free-Range Breakfast Protein Executive"],
+  ["Dairy Farmer", "Bovine Output Optimization Specialist"],
+  ["Lumberjack", "Arboreal Resource Liberation Expert"],
+  ["Elevator Operator", "Vertical Mobility Concierge"],
+  ["Speed Camera Operator", "Velocity Compliance Documentation Technician"],
+  ["Parking Warden", "Urban Vehicle Placement Compliance Officer"],
+  ["Town Crier", "Pre-Digital Mass Communication Broadcaster"],
+  ["Lighthouse Keeper", "Maritime Collision Avoidance Beacon Custodian"],
+  ["Astronaut", "Off-Planet Operations Pioneer"],
+  ["Cave Explorer", "Subterranean Discovery Enthusiast"],
+  ["Scuba Diver", "Aquatic Depth Immersion Expert"],
+  ["Sword Swallower", "Blade Ingestion Performance Artist"],
+  ["Fire Eater", "Thermal Oral Entertainment Specialist"],
+  ["Trapeze Artist", "Aerial Trust-Fall Execution Expert"],
+  ["Tightrope Walker", "Elevated Linear Navigation Specialist"],
+  ["Escape Artist", "Constraint Liberation Performance Expert"],
+  ["Human Cannonball", "High-Velocity Self-Projectile Experience Creator"],
+  ["Rodeo Clown", "Agricultural Entertainment & Bull Distraction Specialist"],
+  ["Cowboy", "Open-Range Livestock Mobility Director"],
+  ["Casino Owner", "Risk-Reward Experience Platform Executive"],
+  ["Junk Collector", "Pre-Loved Material Ecosystem Curator"],
+  ["Antique Dealer", "Temporal Object Value Discovery Expert"],
+  ["Flea Market Vendor", "Decentralized Retail Innovation Pioneer"],
+  ["eBay Seller", "Digital Marketplace Monetization Specialist"],
+  ["Dropshipper", "Inventory-Free Commerce Architect"],
+  ["Influencer", "Attention Monetization Strategist"],
+  ["TikTok Creator", "Short-Form Dopamine Content Engineer"],
+  ["YouTuber", "Long-Form Digital Narrative Producer"],
+  ["Podcaster", "Audio Thought Leadership Distributor"],
+  ["Blogger", "Digital Longform Opinion Publisher"],
+  ["Twitch Streamer", "Real-Time Interactive Entertainment Host"],
+  ["NFT Artist", "Blockchain-Authenticated Digital Scarcity Creator"],
+  ["Crypto Trader", "Decentralized Volatility Opportunity Manager"],
+  ["Day Trader", "Market Timing Excellence Practitioner"],
+  ["Gambler", "Expected Value Optimization Enthusiast"],
+  ["ATM Technician", "Cash Dispensing Infrastructure Engineer"],
+  ["Vending Machine Repairman", "Automated Retail Unit Restoration Specialist"],
+  ["Elevator Mechanic", "Vertical Transportation Systems Technician"],
+  ["Crane Operator", "Elevated Load Repositioning Expert"],
+  ["Forklift Operator", "Ground-Level Pallet Trajectory Engineer"],
+  ["Bulldozer Operator", "Terrain Reshaping Specialist"],
+  ["Excavator Operator", "Earth Displacement Operations Expert"],
+  ["Pothole Filler", "Road Surface Integrity Restoration Expert"],
+  ["Street Sweeper", "Municipal Surface Debris Liberation Specialist"],
+  ["Sewer Inspector", "Below-Grade Waste Conveyance Analyst"],
+  ["Cable Installer", "Residential Connectivity Solutions Deployer"],
+  ["Radio Host", "Electromagnetic Frequency Personality Broadcaster"],
+  ["News Anchor", "Curated Reality Distribution Specialist"],
+  ["Weather Presenter", "Atmospheric Narrative Performance Specialist"],
+  ["Game Show Host", "Contestant Stress Amplification Specialist"],
+  ["Reality TV Producer", "Manufactured Drama Optimization Director"],
+  ["Soap Opera Writer", "Interpersonal Crisis Serial Narrative Architect"],
+  ["Obituary Writer", "Life Achievement Final Publication Specialist"],
+  ["Greeting Card Writer", "Emotional Proxy Communication Specialist"],
+  ["Jingle Writer", "Auditory Brand Implantation Specialist"],
+  ["Crossword Puzzle Creator", "Vocabulary Constraint Architecture Designer"],
+  ["Horoscope Writer", "Personality-Adjacent Future Speculation Analyst"],
+  ["Teleprompter Operator", "On-Screen Narrative Delivery Infrastructure Technician"],
+  ["Gaffer", "On-Set Illumination Engineering Director"],
+  ["Set Designer", "Fictional Environment Realization Architect"],
+  ["Props Manager", "Narrative Object Acquisition & Placement Director"],
+  ["Costume Designer", "Character Wardrobe Identity Architect"],
+  ["Stunt Coordinator", "Controlled Risk Choreography Director"],
+  ["Casting Director", "Talent Discovery & Character Assignment Executive"],
+  ["Talent Agent", "Human Capital Opportunity Broker"],
+  ["Sports Agent", "Athletic Asset Value Maximization Specialist"],
+  ["Caddy", "Golf Decision Support & Equipment Mobility Specialist"],
+  ["Referee", "Conflict Adjudication & Rules Compliance Officer"],
+  ["Sports Commentator", "Athletic Event Narrative Amplification Expert"],
+  ["Sports Scout", "Undiscovered Talent Identification Specialist"],
+  ["Cheerleader", "Kinetic Morale Amplification Specialist"],
+  ["Mascot", "Brand Anthropomorphization & Crowd Engagement Specialist"],
+  ["Personal Shopper", "Decision Fatigue Elimination Concierge"],
+  ["Stylist", "Personal Brand Aesthetic Architect"],
+  ["Feng Shui Expert", "Spatial Energy Flow Optimization Consultant"],
+  ["Numerologist", "Digit-to-Destiny Translation Specialist"],
+  ["Crystal Healer", "Mineral Vibration Wellness Facilitator"],
+  ["Hypnotherapist", "Subconscious Access & Reprogramming Facilitator"],
+  ["Laughter Therapist", "Therapeutic Humor Delivery Practitioner"],
+  ["Ice Sculptor", "Frozen Medium Ephemeral Art Creator"],
+  ["Butter Sculptor", "Dairy-Based Three-Dimensional Art Specialist"],
+  ["Cake Decorator", "Edible Surface Narrative Artist"],
+  ["Competitive Eater", "Caloric Intake Velocity Specialist"],
+  ["Food Critic", "Gastro-Narrative Experience Evaluator"],
+  ["Cheese Monger", "Dairy Maturation Curation Specialist"],
+  ["Truffle Hunter", "Subterranean Fungi Procurement Specialist"],
+  ["Hot Dog Vendor", "Street-Level Processed Protein Distribution Specialist"],
+  ["Ice Cream Man", "Mobile Frozen Dairy Happiness Distributor"],
+  ["Fortune Cookie Writer", "Post-Meal Destiny Suggestion Specialist"],
+  ["Menu Designer", "Dining Decision Architecture Specialist"],
+  ["Powder Room Attendant", "Restroom Experience Elevation Specialist"],
+  ["Doorman", "Threshold Management & First Impressions Director"],
+  ["Process Server", "Legal Document Surprise Delivery Specialist"],
+  ["Bill Collector", "Outstanding Revenue Recovery Specialist"],
+  ["Pedicab Driver", "Human-Powered Urban Mobility Entrepreneur"],
+  ["Hot Air Balloon Pilot", "Thermally-Assisted Aerial Drifting Director"],
+  ["Glider Pilot", "Engineless Atmospheric Navigation Specialist"],
+  ["Skydiver", "Voluntary Freefall Experience Specialist"],
+  ["BASE Jumper", "Fixed-Object Proximity Descent Specialist"],
+  ["Bungee Jump Instructor", "Elastic Deceleration Experience Guide"],
+  ["Ski Instructor", "Gravity-Assisted Snow Mobility Coach"],
+  ["Surfing Instructor", "Ocean Wave Exploitation Coach"],
+  ["Hunting Guide", "Wildlife Encounter Experience Facilitator"],
+  ["Mountain Guide", "Elevated Terrain Navigation Specialist"],
+  ["Wilderness Survival Instructor", "Hostile Environment Persistence Coach"],
+  ["Professional Mourner", "Grief Amplification Services Provider"],
+  ["Knife Sharpener", "Blade Edge Optimization Technician"],
+  ["Balloon Artist", "Latex Sculpture Rapid Fabrication Expert"],
+  ["Face Painter", "Temporary Dermal Artistic Expression Specialist"],
+  ["Caricature Artist", "Rapid Feature Amplification Portrait Specialist"],
+  ["Bounce House Operator", "Pneumatic Recreational Structure Specialist"],
+  ["Mime", "Silent Narrative Embodiment Specialist"],
+  ["Street Performer", "Public Space Attention Monetization Artist"],
+  ["Busker", "Acoustic Revenue Generation Pioneer"],
+  ["Hermit", "Solitude Maximization Expert"],
+  ["Professional Couch Surfer", "Distributed Residential Experience Collector"],
+  ["Mattress Tester", "Horizontal Comfort Quality Assurance Specialist"],
+  ["Water Slide Tester", "Aquatic Recreational Descent Quality Analyst"],
+  ["Professional Sleeper", "Restorative Unconsciousness Research Participant"],
+  ["Shopping Mall Santa", "Seasonal Wish Documentation Specialist"],
+  ["Line Waiter", "Queue Presence Outsourcing Specialist"],
+  ["Professional Bridesmaid", "Nuptial Support & Logistics Specialist"],
+  ["Mystery Shopper", "Undercover Retail Experience Auditor"],
+  ["Dinner Party Host", "Curated Social Dining Experience Architect"],
+  ["Wine Taster", "Fermented Grape Complexity Assessment Specialist"],
+  ["Beer Judge", "Craft Beverage Quality Arbitration Expert"],
+  ["Whiskey Reviewer", "Aged Spirit Sensory Analysis Specialist"],
+  ["Coffee Quality Grader", "Single-Origin Extraction Complexity Analyst"],
+  ["Tea Sommelier", "Leaf Infusion Curation Specialist"],
+  ["Lip Sync Performer", "Auditory Attribution Transfer Artist"],
+  ["Air Guitar Champion", "Invisible Instrument Mastery Specialist"],
+  ["Colouring Book Artist", "Pre-Filled Canvas Creative Experience Designer"],
+  ["Escape Room Designer", "Voluntary Confinement Experience Architect"],
+  ["Ghost Tour Guide", "Paranormal Narrative Experience Facilitator"],
+  ["Haunted House Actor", "Seasonal Fright Delivery Specialist"],
+  ["Renaissance Fair Performer", "Pre-Industrial Lifestyle Immersion Specialist"],
+  ["Civil War Reenactor", "Historical Armed Conflict Simulation Expert"],
+  ["Flash Mob Organizer", "Synchronized Surprise Public Spectacle Director"],
+  ["Streaker", "Impromptu Visibility Maximization Specialist"],
+  ["Graffiti Remover", "Urban Surface Narrative Erasure Technician"],
+  ["Snow Shoveler", "Frozen Precipitation Displacement Specialist"],
+  ["Leaf Blower Operator", "Deciduous Matter Relocation Specialist"],
+  ["Christmas Tree Farmer", "Seasonal Conifer Cultivation Specialist"],
+  ["Pumpkin Patch Operator", "Autumnal Gourd Experience Director"],
+  ["Corn Maze Designer", "Agricultural Navigational Challenge Architect"],
+  ["Apple Picker", "Arboreal Fruit Harvest Specialist"],
+  ["Cotton Candy Maker", "Spun Sugar Atmospheric Recreation Specialist"],
+  ["Pretzel Vendor", "Twisted Carbohydrate Distribution Specialist"],
+  ["Snow Cone Maker", "Shaved Ice Flavour Application Specialist"],
+  ["Dungeon Master", "Collaborative Narrative World-Building Facilitator"],
+  ["Professional Gamer", "Digital Athletic Performance Specialist"],
+  ["Esports Coach", "Virtual Competitive Performance Optimization Director"],
+  ["Chess Player", "Strategic Positional Advantage Specialist"],
+  ["Poker Player", "Information Asymmetry Exploitation Expert"],
+  ["Trivia Host", "Factual Knowledge Competition Facilitator"],
+  ["Karaoke Host", "Audience Vocal Courage Activation Specialist"],
+  ["Wedding Photographer", "Matrimonial Moment Permanence Specialist"],
+  ["Paparazzi", "Unsolicited Celebrity Documentation Specialist"],
+  ["Surveillance Operator", "Behavioral Pattern Observation Specialist"],
+  ["Undercover Cop", "Clandestine Law Enforcement Infiltration Specialist"],
+  ["Whistleblower", "Organizational Truth Liberation Specialist"],
+  ["Fact Checker", "Reality Verification Operations Specialist"],
+  ["Conspiracy Theorist", "Alternative Narrative Architecture Specialist"],
+  ["Flat Earther", "Spherical Geometry Contrarian Researcher"],
+  ["LinkedIn Influencer", "Professional Network Inspiration Broadcaster"],
+  ["Retirement Home Activities Director", "Senior Leisure Engagement Orchestration Director"],
+  ["School Lunch Lady", "Youth Nutrition Distribution Specialist"],
+  ["Recess Monitor", "Unstructured Play Compliance Officer"],
+  ["School Bus Driver", "Youth Mass Transit Safety Coordinator"],
+  ["Substitute Teacher", "Emergency Knowledge Delivery Specialist"],
+  ["Homework Helper", "Academic Task Completion Support Consultant"],
+  ["Tutor", "Personalized Knowledge Transfer Specialist"],
+  ["College Admissions Counselor", "Higher Education Access Optimization Specialist"],
+  ["Student Loan Officer", "Future Earnings Pre-Commitment Facilitator"],
+  ["Hall Monitor", "Corridor Flow Enforcement Specialist"],
+  ["Janitor (School)", "Educational Facility Hygiene Optimization Engineer"],
+  ["School Principal", "Youth Behavioral Compliance Executive"],
+  ["PTA President", "Voluntary Parental Influence Maximization Director"],
+  ["Crossing Guard", "Pedestrian Mortality Prevention Specialist"],
+  ["Organ Donor Coordinator", "Post-Life Parts Redistribution Specialist"],
+  ["Blood Bank Technician", "Biological Liquid Asset Preservation Specialist"],
+  ["Sperm Bank Technician", "Genetic Material Quality Assurance Specialist"],
+  ["Lab Rat Trainer", "Rodent Behavioral Modification Researcher"],
+  ["Snake Milker", "Venomous Reptile Bioextraction Technician"],
+  ["Worm Farmer", "Soil Aeration Livestock Manager"],
+  ["Maggot Farmer", "Medical-Grade Biological Debridement Producer"],
+  ["Leech Handler", "Therapeutic Bloodletting Organism Wrangler"],
+  ["Pigeon Racer", "Urban Avian Speed Optimization Specialist"],
+  ["Competitive Dog Show Handler", "Canine Excellence Presentation Specialist"],
+  ["Cat Show Judge", "Feline Aesthetic Standards Arbitration Expert"],
+  ["Ferret Breeder", "Mustelid Genetic Optimization Specialist"],
+  ["Tarot Card Reader", "Illustrated Cardboard Future Interpretation Specialist"],
+  ["Palm Reader", "Dermal Fate Mapping Specialist"],
+  ["Dream Interpreter", "Subconscious Narrative Analysis Consultant"],
+  ["Exorcist", "Unwanted Spiritual Entity Removal Specialist"],
+  ["Ghost Hunter", "Paranormal Entity Discovery & Documentation Expert"],
+  ["Alien Abduction Consultant", "Extraterrestrial Encounter Claims Specialist"],
+  ["Bigfoot Researcher", "Unverified Cryptid Field Investigation Expert"],
+  ["Doomsday Prepper", "Post-Civilization Continuity Planning Specialist"],
+  ["Flat Pack Furniture Assembler", "Swedish Engineering Puzzle Resolution Expert"],
+  ["IKEA Instruction Designer", "Wordless Assembly Ambiguity Architect"],
+  ["Cable Wire Organizer", "Domestic Connectivity Aesthetics Specialist"],
+  ["Phone Case Designer", "Device Exterior Protection Aesthetic Architect"],
+  ["Selfie Stick Salesman", "Extended-Arm Photography Solutions Provider"],
+  ["Pop-Up Blocker Developer", "Unsolicited Content Interruption Suppression Engineer"],
+  ["Cookie Consent Manager", "Digital Privacy Annoyance Compliance Officer"],
+  ["CAPTCHA Designer", "Human Verification Frustration Engineer"],
+  ["404 Page Designer", "Digital Dead End Experience Architect"],
+  ["Terms & Conditions Writer", "Unread Legal Obligation Documentation Specialist"],
+  ["Loading Screen Designer", "Anticipatory Digital Patience Experience Specialist"],
+  ["Notification Sound Designer", "Pavlovian Device Response Audio Engineer"],
+  ["LinkedIn Ghostwriter", "Professional Network Authenticity Outsourcing Specialist"],
+  ["Resume Writer", "Employment Aspiration Narrative Specialist"],
+  ["Cover Letter Writer", "Hiring Manager Enthusiasm Simulation Specialist"],
+  ["Interview Coach", "High-Stakes Small Talk Optimization Specialist"],
+  ["Career Change Advisor", "Professional Identity Crisis Navigation Specialist"],
+  ["Retirement Planner", "Eventually-Not-Working Optimization Specialist"],
+  ["Serial Entrepreneur", "Sequential Venture Initiation Expert"],
+  ["Professional Complainer", "Customer Experience Advocacy Specialist"],
+];
+
+const listEl   = document.getElementById('list');
+const searchEl = document.getElementById('search');
+const countEl  = document.getElementById('visible');
+const emptyEl  = document.getElementById('empty');
+
+function highlight(text, query) {
+  if (!query) return text;
+  const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+  return text.replace(re, '<mark>$1</mark>');
+}
+
+function render(query) {
+  const q = query.trim().toLowerCase();
+  let visible = 0;
+
+  rows.forEach(({ el, left, right }) => {
+    const match = !q || left.toLowerCase().includes(q) || right.toLowerCase().includes(q);
+    if (match) {
+      visible++;
+      el.classList.remove('hidden');
+      el.querySelector('.cell-left').innerHTML = highlight(left, q);
+      el.querySelector('.cell-right').innerHTML = highlight(right, q);
+    } else {
+      el.classList.add('hidden');
+    }
+  });
+
+  countEl.textContent = visible;
+  emptyEl.style.display = visible === 0 ? 'block' : 'none';
+}
+
+// Build DOM rows once
+const rows = TITLES.map(([left, right]) => {
+  const el = document.createElement('div');
+  el.className = 'row';
+  el.innerHTML = `<div class="cell-left">${left}</div><div class="cell-right">${right}</div>`;
+  listEl.appendChild(el);
+  return { el, left, right };
+});
+
+searchEl.addEventListener('input', () => render(searchEl.value));
+</script>
+</body>
+</html>

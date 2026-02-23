@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swipe Mihai</title>
+    <script>
+        // Check authentication
+        if (localStorage.getItem('swipeMihaiAuth') !== 'datemenow') {
+            window.location.href = 'login.html';
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(180deg, #1a1a1d 0%, #2d132c 50%, #1a1a1d 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 2.8rem;
+            background: linear-gradient(90deg, #fd267a 0%, #ff6036 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
+        }
+
+        .card-container {
+            position: relative;
+            width: 340px;
+            height: 500px;
+            perspective: 1000px;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            background: #1a1a1d;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+            overflow-y: auto;
+            position: absolute;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            cursor: grab;
+            scroll-behavior: smooth;
+        }
+
+        .card::-webkit-scrollbar {
+            width: 0;
+            display: none;
+        }
+
+        .card.swiping-left {
+            transform: translateX(-150%) rotate(-30deg);
+            opacity: 0;
+        }
+
+        .card.swiping-right {
+            transform: translateX(150%) rotate(30deg);
+            opacity: 0;
+        }
+
+        .card-image-wrapper {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            flex-shrink: 0;
+            cursor: grab;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 20px;
+            color: white;
+        }
+
+        .card-overlay h2 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+
+        .card-overlay .age-location {
+            font-size: 1rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .scroll-indicator {
+            text-align: center;
+            padding: 10px;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.8rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .profile-section {
+            padding: 20px;
+            color: white;
+        }
+
+        .profile-bio {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .profile-section h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .traits {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .trait {
+            background: linear-gradient(135deg, rgba(253,38,122,0.2), rgba(255,96,54,0.2));
+            border: 1px solid rgba(253,38,122,0.4);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: white;
+        }
+
+        .interests {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .interest {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .fun-facts {
+            margin-bottom: 20px;
+        }
+
+        .fun-fact {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .fun-fact-icon {
+            font-size: 1.2rem;
+        }
+
+        .looking-for {
+            background: linear-gradient(135deg, rgba(253,38,122,0.15), rgba(255,96,54,0.15));
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .looking-for p {
+            color: rgba(255,255,255,0.9);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            min-width: 140px;
+        }
+
+        .btn-left {
+            background: linear-gradient(135deg, #fd267a 0%, #ff6036 100%);
+            color: white;
+        }
+
+        .btn-right {
+            background: linear-gradient(135deg, #ff6036 0%, #fd267a 100%);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .match-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 100;
+        }
+
+        .match-popup.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .match-popup h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 3rem;
+            background: linear-gradient(90deg, #fd267a 0%, #ff6036 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            animation: pulse 0.5s ease infinite alternate;
+        }
+
+        .match-popup p {
+            color: #ccc;
+            font-size: 1.2rem;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+
+        .counter {
+            color: white;
+            margin-top: 20px;
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .end-screen {
+            text-align: center;
+            color: white;
+            display: none;
+        }
+
+        .end-screen h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .end-screen p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .btn-restart {
+            background: white;
+            color: #764ba2;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-restart:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Swipe Mihai</h1>
+
+    <div class="card-container" id="cardContainer">
+        <div class="card" id="card">
+            <div class="card-image-wrapper">
+                <img id="cardImage" src="" alt="Swipe me!">
+                <div class="card-overlay">
+                    <h2 id="cardTitle">Mihai, 28</h2>
+                    <div class="age-location">
+                        <span>📍 Your Dreams</span>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-indicator">Scroll down to know more ↓</div>
+            <div class="profile-section">
+                <p class="profile-bio" id="profileBio"></p>
+
+                <h3>Why He's Perfect</h3>
+                <div class="traits" id="profileTraits"></div>
+
+                <h3>Interests</h3>
+                <div class="interests" id="profileInterests"></div>
+
+                <h3>Fun Facts</h3>
+                <div class="fun-facts" id="profileFacts"></div>
+
+                <h3>Looking For</h3>
+                <div class="looking-for">
+                    <p id="profileLookingFor"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="end-screen" id="endScreen">
+        <h2>You loved them all!</h2>
+        <p>Every choice was the right choice</p>
+        <button class="btn-restart" onclick="restart()">Start Over</button>
+    </div>
+
+    <div class="buttons" id="buttons">
+        <button class="btn btn-left" id="btnLeft" onclick="swipe('left')">Love it!</button>
+        <button class="btn btn-right" id="btnRight" onclick="swipe('right')">Amazing!</button>
+    </div>
+
+    <div class="counter" id="counter"></div>
+
+    <div class="match-popup" id="matchPopup">
+        <h2 id="matchText">It's a Match!</h2>
+        <p id="matchSubtext">You have great taste!</p>
+    </div>
+
+    <script>
+        // Mihai's photos with full profiles
+        const images = [
+            {
+                url: 'mihai/mihai_01.jpg',
+                title: 'Mihai, 28',
+                bio: "Just a guy who believes every day is a chance to make someone smile. I'll cook you dinner and pretend I'm on a cooking show while doing it.",
+                traits: ['Hopeless Romantic', 'Great Listener', 'Killer Smile'],
+                interests: ['🍳 Cooking', '🎬 Movies', '🌅 Sunsets', '💪 Gym'],
+                facts: [
+                    { icon: '❤️', text: 'Gives the best hugs in the world' },
+                    { icon: '🎵', text: 'Will serenade you in the shower' },
+                    { icon: '☕', text: 'Makes perfect morning coffee' }
+                ],
+                lookingFor: "Someone who appreciates bad jokes and good cuddles. Bonus points if you laugh at my puns."
+            },
+            {
+                url: 'mihai/mihai_02.png',
+                title: 'Mihai, 28',
+                bio: "I believe in long conversations, spontaneous adventures, and always being there for the people I love.",
+                traits: ['Incredibly Loyal', 'Adventure Seeker', 'Deep Thinker'],
+                interests: ['📚 Reading', '✈️ Travel', '🎮 Gaming', '🍕 Pizza'],
+                facts: [
+                    { icon: '🌟', text: 'Will remember every little thing about you' },
+                    { icon: '🎁', text: 'Gives the most thoughtful gifts' },
+                    { icon: '🤗', text: 'Always knows when you need a hug' }
+                ],
+                lookingFor: "A partner in crime for life's adventures. Someone who's down for Netflix marathons AND spontaneous road trips."
+            },
+            {
+                url: 'mihai/mihai_03.jpg',
+                title: 'Mihai, 28',
+                bio: "They say laughter is the best medicine. I'm basically a pharmacy. Warning: Side effects include falling in love.",
+                traits: ['Hilarious', 'Charming AF', 'Heart of Gold'],
+                interests: ['😂 Comedy', '🎤 Karaoke', '🏖️ Beach', '🐕 Dogs'],
+                facts: [
+                    { icon: '😄', text: 'Will make you laugh until you cry' },
+                    { icon: '💃', text: 'Secret talent: dad dancing' },
+                    { icon: '🍿', text: 'Movie night champion' }
+                ],
+                lookingFor: "Someone who can handle my jokes and match my energy. Let's be that annoyingly cute couple everyone envies."
+            },
+            {
+                url: 'mihai/mihai_04.png',
+                title: 'Mihai, 28',
+                bio: "Fluent in sarcasm, kindness, and making you feel like the most special person in the room.",
+                traits: ['Super Supportive', 'Amazingly Kind', 'Emotionally Available'],
+                interests: ['🎨 Art', '🍷 Wine', '🌿 Nature', '📷 Photography'],
+                facts: [
+                    { icon: '👑', text: 'Will treat you like royalty' },
+                    { icon: '📱', text: 'Actually texts back immediately' },
+                    { icon: '💐', text: 'Brings flowers for no reason' }
+                ],
+                lookingFor: "Someone real. No games, just genuine connection and mutual adoration. Ready to be your biggest fan."
+            },
+            {
+                url: 'mihai/mihai_05.png',
+                title: 'Mihai, 28',
+                bio: "Part-time dreamer, full-time boyfriend material. I take relationships as seriously as I take dessert - very seriously.",
+                traits: ['Romantic Soul', 'Ambitious', 'Incredibly Caring'],
+                interests: ['🎹 Music', '🏃 Running', '🍰 Desserts', '🌙 Stargazing'],
+                facts: [
+                    { icon: '🌹', text: 'Plans the most romantic dates' },
+                    { icon: '💪', text: 'Will carry all the grocery bags in one trip' },
+                    { icon: '🎂', text: 'Never forgets important dates' }
+                ],
+                lookingFor: "My forever plus-one. Someone to share desserts with and build dreams together."
+            },
+            {
+                url: 'mihai/mihai_06.png',
+                title: 'Mihai, 28',
+                bio: "I've been told I give off 'bring home to mom' vibes. Your parents will love me. Your friends will be jealous.",
+                traits: ['Family Oriented', 'Gentleman', 'Irresistibly Cute'],
+                interests: ['👨‍👩‍👧 Family', '🏠 Cozy Nights', '🎄 Holidays', '🐱 Cats'],
+                facts: [
+                    { icon: '👔', text: 'Cleans up nice for fancy occasions' },
+                    { icon: '🏡', text: 'Dreams of building a home with you' },
+                    { icon: '👵', text: 'Grandmas absolutely adore him' }
+                ],
+                lookingFor: "Someone to build a beautiful future with. Ready for the whole package - love, laughter, and growing old together."
+            },
+            {
+                url: 'mihai/mihai_07.jpg',
+                title: 'Mihai, 28',
+                bio: "Professional cuddler. Amateur chef. Expert at making you feel loved. References available upon request.",
+                traits: ['Best Cuddler', 'Warm & Fuzzy', 'Pure Comfort'],
+                interests: ['🛋️ Cuddling', '🎬 Binge-watching', '☕ Coffee Dates', '🌧️ Rainy Days'],
+                facts: [
+                    { icon: '🤗', text: 'Human blanket - always warm' },
+                    { icon: '🍪', text: 'Midnight snack partner' },
+                    { icon: '💤', text: 'Best napping companion' }
+                ],
+                lookingFor: "My cuddle buddy for life. Someone who appreciates lazy Sundays and spontaneous 'I love you's."
+            },
+            {
+                url: 'mihai/mihai_08.jpg',
+                title: 'Mihai, 28',
+                bio: "Life's too short for boring dates. I'm here for adventure, deep talks, and making every moment count.",
+                traits: ['Spontaneous', 'Passionate', 'Full of Life'],
+                interests: ['🎢 Adventures', '🌍 Exploring', '🎉 Celebrations', '🏔️ Hiking'],
+                facts: [
+                    { icon: '🚀', text: 'Always up for trying new things' },
+                    { icon: '📸', text: 'Takes the best candid photos of you' },
+                    { icon: '🎊', text: 'Makes ordinary days feel special' }
+                ],
+                lookingFor: "A co-pilot for this crazy ride called life. Let's make memories that'll make our grandkids jealous."
+            },
+            {
+                url: 'mihai/mihai_09.jpg',
+                title: 'Mihai, 28',
+                bio: "Equal parts goofy and romantic. I'll make you laugh one second and give you butterflies the next.",
+                traits: ['Sweetest Guy', 'Fun Loving', 'Total Sweetheart'],
+                interests: ['🎭 Being Silly', '💑 Romance', '🎈 Fun', '🌻 Happiness'],
+                facts: [
+                    { icon: '😊', text: 'Smiles that light up the room' },
+                    { icon: '💝', text: 'Leaves cute notes everywhere' },
+                    { icon: '🎪', text: 'Makes every day an adventure' }
+                ],
+                lookingFor: "Someone who wants both the fairytale romance AND the silly moments. Because why choose?"
+            },
+            {
+                url: 'mihai/mihai_10.png',
+                title: 'Mihai, 28',
+                bio: "I believe in chivalry, but also equality. I'll open doors AND do the dishes. Modern prince charming vibes.",
+                traits: ['Modern Gentleman', 'Respectful King', 'Total Package'],
+                interests: ['👔 Fashion', '🍽️ Fine Dining', '💎 Quality Time', '🎩 Class'],
+                facts: [
+                    { icon: '🚪', text: 'Actually opens doors for you' },
+                    { icon: '🍽️', text: 'Insists on cooking AND cleaning' },
+                    { icon: '👠', text: 'Will hold your heels when you are tired' }
+                ],
+                lookingFor: "An equal partner to share this beautiful life with. Someone who deserves to be treated like royalty."
+            },
+            {
+                url: 'mihai/mihai_11.jpg',
+                title: 'Mihai, 28',
+                bio: "Your future husband practicing his vows. Just waiting for you to swipe right so we can start our forever.",
+                traits: ['Marriage Material', 'Committed', 'Endlessly Devoted'],
+                interests: ['💒 Future', '💍 Commitment', '🏡 Home', '👶 Family'],
+                facts: [
+                    { icon: '💍', text: 'Already planning the proposal' },
+                    { icon: '📅', text: 'Counting days until he meets you' },
+                    { icon: '💕', text: 'Will love you more each day' }
+                ],
+                lookingFor: "The one. My forever person. Ready to be the best partner you've ever had."
+            },
+            {
+                url: 'mihai/mihai_12.jpg',
+                title: 'Mihai, 28',
+                bio: "Plot twist: You've found the one. All the other swipes were just practice for this moment. You're welcome.",
+                traits: ['The One', 'Once in a Lifetime', 'Absolutely Perfect'],
+                interests: ['💖 You', '💗 Us', '💓 Forever', '💞 Love'],
+                facts: [
+                    { icon: '✨', text: 'Your search ends here' },
+                    { icon: '🏆', text: 'Winner of your heart' },
+                    { icon: '🔮', text: 'Your future looks amazing' }
+                ],
+                lookingFor: "You. Just you. Already convinced you're the one. Now convince yourself by swiping right."
+            }
+        ];
+
+        // Positive button text pairs [left, right]
+        const buttonTexts = [
+            ["I'd dig him", "I'll date him"],
+            ["OMG Love him", "So sexy"],
+            ["Total catch", "Husband material"],
+            ["Yes daddy", "Take me now"],
+            ["Dreamy AF", "Hot stuff"],
+            ["Swipe right IRL", "Wife him up"],
+            ["10/10 would date", "Absolutely smitten"],
+            ["Heart eyes only", "Chef's kiss"],
+            ["Marry me pls", "Pure perfection"],
+            ["Obsessed", "Can't resist"],
+            ["Be mine", "My soulmate"],
+            ["King vibes", "Ultimate bae"]
+        ];
+
+        // Match popup messages
+        const matchMessages = [
+            { text: "It's a Match!", subtext: "He likes you too!" },
+            { text: "He's Yours!", subtext: "Lucky you!" },
+            { text: "Sparks Flying!", subtext: "This one's special!" },
+            { text: "Chemistry!", subtext: "You two are perfect!" },
+            { text: "Soulmate Alert!", subtext: "It's meant to be!" },
+            { text: "Hot Match!", subtext: "Things are heating up!" },
+            { text: "Love Connection!", subtext: "Cupid approves!" },
+            { text: "Perfect Pair!", subtext: "You're glowing!" },
+            { text: "He's Smitten!", subtext: "Can you blame him?" },
+            { text: "Dream Date!", subtext: "Go get him!" }
+        ];
+
+        let currentIndex = 0;
+        let buttonIndex = 0;
+
+        function init() {
+            showCard();
+            updateButtons();
+            updateCounter();
+        }
+
+        function showCard() {
+            const card = document.getElementById('card');
+            const cardImage = document.getElementById('cardImage');
+            const cardTitle = document.getElementById('cardTitle');
+            const profileBio = document.getElementById('profileBio');
+            const profileTraits = document.getElementById('profileTraits');
+            const profileInterests = document.getElementById('profileInterests');
+            const profileFacts = document.getElementById('profileFacts');
+            const profileLookingFor = document.getElementById('profileLookingFor');
+
+            if (currentIndex < images.length) {
+                const profile = images[currentIndex];
+                cardImage.src = profile.url;
+                cardTitle.textContent = profile.title;
+                profileBio.textContent = profile.bio;
+
+                // Render traits
+                profileTraits.innerHTML = profile.traits.map(t =>
+                    `<span class="trait">${t}</span>`
+                ).join('');
+
+                // Render interests
+                profileInterests.innerHTML = profile.interests.map(i =>
+                    `<span class="interest">${i}</span>`
+                ).join('');
+
+                // Render fun facts
+                profileFacts.innerHTML = profile.facts.map(f =>
+                    `<div class="fun-fact"><span class="fun-fact-icon">${f.icon}</span><span>${f.text}</span></div>`
+                ).join('');
+
+                // Render looking for
+                profileLookingFor.textContent = profile.lookingFor;
+
+                card.className = 'card';
+                card.style.transform = '';
+                card.scrollTop = 0;
+            }
+        }
+
+        function updateButtons() {
+            const btnLeft = document.getElementById('btnLeft');
+            const btnRight = document.getElementById('btnRight');
+            const texts = buttonTexts[buttonIndex % buttonTexts.length];
+            btnLeft.textContent = texts[0];
+            btnRight.textContent = texts[1];
+        }
+
+        function updateCounter() {
+            const counter = document.getElementById('counter');
+            counter.textContent = `${currentIndex + 1} / ${images.length}`;
+        }
+
+        function swipe(direction) {
+            if (currentIndex >= images.length) return;
+
+            const card = document.getElementById('card');
+
+            // Add swipe animation
+            card.classList.add(direction === 'left' ? 'swiping-left' : 'swiping-right');
+
+            // Show match popup
+            showMatchPopup();
+
+            // After animation, show next card
+            setTimeout(() => {
+                currentIndex++;
+                buttonIndex++;
+
+                if (currentIndex >= images.length) {
+                    showEndScreen();
+                } else {
+                    showCard();
+                    updateButtons();
+                    updateCounter();
+                }
+            }, 500);
+        }
+
+        function showMatchPopup() {
+            const popup = document.getElementById('matchPopup');
+            const matchText = document.getElementById('matchText');
+            const matchSubtext = document.getElementById('matchSubtext');
+
+            const msg = matchMessages[currentIndex % matchMessages.length];
+            matchText.textContent = msg.text;
+            matchSubtext.textContent = msg.subtext;
+
+            popup.classList.add('show');
+
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 800);
+        }
+
+        function showEndScreen() {
+            document.getElementById('cardContainer').style.display = 'none';
+            document.getElementById('buttons').style.display = 'none';
+            document.getElementById('counter').style.display = 'none';
+            document.getElementById('endScreen').style.display = 'block';
+        }
+
+        function restart() {
+            currentIndex = 0;
+            buttonIndex = 0;
+            document.getElementById('cardContainer').style.display = 'block';
+            document.getElementById('buttons').style.display = 'flex';
+            document.getElementById('counter').style.display = 'block';
+            document.getElementById('endScreen').style.display = 'none';
+            showCard();
+            updateButtons();
+            updateCounter();
+        }
+
+        // Touch/swipe support - only on image area
+        let startX = 0;
+        let startY = 0;
+        let currentX = 0;
+        let isDragging = false;
+        let isHorizontalSwipe = false;
+
+        const card = document.getElementById('card');
+        const imageWrapper = document.querySelector('.card-image-wrapper');
+
+        if (imageWrapper) imageWrapper.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+            isDragging = true;
+            isHorizontalSwipe = false;
+        }, { passive: true });
+
+        if (imageWrapper) imageWrapper.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            currentX = e.touches[0].clientX;
+            const currentY = e.touches[0].clientY;
+            const diffX = currentX - startX;
+            const diffY = currentY - startY;
+
+            // Determine if horizontal swipe
+            if (!isHorizontalSwipe && Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
+                isHorizontalSwipe = true;
+            }
+
+            if (isHorizontalSwipe) {
+                e.preventDefault();
+                card.style.transform = `translateX(${diffX}px) rotate(${diffX * 0.1}deg)`;
+            }
+        }, { passive: false });
+
+        if (imageWrapper) imageWrapper.addEventListener('touchend', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            const diff = currentX - startX;
+
+            if (isHorizontalSwipe && Math.abs(diff) > 100) {
+                swipe(diff > 0 ? 'right' : 'left');
+            } else {
+                card.style.transform = '';
+            }
+            isHorizontalSwipe = false;
+        }, { passive: true });
+
+        // Mouse drag support - only on image area
+        if (imageWrapper) imageWrapper.addEventListener('mousedown', (e) => {
+            startX = e.clientX;
+            isDragging = true;
+            card.style.cursor = 'grabbing';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            currentX = e.clientX;
+            const diff = currentX - startX;
+            card.style.transform = `translateX(${diff}px) rotate(${diff * 0.1}deg)`;
+        });
+
+        document.addEventListener('mouseup', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            card.style.cursor = 'grab';
+            const diff = currentX - startX;
+
+            if (Math.abs(diff) > 100) {
+                swipe(diff > 0 ? 'right' : 'left');
+            } else {
+                card.style.transform = '';
+            }
+        });
+
+        init();
+    </script>
+</body>
+</html>

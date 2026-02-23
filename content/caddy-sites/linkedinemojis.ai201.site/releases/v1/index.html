@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LinkedIn Emoji Decoder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Spline+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <!-- Privacy-friendly analytics by Plausible -->
+  <script async src="https://plausible.nomaitech.com/js/pa-s-kq_pGDuOdIWgE9b1oDn.js"></script>
+  <script>
+    window.plausible = window.plausible || function() { (plausible.q = plausible.q || []).push(arguments); };
+    plausible.init = plausible.init || function(i) { plausible.o = i || {}; };
+    plausible.init();
+  </script>
+  <style>
+    :root {
+      --ink: oklch(20% 0.03 265);
+      --paper: oklch(97% 0.02 95);
+      --dust: oklch(94% 0.02 95);
+      --accent: oklch(68% 0.14 35);
+      --accent-2: oklch(70% 0.12 220);
+      --muted: oklch(48% 0.03 260);
+      --grid: color-mix(in oklch, var(--ink), var(--paper) 92%);
+      --shadow: 0 18px 40px color-mix(in oklch, var(--ink), transparent 86%);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: radial-gradient(1200px 800px at 10% -20%, #f4e7d4 0%, transparent 60%),
+        radial-gradient(1000px 600px at 90% 10%, #dbe7f3 0%, transparent 55%),
+        var(--paper);
+      color: var(--ink);
+      font-family: "Spline Sans", "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: clamp(28px, 4vw, 56px);
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: clamp(20px, 4vw, 48px);
+      align-items: end;
+      margin-bottom: clamp(24px, 4vw, 40px);
+    }
+
+    h1 {
+      font-family: "Fraunces", "Times New Roman", serif;
+      font-size: clamp(2.4rem, 3.8vw, 4rem);
+      letter-spacing: -0.02em;
+      margin: 0 0 12px;
+    }
+
+    .lede {
+      font-size: clamp(1rem, 1.5vw, 1.2rem);
+      color: var(--muted);
+      margin: 0 0 10px;
+      max-width: 46ch;
+    }
+
+    .pill {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: color-mix(in oklch, var(--accent), var(--paper) 75%);
+      color: color-mix(in oklch, var(--accent), var(--ink) 30%);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .controls {
+      background: var(--dust);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 12px;
+    }
+
+    .controls label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    .controls input {
+      width: 100%;
+      border: 1px solid color-mix(in oklch, var(--ink), var(--paper) 88%);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 1rem;
+      background: var(--paper);
+      font-family: inherit;
+    }
+
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .legend div {
+      background: var(--paper);
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      border: 1px solid color-mix(in oklch, var(--ink), var(--paper) 90%);
+    }
+
+    .table {
+      background: var(--paper);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid color-mix(in oklch, var(--ink), var(--paper) 88%);
+    }
+
+    .table-header,
+    .row {
+      display: grid;
+      grid-template-columns: minmax(180px, 0.9fr) minmax(320px, 2fr);
+      gap: 0;
+      align-items: center;
+    }
+
+    .table-header {
+      background: linear-gradient(120deg, var(--ink), color-mix(in oklch, var(--ink), #3b5b8a 30%));
+      color: var(--paper);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+    }
+
+    .table-header div,
+    .row div {
+      padding: 16px 18px;
+    }
+
+    .row {
+      border-bottom: 1px solid color-mix(in oklch, var(--ink), var(--paper) 92%);
+    }
+
+    .row:nth-child(even) {
+      background: color-mix(in oklch, var(--dust), var(--paper) 60%);
+    }
+
+    .emoji-cell {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      font-weight: 600;
+    }
+
+    .emoji {
+      font-size: 1.6rem;
+      width: 2.4rem;
+      text-align: center;
+    }
+
+    .meaning {
+      color: color-mix(in oklch, var(--ink), var(--paper) 18%);
+      font-size: 1rem;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: color-mix(in oklch, var(--accent-2), var(--paper) 75%);
+      color: color-mix(in oklch, var(--accent-2), var(--ink) 30%);
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      margin-left: auto;
+    }
+
+    .note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .empty {
+      padding: 36px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    @media (max-width: 920px) {
+      header {
+        grid-template-columns: 1fr;
+      }
+
+      .legend {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .table-header,
+      .row {
+        grid-template-columns: 1fr;
+      }
+
+      .tag {
+        margin-left: 0;
+      }
+
+      .row div {
+        padding: 12px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div>
+        <span class="pill">LinkedIn Emoji Decoder</span>
+        <h1>Translate the unspoken signals in profile emojis.</h1>
+        <p class="lede">
+          Two columns, zero fluff. Left side shows the standard emoji, right side captures the most common
+          LinkedIn "meaning" when that emoji shows up in a profile headline or about section.
+        </p>
+      </div>
+      <div class="controls">
+        <label for="filter">Filter emojis or meanings</label>
+        <input id="filter" type="search" placeholder="Try: rocket, hiring, health, global" />
+        <div class="legend">
+          <div>🧠 <strong>Signal</strong>: what they want you to notice first.</div>
+          <div>⚡ <strong>Tone</strong>: the vibe it tries to inject.</div>
+          <div>🎯 <strong>Use</strong>: how it is usually meant to land.</div>
+        </div>
+      </div>
+    </header>
+
+    <section class="table" aria-live="polite">
+      <div class="table-header">
+        <div>Emoji</div>
+        <div>LinkedIn meaning</div>
+      </div>
+      <div id="rows"></div>
+      <div id="empty" class="empty" hidden>Nothing matches that filter. Try a different word.</div>
+    </section>
+
+    <p class="note">Meanings are based on common LinkedIn usage patterns, not official definitions.</p>
+  </div>
+
+  <script>
+    const DATA = [
+      { emoji: "🚀", label: "Rocket", meaning: "Signal: hypergrowth or launch energy. Tone: ambitious. Use: startup momentum." },
+      { emoji: "💡", label: "Light bulb", meaning: "Signal: idea-driven thinker. Tone: inventive. Use: strategy, innovation." },
+      { emoji: "🔥", label: "Fire", meaning: "Signal: top performer. Tone: intense. Use: sales or marketing swagger." },
+      { emoji: "🎯", label: "Bullseye", meaning: "Signal: focus on outcomes. Tone: precise. Use: KPIs, targets, OKRs." },
+      { emoji: "📈", label: "Chart up", meaning: "Signal: growth metrics. Tone: data-first. Use: revenue, pipeline, ROI." },
+      { emoji: "🤝", label: "Handshake", meaning: "Signal: partnership mindset. Tone: collaborative. Use: BD, alliances." },
+      { emoji: "🌍", label: "Globe", meaning: "Signal: global reach. Tone: inclusive. Use: international teams, impact." },
+      { emoji: "🧠", label: "Brain", meaning: "Signal: deep expertise. Tone: thoughtful. Use: research, strategy, AI." },
+      { emoji: "⚡", label: "High voltage", meaning: "Signal: speed and energy. Tone: fast-paced. Use: ops, execution." },
+      { emoji: "🏆", label: "Trophy", meaning: "Signal: awards or wins. Tone: competitive. Use: recognition, rankings." },
+      { emoji: "🎙️", label: "Microphone", meaning: "Signal: public speaking. Tone: confident. Use: events, podcasts." },
+      { emoji: "✍️", label: "Writing hand", meaning: "Signal: storytelling. Tone: articulate. Use: content, copywriting." },
+      { emoji: "🧩", label: "Puzzle", meaning: "Signal: problem solver. Tone: curious. Use: product, engineering." },
+      { emoji: "🛠️", label: "Tools", meaning: "Signal: builder. Tone: practical. Use: systems, operations, shipping." },
+      { emoji: "📣", label: "Megaphone", meaning: "Signal: evangelist. Tone: loud. Use: marketing, community." },
+      { emoji: "🔍", label: "Magnifier", meaning: "Signal: detail orientation. Tone: investigative. Use: audits, QA." },
+      { emoji: "💬", label: "Speech", meaning: "Signal: open communicator. Tone: friendly. Use: community or CX." },
+      { emoji: "👥", label: "Silhouettes", meaning: "Signal: people-first. Tone: team-focused. Use: HR, leadership." },
+      { emoji: "🧭", label: "Compass", meaning: "Signal: guiding direction. Tone: steady. Use: leadership, strategy." },
+      { emoji: "🎨", label: "Palette", meaning: "Signal: creative taste. Tone: aesthetic. Use: design roles." },
+      { emoji: "📝", label: "Memo", meaning: "Signal: documentation. Tone: clear. Use: PM, operations." },
+      { emoji: "🌱", label: "Seedling", meaning: "Signal: growth mindset. Tone: nurturing. Use: early-stage, coaching." },
+      { emoji: "🧪", label: "Test tube", meaning: "Signal: experimentation. Tone: scientific. Use: labs, R&D." },
+      { emoji: "🧑‍💻", label: "Coder", meaning: "Signal: hands-on builder. Tone: technical. Use: engineering." },
+      { emoji: "📊", label: "Bar chart", meaning: "Signal: analytics. Tone: evidence-led. Use: BI, insights." },
+      { emoji: "🤖", label: "Robot", meaning: "Signal: AI focus. Tone: futuristic. Use: automation, ML." },
+      { emoji: "🧵", label: "Thread", meaning: "Signal: narrative building. Tone: long-form. Use: content strategy." },
+      { emoji: "⚙️", label: "Gear", meaning: "Signal: systems thinker. Tone: methodical. Use: process, ops." },
+      { emoji: "✅", label: "Check mark", meaning: "Signal: reliable delivery. Tone: confident. Use: milestones." },
+      { emoji: "📚", label: "Books", meaning: "Signal: continuous learning. Tone: studious. Use: education, training." },
+      { emoji: "🧑‍🏫", label: "Teacher", meaning: "Signal: mentor. Tone: supportive. Use: enablement, coaching." },
+      { emoji: "🏗️", label: "Crane", meaning: "Signal: building at scale. Tone: structural. Use: infrastructure." },
+      { emoji: "🧯", label: "Fire extinguisher", meaning: "Signal: crisis solver. Tone: calm. Use: incident response." },
+      { emoji: "🧲", label: "Magnet", meaning: "Signal: talent attraction. Tone: magnetic. Use: recruiting." },
+      { emoji: "🫶", label: "Heart hands", meaning: "Signal: community care. Tone: warm. Use: social impact." },
+      { emoji: "❤️", label: "Heart", meaning: "Signal: passion. Tone: heartfelt. Use: mission alignment." },
+      { emoji: "🏁", label: "Finish flag", meaning: "Signal: execution. Tone: decisive. Use: delivery, shipping." },
+      { emoji: "🔗", label: "Link", meaning: "Signal: connective work. Tone: integrative. Use: partnerships, APIs." },
+      { emoji: "💼", label: "Briefcase", meaning: "Signal: professional services. Tone: polished. Use: consulting." },
+      { emoji: "👋", label: "Wave", meaning: "Signal: approachable. Tone: friendly. Use: networking." },
+      { emoji: "🤔", label: "Thinking", meaning: "Signal: strategic. Tone: reflective. Use: thought leadership." },
+      { emoji: "💥", label: "Collision", meaning: "Signal: bold impact. Tone: punchy. Use: marketing hooks." },
+      { emoji: "🔒", label: "Lock", meaning: "Signal: security. Tone: trustworthy. Use: compliance, privacy." },
+      { emoji: "🗂️", label: "Card index", meaning: "Signal: organized. Tone: tidy. Use: operations." },
+      { emoji: "🧾", label: "Receipt", meaning: "Signal: financial accuracy. Tone: precise. Use: finance." },
+      { emoji: "📌", label: "Pin", meaning: "Signal: priority. Tone: anchored. Use: key points." },
+      { emoji: "💰", label: "Money bag", meaning: "Signal: revenue-driven. Tone: direct. Use: sales targets." },
+      { emoji: "🫱", label: "Offering hand", meaning: "Signal: service mindset. Tone: helpful. Use: customer success." },
+      { emoji: "🫧", label: "Bubbles", meaning: "Signal: fresh start. Tone: playful. Use: rebrand, clean slate." },
+      { emoji: "🎛️", label: "Control knobs", meaning: "Signal: optimization. Tone: precise. Use: product tuning." },
+      { emoji: "🛰️", label: "Satellite", meaning: "Signal: advanced tech. Tone: ambitious. Use: deep tech." },
+      { emoji: "🧱", label: "Brick", meaning: "Signal: foundations. Tone: solid. Use: platform work." },
+      { emoji: "🗺️", label: "Map", meaning: "Signal: market navigation. Tone: exploratory. Use: growth strategy." },
+      { emoji: "🤍", label: "White heart", meaning: "Signal: integrity. Tone: calm. Use: values or culture." },
+      { emoji: "🏢", label: "Office", meaning: "Signal: enterprise. Tone: established. Use: B2B focus." },
+      { emoji: "🚧", label: "Construction", meaning: "Signal: building in public. Tone: honest. Use: WIP update." },
+      { emoji: "📮", label: "Mailbox", meaning: "Signal: open to outreach. Tone: accessible. Use: contact prompt." },
+      { emoji: "🔔", label: "Bell", meaning: "Signal: updates. Tone: alert. Use: newsletter or announcements." },
+      { emoji: "🎓", label: "Graduation", meaning: "Signal: credentials. Tone: qualified. Use: education, certifications." },
+      { emoji: "🧳", label: "Luggage", meaning: "Signal: relocation. Tone: open. Use: new city or travel." },
+      { emoji: "📍", label: "Location pin", meaning: "Signal: geography. Tone: grounded. Use: region or timezone." },
+      { emoji: "🕊️", label: "Dove", meaning: "Signal: calm leadership. Tone: peaceful. Use: mediation, DEI." },
+      { emoji: "🌟", label: "Star", meaning: "Signal: standout. Tone: optimistic. Use: highlight wins." },
+      { emoji: "🙌", label: "Raised hands", meaning: "Signal: celebration. Tone: upbeat. Use: shout-outs." },
+      { emoji: "🎉", label: "Party popper", meaning: "Signal: milestone. Tone: celebratory. Use: launch or hire." },
+      { emoji: "💫", label: "Dizzy", meaning: "Signal: momentum. Tone: energetic. Use: major change." },
+      { emoji: "🧑‍🚀", label: "Astronaut", meaning: "Signal: bold explorer. Tone: visionary. Use: frontier tech." },
+      { emoji: "🧔‍♀️", label: "Person with beard", meaning: "Signal: authentic. Tone: personal. Use: humanizing profile." },
+      { emoji: "🧑‍🤝‍🧑", label: "People holding hands", meaning: "Signal: community. Tone: inclusive. Use: employee groups." },
+      { emoji: "📞", label: "Phone", meaning: "Signal: open to call. Tone: direct. Use: sales development." },
+      { emoji: "📥", label: "Inbox", meaning: "Signal: availability. Tone: responsive. Use: DM prompt." },
+      { emoji: "🧑‍⚕️", label: "Health worker", meaning: "Signal: healthcare focus. Tone: caring. Use: medtech." },
+      { emoji: "🏥", label: "Hospital", meaning: "Signal: healthcare industry. Tone: professional. Use: hospital systems." },
+      { emoji: "♻️", label: "Recycle", meaning: "Signal: sustainability. Tone: responsible. Use: climate or ESG." },
+      { emoji: "🌿", label: "Herb", meaning: "Signal: eco-friendly. Tone: natural. Use: green ops." },
+      { emoji: "🧘", label: "Meditation", meaning: "Signal: wellbeing. Tone: balanced. Use: culture or HR." },
+      { emoji: "🤲", label: "Palms", meaning: "Signal: giving back. Tone: generous. Use: philanthropy." },
+      { emoji: "🛡️", label: "Shield", meaning: "Signal: protection. Tone: safe. Use: security, trust." },
+      { emoji: "🧑‍🔬", label: "Scientist", meaning: "Signal: research-led. Tone: credible. Use: R&D roles." },
+      { emoji: "🧑‍🎓", label: "Graduate", meaning: "Signal: early career. Tone: eager. Use: new grad." },
+      { emoji: "🏅", label: "Medal", meaning: "Signal: recognition. Tone: proud. Use: award highlight." },
+      { emoji: "🤗", label: "Hugging", meaning: "Signal: warm leadership. Tone: approachable. Use: culture." },
+      { emoji: "🗣️", label: "Speaking head", meaning: "Signal: thought leadership. Tone: vocal. Use: public speaker." }
+    ];
+
+    const rows = document.getElementById("rows");
+    const filter = document.getElementById("filter");
+    const empty = document.getElementById("empty");
+
+    const render = (query = "") => {
+      const normalized = query.trim().toLowerCase();
+      const filtered = DATA.filter((item) => {
+        if (!normalized) return true;
+        return (
+          item.emoji.toLowerCase().includes(normalized) ||
+          item.label.toLowerCase().includes(normalized) ||
+          item.meaning.toLowerCase().includes(normalized)
+        );
+      });
+
+      rows.innerHTML = "";
+      if (filtered.length === 0) {
+        empty.hidden = false;
+        return;
+      }
+      empty.hidden = true;
+
+      filtered.forEach((item, index) => {
+        const row = document.createElement("div");
+        row.className = "row";
+
+        const left = document.createElement("div");
+        left.className = "emoji-cell";
+        left.innerHTML = `
+          <span class="emoji">${item.emoji}</span>
+          <span>${item.label}</span>
+          <span class="tag">#${String(index + 1).padStart(2, "0")}</span>
+        `;
+
+        const right = document.createElement("div");
+        right.className = "meaning";
+        right.textContent = item.meaning;
+
+        row.appendChild(left);
+        row.appendChild(right);
+        rows.appendChild(row);
+      });
+    };
+
+    filter.addEventListener("input", (event) => render(event.target.value));
+    render();
+  </script>
+</body>
+</html>

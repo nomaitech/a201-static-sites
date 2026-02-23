@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASCII Emoticon Quiz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #080812;
+      --surface: #0e0e1c;
+      --card:    #13132a;
+      --border:  rgba(255,255,255,0.07);
+      --purple:  #7c3aed;
+      --cyan:    #06b6d4;
+      --green:   #10b981;
+      --red:     #ef4444;
+      --text:    #f1f5f9;
+      --muted:   #64748b;
+      --soft:    #94a3b8;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    /* Ambient glow background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -30%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #app {
+      width: 100%;
+      max-width: 480px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ─── Screens ─── */
+    .screen { display: none; flex-direction: column; gap: 20px; }
+    .screen.active { display: flex; }
+
+    /* ─── Start Screen ─── */
+    .logo {
+      text-align: center;
+      font-size: 2.6rem;
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #a78bfa 0%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      text-align: center;
+      color: var(--soft);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .preview-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .preview-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(124,58,237,0.12) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .preview-emoticon {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.8rem;
+      color: #c4b5fd;
+      margin-bottom: 16px;
+      word-break: break-all;
+    }
+
+    .preview-hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    .preview-answer {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16,185,129,0.12);
+      border: 1px solid rgba(16,185,129,0.25);
+      border-radius: 30px;
+      padding: 6px 14px;
+      font-size: 0.9rem;
+      color: #6ee7b7;
+      font-weight: 500;
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 12px;
+      text-align: center;
+    }
+
+    .stat-box {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 12px;
+    }
+
+    .stat-num {
+      font-size: 1.6rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #a78bfa, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ─── Buttons ─── */
+    .btn {
+      width: 100%;
+      padding: 15px 24px;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.2s, border-color 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #7c3aed 0%, #0891b2 100%);
+      color: white;
+      font-size: 1.05rem;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(124,58,237,0.35);
+    }
+
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-ghost {
+      background: var(--card);
+      color: var(--soft);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      background: var(--surface);
+      border-color: rgba(255,255,255,0.13);
+      color: var(--text);
+    }
+
+    /* ─── Quiz Screen ─── */
+    .quiz-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .score-badge {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-weight: 600;
+      color: var(--soft);
+      font-size: 0.82rem;
+    }
+
+    .progress-track {
+      height: 5px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #7c3aed, #06b6d4);
+      border-radius: 99px;
+      transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .question-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 36px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      min-height: 160px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .question-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(124,58,237,0.1) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .question-eyebrow {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+    }
+
+    .emoticon-display {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(1rem, 5vw, 1.9rem);
+      color: #e2e8f0;
+      white-space: pre-wrap;
+      word-break: break-all;
+      line-height: 1.5;
+      max-width: 100%;
+    }
+
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 18px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s, transform 0.15s;
+      text-align: left;
+      font-family: 'Space Grotesk', sans-serif;
+      width: 100%;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: rgba(124,58,237,0.5);
+      background: rgba(124,58,237,0.08);
+      transform: translateX(3px);
+    }
+
+    .option-btn:active:not(:disabled) { transform: translateX(1px); }
+    .option-btn:disabled { cursor: default; }
+
+    .opt-emoji {
+      font-size: 1.9rem;
+      width: 40px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .opt-text { flex: 1; }
+
+    .opt-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      display: block;
+    }
+
+    .option-btn.correct {
+      border-color: var(--green);
+      background: rgba(16,185,129,0.12);
+    }
+
+    .option-btn.wrong {
+      border-color: var(--red);
+      background: rgba(239,68,68,0.08);
+    }
+
+    .option-btn.correct .opt-name { color: #6ee7b7; }
+    .option-btn.wrong .opt-name { color: #fca5a5; }
+
+    .feedback-row {
+      min-height: 26px;
+      text-align: center;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+
+    .feedback-row.correct { color: var(--green); }
+    .feedback-row.wrong   { color: var(--red); }
+
+    /* ─── Result Screen ─── */
+    .result-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 36px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .result-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(124,58,237,0.13) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .result-eyebrow {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .score-big {
+      font-size: 5.5rem;
+      font-weight: 700;
+      line-height: 1;
+      background: linear-gradient(135deg, #a78bfa 0%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .score-denom {
+      font-size: 2rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .score-sublabel {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 4px;
+      margin-bottom: 14px;
+    }
+
+    .score-msg {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .result-dots {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .rdot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .rdot.correct { background: var(--green); }
+    .rdot.wrong   { background: var(--red); }
+
+    .btn-copy {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 15px 24px;
+      background: transparent;
+      border: 2px solid rgba(124,58,237,0.5);
+      border-radius: 14px;
+      color: #a78bfa;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, color 0.2s;
+    }
+
+    .btn-copy:hover {
+      border-color: #7c3aed;
+      background: rgba(124,58,237,0.1);
+    }
+
+    .btn-copy.copied {
+      border-color: var(--green);
+      color: #6ee7b7;
+    }
+
+    /* ─── Utilities ─── */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in { animation: fadeIn 0.25s ease forwards; }
+
+    @keyframes pop {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
+
+    .pop { animation: pop 0.3s ease; }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ── Start Screen ── -->
+  <div class="screen active" id="screen-start">
+    <div class="logo">ASCII Emoticon Quiz</div>
+    <p class="tagline">Can you decode these text emoticons? Pick the right mood for each one!</p>
+
+    <div class="preview-card">
+      <div class="preview-hint">For example, what does this mean?</div>
+      <div class="preview-emoticon">( ͡° ͜ʖ ͡°)</div>
+      <div class="preview-answer">😏 It's a Flirty face!</div>
+    </div>
+
+    <div class="stats-row" id="stats-row">
+      <div class="stat-box">
+        <div class="stat-num" id="stat-emoticons">—</div>
+        <div class="stat-label">Emoticons</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="stat-cats">—</div>
+        <div class="stat-label">Categories</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">10</div>
+        <div class="stat-label">Questions</div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="start-btn" onclick="startQuiz()">Start Quiz →</button>
+  </div>
+
+  <!-- ── Quiz Screen ── -->
+  <div class="screen" id="screen-quiz">
+    <div class="quiz-header">
+      <span id="q-label">Question 1 of 10</span>
+      <span class="score-badge" id="score-badge">Score: 0</span>
+    </div>
+
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-eyebrow">What does this emoticon mean?</div>
+      <div class="emoticon-display" id="emoticon-display"></div>
+    </div>
+
+    <div class="options-grid" id="options-grid"></div>
+
+    <div class="feedback-row" id="feedback"></div>
+  </div>
+
+  <!-- ── Result Screen ── -->
+  <div class="screen" id="screen-result">
+    <div class="result-card">
+      <div class="result-eyebrow">Your Score</div>
+      <div>
+        <span class="score-big" id="final-score">0</span><span class="score-denom">/10</span>
+      </div>
+      <div class="score-sublabel">emoticons decoded correctly</div>
+      <div class="score-msg" id="score-msg"></div>
+      <div class="result-dots" id="result-dots"></div>
+    </div>
+
+    <button class="btn-copy" id="copy-btn" onclick="copyResult()">
+      <span>📋</span><span id="copy-label">Copy my result</span>
+    </button>
+
+    <button class="btn btn-primary" onclick="startQuiz()">Play Again →</button>
+  </div>
+
+</div>
+
+<script>
+  // ── Category emoji mapping ──────────────────────────────────────────────────
+  const CAT_EMOJI = {
+    'flirty':         '😏',
+    'kiss':           '💋',
+    'christmas':      '🎅',
+    'run':            '🏃',
+    'wink':           '😉',
+    'sunglasses':     '😎',
+    'dance':          '💃',
+    'happy':          '😀',
+    'love':           '❤️',
+    'shrug':          '🤷',
+    'dongers':        '🎭',
+    'angry':          '😠',
+    'middle-finger':  '🖕',
+    'hiding':         '🙈',
+    'devil':          '😈',
+    'disapproval':    '😒',
+    'dog':            '🐕',
+    'cat':            '🐱',
+    'bear':           '🐻',
+    'spider':         '🕷️',
+    'cry':            '😭',
+    'eating':         '😋',
+    'flip-table':     '😤',
+    'vomit':          '🤮',
+    'good-night':     '🌙',
+    'good-morning':   '☀️',
+    'gun':            '🔫',
+    'sword':          '⚔️',
+    'cute':           '🥰',
+    'laughing':       '😂',
+    'sad':            '😢',
+    'surprised':      '😲',
+    'shy':            '😳',
+    'blush':          '😊',
+    'nervous':        '😬',
+    'confused':       '😕',
+    'depressed':      '😞',
+    'thinking':       '🤔',
+    'thank-you':      '🙏',
+    'scared':         '😨',
+    'hello':          '👋',
+    'helpless':       '😣',
+    'thumbs-up':      '👍',
+    'please':         '🙌',
+  };
+
+  const SCORE_MESSAGES = [
+    [0,  3,  "Keep practicing! 😅"],
+    [4,  5,  "Getting there! 🙂"],
+    [6,  7,  "Not bad at all! 😎"],
+    [8,  9,  "Really good! 🌟"],
+    [10, 10, "Perfect score! 🏆"],
+  ];
+
+  // ── State ───────────────────────────────────────────────────────────────────
+  let rawData    = null;   // full JSON
+  let categories = [];     // slugs with enough ASCII emoticons
+  let catPools   = {};     // slug → filtered emoticon array
+  let questions  = [];     // [{emoticon, cat, options:[slug,slug,slug]}]
+  let current    = 0;
+  let score      = 0;
+  let answers    = [];     // true/false
+
+  // ── Helpers ─────────────────────────────────────────────────────────────────
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function pick(arr, n) { return shuffle(arr).slice(0, n); }
+
+  // An emoticon is "ASCII art" if it contains at least one typical
+  // kaomoji character (parenthesis, underscore, caret, etc.) beyond pure emoji.
+  function isAsciiArt(str) {
+    return /[()_\-=|/\\[\]{};:'",.!@#$%^&*+~`<>^°ʖ͜͡ˆ˘˙˚˛˜˝]/.test(str)
+        || (str.length > 3 && !/^\p{Emoji}+\s*$/u.test(str));
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById(id);
+    el.classList.add('active', 'fade-in');
+    setTimeout(() => el.classList.remove('fade-in'), 300);
+  }
+
+  // ── Data loading ─────────────────────────────────────────────────────────────
+  async function loadData() {
+    if (rawData) return;
+    const res  = await fetch('textemoji_data.json');
+    rawData    = await res.json();
+
+    // Build per-category pools of ASCII-only emoticons
+    for (const [slug, cat] of Object.entries(rawData)) {
+      const pool = cat.emoticons.filter(isAsciiArt);
+      if (pool.length >= 1) {
+        catPools[slug] = pool;
+      }
+    }
+    categories = Object.keys(catPools);
+
+    // Update stat counters on start screen
+    const totalEmoticons = Object.values(catPools).reduce((s, p) => s + p.length, 0);
+    document.getElementById('stat-emoticons').textContent = totalEmoticons;
+    document.getElementById('stat-cats').textContent      = categories.length;
+  }
+
+  // ── Quiz logic ───────────────────────────────────────────────────────────────
+  function buildQuestions() {
+    const cats = shuffle(categories);
+    questions  = [];
+
+    for (let i = 0; i < 10; i++) {
+      const cat      = cats[i % cats.length];
+      const pool     = catPools[cat];
+      const emoticon = pool[Math.floor(Math.random() * pool.length)];
+      const wrongs   = pick(categories.filter(c => c !== cat), 2);
+      const options  = shuffle([cat, ...wrongs]);
+      questions.push({ emoticon, cat, options });
+    }
+  }
+
+  async function startQuiz() {
+    await loadData();
+    buildQuestions();
+    current = 0;
+    score   = 0;
+    answers = [];
+    showScreen('screen-quiz');
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    const q = questions[current];
+
+    document.getElementById('q-label').textContent      = `Question ${current + 1} of 10`;
+    document.getElementById('score-badge').textContent   = `Score: ${score}`;
+    document.getElementById('progress-fill').style.width = `${(current / 10) * 100}%`;
+    document.getElementById('emoticon-display').textContent = q.emoticon;
+    document.getElementById('feedback').textContent      = '';
+    document.getElementById('feedback').className        = 'feedback-row';
+
+    const grid = document.getElementById('options-grid');
+    grid.innerHTML = '';
+
+    q.options.forEach(slug => {
+      const btn       = document.createElement('button');
+      btn.className   = 'option-btn';
+      btn.dataset.slug = slug;
+
+      const name = rawData[slug]?.name ?? slug;
+      const emoji = CAT_EMOJI[slug] ?? '❓';
+
+      btn.innerHTML = `
+        <span class="opt-emoji">${emoji}</span>
+        <span class="opt-text">
+          <span class="opt-name">${name}</span>
+        </span>`;
+
+      btn.addEventListener('click', () => handleAnswer(slug, q.cat));
+      grid.appendChild(btn);
+    });
+  }
+
+  function handleAnswer(chosen, correct) {
+    const isCorrect = chosen === correct;
+
+    if (isCorrect) { score++; answers.push(true); }
+    else           { answers.push(false); }
+
+    // Highlight buttons
+    document.querySelectorAll('#options-grid .option-btn').forEach(btn => {
+      btn.disabled = true;
+      if (btn.dataset.slug === correct) btn.classList.add('correct');
+      else if (btn.dataset.slug === chosen) btn.classList.add('wrong');
+    });
+
+    // Feedback text
+    const fb = document.getElementById('feedback');
+    if (isCorrect) {
+      fb.textContent = '✓ Correct!';
+      fb.className   = 'feedback-row correct';
+    } else {
+      const correctName = rawData[correct]?.name ?? correct;
+      fb.textContent = `✗ It was ${correctName}`;
+      fb.className   = 'feedback-row wrong';
+    }
+
+    document.getElementById('score-badge').textContent = `Score: ${score}`;
+
+    setTimeout(() => {
+      current++;
+      if (current >= 10) showResult();
+      else renderQuestion();
+    }, 1300);
+  }
+
+  function showResult() {
+    document.getElementById('final-score').textContent = score;
+    document.getElementById('progress-fill').style.width = '100%';
+
+    const msg = SCORE_MESSAGES.find(([lo, hi]) => score >= lo && score <= hi);
+    document.getElementById('score-msg').textContent = msg ? msg[2] : '';
+
+    const dots = document.getElementById('result-dots');
+    dots.innerHTML = answers
+      .map(a => `<div class="rdot ${a ? 'correct' : 'wrong'}"></div>`)
+      .join('');
+
+    document.getElementById('copy-label').textContent = 'Copy my result';
+    document.getElementById('copy-btn').classList.remove('copied');
+
+    showScreen('screen-result');
+  }
+
+  function copyResult() {
+    const dots  = answers.map(a => a ? '🟢' : '🔴').join('');
+    const text  = [
+      `ASCII Emoticon Quiz 🎭`,
+      `Score: ${score}/10`,
+      dots,
+      `Can you beat me? → textemoticonquiz.ai201.site`,
+    ].join('\n');
+
+    const btn   = document.getElementById('copy-btn');
+    const label = document.getElementById('copy-label');
+
+    function onCopied() {
+      label.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        label.textContent = 'Copy my result';
+        btn.classList.remove('copied');
+      }, 2500);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(onCopied);
+    } else {
+      // Fallback for HTTP / older browsers
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      onCopied();
+    }
+  }
+</script>
+</body>
+</html>
