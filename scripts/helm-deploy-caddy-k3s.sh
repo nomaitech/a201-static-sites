@@ -24,10 +24,6 @@ if [[ ${#hosts[@]} -eq 0 ]]; then
   exit 1
 fi
 
-if [[ -z "$existing_claim" ]]; then
-  existing_claim="$(kubectl get pvc -n "$namespace" -l app.kubernetes.io/instance="$release" -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)"
-fi
-
 helm_args=(
   helm
   upgrade --install "$release" ./helm/shared-static-caddy
@@ -57,5 +53,7 @@ echo "Content root: $content_root"
 echo "Fullname override: $fullname_override"
 if [[ -n "$existing_claim" ]]; then
   echo "Existing PVC: $existing_claim"
+else
+  echo "Existing PVC: <chart-managed>"
 fi
 echo "Hosts: ${hosts[*]}"
