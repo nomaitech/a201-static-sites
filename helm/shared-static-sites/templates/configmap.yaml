@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "shared-static-sites.fullname" . }}-nginx
+  labels:
+    {{- include "shared-static-sites.labels" . | nindent 4 }}
+data:
+  nginx.conf: |
+    worker_processes auto;
+    error_log /var/log/nginx/error.log warn;
+    pid /var/run/nginx.pid;
+
+    events {
+      worker_connections 1024;
+    }
+
+    http {
+      include /etc/nginx/mime.types;
+      default_type application/octet-stream;
+      sendfile on;
+      keepalive_timeout 65;
+      include /etc/nginx/conf.d/*.conf;
+    }
+  sites.conf: |
+    server {
+      listen 80 default_server;
+      server_name _;
+      return 404;
+    }
+{{- range $site := .Values.sites }}
+
+    server {
+      listen 80;
+      server_name {{ join " " $site.hosts }};
+      root /srv/sites/{{ $site.name }}/current;
+      index index.html;
+      location / { try_files $uri $uri/ =404; }
+    }
+{{- end }}
+

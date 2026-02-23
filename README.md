@@ -77,3 +77,57 @@ In production, replace manual copy with a deploy job or object storage sync and 
 - Site assets stored outside the image
 - Content deploys do not require rolling the deployment
 - One site can be updated without impacting others
+
+## Actual k3s + Helm workflow (recommended for your cluster)
+
+The fixed `nomaitech/web-app` chart is great for simple single-site images, but it does not expose PVC/extra-volume mounts needed for this Option 2 pattern.
+
+- `helm show values` for `web-app-0.0.4` only exposes image/service/resources/ingress values
+- No PVC mount support means you cannot mount `/srv/sites` for shared external content
+
+This repo includes a small local Helm chart that keeps the Option 2 behavior while still using Helm for deploys.
+
+### Files for k3s Helm deploy
+
+- `Dockerfile`: thin nginx image for `pdr.jonbesga.com` (config/content mounted at runtime)
+- `helm/shared-static-sites`: local Helm chart (Deployment + PVC + Ingress + nginx ConfigMap)
+- `scripts/build-and-push-image.sh`: builds/pushes image tagged with Git SHA
+- `scripts/helm-deploy-k3s.sh`: Helm deploy to namespace `$USER` (default)
+- `scripts/k3s-sync-content.sh`: seeds/syncs `content/sites` into the chart PVC
+- `scripts/k3s-publish-site.sh`: publishes one site into the PVC with atomic symlink switch
+
+### Deploy to Jon's k3s cluster
+
+1. Build and push the image (tag = current Git SHA):
+
+```bash
+./scripts/build-and-push-image.sh
+```
+
+2. Deploy with Helm to your namespace (defaults to `jon` via `$USER`):
+
+```bash
+HELLO1_HOST=hello1.ai201.site \
+HELLO2_HOST=hello2.ai201.site \
+./scripts/helm-deploy-k3s.sh
+```
+
+3. Seed the PVC with site content:
+
+```bash
+./scripts/k3s-sync-content.sh
+```
+
+### Update one site later (without restarting nginx)
+
+Publish one site build directly into the shared PVC and switch only that site's `current` symlink:
+
+```bash
+./scripts/k3s-publish-site.sh hello1 /path/to/new/hello1-build
+```
+
+Then verify from the running deployment:
+
+```bash
+kubectl exec -n "$USER" deploy/shared-static-sites-shared-static-sites -- ls -l /srv/sites/hello1
+```
