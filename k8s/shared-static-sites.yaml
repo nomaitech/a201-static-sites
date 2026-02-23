@@ -1,0 +1,150 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: shared-static-demo
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: shared-static-demo
+data:
+  nginx.conf: |
+    worker_processes auto;
+    error_log /var/log/nginx/error.log warn;
+    pid /var/run/nginx.pid;
+
+    events {
+      worker_connections 1024;
+    }
+
+    http {
+      include /etc/nginx/mime.types;
+      default_type application/octet-stream;
+      sendfile on;
+      keepalive_timeout 65;
+      include /etc/nginx/conf.d/*.conf;
+    }
+  sites.conf: |
+    server {
+      listen 80 default_server;
+      server_name _;
+      return 404;
+    }
+
+    server {
+      listen 80;
+      server_name hello1.example.test;
+      root /srv/sites/hello1/current;
+      index index.html;
+      location / { try_files $uri $uri/ =404; }
+    }
+
+    server {
+      listen 80;
+      server_name hello2.example.test;
+      root /srv/sites/hello2/current;
+      index index.html;
+      location / { try_files $uri $uri/ =404; }
+    }
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sites-content
+  namespace: shared-static-demo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: local-path
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shared-nginx
+  namespace: shared-static-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: shared-nginx
+  template:
+    metadata:
+      labels:
+        app: shared-nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+              httpHeaders:
+                - name: Host
+                  value: hello1.example.test
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+              readOnly: true
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/sites.conf
+              subPath: sites.conf
+              readOnly: true
+            - name: sites-content
+              mountPath: /srv/sites
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config
+        - name: sites-content
+          persistentVolumeClaim:
+            claimName: sites-content
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shared-nginx
+  namespace: shared-static-demo
+spec:
+  selector:
+    app: shared-nginx
+  ports:
+    - port: 80
+      targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: shared-static-sites
+  namespace: shared-static-demo
+spec:
+  rules:
+    - host: hello1.example.test
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: shared-nginx
+                port:
+                  number: 80
+    - host: hello2.example.test
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: shared-nginx
+                port:
+                  number: 80
