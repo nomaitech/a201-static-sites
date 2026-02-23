@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Couple Point Shop</title>
+    <meta name="description" content="A pixel videogame-style point shop for redeeming partner perks." />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
+    <script type="module" crossorigin src="/assets/index-CzMHrmen.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-jGWg__ZL.css">
+  </head>
+  <body>
+    <div class="crt" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand__mark" aria-hidden="true">
+          <span class="px px--a"></span>
+          <span class="px px--b"></span>
+          <span class="px px--c"></span>
+        </div>
+        <div>
+          <div class="brand__title">Couple Point Shop</div>
+          <div class="brand__sub">Spend points. Claim cute. Collect memories.</div>
+        </div>
+      </div>
+
+      <div class="topbar__actions">
+        <button class="btn btn--ghost" id="btnOpenSettings" type="button" aria-haspopup="dialog">
+          Settings
+        </button>
+        <a class="btn btn--ghost" href="#inventory" aria-label="Jump to shop inventory">Inventory</a>
+      </div>
+    </header>
+
+    <main class="screen" id="app">
+      <section class="panel wallet" aria-labelledby="walletTitle">
+        <div class="panel__cap">
+          <h2 class="panel__title" id="walletTitle">Your Wallet</h2>
+          <div class="panel__meta">Save file: <span id="saveName">PLAYER 1</span></div>
+        </div>
+
+        <div class="wallet__core">
+          <div class="points">
+            <div class="points__label">POINTS</div>
+            <div class="points__value" id="pointsValue">0</div>
+          </div>
+
+          <div class="quick" role="group" aria-label="Quick actions">
+            <button class="btn btn--primary" id="btnEarn" type="button">Earn +25</button>
+            <button class="btn btn--gold" id="btnGift" type="button">Gift +100</button>
+            <button class="btn btn--danger" id="btnReset" type="button">Reset Save</button>
+          </div>
+
+          <div class="hint">
+            Tip: buy something, then find it in <span class="pill">Backpack</span> to redeem later.
+          </div>
+        </div>
+
+        <div class="panel__divider" aria-hidden="true"></div>
+
+        <div class="backpack" aria-labelledby="backpackTitle">
+          <div class="backpack__head">
+            <h3 class="h3" id="backpackTitle">Backpack</h3>
+            <div class="filters" role="tablist" aria-label="Backpack filters">
+              <button class="chip is-active" type="button" data-bp-filter="all" role="tab" aria-selected="true">All</button>
+              <button class="chip" type="button" data-bp-filter="unredeemed" role="tab" aria-selected="false">Unredeemed</button>
+              <button class="chip" type="button" data-bp-filter="redeemed" role="tab" aria-selected="false">Redeemed</button>
+            </div>
+          </div>
+
+          <div class="list" id="ordersList" aria-live="polite"></div>
+
+          <div class="empty" id="ordersEmpty" hidden>
+            Nothing in your backpack yet. Go shopping.
+          </div>
+        </div>
+      </section>
+
+      <section class="panel shop" aria-labelledby="shopTitle" id="inventory">
+        <div class="panel__cap">
+          <h2 class="panel__title" id="shopTitle">Shop Inventory</h2>
+          <div class="panel__meta" id="shopMeta">Welcome, hero.</div>
+        </div>
+
+        <div class="shop__toolbar">
+          <div class="filters" role="tablist" aria-label="Shop category filters">
+            <button class="chip is-active" type="button" data-filter="all" role="tab" aria-selected="true">All</button>
+            <button class="chip" type="button" data-filter="romance" role="tab" aria-selected="false">Romance</button>
+            <button class="chip" type="button" data-filter="cozy" role="tab" aria-selected="false">Cozy</button>
+            <button class="chip" type="button" data-filter="food" role="tab" aria-selected="false">Food</button>
+            <button class="chip" type="button" data-filter="adventure" role="tab" aria-selected="false">Adventure</button>
+          </div>
+
+          <div class="search">
+            <label class="sr" for="q">Search items</label>
+            <input id="q" class="search__input" type="search" placeholder="Search: massage, kiss, dinner..." autocomplete="off" />
+          </div>
+        </div>
+
+        <div class="grid" id="itemsGrid"></div>
+      </section>
+
+      <section class="panel footer" aria-label="Footer">
+        <div class="footer__inner">
+          <div class="footer__left">
+            <div class="tiny">Built like an RPG shop screen. Saved locally in this browser.</div>
+            <div class="tiny">If you want shared points across devices, I can add login or a tiny backend.</div>
+          </div>
+          <div class="footer__right">
+            <button class="btn btn--ghost" id="btnExport" type="button">Export Save</button>
+            <label class="btn btn--ghost" for="importFile">Import Save</label>
+            <input id="importFile" type="file" accept="application/json" class="sr" />
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="modal" id="purchaseModal" aria-labelledby="purchaseTitle">
+      <form method="dialog" class="modal__card">
+        <div class="modal__head">
+          <div class="modal__title" id="purchaseTitle">Confirm Purchase</div>
+          <button class="iconbtn" value="cancel" aria-label="Close">
+            <span aria-hidden="true">X</span>
+          </button>
+        </div>
+
+        <div class="modal__body">
+          <div class="confirm">
+            <div class="confirm__sprite" aria-hidden="true" id="confirmSprite"></div>
+            <div>
+              <div class="confirm__name" id="confirmName"></div>
+              <div class="confirm__desc" id="confirmDesc"></div>
+              <div class="confirm__cost">
+                Cost: <span class="gold" id="confirmCost"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal__warn" id="confirmWarn" hidden>
+            Not enough points.
+          </div>
+        </div>
+
+        <div class="modal__foot">
+          <button class="btn btn--ghost" value="cancel" type="submit">Cancel</button>
+          <button class="btn btn--primary" id="btnConfirmBuy" value="default" type="submit">Buy</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="modal" id="settingsModal" aria-labelledby="settingsTitle">
+      <form method="dialog" class="modal__card">
+        <div class="modal__head">
+          <div class="modal__title" id="settingsTitle">Settings</div>
+          <button class="iconbtn" value="cancel" aria-label="Close">
+            <span aria-hidden="true">X</span>
+          </button>
+        </div>
+
+        <div class="modal__body">
+          <div class="field">
+            <label class="field__label" for="playerName">Save name</label>
+            <input class="field__input" id="playerName" type="text" maxlength="18" placeholder="PLAYER 1" />
+            <div class="field__hint">Shows in the top-left of your save file.</div>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="startingPoints">Set points</label>
+            <input class="field__input" id="startingPoints" type="number" min="0" step="1" placeholder="e.g. 500" />
+            <div class="field__hint">This overwrites your current points.</div>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="shopkeeperLine">Shopkeeper vibe</label>
+            <select class="field__input" id="shopkeeperLine">
+              <option value="Welcome, hero.">Welcome, hero.</option>
+              <option value="Choose wisely, sweetheart.">Choose wisely, sweetheart.</option>
+              <option value="Hearts are on sale. Limited time.">Hearts are on sale. Limited time.</option>
+              <option value="No refunds. Only cuddles.">No refunds. Only cuddles.</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal__foot">
+          <button class="btn btn--ghost" value="cancel" type="submit">Close</button>
+          <button class="btn btn--primary" id="btnSaveSettings" value="default" type="submit">Save</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true" hidden>
+      <div class="toast__inner" id="toastText"></div>
+    </div>
+
+  </body>
+</html>
