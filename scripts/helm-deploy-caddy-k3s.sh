@@ -23,6 +23,7 @@ if [[ ${#hosts[@]} -eq 0 ]]; then
 fi
 
 helm_args=(
+  helm
   upgrade --install "$release" ./helm/shared-static-caddy
   --namespace "$namespace"
   --create-namespace
