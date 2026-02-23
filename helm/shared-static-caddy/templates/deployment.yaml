@@ -39,6 +39,30 @@ spec:
               readOnly: true
             - name: site-content
               mountPath: /srv/sites
+        {{- if .Values.caddy.reloadWatcher.enabled }}
+        - name: caddy-reloader
+          image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              last=""
+              while true; do
+                current="$(sha256sum /etc/caddy/Caddyfile | awk '{print $1}')"
+                if [ -n "$last" ] && [ "$current" != "$last" ]; then
+                  echo "Caddyfile changed; reloading Caddy"
+                  caddy reload --address {{ .Values.caddy.adminAddress }} --config /etc/caddy/Caddyfile --adapter caddyfile || true
+                fi
+                last="$current"
+                sleep {{ .Values.caddy.reloadWatcher.pollIntervalSeconds }}
+              done
+          volumeMounts:
+            - name: caddy-config
+              mountPath: /etc/caddy/Caddyfile
+              subPath: Caddyfile
+              readOnly: true
+        {{- end }}
       volumes:
         - name: caddy-config
           configMap:

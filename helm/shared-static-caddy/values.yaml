@@ -38,4 +38,8 @@ ingress:
   tls: []
 
 caddy:
+  adminAddress: "127.0.0.1:2019"
   allowedHosts: []
+  reloadWatcher:
+    enabled: true
+    pollIntervalSeconds: 2
