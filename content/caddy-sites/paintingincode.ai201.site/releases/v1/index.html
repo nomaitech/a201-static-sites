@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painting in Code — A Philosophy of the Modern Maker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --canvas:      #F2E9D8;
+      --canvas-dark: #E8DEC9;
+      --cream:       #FBF8F1;
+      --umber:       #3A2719;
+      --umber-mid:   #5C3B24;
+      --ochre:       #C8820A;
+      --ochre-light: #E0AA3C;
+      --crimson:     #7B1417;
+      --crimson-mid: #A32028;
+      --cobalt:      #192E5B;
+      --cobalt-mid:  #2B4A8A;
+      --sienna:      #BE5E25;
+      --charcoal:    #221A13;
+      --text-dark:   #1C1208;
+      --text-mid:    #4A3322;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background-color: var(--canvas);
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+
+    /* =====================
+       GRAIN OVERLAY
+    ===================== */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23g)' opacity='0.5'/%3E%3C/svg%3E");
+      opacity: 0.05;
+      pointer-events: none;
+      z-index: 9000;
+      mix-blend-mode: multiply;
+    }
+
+    /* =====================
+       SCROLL REVEAL
+    ===================== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(48px);
+      transition: opacity 1.1s cubic-bezier(0.16,1,0.3,1), transform 1.1s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal.d1 { transition-delay: 0.12s; }
+    .reveal.d2 { transition-delay: 0.26s; }
+    .reveal.d3 { transition-delay: 0.40s; }
+    .reveal.d4 { transition-delay: 0.54s; }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+    /* SVG stroke drawing animation */
+    .draw {
+      stroke-dasharray: 3000;
+      stroke-dashoffset: 3000;
+      transition: stroke-dashoffset 2.2s cubic-bezier(0.4,0,0.2,1);
+    }
+    .draw.is-drawn { stroke-dashoffset: 0; }
+
+    /* =====================
+       HERO
+    ===================== */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: clamp(60px, 10vw, 120px) clamp(32px, 9vw, 130px);
+      overflow: hidden;
+    }
+
+    .hero-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1100px;
+    }
+
+    .eyebrow {
+      display: block;
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: clamp(0.8rem, 1.4vw, 0.95rem);
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--sienna);
+      margin-bottom: 1.8rem;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-style: italic;
+      font-size: clamp(4.5rem, 14vw, 13.5rem);
+      line-height: 0.88;
+      color: var(--umber);
+      margin-bottom: clamp(28px, 4vw, 48px);
+      position: relative;
+    }
+
+    .hero-title .word-in {
+      color: var(--ochre);
+      display: inline-block;
+      padding: 0 0.1em;
+    }
+    .hero-title .word-code {
+      color: var(--crimson);
+      -webkit-text-stroke: 0px transparent;
+    }
+
+    .hero-divider-svg {
+      display: block;
+      width: clamp(180px, 40vw, 560px);
+      margin-bottom: clamp(24px, 4vw, 48px);
+      overflow: visible;
+    }
+
+    .hero-statement {
+      font-size: clamp(1.05rem, 2vw, 1.4rem);
+      font-style: italic;
+      line-height: 1.72;
+      color: var(--text-mid);
+      max-width: 580px;
+      position: relative;
+      padding-left: 2.2rem;
+    }
+    .hero-statement::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.3em;
+      bottom: 0.3em;
+      width: 3px;
+      background: linear-gradient(to bottom, var(--ochre), var(--sienna));
+      border-radius: 2px;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: clamp(28px, 4vw, 48px);
+      left: clamp(32px, 9vw, 130px);
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 0.8rem;
+      letter-spacing: 0.18em;
+      color: var(--umber-mid);
+      opacity: 0.5;
+      text-transform: uppercase;
+      animation: breathe 3s ease-in-out infinite;
+    }
+    @keyframes breathe { 0%,100% { opacity: 0.35; } 50% { opacity: 0.75; } }
+
+    /* =====================
+       DRIP DIVIDERS
+    ===================== */
+    .drip { display: block; line-height: 0; }
+
+    /* =====================
+       SECTION — THE STROKES (cobalt)
+    ===================== */
+    .s-strokes {
+      position: relative;
+      background-color: var(--cobalt);
+      padding: clamp(80px, 11vw, 140px) clamp(32px, 9vw, 130px);
+      overflow: hidden;
+    }
+
+    .s-strokes .section-bg-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .section-label {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: clamp(0.72rem, 1.1vw, 0.85rem);
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 1rem;
+    }
+    .section-label.lt { color: rgba(251,248,241,0.45); }
+    .section-label.dk { color: var(--sienna); }
+
+    h2.s-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.6rem, 6.5vw, 5.8rem);
+      font-weight: 700;
+      font-style: italic;
+      line-height: 1.02;
+      margin-bottom: 1.1rem;
+    }
+    h2.s-title.lt { color: var(--cream); }
+    h2.s-title.dk { color: var(--umber); }
+
+    .s-intro {
+      font-size: clamp(1rem, 1.8vw, 1.2rem);
+      line-height: 1.75;
+      max-width: 580px;
+      margin-bottom: clamp(50px, 7vw, 90px);
+    }
+    .s-intro.lt { color: rgba(251,248,241,0.7); }
+    .s-intro.dk { color: var(--text-mid); }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: clamp(20px, 3.5vw, 44px);
+      position: relative;
+      z-index: 2;
+    }
+
+    .card {
+      border-top: 2.5px solid;
+      padding: clamp(22px, 2.8vw, 34px);
+      background: rgba(255,255,255,0.04);
+      transition: background 0.3s ease;
+    }
+    .card:hover { background: rgba(255,255,255,0.08); }
+
+    .card:nth-child(1) { border-color: var(--ochre); }
+    .card:nth-child(2) { border-color: var(--sienna); }
+    .card:nth-child(3) { border-color: var(--ochre-light); }
+    .card:nth-child(4) { border-color: var(--crimson-mid); }
+
+    .card-num {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 3.2rem;
+      line-height: 1;
+      opacity: 0.12;
+      color: white;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-tag {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      margin-bottom: 0.7rem;
+    }
+    .card:nth-child(1) .card-tag { color: var(--ochre-light); }
+    .card:nth-child(2) .card-tag { color: #E08A52; }
+    .card:nth-child(3) .card-tag { color: var(--ochre-light); }
+    .card:nth-child(4) .card-tag { color: #D05060; }
+
+    .card h3 {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(1.25rem, 2.2vw, 1.65rem);
+      color: white;
+      line-height: 1.18;
+      margin-bottom: 0.9rem;
+    }
+
+    .card p {
+      font-size: 0.93rem;
+      line-height: 1.72;
+      color: rgba(251,248,241,0.62);
+    }
+
+    /* =====================
+       SECTION — THE CANVAS (cream)
+    ===================== */
+    .s-canvas {
+      position: relative;
+      background-color: var(--cream);
+      padding: clamp(80px, 11vw, 140px) clamp(32px, 9vw, 130px);
+      overflow: hidden;
+    }
+
+    .canvas-deco {
+      position: absolute;
+      right: -4%;
+      top: 10%;
+      width: 45%;
+      max-width: 640px;
+      pointer-events: none;
+      opacity: 0.055;
+    }
+
+    .s-canvas blockquote {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.75rem, 4.2vw, 3.6rem);
+      font-style: italic;
+      line-height: 1.28;
+      color: var(--umber);
+      max-width: 880px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .s-canvas blockquote em {
+      color: var(--crimson);
+      font-style: normal;
+    }
+
+    .canvas-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(28px, 5vw, 80px);
+      max-width: 880px;
+      margin-top: clamp(48px, 6vw, 80px);
+      position: relative;
+      z-index: 2;
+    }
+    @media (max-width: 600px) { .canvas-columns { grid-template-columns: 1fr; } }
+
+    .canvas-columns p {
+      font-size: clamp(0.95rem, 1.6vw, 1.08rem);
+      line-height: 1.82;
+      color: var(--text-mid);
+    }
+
+    /* =====================
+       SECTION — THE PALETTE (umber)
+    ===================== */
+    .s-palette {
+      position: relative;
+      background-color: var(--umber);
+      padding: clamp(80px, 11vw, 140px) clamp(32px, 9vw, 130px);
+      overflow: hidden;
+    }
+
+    .palette-list {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(28px, 4vw, 44px);
+      max-width: 860px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .palette-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: clamp(20px, 3.5vw, 46px);
+      align-items: start;
+    }
+
+    .swatch {
+      width: clamp(58px, 7.5vw, 88px);
+      height: clamp(58px, 7.5vw, 88px);
+      border-radius: 5px;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .swatch::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 45%, rgba(0,0,0,0.28) 100%);
+    }
+
+    .sw-ts  { background: var(--cobalt-mid); }
+    .sw-py  { background: var(--ochre); }
+    .sw-sql { background: #6B3F22; }
+    .sw-css { background: var(--crimson); }
+    .sw-ai  { background: linear-gradient(135deg, #D8C6A8, #F5EFE0, #C6A87C); }
+
+    .palette-info h3 {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(1.15rem, 2.2vw, 1.55rem);
+      color: var(--cream);
+      margin-bottom: 0.3rem;
+      line-height: 1.2;
+    }
+    .palette-tag {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 0.73rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ochre-light);
+      margin-bottom: 0.65rem;
+      display: block;
+    }
+    .palette-info p {
+      font-size: 0.93rem;
+      line-height: 1.7;
+      color: rgba(251,248,241,0.58);
+    }
+
+    .palette-bg {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 40%;
+      pointer-events: none;
+      opacity: 0.06;
+    }
+
+    /* =====================
+       SECTION — THE MANIFESTO (canvas-dark)
+    ===================== */
+    .s-manifesto {
+      position: relative;
+      background-color: var(--canvas-dark);
+      padding: clamp(80px, 11vw, 140px) clamp(32px, 9vw, 130px);
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .manifesto-deco {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.07;
+    }
+
+    .manifesto-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .manifesto-lines {
+      list-style: none;
+      margin-bottom: clamp(48px, 7vw, 90px);
+    }
+
+    .manifesto-lines li {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-weight: 700;
+      font-size: clamp(1.6rem, 4.2vw, 3.4rem);
+      line-height: 1.18;
+      margin-bottom: 0.42em;
+    }
+
+    .manifesto-lines li:nth-child(1) { color: var(--umber); }
+    .manifesto-lines li:nth-child(2) { color: var(--crimson); }
+    .manifesto-lines li:nth-child(3) { color: var(--cobalt); }
+    .manifesto-lines li:nth-child(4) { color: var(--umber-mid); }
+    .manifesto-lines li:nth-child(5) { color: var(--sienna); }
+
+    .manifesto-coda {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: clamp(0.85rem, 1.4vw, 1rem);
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      opacity: 0.6;
+    }
+
+    /* =====================
+       FOOTER
+    ===================== */
+    footer {
+      background: var(--charcoal);
+      padding: clamp(28px, 4vw, 48px) clamp(32px, 9vw, 130px);
+      text-align: center;
+    }
+    footer p {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 0.82rem;
+      letter-spacing: 0.12em;
+      color: rgba(251,248,241,0.32);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================
+       HERO
+  ============================ -->
+  <section class="hero">
+    <!-- Large gestural brushstrokes as background -->
+    <svg class="hero-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- Wide ochre band — main paint sweep -->
+      <path d="M -40,330 C 100,295 290,350 520,316 C 750,282 940,338 1160,308 C 1340,284 1490,308 1640,298 L 1640,415 C 1490,428 1340,404 1160,428 C 940,455 750,399 520,433 C 290,467 100,412 -40,448 Z" fill="#C8820A" opacity="0.10"/>
+      <!-- Secondary ochre sweep, offset lower -->
+      <path d="M -40,480 C 130,455 350,498 590,468 C 830,438 1020,482 1240,455 C 1420,432 1540,450 1640,444 L 1640,520 C 1540,526 1420,508 1240,535 C 1020,562 830,518 590,548 C 350,578 130,535 -40,560 Z" fill="#C8820A" opacity="0.05"/>
+      <!-- Crimson thin accent stripe -->
+      <path d="M -40,150 C 180,128 440,168 700,145 C 960,122 1180,160 1420,140 C 1510,133 1570,137 1640,132 L 1640,172 C 1570,177 1510,173 1420,180 C 1180,200 960,162 700,185 C 440,208 180,168 -40,190 Z" fill="#7B1417" opacity="0.07"/>
+      <!-- Sienna blob, upper right corner -->
+      <path d="M 1080,0 C 1230,0 1430,28 1548,82 C 1618,115 1655,172 1635,222 C 1610,258 1540,248 1455,213 C 1345,172 1175,152 1058,172 C 958,189 898,170 905,132 C 914,88 982,33 1042,13 C 1054,6 1066,1 1080,0 Z" fill="#BE5E25" opacity="0.09"/>
+      <!-- Large light sienna lower-left wash -->
+      <path d="M -40,620 C 60,600 180,640 300,615 C 420,590 500,625 600,605 C 680,588 730,605 740,640 C 750,675 690,700 580,710 C 470,720 340,695 220,710 C 120,722 40,712 -40,705 Z" fill="#BE5E25" opacity="0.06"/>
+      <!-- Animated drawn brushstroke line (loads with drawing animation) -->
+      <path id="hero-line" class="draw" d="M 60,840 C 220,822 460,848 700,830 C 940,812 1140,840 1380,822 C 1470,816 1545,818 1610,814" fill="none" stroke="#C8820A" stroke-width="5" stroke-linecap="round" opacity="0.45"/>
+      <!-- Small gestural accent lines -->
+      <path class="draw" d="M 60,858 C 180,850 360,862 540,852 C 680,844 800,854 920,846" fill="none" stroke="#7B1417" stroke-width="2.5" stroke-linecap="round" opacity="0.28" style="transition-delay:0.5s"/>
+      <!-- Paint splatter cluster, upper right -->
+      <g opacity="0.22">
+        <ellipse cx="1320" cy="82" rx="7" ry="5" fill="#C8820A" transform="rotate(-18,1320,82)"/>
+        <circle cx="1365" cy="58" r="4.5" fill="#C8820A"/>
+        <circle cx="1290" cy="55" r="3" fill="#7B1417"/>
+        <ellipse cx="1400" cy="100" rx="9" ry="4" fill="#BE5E25" transform="rotate(24,1400,100)"/>
+        <circle cx="1350" cy="112" r="2.5" fill="#C8820A"/>
+        <circle cx="1310" cy="42" r="2" fill="#C8820A"/>
+        <circle cx="1430" cy="72" r="3.5" fill="#7B1417"/>
+        <ellipse cx="1388" cy="128" rx="5" ry="3" fill="#BE5E25" transform="rotate(-8,1388,128)"/>
+        <circle cx="1264" cy="70" r="2" fill="#C8820A"/>
+        <circle cx="1450" cy="48" r="2.5" fill="#BE5E25"/>
+      </g>
+      <!-- Splatter cluster, left side -->
+      <g opacity="0.18">
+        <circle cx="48" cy="240" r="5" fill="#C8820A"/>
+        <ellipse cx="28" cy="262" rx="8" ry="3.5" fill="#7B1417" transform="rotate(15,28,262)"/>
+        <circle cx="62" cy="280" r="3" fill="#BE5E25"/>
+        <circle cx="18" cy="220" r="2.5" fill="#C8820A"/>
+      </g>
+    </svg>
+
+    <div class="hero-content">
+      <span class="eyebrow reveal">A Philosophy of the Modern Maker</span>
+
+      <h1 class="hero-title reveal d1">
+        Painting<br>
+        <span class="word-in">in</span><br>
+        <span class="word-code">Code</span>
+      </h1>
+
+      <!-- Animated brushstroke underline under the title -->
+      <svg class="hero-divider-svg reveal d2" viewBox="0 0 560 28" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path class="draw" d="M 4,18 C 50,12 130,22 220,16 C 310,10 400,20 490,14 C 520,12 540,13 556,12" fill="none" stroke="#C8820A" stroke-width="7" stroke-linecap="round"/>
+        <path class="draw" d="M 4,24 C 60,20 150,26 250,22 C 350,18 420,24 500,20" fill="none" stroke="#7B1417" stroke-width="3" stroke-linecap="round" opacity="0.45" style="transition-delay:0.4s"/>
+      </svg>
+
+      <p class="hero-statement reveal d3">
+        The blank screen is your canvas. The cursor, your brush.<br>
+        The framework, your palette.<br><br>
+        Pick up a brush. Make bold strokes. Step back. Refine.<br>
+        The masterpiece is always in the making.
+      </p>
+    </div>
+
+    <div class="scroll-hint">scroll to explore ↓</div>
+  </section>
+
+  <!-- Drip: canvas → cobalt -->
+  <div class="drip" aria-hidden="true">
+    <svg viewBox="0 0 1440 72" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:72px;">
+      <path d="M0,0 L1440,0 L1440,22 C1400,32 1360,18 1320,28 C1280,38 1240,52 1200,56 C1160,60 1120,50 1080,38 C1040,26 1000,14 960,26 C920,38 880,58 840,64 C800,70 760,60 720,46 C680,32 640,16 600,30 C560,44 520,62 480,66 C440,70 400,58 360,44 C320,30 280,14 240,28 C200,42 160,60 120,64 C80,68 40,54 0,40 Z" fill="#F2E9D8"/>
+    </svg>
+  </div>
+
+  <!-- ============================
+       THE STROKES
+  ============================ -->
+  <section class="s-strokes">
+    <!-- Subtle bg brushstroke decoration -->
+    <svg class="section-bg-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M -40,200 C 200,160 500,220 820,185 C 1100,153 1360,195 1640,175 L 1640,270 C 1360,290 1100,248 820,280 C 500,315 200,255 -40,295 Z" fill="white" opacity="0.5"/>
+      <path d="M -40,580 C 300,548 680,600 1040,568 C 1280,545 1460,572 1640,560 L1640,640 C1460,652 1280,625 1040,648 C680,680 300,628 -40,660 Z" fill="white" opacity="0.3"/>
+    </svg>
+
+    <span class="section-label lt reveal">II — The Strokes</span>
+    <h2 class="s-title lt reveal d1">How we paint<br>has changed.<br>The art hasn't.</h2>
+    <p class="s-intro lt reveal d2">
+      Every painting, every codebase, follows the same ancient rhythm.
+      The tools evolve. The gesture endures.
+    </p>
+
+    <div class="cards">
+      <div class="card reveal d1">
+        <div class="card-num">I</div>
+        <div class="card-tag">The Sketch / First Commit</div>
+        <h3>The rough idea, unafraid</h3>
+        <p>No painter starts with perfection. The first marks are bold, clumsy, alive. Your first commit should be too — an honest record of the idea, not an attempt to impress.</p>
+      </div>
+      <div class="card reveal d2">
+        <div class="card-num">II</div>
+        <div class="card-tag">Broad Strokes / Fast Builds</div>
+        <h3>Paint the whole before the part</h3>
+        <p>Lay in the big shapes first. With AI as your brush-arm, you can cover enormous canvas in an afternoon. The composition must sing before details are earned.</p>
+      </div>
+      <div class="card reveal d3">
+        <div class="card-num">III</div>
+        <div class="card-tag">Step Back / Code Review</div>
+        <h3>Distance reveals what proximity hides</h3>
+        <p>Walk away from the easel. Read your diff as a stranger would. The problem is never in the line you're staring at — it's in the relationship between lines.</p>
+      </div>
+      <div class="card reveal d4">
+        <div class="card-num">IV</div>
+        <div class="card-tag">Detail Work / Refinement</div>
+        <h3>Polish only what the eye will find</h3>
+        <p>Detail work comes last, and only where it matters. The corner no viewer will ever study doesn't need glazing. Ship the canvas with the details that earn attention.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Drip: cobalt → cream -->
+  <div class="drip" aria-hidden="true">
+    <svg viewBox="0 0 1440 72" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:72px;">
+      <path d="M0,0 L1440,0 L1440,18 C1420,26 1380,14 1340,24 C1300,34 1260,50 1220,54 C1180,58 1140,46 1100,34 C1060,22 1020,10 980,22 C940,34 900,54 860,60 C820,66 780,56 740,42 C700,28 660,12 620,26 C580,40 540,58 500,64 C460,70 420,60 380,46 C340,32 300,16 260,30 C220,44 180,62 140,66 C100,70 60,56 30,42 C16,35 8,28 0,26 Z" fill="#192E5B"/>
+    </svg>
+  </div>
+
+  <!-- ============================
+       THE CANVAS
+  ============================ -->
+  <section class="s-canvas">
+    <!-- Large background brushstroke decoration -->
+    <svg class="canvas-deco" viewBox="0 0 600 800" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M 60,40 C 200,10 400,60 520,20 C 580,2 610,40 590,90 C 570,140 480,160 380,170 C 280,180 160,155 80,190 C 20,215 -10,260 20,300 C 60,350 160,340 240,360 C 340,385 420,440 400,500 C 378,560 280,580 180,560 C 80,540 10,490 20,430 C 30,370 100,340 140,290 C 180,240 170,170 120,130 C 80,100 40,90 60,40 Z" fill="none" stroke="#3A2719" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+
+    <span class="section-label dk reveal">III — The Canvas</span>
+
+    <blockquote class="reveal d1">
+      Before AI, you needed a week to paint a portrait.<br>
+      Now you can paint a <em>gallery</em> in an afternoon.
+    </blockquote>
+
+    <div class="canvas-columns">
+      <p class="reveal d2">
+        The canvas was always infinite. The limitation was the painter's arm — how fast it could move, how long before fatigue. Modern tools have extended that arm. Not replaced the painter. Extended it.
+      </p>
+      <p class="reveal d3">
+        The blank screen still demands the same courage it always has. What changes is how quickly your vision can escape your mind and exist in the world. That speed is not a shortcut. It is a gift. Use it to iterate more, not think less.
+      </p>
+    </div>
+  </section>
+
+  <!-- Drip: cream → umber -->
+  <div class="drip" aria-hidden="true">
+    <svg viewBox="0 0 1440 72" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:72px;">
+      <path d="M0,0 L1440,0 L1440,20 C1400,30 1350,16 1300,26 C1250,36 1210,52 1170,58 C1130,64 1090,54 1040,40 C990,26 950,12 910,24 C870,36 830,56 790,62 C750,68 710,58 670,44 C630,30 590,14 540,28 C490,42 460,60 420,66 C380,72 340,60 300,46 C260,32 220,16 180,30 C140,44 100,62 60,66 C35,68 18,62 0,54 Z" fill="#FBF8F1"/>
+    </svg>
+  </div>
+
+  <!-- ============================
+       THE PALETTE
+  ============================ -->
+  <section class="s-palette">
+    <svg class="palette-bg" viewBox="0 0 500 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M80,20 C200,0 380,40 460,120 C520,180 510,280 440,340 C370,400 240,400 160,450 C80,500 30,560 20,620" fill="none" stroke="#C8820A" stroke-width="12" stroke-linecap="round" opacity="1"/>
+      <path d="M140,60 C260,30 420,80 480,180 C530,260 500,360 420,420" fill="none" stroke="#7B1417" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
+    </svg>
+
+    <span class="section-label lt reveal">IV — The Palette</span>
+    <h2 class="s-title lt reveal d1">Every colour<br>is a choice.</h2>
+    <p class="s-intro lt reveal d2">
+      The painter reaches for the right pigment. Every tool, every language, every framework is a colour. Know what each one does. Choose deliberately.
+    </p>
+
+    <div class="palette-list">
+      <div class="palette-item reveal d1">
+        <div class="swatch sw-ts"></div>
+        <div class="palette-info">
+          <span class="palette-tag">The Fine Brush</span>
+          <h3>TypeScript — Prussian Blue</h3>
+          <p>Precise, controlled, unforgiving of careless marks. For when the composition demands exact lines. It slows you down just enough to make you think before each stroke.</p>
+        </div>
+      </div>
+
+      <div class="palette-item reveal d2">
+        <div class="swatch sw-py"></div>
+        <div class="palette-info">
+          <span class="palette-tag">The Broad Stroke</span>
+          <h3>Python — Raw Ochre</h3>
+          <p>Expressive, immediate, warm. Great for laying in the underpainting — the logic skeleton before the polish. Fast strokes that reveal the structure.</p>
+        </div>
+      </div>
+
+      <div class="palette-item reveal d3">
+        <div class="swatch sw-sql"></div>
+        <div class="palette-info">
+          <span class="palette-tag">The Ground Layer</span>
+          <h3>SQL — Burnt Umber</h3>
+          <p>Invisible when done right. The primer that holds everything else. Nothing good is built without a well-prepared ground. You'll regret skipping this layer.</p>
+        </div>
+      </div>
+
+      <div class="palette-item reveal d4">
+        <div class="swatch sw-ai"></div>
+        <div class="palette-info">
+          <span class="palette-tag">The Light Source</span>
+          <h3>AI Tools — Titanium White</h3>
+          <p>Light illuminates everything, but overuse flattens the painting. AI is the brightest pigment in the modern palette. A little lifts the whole work. Too much and you lose the depth.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Drip: umber → canvas-dark -->
+  <div class="drip" aria-hidden="true">
+    <svg viewBox="0 0 1440 72" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:72px;">
+      <path d="M0,0 L1440,0 L1440,24 C1410,34 1370,20 1330,30 C1290,40 1250,56 1210,60 C1170,64 1130,52 1090,38 C1050,24 1010,10 970,24 C930,38 890,56 850,62 C810,68 770,58 730,44 C690,30 650,14 610,28 C570,42 530,60 490,66 C450,72 410,62 370,48 C330,34 290,18 250,32 C210,46 170,64 130,68 C90,72 50,58 20,46 C10,40 4,34 0,30 Z" fill="#3A2719"/>
+    </svg>
+  </div>
+
+  <!-- ============================
+       THE MANIFESTO
+  ============================ -->
+  <section class="s-manifesto">
+    <!-- Background brushstroke decorations -->
+    <svg class="manifesto-deco" viewBox="0 0 1600 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M-40,200 C200,160 540,220 880,185 C1180,155 1420,196 1640,178 L1640,270 C1420,288 1180,247 880,280 C540,316 200,255 -40,295 Z" fill="#3A2719"/>
+      <path d="M-40,500 C180,462 480,518 800,485 C1060,456 1320,494 1640,474 L1640,558 C1320,578 1060,540 800,570 C480,602 180,545 -40,585 Z" fill="#C8820A"/>
+      <!-- Animated drawn line accent -->
+      <path class="draw" d="M 80,720 C 280,702 580,724 880,708 C 1140,693 1380,715 1580,704" fill="none" stroke="#7B1417" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+    </svg>
+
+    <div class="manifesto-inner">
+      <span class="section-label dk reveal" style="margin-bottom:2rem;">V — The Manifesto</span>
+
+      <ul class="manifesto-lines">
+        <li class="reveal d1">Ship like you paint.</li>
+        <li class="reveal d2">Boldly. Iteratively. Without apology.</li>
+        <li class="reveal d3">Every commit is a brushstroke.</li>
+        <li class="reveal d4">Every deploy, a canvas revealed.</li>
+        <li class="reveal" style="transition-delay:0.65s">The masterpiece is in the making.</li>
+      </ul>
+
+      <p class="manifesto-coda reveal" style="transition-delay:0.8s">
+        paintingincode.ai201.site — 2025
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================
+       FOOTER
+  ============================ -->
+  <footer>
+    <p>Made with bold strokes &amp; imperfect brushes.</p>
+  </footer>
+
+  <script>
+    // =============================================
+    // Scroll reveal + SVG stroke drawing
+    // =============================================
+    const revealEls = document.querySelectorAll('.reveal');
+    const drawEls   = document.querySelectorAll('.draw');
+
+    // Pre-calculate actual stroke lengths for natural-feeling draws
+    drawEls.forEach(path => {
+      try {
+        const len = path.getTotalLength();
+        path.style.strokeDasharray  = len;
+        path.style.strokeDashoffset = len;
+      } catch(e) {
+        // SVG path length not available — fallback to CSS value
+      }
+    });
+
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          el.classList.add('is-visible');
+          // Trigger draw for any .draw children or the element itself
+          el.querySelectorAll('.draw').forEach(p => p.classList.add('is-drawn'));
+          if (el.classList.contains('draw')) el.classList.add('is-drawn');
+          io.unobserve(el);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    revealEls.forEach(el => io.observe(el));
+
+    // Also observe draw elements that aren't inside .reveal
+    drawEls.forEach(el => {
+      if (!el.closest('.reveal')) io.observe(el);
+    });
+
+    // =============================================
+    // Hero load animation (no scroll needed)
+    // =============================================
+    document.addEventListener('DOMContentLoaded', () => {
+      // Trigger reveal for everything already in view
+      setTimeout(() => {
+        document.querySelectorAll('.reveal').forEach(el => {
+          const rect = el.getBoundingClientRect();
+          if (rect.top < window.innerHeight) {
+            el.classList.add('is-visible');
+            el.querySelectorAll('.draw').forEach(p => p.classList.add('is-drawn'));
+          }
+        });
+        // Hero draw lines start immediately
+        document.querySelectorAll('.hero-svg .draw').forEach(p => {
+          setTimeout(() => p.classList.add('is-drawn'), 400);
+        });
+        document.querySelectorAll('.hero-divider-svg .draw').forEach(p => {
+          setTimeout(() => p.classList.add('is-drawn'), 700);
+        });
+      }, 100);
+    });
+  </script>
+
+</body>
+</html>
