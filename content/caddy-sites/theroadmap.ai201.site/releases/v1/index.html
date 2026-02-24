@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Roadmap — A Comprehensive Framework for Achieving Van, Dog, Sunset</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;1,400;1,700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:        #0a0b0f;
+      --bg2:       #0f1117;
+      --bg3:       #141620;
+      --border:    #1e2130;
+      --accent:    #4fffff;
+      --accent2:   #ff4fff;
+      --accent3:   #ffff4f;
+      --text:      #c8ccd8;
+      --text-dim:  #5a5e6e;
+      --text-bright: #eef0f8;
+
+      /* sunset palette */
+      --sun-sky:   #1a0a2e;
+      --sun-dusk:  #3d1a5c;
+      --sun-pur:   #7b2d8b;
+      --sun-pink:  #d45f8a;
+      --sun-ora:   #f4874b;
+      --sun-yel:   #f9c74f;
+      --sun-warm:  #fef3e2;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* =====================
+       SCAN LINES
+    ===================== */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 9000;
+    }
+
+    /* =====================
+       SCROLL REVEAL
+    ===================== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* =====================
+       HERO
+    ===================== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      position: relative;
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 120%, rgba(79,255,255,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 20% -10%, rgba(255,79,255,0.05) 0%, transparent 60%);
+    }
+
+    .hero-eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      opacity: 0.8;
+    }
+
+    .hero-title {
+      font-size: clamp(2.8rem, 8vw, 6.5rem);
+      font-weight: 700;
+      color: var(--text-bright);
+      line-height: 1.05;
+      max-width: 18ch;
+      margin: 0 auto 1.5rem;
+    }
+
+    .hero-title span {
+      color: var(--accent3);
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--text-dim);
+      max-width: 55ch;
+      margin: 0 auto 3rem;
+      line-height: 1.7;
+    }
+
+    .hero-badges {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 4rem;
+    }
+
+    .badge {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      padding: 0.35rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+    }
+
+    .badge.live {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .scroll-hint {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      animation: bounce 2s infinite;
+    }
+
+    .scroll-hint::after {
+      content: '↓';
+      font-size: 1rem;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(6px); }
+    }
+
+    /* =====================
+       SECTION SHARED
+    ===================== */
+    section {
+      padding: 6rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 0.75rem;
+    }
+
+    /* =====================
+       ROADMAP SPINE
+    ===================== */
+    .roadmap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem 8rem;
+    }
+
+    .roadmap-intro {
+      text-align: center;
+      padding: 3rem 0 5rem;
+    }
+
+    .roadmap-intro h2 {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      color: var(--text-bright);
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .roadmap-intro p {
+      color: var(--text-dim);
+      max-width: 48ch;
+      margin: 0 auto;
+      font-size: 0.95rem;
+    }
+
+    .spine {
+      position: relative;
+    }
+
+    .spine::before {
+      content: '';
+      position: absolute;
+      left: 28px;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: linear-gradient(
+        to bottom,
+        var(--accent) 0%,
+        var(--accent2) 35%,
+        var(--accent3) 65%,
+        var(--sun-ora) 85%,
+        var(--sun-yel) 100%
+      );
+      opacity: 0.3;
+    }
+
+    /* =====================
+       PHASE CARDS
+    ===================== */
+    .phase {
+      display: grid;
+      grid-template-columns: 60px 1fr;
+      gap: 0 2rem;
+      margin-bottom: 5rem;
+      position: relative;
+    }
+
+    .phase-node {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 2;
+      border: 2px solid currentColor;
+    }
+
+    .phase-1 .phase-node { color: var(--accent); background: rgba(79,255,255,0.08); border-color: var(--accent); }
+    .phase-2 .phase-node { color: var(--accent2); background: rgba(255,79,255,0.08); border-color: var(--accent2); }
+    .phase-3 .phase-node { color: var(--accent3); background: rgba(255,255,79,0.08); border-color: var(--accent3); }
+    .phase-4 .phase-node { color: var(--sun-ora); background: rgba(244,135,75,0.12); border-color: var(--sun-ora); }
+
+    .phase-body {
+      padding-top: 0.2rem;
+    }
+
+    .phase-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .phase-1 .phase-tag { color: var(--accent); }
+    .phase-2 .phase-tag { color: var(--accent2); }
+    .phase-3 .phase-tag { color: var(--accent3); }
+    .phase-4 .phase-tag { color: var(--sun-ora); }
+
+    .phase-title {
+      font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 1.25rem;
+      line-height: 1.15;
+    }
+
+    .phase-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .phase-desc {
+      color: var(--text);
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+      line-height: 1.75;
+    }
+
+    .milestones {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .milestones li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--text-dim);
+    }
+
+    .milestones li::before {
+      content: '◆';
+      font-size: 0.45rem;
+      margin-top: 0.45rem;
+      flex-shrink: 0;
+    }
+
+    .phase-1 .milestones li::before { color: var(--accent); }
+    .phase-2 .milestones li::before { color: var(--accent2); }
+    .phase-3 .milestones li::before { color: var(--accent3); }
+    .phase-4 .milestones li::before { color: var(--sun-ora); }
+
+    .phase-meta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .meta-chip {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      padding: 0.3rem 0.7rem;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      border-radius: 2px;
+    }
+
+    /* Bloat items — extra jargon boxes */
+    .bloat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .bloat-item {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.85rem 1rem;
+    }
+
+    .bloat-item .bloat-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 0.3rem;
+    }
+
+    .bloat-item .bloat-val {
+      font-size: 0.8rem;
+      color: var(--text);
+    }
+
+    /* =====================
+       PHASE 4 — SPECIAL
+    ===================== */
+    .phase-4-wrap {
+      position: relative;
+      overflow: hidden;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+    }
+
+    .sunset-bg {
+      background: linear-gradient(
+        180deg,
+        var(--sun-sky) 0%,
+        var(--sun-dusk) 25%,
+        var(--sun-pur) 45%,
+        var(--sun-pink) 62%,
+        var(--sun-ora) 78%,
+        var(--sun-yel) 92%,
+        #c87941 100%
+      );
+      padding: 3rem 2.5rem;
+      position: relative;
+    }
+
+    /* sun disc */
+    .sunset-bg::before {
+      content: '';
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffe066 0%, #f9c74f 40%, #f4874b 80%, transparent 100%);
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0.85;
+      filter: blur(2px);
+    }
+
+    /* horizon ground */
+    .sunset-bg::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: linear-gradient(180deg, transparent, #1a0a0a 100%);
+    }
+
+    .sunset-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .sunset-content .phase-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      color: #fff8ee;
+      text-shadow: 0 0 40px rgba(249,199,79,0.4);
+    }
+
+    .sunset-content .phase-desc {
+      color: rgba(255,248,238,0.8);
+      max-width: 38ch;
+      margin: 0 auto 2rem;
+    }
+
+    .sunset-icons {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      font-size: 3rem;
+      margin: 2rem 0;
+      filter: drop-shadow(0 0 20px rgba(249,199,79,0.5));
+    }
+
+    .sunset-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--sun-yel);
+      margin-bottom: 0.75rem;
+      opacity: 0.9;
+    }
+
+    /* =====================
+       IRONY BREAK
+    ===================== */
+    .irony-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem 8rem;
+    }
+
+    .irony-box {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 3rem;
+      text-align: center;
+      position: relative;
+      background: var(--bg2);
+      overflow: hidden;
+    }
+
+    .irony-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(244,135,75,0.07), transparent 70%);
+    }
+
+    .irony-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+    }
+
+    .irony-headline {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      color: var(--sun-yel);
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+
+    .irony-body {
+      color: var(--text-dim);
+      font-size: 1rem;
+      line-height: 1.8;
+      max-width: 50ch;
+      margin: 0 auto 2.5rem;
+    }
+
+    .irony-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-width: 360px;
+      margin: 0 auto 2.5rem;
+      text-align: left;
+    }
+
+    .irony-step {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.875rem;
+      color: var(--text);
+    }
+
+    .irony-step-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--sun-ora);
+      color: var(--sun-ora);
+      flex-shrink: 0;
+    }
+
+    .irony-price {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      padding: 0.4rem 1rem;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      display: inline-block;
+    }
+
+    /* =====================
+       FOOTER
+    ===================== */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    footer p {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      line-height: 2;
+    }
+
+    footer a {
+      color: var(--text-dim);
+      text-decoration: none;
+    }
+
+    footer a:hover { color: var(--text); }
+
+    /* =====================
+       PROGRESS BAR VISUAL
+    ===================== */
+    .progress-bar-wrap {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2rem;
+      margin: 0 2rem 5rem;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .progress-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .progress-track {
+      height: 6px;
+      background: var(--bg3);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3), var(--sun-ora));
+      border-radius: 3px;
+      transition: width 1.8s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    .progress-phases {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+    }
+
+    .progress-phase {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .progress-phase strong {
+      display: block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.25rem;
+    }
+
+    /* =====================
+       RESPONSIVE
+    ===================== */
+    @media (max-width: 600px) {
+      .spine::before { left: 20px; }
+      .phase { grid-template-columns: 44px 1fr; gap: 0 1rem; }
+      .phase-node { width: 44px; height: 44px; font-size: 0.9rem; }
+      .irony-box { padding: 2rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===================== HERO ===================== -->
+  <div class="hero">
+    <div class="hero-eyebrow">v12.4.0-alpha — Q3 2094 RELEASE</div>
+    <h1 class="hero-title reveal">The <span>Definitive</span> Roadmap to Van, Dog &amp; Sunset</h1>
+    <p class="hero-sub reveal">
+      A comprehensive, peer-reviewed, multi-decade strategic framework for achieving the optimal
+      lifestyle outcome of (1) a vehicle, (2) a canine companion, and (3) ambient solar-descent viewing.
+    </p>
+    <div class="hero-badges reveal">
+      <span class="badge live">● ESTIMATED ROI: 100 YEARS</span>
+      <span class="badge">COMPLEXITY: MAXIMUM</span>
+      <span class="badge">PHASES: 4</span>
+      <span class="badge">PREREQUISITES: YOUR ENTIRE LIFE</span>
+    </div>
+    <div class="scroll-hint reveal">Scroll to begin your journey</div>
+  </div>
+
+  <!-- ===================== PROGRESS BAR ===================== -->
+  <div class="progress-bar-wrap reveal">
+    <div class="progress-label">
+      <span>OVERALL ROADMAP COMPLETION</span>
+      <span id="pct-label">0%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="progress-phases">
+      <div class="progress-phase"><strong>PHASE 01</strong>Money &amp; Power</div>
+      <div class="progress-phase"><strong>PHASE 02</strong>Brain Upload</div>
+      <div class="progress-phase"><strong>PHASE 03</strong>Sim Reality</div>
+      <div class="progress-phase"><strong>PHASE 04</strong>Van. Dog. Sunset.</div>
+    </div>
+  </div>
+
+  <!-- ===================== ROADMAP ===================== -->
+  <div class="roadmap">
+
+    <div class="roadmap-intro reveal">
+      <h2>The Framework</h2>
+      <p>Each phase unlocks the next. There are no shortcuts. Trust the process. The process was designed by people who never watched a sunset.</p>
+    </div>
+
+    <div class="spine">
+
+      <!-- PHASE 1 -->
+      <div class="phase phase-1 reveal">
+        <div class="phase-node">01</div>
+        <div class="phase-body">
+          <div class="phase-tag">Phase 01 — Foundation Layer</div>
+          <h3 class="phase-title">Money &amp; Power</h3>
+          <div class="phase-card">
+            <p class="phase-desc">
+              Before you can enjoy anything, you must first achieve absolute financial dominance
+              and strategic institutional leverage. This phase typically spans 25–40 years and
+              requires the complete sacrifice of leisure, relationships, and the present tense.
+            </p>
+            <ul class="milestones">
+              <li>Exit from first startup (target valuation: $2B+, accept no less)</li>
+              <li>Accumulate sufficient capital to weather 3+ economic collapses</li>
+              <li>Establish multi-jurisdictional corporate entities for tax optimisation</li>
+              <li>Achieve thought leadership status (minimum 500K LinkedIn followers)</li>
+              <li>Secure board seats at 4 unicorns and 1 sovereign wealth fund</li>
+              <li>Develop proprietary AI-driven dog happiness prediction model</li>
+              <li>Acquire mineral rights to a sunset-adjacent geographic corridor</li>
+              <li>Publish memoir: <em>"The Hustle Is The Van"</em></li>
+            </ul>
+            <div class="phase-meta">
+              <span class="meta-chip">ETA: 2046</span>
+              <span class="meta-chip">BURN RATE: YOUR 30S</span>
+              <span class="meta-chip">DEPENDENCY: YOUR ENTIRE YOUTH</span>
+              <span class="meta-chip">STATUS: IN PROGRESS (probably)</span>
+            </div>
+          </div>
+          <div class="bloat-grid">
+            <div class="bloat-item">
+              <div class="bloat-label">Networking Events</div>
+              <div class="bloat-val">1,240 attended</div>
+            </div>
+            <div class="bloat-item">
+              <div class="bloat-label">5am Wake-ups</div>
+              <div class="bloat-val">14,600 mandatory</div>
+            </div>
+            <div class="bloat-item">
+              <div class="bloat-label">Productivity Apps</div>
+              <div class="bloat-val">94 installed</div>
+            </div>
+            <div class="bloat-item">
+              <div class="bloat-label">Sunsets Missed</div>
+              <div class="bloat-val">~9,490</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PHASE 2 -->
+      <div class="phase phase-2 reveal">
+        <div class="phase-node">02</div>
+        <div class="phase-body">
+          <div class="phase-tag">Phase 02 — Transcendence Layer</div>
+          <h3 class="phase-title">Upload Brain Technology</h3>
+          <div class="phase-card">
+            <p class="phase-desc">
+              Phase 01 capital must be deployed to accelerate the inevitable technological
+              singularity enabling full neural substrate transfer. Only by escaping the
+              biological bottleneck of your physical body can you truly be ready to sit in a
+              van and look at an orange sky.
+            </p>
+            <ul class="milestones">
+              <li>Fund 3 neurotechnology startups (2 will fail, 1 will pivot to B2B SaaS)</li>
+              <li>Volunteer for Phase II clinical trial of cortical mesh v0.9-beta</li>
+              <li>Negotiate intellectual property rights to your own consciousness</li>
+              <li>Resolve philosophical debate on whether your upload can own property</li>
+              <li>Migrate personal identity to distributed cloud architecture (AWS preferred)</li>
+              <li>Debug persistent hallucination of golden retriever in production environment</li>
+              <li>Achieve ISO certification for consciousness data handling compliance</li>
+              <li>Backup to cold storage. Restore. Panic. Restore again.</li>
+            </ul>
+            <div class="phase-meta">
+              <span class="meta-chip">ETA: 2061</span>
+              <span class="meta-chip">COST: ~$340M</span>
+              <span class="meta-chip">STATUS: AWAITING REGULATORY APPROVAL</span>
+              <span class="meta-chip">RISK: MODERATE-TO-EXISTENTIAL</span>
+            </div>
+          </div>
+          <div class="bloat-grid">
+            <div class="bloat-item">
+              <div class="bloat-label">Cloud Instances</div>
+              <div class="bloat-val">You (×3 replicas)</div>
+            </div>
+            <div class="bloat-item">
+              <div class="bloat-label">Latency</div>
+              <div class="bloat-val">12ms (acceptable)</div>
+            </div>
+            <div class="bloat-item">
+              <div class="bloat-label">Uptime SLA</div>
+              <div class="bloat-val">99.97% consciousness</div>
+            </div>
+            <div class="bloat-item">
+              <div class="bloat-label">Dog Simulation</div>
+              <div class="bloat-val">Not yet available</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PHASE 3 -->
+      <div class="phase phase-3 reveal">
+        <div class="phase-node">03</div>
+        <div class="phase-body">
+          <div class="phase-tag">Phase 03 — Reality Engineering Layer</div>
+          <h3 class="phase-title">Create Virtual Simulation</h3>
+          <div class="phase-card">
+            <p class="phase-desc">
+              With consciousness successfully uploaded, the final prerequisite is constructing
+              a photorealistic virtual environment indistinguishable from base reality — specifically
+              one containing (a) a 1987 VW Camper Van, (b) a golden retriever, and (c) dynamically
+              rendered atmospheric light scattering consistent with a Pacific coast sunset, circa 6:42pm.
+            </p>
+            <ul class="milestones">
+              <li>Render 4D van interior with correct vinyl smell coefficient and seat-spring physics</li>
+              <li>Train GAN on 40M dog images to achieve >98.6% waggle authenticity score</li>
+              <li>Commission ocean-atmosphere fluid dynamics shader (12 month dev sprint)</li>
+              <li>Resolve quantum rendering artifacts in dog fur at sunset-angle edge cases</li>
+              <li>Achieve Turing test compliance: simulated sand between toes indistinguishable from real</li>
+              <li>File patents on simulated contentment algorithm before competitors</li>
+              <li>A/B test horizon colour temperature (warm vs. slightly warmer)</li>
+              <li>Certify simulation under European Synthetic Experience Regulation (SER) 2078</li>
+            </ul>
+            <div class="phase-meta">
+              <span class="meta-chip">ETA: 2079</span>
+              <span class="meta-chip">COMPUTE: 4 EXAFLOPS</span>
+              <span class="meta-chip">FIDELITY: 99.3% REAL</span>
+              <span class="meta-chip">MISSING: 0.7% UNKNOWN FEELING</span>
+            </div>
+          </div>
+          <div class="bloat-grid">
+            <div class="bloat-item">
+              <div class="bloat-label">Polygons</div>
+              <div class="bloat-val">2.4 trillion</div>
+            </div>
+            <div class="bloat-item">
+              <div class="bloat-label">Dog Hairs Rendered</div>
+              <div class="bloat-val">8.2 million</div>
+            </div>
+            <div class="bloat-item">
+              <div class="bloat-label">Sunset Colours</div>
+              <div class="bloat-val">14M (real: also 14M)</div>
+            </div>
+            <div class="bloat-item">
+              <div class="bloat-label">That Feeling</div>
+              <div class="bloat-val">Unresolved ticket</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PHASE 4 -->
+      <div class="phase phase-4 reveal">
+        <div class="phase-node">04</div>
+        <div class="phase-body">
+          <div class="phase-tag">Phase 04 — Final Destination</div>
+          <h3 class="phase-title">Van. Dog. Sunset.</h3>
+          <div class="phase-4-wrap">
+            <div class="sunset-bg">
+              <div class="sunset-content">
+                <div class="sunset-tag">● OBJECTIVE UNLOCKED</div>
+                <div class="phase-title" style="font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; color: #fff8ee; text-shadow: 0 0 40px rgba(249,199,79,0.4);">You made it.</div>
+                <div class="sunset-icons">🚐 🐕 🌅</div>
+                <p class="phase-desc" style="color: rgba(255,248,238,0.8); max-width: 38ch; margin: 0 auto;">
+                  Parked on a coastal bluff. Dog asleep on the passenger seat.
+                  Sky doing that thing where it turns fourteen shades of orange.
+                  Wind through a cracked window. Nothing else matters.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="phase-card">
+            <div class="phase-meta" style="margin-top: 0; padding-top: 0; border-top: none;">
+              <span class="meta-chip">ETA: 2094</span>
+              <span class="meta-chip">COST: ~$340M + YOUR 20S, 30S, 40S, 50S, 60S, 70S</span>
+              <span class="meta-chip">PREREQUISITE: PHASES 01–03</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===================== IRONY BREAK ===================== -->
+  <div class="irony-section">
+    <div class="irony-box reveal">
+      <div class="irony-label">// SYSTEM NOTE — CLASSIFIED</div>
+      <div class="irony-headline">Or. You know. Just do it.</div>
+      <p class="irony-body">
+        There is a simpler roadmap. It has been available since before the internet.
+        It involves no phases, no KPIs, no cloud infrastructure, and no regulatory approval
+        from the European Synthetic Experience Commission.
+      </p>
+      <div class="irony-steps">
+        <div class="irony-step">
+          <div class="irony-step-num">1</div>
+          <span>Buy a van. Used. ~$5k–$15k.</span>
+        </div>
+        <div class="irony-step">
+          <div class="irony-step-num">2</div>
+          <span>Adopt a dog. Any dog. All of them are correct.</span>
+        </div>
+        <div class="irony-step">
+          <div class="irony-step-num">3</div>
+          <span>Drive west. Stop when the sky turns orange.</span>
+        </div>
+      </div>
+      <span class="irony-price">ESTIMATED TIME: THIS WEEKEND &nbsp;|&nbsp; ESTIMATED COST: LESS THAN PHASE 01 NETWORKING EVENTS</span>
+    </div>
+  </div>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer>
+    <p>
+      theroadmap.ai201.site &nbsp;—&nbsp; a satire &nbsp;—&nbsp; <a href="https://ai201.site">ai201.site</a>
+    </p>
+    <p style="margin-top: 0.5rem;">
+      The van is real. The sunset is happening right now. The dog is ready.<br>
+      The roadmap was never necessary.
+    </p>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.08 });
+    reveals.forEach(el => observer.observe(el));
+
+    // Progress bar animation when in view
+    const fill = document.getElementById('progress-fill');
+    const lbl  = document.getElementById('pct-label');
+    const barWrap = document.querySelector('.progress-bar-wrap');
+
+    const barObserver = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        let val = 0;
+        const step = () => {
+          val += 0.5;
+          if (val > 100) val = 100;
+          fill.style.width = val + '%';
+          lbl.textContent = Math.round(val) + '%';
+          if (val < 100) requestAnimationFrame(step);
+          else {
+            setTimeout(() => {
+              // "Oh wait, the goal was trivial" deflate
+              fill.style.transition = 'width 2.5s ease';
+              fill.style.width = '0%';
+              lbl.textContent = '0%';
+              setTimeout(() => {
+                fill.style.transition = 'none';
+                fill.style.background = 'linear-gradient(90deg, #f4874b, #f9c74f)';
+                fill.style.transition = 'width 0.6s ease';
+                fill.style.width = '3%';
+                lbl.textContent = '≈ 0%';
+              }, 3000);
+            }, 800);
+          }
+        };
+        requestAnimationFrame(step);
+        barObserver.disconnect();
+      }
+    }, { threshold: 0.5 });
+    barObserver.observe(barWrap);
+  </script>
+
+</body>
+</html>
