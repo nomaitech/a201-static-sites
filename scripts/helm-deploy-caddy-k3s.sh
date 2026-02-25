@@ -6,7 +6,7 @@ cd "$ROOT_DIR"
 
 namespace="${NAMESPACE:-${USER}}"
 release="${RELEASE_NAME:-shared-static-caddy}"
-image_repo="${IMAGE_REPO:-pdr.jonbesga.com/shared-static-caddy-demo}"
+image_repo="${IMAGE_REPO:-pdr.jonbesga.com/shared-static-sites}"
 image_tag="${IMAGE_TAG:-$(git rev-parse --short HEAD)}"
 content_root="${CONTENT_ROOT:-content/caddy-sites}"
 fullname_override="${FULLNAME_OVERRIDE:-shared-static-sites}"
