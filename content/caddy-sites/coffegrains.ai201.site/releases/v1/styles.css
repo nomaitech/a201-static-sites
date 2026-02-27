@@ -1,0 +1,188 @@
+:root {
+  --bg: #f3eee7;
+  --paper: #fffaf4;
+  --ink: #2f2118;
+  --muted: #6e5648;
+  --accent: #9a4d2a;
+  --accent-2: #e2b57f;
+  --line: rgba(47, 33, 24, 0.14);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Fraunces", serif;
+  color: var(--ink);
+  background: radial-gradient(circle at top right, #f9e7cf 0%, var(--bg) 45%, #efe6db 100%);
+  line-height: 1.5;
+}
+
+.noise {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: radial-gradient(#000 0.4px, transparent 0.4px);
+  background-size: 4px 4px;
+}
+
+.hero,
+main,
+footer {
+  width: min(1100px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.hero {
+  padding: 5rem 0 2rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.7rem;
+  font-family: "Syne", sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.1;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  margin-bottom: 1rem;
+}
+
+h1 span {
+  display: block;
+  color: var(--accent);
+}
+
+.lead {
+  max-width: 70ch;
+  color: var(--muted);
+}
+
+.cta {
+  display: inline-block;
+  margin-top: 1rem;
+  background: var(--accent);
+  color: #fff8ef;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 0.75rem 1.25rem;
+  font-family: "Syne", sans-serif;
+  transition: transform 140ms ease;
+}
+
+.cta:hover {
+  transform: translateY(-1px);
+}
+
+.ticker {
+  overflow: hidden;
+  border-block: 1px solid var(--line);
+  margin-bottom: 2rem;
+}
+
+.ticker-track {
+  display: flex;
+  gap: 2rem;
+  width: max-content;
+  padding: 0.8rem 0;
+  animation: ticker 18s linear infinite;
+  font-family: "Syne", sans-serif;
+  color: var(--accent);
+}
+
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.market-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.market-grid article,
+.ritual-cards article,
+.visit {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 1rem;
+}
+
+.market-grid p,
+.market-grid li,
+.ritual-cards p,
+.visit p {
+  color: var(--muted);
+}
+
+ul {
+  margin: 0.8rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.rituals {
+  margin: 2rem 0;
+}
+
+.ritual-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.visit form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+input,
+button {
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  padding: 0.65rem 0.9rem;
+  font: inherit;
+}
+
+input {
+  min-width: 230px;
+  background: #fff;
+}
+
+button {
+  background: var(--accent-2);
+  color: #2e1d12;
+  cursor: pointer;
+}
+
+#formMsg {
+  margin-top: 0.8rem;
+  min-height: 1.2rem;
+  color: var(--accent);
+}
+
+footer {
+  padding: 2rem 0 3rem;
+  color: var(--muted);
+}
