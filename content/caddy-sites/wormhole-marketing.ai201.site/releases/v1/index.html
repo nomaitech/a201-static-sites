@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>wormhole.marketing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --void: #03020a;
+  --deep: #07051a;
+  --electric: #7c3fff;
+  --cyan: #00d4ff;
+  --gold: #ffd166;
+  --white: #f0ecff;
+  --muted: #6a5f96;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--void);
+  color: var(--white);
+  font-family: 'Nunito Sans', sans-serif;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ── Cursor ─────────────────────────── */
+#cur, #cur-ring {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+}
+#cur {
+  width: 8px; height: 8px;
+  background: var(--cyan);
+  box-shadow: 0 0 10px var(--cyan);
+  mix-blend-mode: screen;
+  transition: width .15s, height .15s;
+}
+#cur-ring {
+  width: 30px; height: 30px;
+  border: 1px solid rgba(124,63,255,.5);
+  transition: width .22s, height .22s, left .1s, top .1s;
+}
+
+/* ── Canvases ───────────────────────── */
+#stars {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+#funnel-canvas {
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ── Nav ────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 3rem;
+  background: linear-gradient(to bottom, rgba(3,2,10,.9), transparent);
+  backdrop-filter: blur(10px);
+}
+.nav-logo {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem; font-weight: 800;
+  color: var(--white); text-decoration: none;
+}
+.nav-logo span { color: var(--cyan); }
+.nav-links { list-style: none; display: flex; gap: 2rem; }
+.nav-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: .66rem; letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--muted); text-decoration: none;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--cyan); }
+
+/* ── Hero ───────────────────────────── */
+.hero {
+  position: relative; z-index: 10;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 6rem 2rem 4rem;
+}
+.hero-eye {
+  font-family: 'DM Mono', monospace;
+  font-size: .64rem; letter-spacing: .32em;
+  text-transform: uppercase; color: var(--cyan);
+  margin-bottom: 1.4rem;
+  opacity: 0; animation: up .9s ease .3s forwards;
+}
+.hero-h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(1.9rem, 4.6vw, 3.6rem);
+  font-weight: 800; line-height: 1.1;
+  letter-spacing: -.025em; max-width: 780px;
+  opacity: 0; animation: up .9s ease .6s forwards;
+}
+.hero-h1 em {
+  font-style: normal;
+  background: linear-gradient(120deg, var(--electric), var(--cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-p {
+  margin-top: 1.4rem;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: .95rem; line-height: 1.85;
+  color: var(--muted); max-width: 400px;
+  opacity: 0; animation: up .9s ease .9s forwards;
+}
+.scroll-cue {
+  position: absolute; bottom: 2.5rem; left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column;
+  align-items: center; gap: .5rem;
+  opacity: 0; animation: fadein 1s ease 2s forwards;
+}
+.scroll-cue span {
+  font-family: 'DM Mono', monospace;
+  font-size: .58rem; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--muted);
+}
+.scroll-line {
+  width: 1px; height: 36px;
+  background: linear-gradient(to bottom, var(--electric), transparent);
+  animation: breathe 2s ease infinite;
+}
+
+/* ── Stage sections ─────────────────── */
+.stage {
+  position: relative; z-index: 10;
+  min-height: 100vh;
+  display: flex; align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem;
+}
+
+.stage-card {
+  background: rgba(7,5,26,.8);
+  border: 1px solid rgba(124,63,255,.2);
+  border-radius: .9rem;
+  padding: 2rem 2.2rem;
+  width: 100%;
+  backdrop-filter: blur(24px);
+  position: relative; overflow: hidden;
+  box-shadow: 0 0 60px rgba(61,31,122,.25), inset 0 1px 0 rgba(255,255,255,.04);
+  opacity: 0; transform: translateY(28px) scale(.98);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.stage-card.vis { opacity: 1; transform: translateY(0) scale(1); }
+.stage-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% -40%, rgba(124,63,255,.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+/* Card max-widths per stage — shrink with the funnel */
+.s1 .stage-card { max-width: 580px; }
+.s2 .stage-card { max-width: 490px; }
+.s3 .stage-card { max-width: 400px; }
+.s4 .stage-card { max-width: 330px; }
+.s5 .stage-card { max-width: 270px; border-color: rgba(255,209,102,.3); box-shadow: 0 0 60px rgba(255,180,0,.2), inset 0 1px 0 rgba(255,255,255,.06); }
+
+.s-num {
+  font-family: 'DM Mono', monospace;
+  font-size: .58rem; letter-spacing: .25em;
+  text-transform: uppercase; color: var(--cyan);
+  margin-bottom: .5rem;
+}
+.s-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+  font-weight: 800; letter-spacing: -.02em;
+  line-height: 1; margin-bottom: .75rem;
+}
+.s1 .s-name { color: #b39dff; }
+.s2 .s-name { color: #8561ff; }
+.s3 .s-name { color: #4db8ff; }
+.s4 .s-name { color: #00d4ff; }
+.s5 .s-name { color: var(--gold); }
+
+.s-desc {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: .95rem; line-height: 1.75;
+  color: var(--muted);
+}
+.s-bar {
+  margin-top: 1.3rem; height: 2px;
+  background: rgba(255,255,255,.05);
+  border-radius: 1px; overflow: hidden;
+}
+.s-bar-fill {
+  height: 100%; border-radius: 1px;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .8s ease .35s;
+}
+.stage-card.vis .s-bar-fill { transform: scaleX(1); }
+.s1 .s-bar-fill { background: linear-gradient(to right, #b39dff, #7c3fff); width: 20%; }
+.s2 .s-bar-fill { background: linear-gradient(to right, #7c3fff, #4db8ff); width: 40%; }
+.s3 .s-bar-fill { background: linear-gradient(to right, #4db8ff, #00d4ff); width: 60%; }
+.s4 .s-bar-fill { background: linear-gradient(to right, #00d4ff, #ffd166); width: 80%; }
+.s5 .s-bar-fill { background: linear-gradient(to right, #ffd166, #fff); width: 100%; }
+
+/* ── Conversion burst ───────────────── */
+.conv {
+  position: relative; z-index: 10;
+  min-height: 70vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 4rem 2rem;
+  overflow: hidden;
+}
+.burst-wrap {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.b-core {
+  width: 140px; height: 140px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,220,100,1) 0%, rgba(255,140,0,.5) 40%, transparent 70%);
+  filter: blur(3px);
+  animation: bpulse 2.5s ease infinite;
+}
+.b-ring {
+  position: absolute; border-radius: 50%;
+  animation: bexpand 2.8s ease infinite;
+}
+.b-ring:nth-child(2) { width: 240px; height: 240px; border: 1px solid rgba(255,209,102,.45); }
+.b-ring:nth-child(3) { width: 380px; height: 380px; border: 1px solid rgba(255,209,102,.2); animation-delay: .5s; }
+.b-ring:nth-child(4) { width: 540px; height: 540px; border: 1px solid rgba(0,212,255,.14); animation-delay: 1s; }
+
+.conv-label {
+  font-family: 'DM Mono', monospace;
+  font-size: .63rem; letter-spacing: .28em;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: .9rem; position: relative; z-index: 2;
+}
+.conv-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  font-weight: 800; letter-spacing: -.03em; line-height: 1;
+  background: linear-gradient(to bottom, #fff 0%, var(--gold) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; position: relative; z-index: 2;
+}
+.conv-sub {
+  margin-top: 1.2rem;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: .95rem; line-height: 1.75;
+  color: var(--muted); max-width: 300px;
+  position: relative; z-index: 2;
+}
+
+/* ── CTA ────────────────────────────── */
+.cta-sec {
+  position: relative; z-index: 10;
+  padding: 8rem 2rem 12rem;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center; gap: 1.6rem;
+}
+.cta-over {
+  font-family: 'DM Mono', monospace;
+  font-size: .6rem; letter-spacing: .3em;
+  text-transform: uppercase; color: var(--electric);
+}
+.cta-h {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(1.9rem, 4.6vw, 3.6rem);
+  font-weight: 800; letter-spacing: -.025em;
+  line-height: 1.1; max-width: 560px;
+}
+.cta-h em { font-style: normal; color: var(--cyan); }
+.cta-btn {
+  display: inline-flex; align-items: center; gap: .7rem;
+  padding: .9rem 2.2rem;
+  background: linear-gradient(135deg, var(--electric), var(--cyan));
+  border: none; border-radius: .5rem;
+  color: #03020a; font-family: 'Outfit', sans-serif;
+  font-size: .88rem; font-weight: 700; letter-spacing: .03em;
+  cursor: pointer; text-decoration: none;
+  transition: box-shadow .3s, transform .2s;
+  box-shadow: 0 0 24px rgba(0,212,255,.35);
+}
+.cta-btn:hover {
+  box-shadow: 0 0 50px rgba(0,212,255,.6), 0 0 100px rgba(124,63,255,.3);
+  transform: translateY(-2px);
+}
+.cta-arr { transition: transform .2s; }
+.cta-btn:hover .cta-arr { transform: translateX(4px); }
+
+/* ── Footer ─────────────────────────── */
+footer {
+  position: relative; z-index: 10;
+  border-top: 1px solid rgba(124,63,255,.1);
+  padding: 1.8rem 3rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+footer .logo { font-family: 'Outfit', sans-serif; font-size: .88rem; font-weight: 800; color: var(--muted); }
+footer .logo span { color: var(--cyan); }
+footer small {
+  font-family: 'DM Mono', monospace;
+  font-size: .58rem; letter-spacing: .1em;
+  text-transform: uppercase; color: rgba(106,95,150,.4);
+}
+
+/* ── Keyframes ──────────────────────── */
+@keyframes up    { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+@keyframes fadein{ from { opacity:0; } to { opacity:1; } }
+@keyframes breathe { 0%,100%{opacity:.4} 50%{opacity:1} }
+@keyframes bpulse  { 0%,100%{transform:scale(1);opacity:.8} 50%{transform:scale(1.08);opacity:1} }
+@keyframes bexpand { 0%{transform:scale(.9);opacity:.8} 100%{transform:scale(1.25);opacity:0} }
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+<canvas id="stars"></canvas>
+<canvas id="funnel-canvas"></canvas>
+
+<nav>
+  <a href="#" class="nav-logo">wormhole<span>.marketing</span></a>
+  <ul class="nav-links">
+    <li><a href="#stages">Pipeline</a></li>
+    <li><a href="#cta">Work with us</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <p class="hero-eye">Marketing that defies gravity</p>
+  <h1 class="hero-h1">
+    Don't let your marketing pipeline<br>
+    fall into a <em>blackhole</em>.<br>
+    Make it a <em>wormhole</em>.
+  </h1>
+  <p class="hero-p">We collapse the distance between strangers and customers — every stage engineered to pull leads through at light speed.</p>
+  <div class="scroll-cue">
+    <span>Enter the tunnel</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<div id="stages">
+  <section class="stage s1">
+    <div class="stage-card">
+      <p class="s-num">01 / 05</p>
+      <h2 class="s-name">Awareness</h2>
+      <p class="s-desc">Your signal enters the cosmos. Content, paid media, and SEO cast a gravitational net wide enough to capture every relevant orbit in the universe.</p>
+      <div class="s-bar"><div class="s-bar-fill"></div></div>
+    </div>
+  </section>
+
+  <section class="stage s2">
+    <div class="stage-card">
+      <p class="s-num">02 / 05</p>
+      <h2 class="s-name">Interest</h2>
+      <p class="s-desc">Curiosity becomes attraction. Targeted messaging, retargeting loops, and value-first content pull prospects deeper into your gravitational field.</p>
+      <div class="s-bar"><div class="s-bar-fill"></div></div>
+    </div>
+  </section>
+
+  <section class="stage s3">
+    <div class="stage-card">
+      <p class="s-num">03 / 05</p>
+      <h2 class="s-name">Consideration</h2>
+      <p class="s-desc">Comparison mode engaged. We arm prospects with proof, case studies, and clarity to choose you over every alternative universe.</p>
+      <div class="s-bar"><div class="s-bar-fill"></div></div>
+    </div>
+  </section>
+
+  <section class="stage s4">
+    <div class="stage-card">
+      <p class="s-num">04 / 05</p>
+      <h2 class="s-name">Intent</h2>
+      <p class="s-desc">Near-gravity achieved. Precision nurture and friction-free flows keep momentum from decaying at the critical threshold.</p>
+      <div class="s-bar"><div class="s-bar-fill"></div></div>
+    </div>
+  </section>
+
+  <section class="stage s5">
+    <div class="stage-card">
+      <p class="s-num">05 / 05</p>
+      <h2 class="s-name">Conversion</h2>
+      <p class="s-desc">Exit velocity. Killer CTAs and relentless A/B testing close every gap to signed.</p>
+      <div class="s-bar"><div class="s-bar-fill"></div></div>
+    </div>
+  </section>
+</div>
+
+<section class="conv">
+  <div class="burst-wrap">
+    <div class="b-core"></div>
+    <div class="b-ring"></div>
+    <div class="b-ring"></div>
+    <div class="b-ring"></div>
+  </div>
+  <p class="conv-label">You've reached the other side</p>
+  <h2 class="conv-title">Customer.<br>Acquired.</h2>
+  <p class="conv-sub">Every lead that enters your wormhole exits as a customer — not lost to the void.</p>
+</section>
+
+<section class="cta-sec" id="cta">
+  <p class="cta-over">Ready to bend the pipeline?</p>
+  <h2 class="cta-h">Let's build your <em>wormhole</em>.</h2>
+  <a href="mailto:hello@wormhole.marketing" class="cta-btn">
+    Start the journey <span class="cta-arr">→</span>
+  </a>
+</section>
+
+<footer>
+  <div class="logo">wormhole<span>.marketing</span></div>
+  <small>© 2026 — All rights reserved</small>
+</footer>
+
+<script>
+// ── Cursor ──────────────────────────────
+const cur = document.getElementById('cur');
+const cring = document.getElementById('cur-ring');
+let mx=0, my=0, rx=0, ry=0;
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+(function animCur() {
+  cur.style.left = mx+'px'; cur.style.top = my+'px';
+  rx += (mx-rx)*0.12; ry += (my-ry)*0.12;
+  cring.style.left = rx+'px'; cring.style.top = ry+'px';
+  requestAnimationFrame(animCur);
+})();
+document.querySelectorAll('a,button').forEach(el => {
+  el.addEventListener('mouseenter', () => { cur.style.width=cur.style.height='16px'; cring.style.width=cring.style.height='48px'; });
+  el.addEventListener('mouseleave', () => { cur.style.width=cur.style.height='8px'; cring.style.width=cring.style.height='30px'; });
+});
+
+// ── Starfield ───────────────────────────
+const sc = document.getElementById('stars');
+const sctx = sc.getContext('2d');
+let SW, SH, stars=[];
+function resizeS() { SW=sc.width=innerWidth; SH=sc.height=innerHeight; }
+resizeS();
+window.addEventListener('resize', resizeS);
+function mkStars(n) {
+  stars = Array.from({length:n}, () => ({
+    x: Math.random()*SW, y: Math.random()*SH,
+    r: Math.random()*1.1+0.15, a: Math.random()*0.5+0.15,
+    twinkle: Math.random()>.93
+  }));
+}
+mkStars(220);
+(function drawStars() {
+  sctx.clearRect(0,0,SW,SH);
+  stars.forEach(s => {
+    const a = s.twinkle ? s.a*(0.5+0.5*Math.sin(Date.now()*.0025+s.x*.01)) : s.a;
+    sctx.beginPath();
+    sctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+    sctx.fillStyle = `rgba(210,200,255,${a})`;
+    sctx.fill();
+  });
+  requestAnimationFrame(drawStars);
+})();
+
+// ── Funnel Canvas ───────────────────────
+const fc = document.getElementById('funnel-canvas');
+const fctx = fc.getContext('2d');
+
+function buildFunnel() {
+  fc.width  = document.body.clientWidth;
+  fc.height = document.body.scrollHeight;
+  fc.style.width  = fc.width  + 'px';
+  fc.style.height = fc.height + 'px';
+
+  const W  = fc.width;
+  const H  = fc.height;
+  const cx = W / 2;
+  const ctx = fctx;
+  ctx.clearRect(0, 0, W, H);
+
+  // Gather key y-positions from DOM
+  const heroEl   = document.querySelector('.hero');
+  const stageEls = [...document.querySelectorAll('.stage')];
+  const convEl   = document.querySelector('.conv');
+
+  // Funnel half-widths (fraction of viewport) at each stage centre
+  const halfRatios = [0.44, 0.34, 0.24, 0.14, 0.08];
+
+  // Key points: {y, hw}
+  const pts = [];
+  // Funnel mouth — near bottom of hero
+  pts.push({ y: heroEl.offsetTop + heroEl.offsetHeight * 0.82, hw: W * 0.50 });
+  // One point per stage centre
+  stageEls.forEach((el, i) => {
+    pts.push({ y: el.offsetTop + el.offsetHeight * 0.5, hw: W * halfRatios[i] });
+  });
+  // Tip at conversion section
+  pts.push({ y: convEl.offsetTop + convEl.offsetHeight * 0.45, hw: 0 });
+
+  const L = pts.map(p => ({ x: cx - p.hw, y: p.y }));
+  const R = pts.map(p => ({ x: cx + p.hw, y: p.y }));
+
+  // Helper: draw bezier wall through array of points
+  function wallPath(arr) {
+    ctx.moveTo(arr[0].x, arr[0].y);
+    for (let i = 1; i < arr.length; i++) {
+      const p = arr[i-1], q = arr[i];
+      const dy = q.y - p.y;
+      ctx.bezierCurveTo(p.x, p.y + dy*0.42, q.x, q.y - dy*0.42, q.x, q.y);
+    }
+  }
+
+  // ─ Clipped interior fill ──────────────
+  ctx.save();
+  ctx.beginPath();
+  wallPath(L);
+  // right wall reversed
+  ctx.lineTo(R[R.length-1].x, R[R.length-1].y);
+  for (let i = R.length-2; i >= 0; i--) {
+    const p = R[i+1], q = R[i];
+    const dy = p.y - q.y; // going upward
+    ctx.bezierCurveTo(p.x, p.y - dy*0.42, q.x, q.y + dy*0.42, q.x, q.y);
+  }
+  ctx.closePath();
+  ctx.clip();
+
+  // Dark interior gradient
+  const fillG = ctx.createLinearGradient(cx, pts[0].y, cx, pts[pts.length-1].y);
+  fillG.addColorStop(0,   'rgba(10,7,30,0.0)');
+  fillG.addColorStop(0.15,'rgba(14,11,46,0.72)');
+  fillG.addColorStop(0.7, 'rgba(7,5,26,0.88)');
+  fillG.addColorStop(1,   'rgba(3,2,10,0.95)');
+  ctx.fillStyle = fillG;
+  ctx.fillRect(0, 0, W, H);
+
+  // Interior ambient glows
+  pts.slice(0, -1).forEach((pt, i) => {
+    if (pt.hw < 4) return;
+    const t = i / (pts.length - 1);
+    const r = Math.max(pt.hw, 80);
+    const rg = ctx.createRadialGradient(cx, pt.y, 0, cx, pt.y, r);
+    const c  = t < 0.55 ? '80,40,180' : t < 0.9 ? '0,130,210' : '255,200,60';
+    rg.addColorStop(0,   `rgba(${c},${0.08 + t*0.06})`);
+    rg.addColorStop(0.5, `rgba(${c},${0.04})`);
+    rg.addColorStop(1,   `rgba(${c},0)`);
+    ctx.beginPath();
+    ctx.ellipse(cx, pt.y, r, r*0.45, 0, 0, Math.PI*2);
+    ctx.fillStyle = rg;
+    ctx.fill();
+  });
+
+  ctx.restore();
+
+  // ─ Glowing walls ─────────────────────
+  const wallColorStop = ctx.createLinearGradient(0, pts[0].y, 0, pts[pts.length-1].y);
+  wallColorStop.addColorStop(0,    'rgba(107,48,196,0.85)');
+  wallColorStop.addColorStop(0.35, 'rgba(0,180,255,0.9)');
+  wallColorStop.addColorStop(0.75, 'rgba(0,212,255,0.95)');
+  wallColorStop.addColorStop(1,    'rgba(255,220,100,1)');
+
+  const wallGlow = ctx.createLinearGradient(0, pts[0].y, 0, pts[pts.length-1].y);
+  wallGlow.addColorStop(0,    'rgba(107,48,196,0.18)');
+  wallGlow.addColorStop(0.35, 'rgba(0,180,255,0.22)');
+  wallGlow.addColorStop(0.75, 'rgba(0,212,255,0.28)');
+  wallGlow.addColorStop(1,    'rgba(255,220,100,0.35)');
+
+  [L, R].forEach(arr => {
+    // Outer soft glow
+    ctx.save();
+    ctx.beginPath(); wallPath(arr);
+    ctx.strokeStyle = wallGlow;
+    ctx.lineWidth = 18; ctx.shadowBlur = 0;
+    ctx.stroke();
+    ctx.restore();
+
+    // Mid glow
+    ctx.save();
+    ctx.beginPath(); wallPath(arr);
+    ctx.strokeStyle = wallColorStop;
+    ctx.lineWidth = 4;
+    ctx.shadowColor = 'rgba(0,212,255,0.6)';
+    ctx.shadowBlur = 18;
+    ctx.stroke();
+    ctx.restore();
+
+    // Core bright line
+    ctx.save();
+    ctx.beginPath(); wallPath(arr);
+    ctx.strokeStyle = 'rgba(200,230,255,0.9)';
+    ctx.lineWidth = 1.2;
+    ctx.shadowColor = '#fff';
+    ctx.shadowBlur = 6;
+    ctx.stroke();
+    ctx.restore();
+  });
+
+  // ─ Depth rings at each stage ─────────
+  const ringColors = [
+    'rgba(147,112,255,0.65)',
+    'rgba(100,80,255,0.7)',
+    'rgba(60,180,255,0.75)',
+    'rgba(0,212,255,0.8)',
+    'rgba(255,200,60,0.85)',
+  ];
+
+  pts.slice(1, -1).forEach((pt, i) => {
+    const hw = pt.hw;
+    const ry = hw * 0.14; // perspective foreshortening
+
+    // Outer ring
+    ctx.save();
+    ctx.beginPath();
+    ctx.ellipse(cx, pt.y, hw, ry, 0, 0, Math.PI*2);
+    ctx.strokeStyle = ringColors[i] || ringColors[ringColors.length-1];
+    ctx.lineWidth = 2.5;
+    ctx.shadowColor = ringColors[i];
+    ctx.shadowBlur = 14;
+    ctx.stroke();
+    ctx.restore();
+
+    // Inner dashed ring
+    ctx.save();
+    ctx.beginPath();
+    ctx.ellipse(cx, pt.y, hw*0.65, ry*0.65, 0, 0, Math.PI*2);
+    ctx.setLineDash([6, 14]);
+    ctx.strokeStyle = ringColors[i].replace(/[\d.]+\)$/, '0.25)');
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.restore();
+  });
+
+  // ─ Tip burst glow ────────────────────
+  const tip = pts[pts.length-1];
+  const tg = ctx.createRadialGradient(cx, tip.y, 0, cx, tip.y, 260);
+  tg.addColorStop(0,   'rgba(255,240,180,1)');
+  tg.addColorStop(0.06,'rgba(255,200,60,0.85)');
+  tg.addColorStop(0.25,'rgba(124,63,255,0.4)');
+  tg.addColorStop(0.6, 'rgba(0,100,200,0.1)');
+  tg.addColorStop(1,   'rgba(0,0,0,0)');
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx, tip.y, 260, 0, Math.PI*2);
+  ctx.fillStyle = tg;
+  ctx.fill();
+  ctx.restore();
+
+  // Bright tip dot
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, tip.y, 5, 0, Math.PI*2);
+  ctx.fillStyle = '#fff';
+  ctx.shadowColor = '#fff'; ctx.shadowBlur = 24;
+  ctx.fill();
+  ctx.restore();
+}
+
+// ── Stage card reveal ───────────────────
+const cards = document.querySelectorAll('.stage-card');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+}, { threshold: 0.28 });
+cards.forEach(c => io.observe(c));
+
+// ── Init ────────────────────────────────
+window.addEventListener('load', () => setTimeout(buildFunnel, 80));
+window.addEventListener('resize', buildFunnel);
+</script>
+</body>
+</html>
