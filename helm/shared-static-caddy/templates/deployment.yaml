@@ -56,6 +56,8 @@ spec:
                 last="$current"
                 sleep {{ .Values.caddy.reloadWatcher.pollIntervalSeconds }}
               done
+          resources:
+            {{- toYaml .Values.caddy.reloadWatcher.resources | nindent 12 }}
           volumeMounts:
             - name: caddy-config
               mountPath: /etc/caddy
