@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>☕ Barista Clicker</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Georgia', serif;
+  background: #1a0f0a;
+  color: #e8d5b7;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* HEADER */
+.header {
+  background: linear-gradient(180deg, #2d1a0e, #221208);
+  border-bottom: 2px solid #8b5e3c;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-height: 54px;
+}
+
+.header-title {
+  font-size: 1.3em;
+  color: #d4a76a;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.stat-badge {
+  background: #150b06;
+  border: 1px solid #6b4020;
+  border-radius: 8px;
+  padding: 4px 12px;
+  font-size: 0.82em;
+  white-space: nowrap;
+}
+
+.stat-badge .val {
+  color: #d4a76a;
+  font-weight: bold;
+}
+
+.stat-money .val { color: #f0c060; }
+.stat-cps .val   { color: #90d060; }
+.stat-xp .val    { color: #a0b8ff; }
+
+.level-badge {
+  background: linear-gradient(135deg, #7a4e28, #d4a76a);
+  color: #1a0f0a;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1em;
+  flex-shrink: 0;
+  box-shadow: 0 0 10px rgba(212,167,106,0.4);
+}
+
+/* GAME AREA */
+.game-area {
+  display: grid;
+  grid-template-columns: 300px 1fr 280px;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* LEFT PANEL */
+.left-panel {
+  background: #1d0e07;
+  border-right: 2px solid #6b4020;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px;
+  overflow-y: auto;
+  gap: 12px;
+}
+
+/* XP BAR */
+.xp-section { width: 100%; }
+
+.xp-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75em;
+  color: #8a7060;
+  margin-bottom: 4px;
+}
+
+.xp-bar-track {
+  height: 8px;
+  background: #150b06;
+  border: 1px solid #6b4020;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.xp-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7a4e28, #d4a76a);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+  min-width: 2px;
+}
+
+/* COFFEE BUTTON */
+.coffee-btn-wrap {
+  position: relative;
+  margin: 6px 0;
+}
+
+.coffee-btn {
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 32%,
+    #7a4a2a 0%,
+    #3d1f0a 45%,
+    #1a0802 100%);
+  border: 5px solid #c9956e;
+  cursor: pointer;
+  font-size: 4.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 0 2px #6b4020,
+    0 0 30px rgba(201,149,110,0.35),
+    inset 0 -8px 20px rgba(0,0,0,0.6);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.coffee-btn:hover {
+  transform: scale(1.04);
+  box-shadow:
+    0 0 0 2px #d4a76a,
+    0 0 50px rgba(212,167,106,0.5),
+    inset 0 -8px 20px rgba(0,0,0,0.6);
+}
+
+.coffee-btn:active {
+  transform: scale(0.93);
+  box-shadow:
+    0 0 0 2px #c9956e,
+    0 0 15px rgba(201,149,110,0.2),
+    inset 0 -8px 20px rgba(0,0,0,0.6);
+}
+
+.coffee-btn-shine {
+  position: absolute;
+  top: 18%;
+  left: 20%;
+  width: 35%;
+  height: 25%;
+  background: radial-gradient(ellipse, rgba(255,255,255,0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.click-info {
+  text-align: center;
+}
+
+.click-info .hint {
+  font-size: 0.75em;
+  color: #6a5040;
+}
+
+.click-info .value {
+  font-size: 0.9em;
+  color: #d4a76a;
+  margin-top: 2px;
+}
+
+/* STEAM */
+.steam-wrap {
+  position: absolute;
+  top: -20px;
+  left: 0; right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.steam {
+  width: 5px;
+  height: 22px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 4px;
+  animation: steamRise 2.2s ease-in-out infinite;
+}
+.steam:nth-child(2) { animation-delay: 0.7s; }
+.steam:nth-child(3) { animation-delay: 1.4s; }
+
+@keyframes steamRise {
+  0%   { opacity: 0; transform: translateY(0) scaleX(1); }
+  30%  { opacity: 0.5; }
+  100% { opacity: 0; transform: translateY(-30px) scaleX(2.5); }
+}
+
+/* TECHNIQUES */
+.technique-section { width: 100%; }
+
+.section-label {
+  font-size: 0.72em;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #8a7060;
+  margin-bottom: 7px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #3a2010;
+}
+
+.tech-btn {
+  width: 100%;
+  padding: 7px 10px;
+  margin-bottom: 4px;
+  background: #231209;
+  border: 1px solid #4a2c15;
+  border-radius: 6px;
+  color: #c8b898;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.82em;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Georgia', serif;
+}
+
+.tech-btn:hover:not(.locked) {
+  background: #2d1a0e;
+  border-color: #c9956e;
+  color: #e8d5b7;
+}
+
+.tech-btn.active {
+  background: #3a1e08;
+  border-color: #d4a76a;
+  color: #d4a76a;
+}
+
+.tech-btn.locked {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.tech-mult {
+  margin-left: auto;
+  color: #70c040;
+  font-size: 0.8em;
+  font-weight: bold;
+}
+
+.tech-name { font-weight: bold; }
+.tech-sub { font-size: 0.75em; color: #7a6550; margin-top: 1px; }
+
+/* CENTER PANEL */
+.center-panel {
+  overflow-y: auto;
+  padding: 14px;
+  background: #180c05;
+}
+
+.section-title {
+  font-size: 0.78em;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #c9956e;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #3a2010;
+}
+
+/* BUILDINGS */
+.building-card {
+  background: #231209;
+  border: 1px solid #4a2c15;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.building-card:hover:not(.cant-afford) {
+  border-color: #c9956e;
+  background: #2a1509;
+}
+
+.building-card.cant-afford {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.building-icon {
+  font-size: 1.8em;
+  width: 36px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.building-info { flex: 1; min-width: 0; }
+
+.building-name {
+  font-size: 0.88em;
+  color: #d4a76a;
+  font-weight: bold;
+}
+
+.building-desc {
+  font-size: 0.72em;
+  color: #7a6550;
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.building-output {
+  font-size: 0.72em;
+  color: #70c040;
+  margin-top: 2px;
+}
+
+.building-right { text-align: right; flex-shrink: 0; }
+
+.building-cost {
+  color: #f0c060;
+  font-size: 0.85em;
+  font-weight: bold;
+}
+
+.building-count {
+  background: #3a1e08;
+  border: 1px solid #6b4020;
+  border-radius: 4px;
+  padding: 1px 7px;
+  font-size: 0.82em;
+  color: #d4a76a;
+  margin-top: 3px;
+  display: inline-block;
+  min-width: 28px;
+  text-align: center;
+}
+
+/* STATS PANEL */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  font-size: 0.8em;
+}
+
+.stat-row {
+  background: #231209;
+  border: 1px solid #3a2010;
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.stat-row .label { color: #7a6550; font-size: 0.85em; }
+.stat-row .number { color: #d4a76a; font-size: 1.05em; margin-top: 2px; }
+
+/* RIGHT PANEL */
+.right-panel {
+  background: #1d0e07;
+  border-left: 2px solid #6b4020;
+  overflow-y: auto;
+  padding: 14px;
+}
+
+.upgrade-card {
+  background: #231209;
+  border: 1px solid #4a2c15;
+  border-radius: 6px;
+  padding: 9px 10px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.upgrade-card:hover:not(.cant-afford):not(.owned) {
+  border-color: #c9956e;
+  background: #2a1509;
+}
+
+.upgrade-card.cant-afford { opacity: 0.45; cursor: default; }
+.upgrade-card.owned { opacity: 0.4; cursor: default; border-color: #2a1a0a; }
+
+.upgrade-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.upgrade-icon { font-size: 1.1em; }
+.upgrade-name { flex: 1; font-size: 0.82em; color: #d4a76a; }
+.upgrade-cost { font-size: 0.78em; color: #f0c060; font-weight: bold; }
+.upgrade-desc { font-size: 0.72em; color: #7a6550; margin-top: 3px; }
+
+.owned-check { color: #70c040; }
+
+.divider-label {
+  font-size: 0.7em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #6a5040;
+  margin: 10px 0 5px;
+}
+
+/* FLOATING TEXT */
+.float-text {
+  position: fixed;
+  pointer-events: none;
+  font-weight: bold;
+  font-size: 1.15em;
+  color: #f0d090;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+  z-index: 1000;
+  animation: floatUp 1.4s ease-out forwards;
+}
+
+@keyframes floatUp {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  20%  { transform: translateY(-10px) scale(1.1); }
+  100% { opacity: 0; transform: translateY(-75px) scale(0.9); }
+}
+
+/* RIPPLE */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(212,167,106,0.3);
+  width: 60px;
+  height: 60px;
+  pointer-events: none;
+  transform: scale(0);
+  animation: rippleOut 0.55s linear;
+}
+
+@keyframes rippleOut {
+  0%   { transform: scale(0); opacity: 0.8; }
+  100% { transform: scale(4.5); opacity: 0; }
+}
+
+/* NOTIFICATION */
+.notif {
+  position: fixed;
+  top: 64px;
+  right: 16px;
+  background: #2d1a0e;
+  border: 1px solid #c9956e;
+  border-radius: 8px;
+  padding: 10px 16px;
+  color: #e8d5b7;
+  z-index: 2000;
+  font-size: 0.88em;
+  max-width: 260px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  animation: notifIn 0.25s ease-out, notifOut 0.3s ease-in 2.7s forwards;
+}
+
+@keyframes notifIn {
+  from { transform: translateX(80px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+@keyframes notifOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* BOTTOM BANNERS (level-up + milestones) */
+#bannerStack {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 8px;
+  z-index: 2000;
+  pointer-events: none;
+}
+
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 0.88em;
+  white-space: nowrap;
+  animation: bannerIn 3.5s ease-in-out forwards;
+}
+
+.banner-levelup {
+  background: #2d1a0e;
+  border: 1px solid #d4a76a;
+  box-shadow: 0 2px 16px rgba(212,167,106,0.2);
+}
+
+.banner-milestone {
+  background: #0e1f0e;
+  border: 1px solid #70c040;
+  box-shadow: 0 2px 16px rgba(112,192,64,0.15);
+}
+
+.banner-icon { font-size: 1.3em; }
+.banner-main { color: #e8d5b7; }
+.banner-sub  { color: #90d060; font-size: 0.9em; margin-top: 1px; }
+
+@keyframes bannerIn {
+  0%   { opacity: 0; transform: translateY(20px); }
+  12%  { opacity: 1; transform: translateY(0); }
+  75%  { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-8px); }
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #150b06; }
+::-webkit-scrollbar-thumb { background: #6b4020; border-radius: 3px; }
+
+/* TOAST LOG */
+.toast {
+  position: fixed;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(30,15,6,0.92);
+  border: 1px solid #6b4020;
+  border-radius: 20px;
+  padding: 6px 18px;
+  font-size: 0.78em;
+  color: #8a7060;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; }
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-title">☕ Barista Clicker</div>
+  <div class="level-badge" id="hLevel">1</div>
+  <div class="stat-badge">
+    ☕ <span class="val" id="hCoffees">0</span> coffees
+  </div>
+  <div class="stat-badge stat-money">
+    💵 <span class="val" id="hMoney">$0.00</span>
+  </div>
+  <div class="stat-badge stat-cps">
+    ⚡ <span class="val" id="hCps">$0.00</span>/s
+  </div>
+  <div class="stat-badge stat-xp">
+    ✨ <span class="val" id="hXp">0</span> XP
+  </div>
+  <div style="margin-left:auto;">
+    <button onclick="resetGame()" style="background:#2d1a0e;border:1px solid #6b4020;color:#7a6550;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:0.75em;">Reset</button>
+  </div>
+</div>
+
+<!-- GAME AREA -->
+<div class="game-area">
+
+  <!-- LEFT: Clicking + Techniques -->
+  <div class="left-panel">
+    <!-- XP Bar -->
+    <div class="xp-section">
+      <div class="xp-labels">
+        <span>Level <strong id="xpLevel">1</strong></span>
+        <span><span id="xpCur">0</span> / <span id="xpNxt">100</span> XP</span>
+      </div>
+      <div class="xp-bar-track">
+        <div class="xp-bar-fill" id="xpFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Coffee Button -->
+    <div class="coffee-btn-wrap">
+      <div class="steam-wrap">
+        <div class="steam"></div>
+        <div class="steam"></div>
+        <div class="steam"></div>
+      </div>
+      <div class="coffee-btn" id="coffeeBtn" onclick="clickCoffee(event)">
+        <span id="coffeeEmoji">☕</span>
+        <div class="coffee-btn-shine"></div>
+      </div>
+    </div>
+
+    <div class="click-info">
+      <div class="hint">Click to brew!</div>
+      <div class="value">+<span id="clickVal">$1.00</span> per cup</div>
+    </div>
+
+    <!-- Techniques -->
+    <div class="technique-section">
+      <div class="section-label">☕ Brewing Technique</div>
+      <div id="techList"></div>
+    </div>
+  </div>
+
+  <!-- CENTER: Buildings + Stats -->
+  <div class="center-panel">
+    <div class="section-title">🏗️ Equipment & Staff</div>
+    <div id="buildingList"></div>
+
+    <div class="section-title" style="margin-top:18px;">📊 Statistics</div>
+    <div class="stats-grid" id="statsGrid"></div>
+  </div>
+
+  <!-- RIGHT: Upgrades -->
+  <div class="right-panel">
+    <div class="section-title">🔧 Upgrades</div>
+    <div id="upgradeList"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+<div id="bannerStack"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════
+
+const TECHNIQUES = [
+  { id: 'drip',      name: 'Drip Coffee',     icon: '☕',  baseVal: 1,   xpPer: 1,   mult: 1,   unlockLv: 1,  desc: 'Classic filtered coffee'        },
+  { id: 'espresso',  name: 'Espresso',         icon: '⚡',  baseVal: 3,   xpPer: 2,   mult: 2,   unlockLv: 3,  desc: 'Concentrated Italian shot'       },
+  { id: 'moka',      name: 'Moka Pot',         icon: '🏺',  baseVal: 5,   xpPer: 3,   mult: 3,   unlockLv: 5,  desc: 'Stovetop Italian perfection'     },
+  { id: 'v60',       name: 'V60 Pour Over',    icon: '🔻',  baseVal: 8,   xpPer: 4,   mult: 5,   unlockLv: 8,  desc: 'Japanese precision pour-over'    },
+  { id: 'aeropress', name: 'AeroPress',        icon: '💧',  baseVal: 10,  xpPer: 5,   mult: 6,   unlockLv: 10, desc: 'Versatile pressure brewing'      },
+  { id: 'chemex',    name: 'Chemex',           icon: '⚗️',  baseVal: 15,  xpPer: 6,   mult: 8,   unlockLv: 15, desc: 'Elegant thick-filter pour-over'  },
+  { id: 'coldbrew',  name: 'Cold Brew',        icon: '🧊',  baseVal: 25,  xpPer: 8,   mult: 12,  unlockLv: 20, desc: 'Slow-steeped smooth concentrate' },
+  { id: 'siphon',    name: 'Siphon Coffee',    icon: '🫧',  baseVal: 40,  xpPer: 12,  mult: 18,  unlockLv: 25, desc: 'Theatrical vacuum brewing'       },
+];
+
+const BUILDINGS = [
+  { id: 'grinder',     name: 'Hand Grinder',       icon: '⚙️',  rawCps: 0.1,  baseCost: 10,        desc: 'Grinds beans for better extraction'     },
+  { id: 'dripmachine', name: 'Drip Machine',        icon: '🫗',  rawCps: 0.5,  baseCost: 80,        desc: 'Automatic coffee maker'                 },
+  { id: 'espressomachine', name: 'Espresso Machine',icon: '☕',  rawCps: 3,    baseCost: 600,       desc: 'Commercial espresso machine'            },
+  { id: 'mokastation', name: 'Moka Station',        icon: '🏺',  rawCps: 8,    baseCost: 2500,      desc: 'Multi-burner stovetop setup'            },
+  { id: 'v60stand',    name: 'V60 Stand',           icon: '🔻',  rawCps: 20,   baseCost: 12000,     desc: 'Professional pour-over station'         },
+  { id: 'juniorbari',  name: 'Junior Barista',      icon: '👦',  rawCps: 60,   baseCost: 60000,     desc: 'Eager apprentice learning the craft'    },
+  { id: 'seniorbari',  name: 'Senior Barista',      icon: '👨‍🍳', rawCps: 200,  baseCost: 350000,    desc: 'Multi-technique experienced barista'    },
+  { id: 'headbari',    name: 'Head Barista',        icon: '🧑‍🎓', rawCps: 600,  baseCost: 1750000,   desc: 'World-class certified champion'         },
+  { id: 'coffeerobot', name: 'Coffee Robot',        icon: '🤖',  rawCps: 2000, baseCost: 12000000,  desc: 'AI-powered tireless brewing machine'    },
+  { id: 'empire',      name: 'Coffee Empire',       icon: '🏰',  rawCps: 8000, baseCost: 80000000,  desc: 'Global chain with thousands of locations'},
+];
+
+const UPGRADES = [
+  // ── Click power
+  { id: 'fresher_beans',   name: 'Fresher Beans',       icon: '🫘', cost: 50,          type: 'click',    mult: 2,   desc: '2× click power',                       req: { coffees: 10 }      },
+  { id: 'burr_grind',      name: 'Burr Grind',          icon: '⚙️', cost: 400,         type: 'click',    mult: 2,   desc: '2× click power',                       req: { coffees: 50 }      },
+  { id: 'bari_course',     name: 'Barista Course',      icon: '📚', cost: 4000,        type: 'click',    mult: 2,   desc: '2× click power',                       req: { coffees: 200 }     },
+  { id: 'champ_skills',    name: 'Champion Skills',     icon: '🏆', cost: 40000,       type: 'click',    mult: 3,   desc: '3× click power',                       req: { coffees: 1000 }    },
+  { id: 'intuition',       name: 'Coffee Intuition',    icon: '🧠', cost: 400000,      type: 'click',    mult: 3,   desc: '3× click power',                       req: { coffees: 10000 }   },
+  { id: 'telepathy',       name: 'Coffee Telepathy',    icon: '🔮', cost: 5000000,     type: 'click',    mult: 5,   desc: '5× click power',                       req: { coffees: 100000 }  },
+
+  // ── Building upgrades
+  { id: 'steel_burrs',     name: 'Steel Burrs',         icon: '⚙️', cost: 200,         type: 'building', target: 'grinder',        mult: 2, desc: '2× grinder output', req: { bld: { grinder: 1 } }     },
+  { id: 'temp_ctrl',       name: 'Temperature Control', icon: '🌡️', cost: 1000,        type: 'building', target: 'dripmachine',     mult: 2, desc: '2× drip machine output', req: { bld: { dripmachine: 1 } } },
+  { id: 'pressurize',      name: 'Pressure Upgrade',    icon: '💨', cost: 7000,        type: 'building', target: 'espressomachine', mult: 2, desc: '2× espresso output',  req: { bld: { espressomachine: 1 } } },
+  { id: 'italian_steel',   name: 'Italian Steel',       icon: '🏺', cost: 35000,       type: 'building', target: 'mokastation',     mult: 2, desc: '2× moka output',      req: { bld: { mokastation: 1 } } },
+  { id: 'gooseneck',       name: 'Gooseneck Kettle',    icon: '🫖', cost: 130000,      type: 'building', target: 'v60stand',        mult: 2, desc: '2× V60 output',       req: { bld: { v60stand: 1 } }    },
+  { id: 'staff_training',  name: 'Staff Training',      icon: '📋', cost: 650000,      type: 'building', target: 'juniorbari',      mult: 2, desc: '2× junior output',    req: { bld: { juniorbari: 1 } }  },
+  { id: 'mentorship',      name: 'Senior Mentorship',   icon: '🎓', cost: 3500000,     type: 'building', target: 'seniorbari',      mult: 2, desc: '2× senior output',    req: { bld: { seniorbari: 1 } }  },
+  { id: 'wbc_title',       name: 'WBC Championship',    icon: '🥇', cost: 18000000,    type: 'building', target: 'headbari',        mult: 3, desc: '3× head barista output', req: { bld: { headbari: 1 } } },
+  { id: 'ai_optim',        name: 'AI Optimization',     icon: '🤖', cost: 120000000,   type: 'building', target: 'coffeerobot',     mult: 2, desc: '2× robot output',     req: { bld: { coffeerobot: 1 } } },
+
+  // ── Global
+  { id: 'premium_beans',   name: 'Premium Beans',       icon: '⭐', cost: 1500,        type: 'global',   mult: 1.5, desc: 'All income ×1.5',               req: { coffees: 100 }     },
+  { id: 'roast_mastery',   name: 'Roasting Mastery',    icon: '🔥', cost: 18000,       type: 'global',   mult: 1.5, desc: 'All income ×1.5',               req: { coffees: 500 }     },
+  { id: 'latte_art',       name: 'Latte Art',           icon: '🎨', cost: 200000,      type: 'global',   mult: 2,   desc: 'All income ×2',                 req: { coffees: 2000 }    },
+  { id: 'sig_blend',       name: 'Signature Blend',     icon: '✨', cost: 2000000,     type: 'global',   mult: 2,   desc: 'All income ×2',                 req: { coffees: 10000 }   },
+  { id: 'viral',           name: 'Viral Moment',        icon: '📱', cost: 20000000,    type: 'global',   mult: 3,   desc: 'All income ×3',                 req: { coffees: 50000 }   },
+  { id: 'world_renown',    name: 'World Renown',        icon: '🌍', cost: 200000000,   type: 'global',   mult: 5,   desc: 'All income ×5',                 req: { coffees: 200000 }  },
+];
+
+const MILESTONES = [
+  { coffees: 10,       text: 'First 10 coffees brewed!',        icon: '☕' },
+  { coffees: 100,      text: '100 coffees! You\'re a regular!', icon: '🎉' },
+  { coffees: 500,      text: '500 coffees – Coffee addict!',    icon: '⚡' },
+  { coffees: 1000,     text: '1,000 coffees – Master Brewer!',  icon: '🏆' },
+  { coffees: 5000,     text: '5,000 coffees – Legend!',         icon: '🌟' },
+  { coffees: 10000,    text: '10k coffees – Barista God!',      icon: '👑' },
+  { coffees: 50000,    text: '50k coffees – Coffee Empire!',    icon: '🏰' },
+  { coffees: 100000,   text: '100k coffees – Infinite Brew!',   icon: '🌌' },
+];
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+
+function freshState() {
+  const state = {
+    money: 0,
+    totalCoffees: 0,
+    xp: 0,
+    level: 1,
+    selectedTech: 'drip',
+    buildings: {},
+    upgrades: {},
+    lastUpdate: Date.now(),
+    totalTime: 0,
+    milestonesHit: {},
+  };
+  BUILDINGS.forEach(b => state.buildings[b.id] = 0);
+  return state;
+}
+
+let S = freshState();
+
+function loadGame() {
+  try {
+    const raw = localStorage.getItem('baristaClicker_v2');
+    if (raw) {
+      const saved = JSON.parse(raw);
+      S = Object.assign(freshState(), saved);
+      S.lastUpdate = Date.now();
+    }
+  } catch(e) {}
+}
+
+function saveGame() {
+  localStorage.setItem('baristaClicker_v2', JSON.stringify(S));
+}
+
+function resetGame() {
+  if (!confirm('Reset all progress? This cannot be undone!')) return;
+  localStorage.removeItem('baristaClicker_v2');
+  S = freshState();
+  updateUI();
+  toast('Game reset. Start fresh!');
+}
+
+// ═══════════════════════════════════════════════════════════
+// CALCULATIONS
+// ═══════════════════════════════════════════════════════════
+
+function getTech(id) {
+  return TECHNIQUES.find(t => t.id === id) || TECHNIQUES[0];
+}
+
+function curTech() {
+  return getTech(S.selectedTech);
+}
+
+function globalMult() {
+  let m = 1;
+  UPGRADES.forEach(u => {
+    if (u.type === 'global' && S.upgrades[u.id]) m *= u.mult;
+  });
+  return m;
+}
+
+function clickMult() {
+  let m = 1;
+  UPGRADES.forEach(u => {
+    if (u.type === 'click' && S.upgrades[u.id]) m *= u.mult;
+  });
+  return m;
+}
+
+function buildingMult(bId) {
+  let m = 1;
+  UPGRADES.forEach(u => {
+    if (u.type === 'building' && u.target === bId && S.upgrades[u.id]) m *= u.mult;
+  });
+  return m;
+}
+
+// Dollars per click
+function clickValue() {
+  const tech = curTech();
+  return tech.baseVal * clickMult() * globalMult();
+}
+
+// Raw coffees/s from a building
+function bldRawCps(b) {
+  return b.rawCps * (S.buildings[b.id] || 0) * buildingMult(b.id);
+}
+
+// Total raw coffees/s (for XP)
+function totalRawCps() {
+  return BUILDINGS.reduce((t, b) => t + bldRawCps(b), 0);
+}
+
+// Total money/s
+function totalMoneyCps() {
+  const tech = curTech();
+  return totalRawCps() * tech.baseVal * globalMult();
+}
+
+// Cost to buy one more of a building
+function bldCost(b) {
+  const n = S.buildings[b.id] || 0;
+  return Math.ceil(b.baseCost * Math.pow(1.15, n));
+}
+
+// XP threshold for level n
+function xpForLevel(n) {
+  return Math.floor(100 * Math.pow(n, 1.8));
+}
+
+// ═══════════════════════════════════════════════════════════
+// ACTIONS
+// ═══════════════════════════════════════════════════════════
+
+function clickCoffee(e) {
+  const tech = curTech();
+  const earned = clickValue();
+  S.money += earned;
+  S.totalCoffees += 1;
+  gainXP(tech.xpPer);
+  checkMilestones();
+
+  // Floating text
+  const div = document.createElement('div');
+  div.className = 'float-text';
+  div.textContent = '+' + fmtMoney(earned);
+  div.style.left = (e.clientX - 20) + 'px';
+  div.style.top  = (e.clientY - 10) + 'px';
+  document.body.appendChild(div);
+  setTimeout(() => div.remove(), 1400);
+
+  // Ripple on the button
+  const btn = document.getElementById('coffeeBtn');
+  const rect = btn.getBoundingClientRect();
+  const rip = document.createElement('div');
+  rip.className = 'ripple';
+  rip.style.left = (e.clientX - rect.left - 30) + 'px';
+  rip.style.top  = (e.clientY - rect.top  - 30) + 'px';
+  btn.appendChild(rip);
+  setTimeout(() => rip.remove(), 560);
+
+  updateDisplays();
+}
+
+function gainXP(amount) {
+  S.xp += amount;
+  let threshold = xpForLevel(S.level);
+  while (S.xp >= threshold) {
+    S.xp -= threshold;
+    S.level++;
+    showLevelUp(S.level);
+    threshold = xpForLevel(S.level);
+  }
+}
+
+function selectTech(id) {
+  const tech = getTech(id);
+  if (!tech || S.level < tech.unlockLv) return;
+  S.selectedTech = id;
+  document.getElementById('coffeeEmoji').textContent = tech.icon;
+  updateDisplays();
+  renderTechs();
+  renderStats();
+}
+
+function buyBuilding(bId) {
+  const b = BUILDINGS.find(x => x.id === bId);
+  const cost = bldCost(b);
+  if (S.money < cost) { toast('Not enough money!'); return; }
+  S.money -= cost;
+  S.buildings[bId] = (S.buildings[bId] || 0) + 1;
+  notify(b.icon + ' Purchased: ' + b.name);
+  updateUI();
+}
+
+function buyUpgrade(uid) {
+  const u = UPGRADES.find(x => x.id === uid);
+  if (!u || S.upgrades[uid]) return;
+  if (S.money < u.cost) { toast('Not enough money!'); return; }
+  S.money -= u.cost;
+  S.upgrades[uid] = true;
+  notify(u.icon + ' Unlocked: ' + u.name);
+  updateUI();
+}
+
+function isUpgradeVisible(u) {
+  if (S.upgrades[u.id]) return true; // show owned ones
+  if (!u.req) return true;
+  if (u.req.coffees && S.totalCoffees < u.req.coffees) return false;
+  if (u.req.bld) {
+    for (const [bid, cnt] of Object.entries(u.req.bld)) {
+      if ((S.buildings[bid] || 0) < cnt) return false;
+    }
+  }
+  return true;
+}
+
+// ═══════════════════════════════════════════════════════════
+// GAME LOOP
+// ═══════════════════════════════════════════════════════════
+
+function gameLoop() {
+  const now = Date.now();
+  const dt = Math.min((now - S.lastUpdate) / 1000, 1); // cap at 1s per tick
+  S.lastUpdate = now;
+  S.totalTime = (S.totalTime || 0) + dt;
+
+  const rawCps = totalRawCps();
+  const monCps = totalMoneyCps();
+
+  if (rawCps > 0) {
+    S.money += monCps * dt;
+    S.totalCoffees += rawCps * dt;
+    gainXP(rawCps * dt * 0.4);
+    checkMilestones();
+  }
+
+  updateDisplays();
+}
+
+let _lastFullRender = 0;
+
+function updateUI() {
+  renderTechs();
+  renderBuildings();
+  renderUpgrades();
+  renderStats();
+  updateDisplays();
+  _lastFullRender = Date.now();
+}
+
+// Throttled full render every 800ms
+setInterval(() => {
+  if (Date.now() - _lastFullRender > 800) updateUI();
+}, 800);
+
+// Game logic at 20fps
+setInterval(gameLoop, 50);
+
+// Autosave every 20s
+setInterval(saveGame, 20000);
+
+// ═══════════════════════════════════════════════════════════
+// DISPLAY
+// ═══════════════════════════════════════════════════════════
+
+function updateDisplays() {
+  const tech = curTech();
+  const cps  = totalMoneyCps();
+  const xpNxt = xpForLevel(S.level);
+
+  document.getElementById('hLevel').textContent   = S.level;
+  document.getElementById('hCoffees').textContent = fmtNum(S.totalCoffees);
+  document.getElementById('hMoney').textContent   = fmtMoney(S.money);
+  document.getElementById('hCps').textContent     = fmtMoney(cps);
+  document.getElementById('hXp').textContent      = fmtNum(S.xp);
+
+  document.getElementById('xpLevel').textContent  = S.level;
+  document.getElementById('xpCur').textContent    = fmtNum(S.xp);
+  document.getElementById('xpNxt').textContent    = fmtNum(xpNxt);
+  document.getElementById('xpFill').style.width   = Math.min(100, S.xp / xpNxt * 100).toFixed(1) + '%';
+
+  document.getElementById('clickVal').textContent = fmtMoney(clickValue());
+  document.getElementById('coffeeEmoji').textContent = tech.icon;
+}
+
+function renderTechs() {
+  const el = document.getElementById('techList');
+  el.innerHTML = '';
+  TECHNIQUES.forEach(tech => {
+    const locked  = S.level < tech.unlockLv;
+    const active  = S.selectedTech === tech.id;
+    const btn = document.createElement('button');
+    btn.className = 'tech-btn' + (active ? ' active' : '') + (locked ? ' locked' : '');
+    btn.innerHTML = `
+      <span>${tech.icon}</span>
+      <span>
+        <div class="tech-name">${tech.name}</div>
+        <div class="tech-sub">${locked ? '🔒 Unlock at Lv.' + tech.unlockLv : tech.desc}</div>
+      </span>
+      ${!locked ? `<span class="tech-mult">×${tech.mult}</span>` : ''}
+    `;
+    if (!locked) btn.onclick = () => selectTech(tech.id);
+    el.appendChild(btn);
+  });
+}
+
+function renderBuildings() {
+  const el = document.getElementById('buildingList');
+  el.innerHTML = '';
+  BUILDINGS.forEach(b => {
+    const cnt      = S.buildings[b.id] || 0;
+    const cost     = bldCost(b);
+    const canBuy   = S.money >= cost;
+    const rawCps   = bldRawCps(b);
+    const moneyCps = rawCps * curTech().baseVal * globalMult();
+
+    const card = document.createElement('div');
+    card.className = 'building-card' + (canBuy ? '' : ' cant-afford');
+    card.innerHTML = `
+      <div class="building-icon">${b.icon}</div>
+      <div class="building-info">
+        <div class="building-name">${b.name}</div>
+        <div class="building-desc">${b.desc}</div>
+        ${cnt > 0 ? `<div class="building-output">+${fmtMoney(moneyCps)}/s total</div>` : ''}
+      </div>
+      <div class="building-right">
+        <div class="building-cost">${fmtMoney(cost)}</div>
+        <div class="building-count">${cnt}</div>
+      </div>
+    `;
+    card.onclick = () => buyBuilding(b.id);
+    el.appendChild(card);
+  });
+}
+
+function renderUpgrades() {
+  const el = document.getElementById('upgradeList');
+  el.innerHTML = '';
+
+  const available = UPGRADES.filter(u => !S.upgrades[u.id] && isUpgradeVisible(u));
+  const owned     = UPGRADES.filter(u => S.upgrades[u.id]);
+
+  if (available.length === 0 && owned.length === 0) {
+    el.innerHTML = '<div style="color:#6a5040;font-size:0.8em;padding:10px;">Brew more coffee to unlock upgrades!</div>';
+    return;
+  }
+
+  available.forEach(u => {
+    const canBuy = S.money >= u.cost;
+    const card = document.createElement('div');
+    card.className = 'upgrade-card' + (canBuy ? '' : ' cant-afford');
+    card.innerHTML = `
+      <div class="upgrade-head">
+        <span class="upgrade-icon">${u.icon}</span>
+        <span class="upgrade-name">${u.name}</span>
+        <span class="upgrade-cost">${fmtMoney(u.cost)}</span>
+      </div>
+      <div class="upgrade-desc">${u.desc}</div>
+    `;
+    card.onclick = () => buyUpgrade(u.id);
+    el.appendChild(card);
+  });
+
+  if (owned.length > 0) {
+    const lbl = document.createElement('div');
+    lbl.className = 'divider-label';
+    lbl.textContent = '✓ Owned';
+    el.appendChild(lbl);
+
+    owned.forEach(u => {
+      const card = document.createElement('div');
+      card.className = 'upgrade-card owned';
+      card.innerHTML = `
+        <div class="upgrade-head">
+          <span class="upgrade-icon">${u.icon}</span>
+          <span class="upgrade-name">${u.name}</span>
+          <span class="owned-check">✓</span>
+        </div>
+      `;
+      el.appendChild(card);
+    });
+  }
+}
+
+function renderStats() {
+  const cps  = totalMoneyCps();
+  const tech = curTech();
+  const gm   = globalMult();
+  const cm   = clickMult();
+  const rawCps = totalRawCps();
+
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-row">
+      <div class="label">Technique</div>
+      <div class="number">${tech.icon} ${tech.name}</div>
+    </div>
+    <div class="stat-row">
+      <div class="label">Income Mult</div>
+      <div class="number">×${tech.mult} ×${gm.toFixed(1)}</div>
+    </div>
+    <div class="stat-row">
+      <div class="label">Click Value</div>
+      <div class="number" style="color:#f0c060">${fmtMoney(clickValue())}</div>
+    </div>
+    <div class="stat-row">
+      <div class="label">Click Mult</div>
+      <div class="number">×${cm.toFixed(0)}</div>
+    </div>
+    <div class="stat-row">
+      <div class="label">Auto Income</div>
+      <div class="number" style="color:#90d060">${fmtMoney(cps)}/s</div>
+    </div>
+    <div class="stat-row">
+      <div class="label">Coffees/s</div>
+      <div class="number">${fmtNum(rawCps)}/s</div>
+    </div>
+    <div class="stat-row">
+      <div class="label">Total Coffees</div>
+      <div class="number">${fmtNum(S.totalCoffees)}</div>
+    </div>
+    <div class="stat-row">
+      <div class="label">Time Played</div>
+      <div class="number">${fmtTime(S.totalTime)}</div>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════
+// NOTIFICATIONS
+// ═══════════════════════════════════════════════════════════
+
+let notifCount = 0;
+
+function notify(msg) {
+  // remove old if stacking too many
+  if (notifCount > 2) return;
+  notifCount++;
+  const el = document.createElement('div');
+  el.className = 'notif';
+  el.textContent = msg;
+  el.style.top = (64 + (notifCount - 1) * 52) + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => { el.remove(); notifCount--; }, 3000);
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function showLevelUp(lvl) {
+  const unlock = TECHNIQUES.find(t => t.unlockLv === lvl);
+  const icon = lvl >= 25 ? '🏆' : lvl >= 15 ? '⭐' : '☕';
+  const sub = unlock
+    ? `${unlock.icon} Unlocked: ${unlock.name}`
+    : null;
+  showBanner('levelup', icon,
+    `Level up! Barista Level ${lvl}`,
+    sub
+  );
+  updateUI();
+}
+
+function checkMilestones() {
+  MILESTONES.forEach(m => {
+    if (!S.milestonesHit[m.coffees] && S.totalCoffees >= m.coffees) {
+      S.milestonesHit[m.coffees] = true;
+      showMilestone(m);
+    }
+  });
+}
+
+function showMilestone(m) {
+  showBanner('milestone', m.icon, m.text, null);
+}
+
+function showBanner(type, icon, main, sub) {
+  const stack = document.getElementById('bannerStack');
+  const el = document.createElement('div');
+  el.className = `banner banner-${type}`;
+  el.innerHTML = `
+    <span class="banner-icon">${icon}</span>
+    <span>
+      <div class="banner-main">${main}</div>
+      ${sub ? `<div class="banner-sub">${sub}</div>` : ''}
+    </span>
+  `;
+  stack.appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+// ═══════════════════════════════════════════════════════════
+// FORMATTERS
+// ═══════════════════════════════════════════════════════════
+
+function fmtMoney(n) {
+  if (n >= 1e12) return '$' + (n/1e12).toFixed(2) + 'T';
+  if (n >= 1e9)  return '$' + (n/1e9).toFixed(2)  + 'B';
+  if (n >= 1e6)  return '$' + (n/1e6).toFixed(2)  + 'M';
+  if (n >= 1e3)  return '$' + (n/1e3).toFixed(2)  + 'K';
+  return '$' + n.toFixed(2);
+}
+
+function fmtNum(n) {
+  if (n >= 1e12) return (n/1e12).toFixed(2) + 'T';
+  if (n >= 1e9)  return (n/1e9).toFixed(2)  + 'B';
+  if (n >= 1e6)  return (n/1e6).toFixed(2)  + 'M';
+  if (n >= 1e3)  return (n/1e3).toFixed(2)  + 'K';
+  return Math.floor(n).toString();
+}
+
+function fmtTime(s) {
+  s = Math.floor(s || 0);
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  if (h > 0) return h + 'h ' + m + 'm';
+  if (m > 0) return m + 'm ' + sec + 's';
+  return sec + 's';
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+
+loadGame();
+updateUI();
+toast('Welcome! Click the coffee to start brewing ☕');
+</script>
+</body>
+</html>

@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jobseeking Tracker</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f4f4f4;
+      --surface: #ffffff;
+      --border: #dde1e7;
+      --border-light: #eaecf0;
+      --header-bg: #f8f9fb;
+      --text-primary: #1a1f36;
+      --text-secondary: #6b7280;
+      --text-muted: #9ca3af;
+      --accent: #2d6df6;
+      --accent-light: #eff4ff;
+      --row-hover: #f5f7ff;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
+      --radius: 6px;
+
+      /* Stage colors */
+      --c-applied: #6b7280;
+      --c-recruiter: #8b5cf6;
+      --c-followup: #f59e0b;
+      --c-first: #3b82f6;
+      --c-technical: #06b6d4;
+      --c-pair: #10b981;
+      --c-offer: #22c55e;
+      --c-rejected: #ef4444;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      min-height: 100vh;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow);
+    }
+
+    .topbar-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--text-primary);
+    }
+
+    .topbar-logo svg {
+      color: var(--accent);
+    }
+
+    .topbar-divider {
+      width: 1px;
+      height: 24px;
+      background: var(--border);
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-primary);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .btn:hover {
+      background: var(--header-bg);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #1d5fe5;
+      border-color: #1d5fe5;
+    }
+
+    /* ── Stats bar ── */
+    .stats-bar {
+      display: flex;
+      gap: 12px;
+      padding: 16px 24px 0;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 110px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-card .label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    .stat-card .value {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .stat-card .sub {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    /* ── Table wrapper ── */
+    .table-section {
+      padding: 16px 24px;
+    }
+
+    .table-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .toolbar-title {
+      font-weight: 600;
+      font-size: 15px;
+      flex: 1;
+    }
+
+    .search-input {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 5px 10px;
+      font-size: 13px;
+      color: var(--text-primary);
+      width: 200px;
+    }
+
+    .search-input input {
+      border: none;
+      outline: none;
+      background: transparent;
+      width: 100%;
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
+    .search-input input::placeholder { color: var(--text-muted); }
+
+    .table-wrapper {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: auto;
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1100px;
+    }
+
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    th {
+      background: var(--header-bg);
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border-light);
+      padding: 0 12px;
+      height: 36px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+      user-select: none;
+      cursor: pointer;
+    }
+
+    th:last-child { border-right: none; }
+
+    th:hover { background: #edf0f5; }
+
+    th .th-inner {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    th .sort-icon {
+      opacity: 0.4;
+      font-size: 10px;
+    }
+
+    th.sorted .sort-icon { opacity: 1; color: var(--accent); }
+
+    td {
+      border-bottom: 1px solid var(--border-light);
+      border-right: 1px solid var(--border-light);
+      padding: 0 12px;
+      height: 38px;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    td:last-child { border-right: none; }
+
+    tr:last-child td { border-bottom: none; }
+
+    tbody tr { transition: background 0.1s; }
+    tbody tr:hover { background: var(--row-hover); }
+    tbody tr.editing { background: #fefce8; }
+
+    /* Row number */
+    td.row-num, th.row-num {
+      width: 40px;
+      min-width: 40px;
+      color: var(--text-muted);
+      font-size: 12px;
+      text-align: center;
+      background: var(--header-bg);
+      border-right: 1px solid var(--border);
+    }
+
+    tbody td.row-num { color: var(--text-muted); }
+
+    /* ── Cell types ── */
+    .cell-date { color: var(--text-secondary); font-size: 13px; }
+
+    .cell-company {
+      font-weight: 600;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .company-logo {
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    /* Stage pill */
+    .stage-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .stage-applied   { background: #f3f4f6; color: #6b7280; }
+    .stage-recruiter { background: #ede9fe; color: #7c3aed; }
+    .stage-followup  { background: #fef3c7; color: #d97706; }
+    .stage-first     { background: #dbeafe; color: #1d4ed8; }
+    .stage-technical { background: #cffafe; color: #0e7490; }
+    .stage-pair      { background: #d1fae5; color: #065f46; }
+    .stage-offer     { background: #dcfce7; color: #15803d; }
+    .stage-rejected  { background: #fee2e2; color: #b91c1c; }
+
+    /* Checkbox cell */
+    .check-cell {
+      text-align: center;
+    }
+
+    .check-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    .check-yes { background: #d1fae5; color: #065f46; }
+    .check-no  { background: #f3f4f6; color: #9ca3af; }
+
+    /* Notes */
+    .cell-notes {
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+
+    /* Add row */
+    .add-row td {
+      border-top: 1px solid var(--border-light);
+    }
+
+    .add-row-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      font-size: 13px;
+      cursor: pointer;
+      padding: 6px 0;
+      transition: color 0.15s;
+      background: none;
+      border: none;
+      font-family: inherit;
+    }
+
+    .add-row-btn:hover { color: var(--accent); }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--surface);
+      border-radius: 10px;
+      width: 560px;
+      max-width: 95vw;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-md);
+      transform: translateY(12px);
+      transition: transform 0.2s;
+    }
+
+    .modal-overlay.open .modal { transform: translateY(0); }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title { font-weight: 700; font-size: 16px; }
+
+    .modal-close {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-secondary);
+      font-size: 18px;
+    }
+    .modal-close:hover { background: var(--header-bg); }
+
+    .modal-body { padding: 20px; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .form-field { display: flex; flex-direction: column; gap: 5px; }
+    .form-field.full { grid-column: 1 / -1; }
+
+    .form-field label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 7px 10px;
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--text-primary);
+      background: var(--surface);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .form-field input:focus,
+    .form-field select:focus,
+    .form-field textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .form-field textarea { resize: vertical; min-height: 64px; }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toggle {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .toggle input { opacity: 0; width: 0; height: 0; }
+
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: #d1d5db;
+      border-radius: 20px;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      left: 3px;
+      top: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.2s;
+    }
+
+    .toggle input:checked + .toggle-slider { background: var(--accent); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(16px); }
+
+    .modal-footer {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Sankey section ── */
+    .sankey-section {
+      padding: 0 24px 32px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .section-sub {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-left: auto;
+    }
+
+    .sankey-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    #sankey-container {
+      width: 100%;
+      min-height: 320px;
+    }
+
+    #sankey-container svg { width: 100%; }
+
+    .sankey-tooltip {
+      position: fixed;
+      background: rgba(26,31,54,0.92);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      pointer-events: none;
+      z-index: 500;
+      opacity: 0;
+      transition: opacity 0.15s;
+      white-space: nowrap;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      .stats-bar { padding: 12px 12px 0; }
+      .table-section, .sankey-section { padding-left: 12px; padding-right: 12px; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Topbar -->
+<header class="topbar">
+  <div class="topbar-logo">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="3" width="20" height="14" rx="2"/>
+      <path d="M8 21h8M12 17v4"/>
+    </svg>
+    Jobseeking Tracker
+  </div>
+  <div class="topbar-divider"></div>
+  <span style="color:var(--text-secondary);font-size:13px;">All Applications</span>
+  <div class="topbar-actions">
+    <button class="btn" onclick="openModal()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Application
+    </button>
+  </div>
+</header>
+
+<!-- Stats -->
+<div class="stats-bar" id="stats-bar"></div>
+
+<!-- Table -->
+<div class="table-section">
+  <div class="table-toolbar">
+    <span class="toolbar-title">Applications</span>
+    <div class="search-input">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search…" id="search-input" oninput="renderTable()" />
+    </div>
+    <button class="btn" onclick="openModal()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New
+    </button>
+  </div>
+
+  <div class="table-wrapper">
+    <table id="main-table">
+      <thead>
+        <tr>
+          <th class="row-num">#</th>
+          <th onclick="sortBy('date')"><div class="th-inner"><span>Date</span><span class="sort-icon">↕</span></div></th>
+          <th onclick="sortBy('company')"><div class="th-inner"><span>Company</span><span class="sort-icon">↕</span></div></th>
+          <th onclick="sortBy('role')"><div class="th-inner"><span>Role</span><span class="sort-icon">↕</span></div></th>
+          <th onclick="sortBy('stage')"><div class="th-inner"><span>Current Stage</span><span class="sort-icon">↕</span></div></th>
+          <th><div class="th-inner"><span>Recruiter Replied</span></div></th>
+          <th><div class="th-inner"><span>Followed Up</span></div></th>
+          <th><div class="th-inner"><span>1st Interview</span></div></th>
+          <th><div class="th-inner"><span>Technical</span></div></th>
+          <th><div class="th-inner"><span>Pair Programming</span></div></th>
+          <th><div class="th-inner"><span>Offer</span></div></th>
+          <th><div class="th-inner"><span>Notes</span></div></th>
+          <th><div class="th-inner"><span>Actions</span></div></th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Sankey -->
+<div class="sankey-section">
+  <div class="section-header">
+    <span class="section-title">Application Funnel</span>
+    <span class="section-sub" id="sankey-subtitle"></span>
+  </div>
+  <div class="sankey-card">
+    <div id="sankey-container"></div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOnBg(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">New Application</span>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Date Applied</label>
+          <input type="date" id="f-date" />
+        </div>
+        <div class="form-field">
+          <label>Current Stage</label>
+          <select id="f-stage">
+            <option value="applied">Applied</option>
+            <option value="recruiter">Recruiter Replied</option>
+            <option value="followup">Followed Up</option>
+            <option value="first">1st Interview</option>
+            <option value="technical">Technical Stage</option>
+            <option value="pair">Pair Programming</option>
+            <option value="offer">Offer</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Company Name</label>
+          <input type="text" id="f-company" placeholder="e.g. Acme Corp" />
+        </div>
+        <div class="form-field">
+          <label>Role / Position</label>
+          <input type="text" id="f-role" placeholder="e.g. Senior Engineer" />
+        </div>
+        <div class="form-field">
+          <label>Job URL</label>
+          <input type="url" id="f-url" placeholder="https://…" />
+        </div>
+        <div class="form-field">
+          <label>Recruiter Name</label>
+          <input type="text" id="f-recruiter" placeholder="e.g. Jane Smith" />
+        </div>
+
+        <div class="form-field full">
+          <label style="margin-bottom:6px;">Stage Checklist</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div class="toggle-row"><label class="toggle"><input type="checkbox" id="f-recruiter-replied"><span class="toggle-slider"></span></label><span style="font-size:13px;">Recruiter Replied</span></div>
+            <div class="toggle-row"><label class="toggle"><input type="checkbox" id="f-followedup"><span class="toggle-slider"></span></label><span style="font-size:13px;">Had to Follow Up</span></div>
+            <div class="toggle-row"><label class="toggle"><input type="checkbox" id="f-first"><span class="toggle-slider"></span></label><span style="font-size:13px;">1st Interview Done</span></div>
+            <div class="toggle-row"><label class="toggle"><input type="checkbox" id="f-technical"><span class="toggle-slider"></span></label><span style="font-size:13px;">Technical Stage Done</span></div>
+            <div class="toggle-row"><label class="toggle"><input type="checkbox" id="f-pair"><span class="toggle-slider"></span></label><span style="font-size:13px;">Pair Programming Done</span></div>
+            <div class="toggle-row"><label class="toggle"><input type="checkbox" id="f-offer"><span class="toggle-slider"></span></label><span style="font-size:13px;">Received Offer</span></div>
+          </div>
+        </div>
+
+        <div class="form-field full">
+          <label>Notes</label>
+          <textarea id="f-notes" placeholder="Any notes about this application…"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveApplication()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="sankey-tooltip" id="sankey-tooltip"></div>
+
+<script>
+// ─────────────────────────────────────────────
+//  DATA
+// ─────────────────────────────────────────────
+
+const STAGES = ['applied','recruiter','followup','first','technical','pair','offer','rejected'];
+const STAGE_LABELS = {
+  applied:   'Applied',
+  recruiter: 'Recruiter Replied',
+  followup:  'Followed Up',
+  first:     '1st Interview',
+  technical: 'Technical',
+  pair:      'Pair Programming',
+  offer:     'Offer',
+  rejected:  'Rejected',
+};
+
+const COLORS = ['#6366f1','#8b5cf6','#ec4899','#f59e0b','#10b981','#3b82f6','#06b6d4','#ef4444',
+                '#14b8a6','#f97316','#84cc16','#a855f7','#0ea5e9','#d946ef','#78716c'];
+
+function logoColor(name) {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffff;
+  return COLORS[h % COLORS.length];
+}
+
+let applications = [
+  { id:1,  date:'2025-11-03', company:'Google',        role:'Staff Software Engineer',   stage:'rejected',  recruiterReplied:true,  followedUp:false, first:true,  technical:true,  pair:false, offer:false, recruiter:'Alice Chen',   url:'', notes:'Great process, culture fit mismatch' },
+  { id:2,  date:'2025-11-10', company:'Stripe',         role:'Senior Backend Engineer',   stage:'offer',     recruiterReplied:true,  followedUp:false, first:true,  technical:true,  pair:true,  offer:true,  recruiter:'Bob Martins',  url:'', notes:'Offer: €120k + equity' },
+  { id:3,  date:'2025-11-12', company:'Vercel',         role:'Developer Advocate',        stage:'pair',      recruiterReplied:true,  followedUp:false, first:true,  technical:false, pair:true,  offer:false, recruiter:'Sara Ellis',   url:'', notes:'Remote-first, exciting mission' },
+  { id:4,  date:'2025-11-15', company:'Linear',         role:'Frontend Engineer',         stage:'technical', recruiterReplied:true,  followedUp:false, first:true,  technical:true,  pair:false, offer:false, recruiter:'Tom Nakamura', url:'', notes:'Take-home assignment submitted' },
+  { id:5,  date:'2025-11-18', company:'Figma',          role:'Full Stack Engineer',       stage:'first',     recruiterReplied:true,  followedUp:false, first:true,  technical:false, pair:false, offer:false, recruiter:'Lily Park',    url:'', notes:'Scheduling 2nd round' },
+  { id:6,  date:'2025-11-20', company:'Notion',         role:'Software Engineer II',      stage:'recruiter', recruiterReplied:true,  followedUp:false, first:false, technical:false, pair:false, offer:false, recruiter:'Dev Patel',    url:'', notes:'Initial recruiter call done' },
+  { id:7,  date:'2025-11-22', company:'Loom',           role:'Senior React Engineer',     stage:'rejected',  recruiterReplied:true,  followedUp:true,  first:true,  technical:false, pair:false, offer:false, recruiter:'',             url:'', notes:'Rejected after 1st round' },
+  { id:8,  date:'2025-11-25', company:'Shopify',        role:'Staff Engineer',            stage:'applied',   recruiterReplied:false, followedUp:false, first:false, technical:false, pair:false, offer:false, recruiter:'',             url:'', notes:'' },
+  { id:9,  date:'2025-11-28', company:'Atlassian',      role:'Principal Engineer',        stage:'followup',  recruiterReplied:false, followedUp:true,  first:false, technical:false, pair:false, offer:false, recruiter:'',             url:'', notes:'Sent follow-up after 2 weeks' },
+  { id:10, date:'2025-12-01', company:'Datadog',        role:'Software Engineer',         stage:'technical', recruiterReplied:true,  followedUp:false, first:true,  technical:true,  pair:false, offer:false, recruiter:'Mark Lee',     url:'', notes:'System design interview next' },
+  { id:11, date:'2025-12-03', company:'PlanetScale',    role:'Backend Engineer',          stage:'offer',     recruiterReplied:true,  followedUp:false, first:true,  technical:true,  pair:true,  offer:true,  recruiter:'Priya Singh',  url:'', notes:'Competing offer, negotiating' },
+  { id:12, date:'2025-12-05', company:'Railway',        role:'Product Engineer',          stage:'first',     recruiterReplied:true,  followedUp:false, first:true,  technical:false, pair:false, offer:false, recruiter:'Jake Torres',  url:'', notes:'Small team, great vibes' },
+  { id:13, date:'2025-12-08', company:'Supabase',       role:'Developer Relations',       stage:'pair',      recruiterReplied:true,  followedUp:false, first:true,  technical:true,  pair:true,  offer:false, recruiter:'Anna Kim',     url:'', notes:'Final round pending' },
+  { id:14, date:'2025-12-10', company:'HashiCorp',      role:'Senior Engineer',           stage:'applied',   recruiterReplied:false, followedUp:false, first:false, technical:false, pair:false, offer:false, recruiter:'',             url:'', notes:'' },
+  { id:15, date:'2025-12-12', company:'Cloudflare',     role:'Systems Engineer',          stage:'recruiter', recruiterReplied:true,  followedUp:false, first:false, technical:false, pair:false, offer:false, recruiter:'Chris Wong',   url:'', notes:'Screenings next week' },
+  { id:16, date:'2025-12-15', company:'Fly.io',         role:'Infrastructure Engineer',   stage:'rejected',  recruiterReplied:true,  followedUp:false, first:true,  technical:true,  pair:false, offer:false, recruiter:'Dana White',   url:'', notes:'No pair round, went straight to rejection' },
+  { id:17, date:'2025-12-17', company:'PostHog',        role:'Full Stack Engineer',       stage:'technical', recruiterReplied:true,  followedUp:false, first:true,  technical:true,  pair:false, offer:false, recruiter:'Leo Hart',     url:'', notes:'Open source company, love the transparency' },
+  { id:18, date:'2025-12-20', company:'Temporal',       role:'Software Engineer',         stage:'applied',   recruiterReplied:false, followedUp:false, first:false, technical:false, pair:false, offer:false, recruiter:'',             url:'', notes:'' },
+  { id:19, date:'2026-01-04', company:'Planetway',      role:'Backend Engineer',          stage:'first',     recruiterReplied:true,  followedUp:true,  first:true,  technical:false, pair:false, offer:false, recruiter:'Sam Fox',      url:'', notes:'Had to follow up twice' },
+  { id:20, date:'2026-01-07', company:'Turso',          role:'Developer Experience Eng',  stage:'pair',      recruiterReplied:true,  followedUp:false, first:true,  technical:true,  pair:true,  offer:false, recruiter:'Mia Chen',     url:'', notes:'Almost there!' },
+];
+
+let nextId = 21;
+let sortKey = 'date';
+let sortDir = -1; // -1 = desc, 1 = asc
+let editingId = null;
+
+// ─────────────────────────────────────────────
+//  SORT
+// ─────────────────────────────────────────────
+
+function sortBy(key) {
+  if (sortKey === key) sortDir *= -1;
+  else { sortKey = key; sortDir = -1; }
+  renderTable();
+}
+
+// ─────────────────────────────────────────────
+//  RENDER TABLE
+// ─────────────────────────────────────────────
+
+function renderTable() {
+  const search = document.getElementById('search-input').value.toLowerCase();
+  let rows = applications.filter(a =>
+    a.company.toLowerCase().includes(search) ||
+    a.role.toLowerCase().includes(search) ||
+    (a.recruiter||'').toLowerCase().includes(search)
+  );
+
+  rows.sort((a,b) => {
+    let av = a[sortKey] || '', bv = b[sortKey] || '';
+    return av < bv ? -sortDir : av > bv ? sortDir : 0;
+  });
+
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML = rows.map((app, i) => `
+    <tr id="row-${app.id}">
+      <td class="row-num">${i+1}</td>
+      <td class="cell-date">${formatDate(app.date)}</td>
+      <td>
+        <div class="cell-company">
+          <div class="company-logo" style="background:${logoColor(app.company)}">${app.company[0]}</div>
+          ${app.company}
+        </div>
+      </td>
+      <td style="font-size:13px;color:var(--text-secondary)">${app.role}</td>
+      <td><span class="stage-pill stage-${app.stage}">${STAGE_LABELS[app.stage]}</span></td>
+      <td class="check-cell"><span class="check-icon ${app.recruiterReplied?'check-yes':'check-no'}">${app.recruiterReplied?'✓':'–'}</span></td>
+      <td class="check-cell"><span class="check-icon ${app.followedUp?'check-yes':'check-no'}">${app.followedUp?'✓':'–'}</span></td>
+      <td class="check-cell"><span class="check-icon ${app.first?'check-yes':'check-no'}">${app.first?'✓':'–'}</span></td>
+      <td class="check-cell"><span class="check-icon ${app.technical?'check-yes':'check-no'}">${app.technical?'✓':'–'}</span></td>
+      <td class="check-cell"><span class="check-icon ${app.pair?'check-yes':'check-no'}">${app.pair?'✓':'–'}</span></td>
+      <td class="check-cell"><span class="check-icon ${app.offer?'check-yes':'check-no'}">${app.offer?'✓':'–'}</span></td>
+      <td class="cell-notes" title="${app.notes}">${app.notes||'—'}</td>
+      <td>
+        <div style="display:flex;gap:6px;">
+          <button class="btn" style="padding:3px 8px;font-size:12px;" onclick="openModal(${app.id})">Edit</button>
+          <button class="btn" style="padding:3px 8px;font-size:12px;color:var(--c-rejected);border-color:#fca5a5;" onclick="deleteApp(${app.id})">Del</button>
+        </div>
+      </td>
+    </tr>
+  `).join('') + `
+    <tr class="add-row">
+      <td colspan="13">
+        <button class="add-row-btn" onclick="openModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add a record
+        </button>
+      </td>
+    </tr>
+  `;
+
+  // highlight sort col
+  document.querySelectorAll('th').forEach(th => th.classList.remove('sorted'));
+
+  renderStats();
+  renderSankey();
+}
+
+function formatDate(d) {
+  if (!d) return '—';
+  const [y,m,day] = d.split('-');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${months[+m-1]} ${+day}, ${y}`;
+}
+
+// ─────────────────────────────────────────────
+//  STATS
+// ─────────────────────────────────────────────
+
+function renderStats() {
+  const total     = applications.length;
+  const offers    = applications.filter(a => a.offer).length;
+  const interviews = applications.filter(a => a.first).length;
+  const active    = applications.filter(a => !['rejected'].includes(a.stage)).length;
+  const rate      = total ? Math.round((interviews/total)*100) : 0;
+  const offerRate = total ? Math.round((offers/total)*100) : 0;
+
+  document.getElementById('stats-bar').innerHTML = [
+    { label:'Total Applied',   value: total,      sub: 'applications' },
+    { label:'Active',          value: active,     sub: 'in progress' },
+    { label:'Interviews',      value: interviews, sub: `${rate}% rate` },
+    { label:'Pair Programming',value: applications.filter(a=>a.pair).length, sub: 'reached' },
+    { label:'Offers',          value: offers,     sub: `${offerRate}% offer rate` },
+    { label:'Rejected',        value: applications.filter(a=>a.stage==='rejected').length, sub: 'closed' },
+  ].map(s => `
+    <div class="stat-card">
+      <span class="label">${s.label}</span>
+      <span class="value">${s.value}</span>
+      <span class="sub">${s.sub}</span>
+    </div>
+  `).join('');
+}
+
+// ─────────────────────────────────────────────
+//  SANKEY
+// ─────────────────────────────────────────────
+
+function buildSankeyData() {
+  // Nodes (ordered funnel stages + rejected)
+  const stageOrder = ['Applied','Recruiter Replied','1st Interview','Technical','Pair Programming','Offer','Rejected'];
+
+  // Compute counts at each stage
+  const counts = {
+    'Applied':          applications.length,
+    'Recruiter Replied': applications.filter(a => a.recruiterReplied).length,
+    '1st Interview':     applications.filter(a => a.first).length,
+    'Technical':         applications.filter(a => a.technical).length,
+    'Pair Programming':  applications.filter(a => a.pair).length,
+    'Offer':             applications.filter(a => a.offer).length,
+    'Rejected':          applications.filter(a => a.stage === 'rejected').length,
+  };
+
+  // Build links: between consecutive funnel stages, and rejected exits
+  const funnelStages = ['Applied','Recruiter Replied','1st Interview','Technical','Pair Programming','Offer'];
+
+  const links = [];
+
+  for (let i = 0; i < funnelStages.length - 1; i++) {
+    const src = funnelStages[i];
+    const tgt = funnelStages[i+1];
+    const srcCount = counts[src];
+    const tgtCount = counts[tgt];
+    if (srcCount > 0 && tgtCount > 0) {
+      links.push({ source: src, target: tgt, value: tgtCount });
+    }
+    // dropped off → rejected
+    const dropped = srcCount - tgtCount;
+    if (dropped > 0 && i > 0) {
+      links.push({ source: src, target: 'Rejected', value: dropped });
+    }
+  }
+
+  // Applied → not replied → rejected
+  const notReplied = counts['Applied'] - counts['Recruiter Replied'];
+  if (notReplied > 0) links.push({ source: 'Applied', target: 'Rejected', value: notReplied });
+
+  // Collect nodes that actually appear
+  const nodeSet = new Set();
+  links.forEach(l => { nodeSet.add(l.source); nodeSet.add(l.target); });
+  const nodes = [...nodeSet].map(n => ({ id: n }));
+
+  return { nodes, links };
+}
+
+const SANKEY_COLORS = {
+  'Applied':          '#6366f1',
+  'Recruiter Replied':'#8b5cf6',
+  '1st Interview':    '#3b82f6',
+  'Technical':        '#06b6d4',
+  'Pair Programming': '#10b981',
+  'Offer':            '#22c55e',
+  'Rejected':         '#ef4444',
+};
+
+function renderSankey() {
+  const container = document.getElementById('sankey-container');
+  container.innerHTML = '';
+
+  const { nodes, links } = buildSankeyData();
+  if (!nodes.length) return;
+
+  const W = container.clientWidth || 800;
+  const H = 320;
+  const margin = { top: 20, right: 30, bottom: 20, left: 30 };
+
+  const svg = d3.select(container).append('svg')
+    .attr('viewBox', `0 0 ${W} ${H}`)
+    .attr('preserveAspectRatio', 'xMidYMid meet');
+
+  const sankey = d3.sankey()
+    .nodeId(d => d.id)
+    .nodeWidth(18)
+    .nodePadding(16)
+    .extent([[margin.left, margin.top], [W - margin.right, H - margin.bottom]]);
+
+  const { nodes: sankeyNodes, links: sankeyLinks } = sankey({ nodes: nodes.map(d=>({...d})), links: links.map(d=>({...d})) });
+
+  // Links
+  const link = svg.append('g')
+    .attr('fill', 'none')
+    .selectAll('g')
+    .data(sankeyLinks)
+    .join('g');
+
+  link.append('path')
+    .attr('d', d3.sankeyLinkHorizontal())
+    .attr('stroke', d => SANKEY_COLORS[d.source.id] || '#94a3b8')
+    .attr('stroke-width', d => Math.max(1, d.width))
+    .attr('stroke-opacity', 0.35)
+    .on('mouseover', function(event, d) {
+      d3.select(this).attr('stroke-opacity', 0.65);
+      showTooltip(event, `${d.source.id} → ${d.target.id}: ${d.value} apps`);
+    })
+    .on('mousemove', moveTooltip)
+    .on('mouseout', function() {
+      d3.select(this).attr('stroke-opacity', 0.35);
+      hideTooltip();
+    });
+
+  // Nodes
+  const node = svg.append('g')
+    .selectAll('g')
+    .data(sankeyNodes)
+    .join('g');
+
+  node.append('rect')
+    .attr('x', d => d.x0)
+    .attr('y', d => d.y0)
+    .attr('height', d => Math.max(1, d.y1 - d.y0))
+    .attr('width', d => d.x1 - d.x0)
+    .attr('fill', d => SANKEY_COLORS[d.id] || '#94a3b8')
+    .attr('rx', 3)
+    .on('mouseover', (event, d) => showTooltip(event, `${d.id}: ${Math.round(d.value)} apps`))
+    .on('mousemove', moveTooltip)
+    .on('mouseout', hideTooltip);
+
+  // Labels
+  node.append('text')
+    .attr('x', d => d.x0 < W / 2 ? d.x1 + 7 : d.x0 - 7)
+    .attr('y', d => (d.y1 + d.y0) / 2)
+    .attr('dy', '0.35em')
+    .attr('text-anchor', d => d.x0 < W / 2 ? 'start' : 'end')
+    .attr('fill', '#374151')
+    .attr('font-size', '11px')
+    .attr('font-weight', '600')
+    .text(d => `${d.id} (${Math.round(d.value)})`);
+
+  // Subtitle
+  document.getElementById('sankey-subtitle').textContent =
+    `${applications.length} applications · ${applications.filter(a=>a.offer).length} offers`;
+}
+
+// ─────────────────────────────────────────────
+//  TOOLTIP
+// ─────────────────────────────────────────────
+
+const tooltip = document.getElementById('sankey-tooltip');
+
+function showTooltip(event, text) {
+  tooltip.textContent = text;
+  tooltip.style.opacity = '1';
+  moveTooltip(event);
+}
+
+function moveTooltip(event) {
+  tooltip.style.left = (event.clientX + 14) + 'px';
+  tooltip.style.top  = (event.clientY - 10) + 'px';
+}
+
+function hideTooltip() {
+  tooltip.style.opacity = '0';
+}
+
+// ─────────────────────────────────────────────
+//  MODAL
+// ─────────────────────────────────────────────
+
+function openModal(id) {
+  editingId = id || null;
+  const overlay = document.getElementById('modal-overlay');
+  document.getElementById('modal-title').textContent = id ? 'Edit Application' : 'New Application';
+
+  if (id) {
+    const app = applications.find(a => a.id === id);
+    document.getElementById('f-date').value             = app.date;
+    document.getElementById('f-company').value          = app.company;
+    document.getElementById('f-role').value             = app.role;
+    document.getElementById('f-stage').value            = app.stage;
+    document.getElementById('f-url').value              = app.url || '';
+    document.getElementById('f-recruiter').value        = app.recruiter || '';
+    document.getElementById('f-notes').value            = app.notes || '';
+    document.getElementById('f-recruiter-replied').checked = app.recruiterReplied;
+    document.getElementById('f-followedup').checked     = app.followedUp;
+    document.getElementById('f-first').checked          = app.first;
+    document.getElementById('f-technical').checked      = app.technical;
+    document.getElementById('f-pair').checked           = app.pair;
+    document.getElementById('f-offer').checked          = app.offer;
+  } else {
+    document.getElementById('f-date').value             = new Date().toISOString().split('T')[0];
+    document.getElementById('f-company').value          = '';
+    document.getElementById('f-role').value             = '';
+    document.getElementById('f-stage').value            = 'applied';
+    document.getElementById('f-url').value              = '';
+    document.getElementById('f-recruiter').value        = '';
+    document.getElementById('f-notes').value            = '';
+    document.getElementById('f-recruiter-replied').checked = false;
+    document.getElementById('f-followedup').checked     = false;
+    document.getElementById('f-first').checked          = false;
+    document.getElementById('f-technical').checked      = false;
+    document.getElementById('f-pair').checked           = false;
+    document.getElementById('f-offer').checked          = false;
+  }
+
+  overlay.classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  editingId = null;
+}
+
+function closeModalOnBg(event) {
+  if (event.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+function saveApplication() {
+  const company = document.getElementById('f-company').value.trim();
+  if (!company) { alert('Company name is required.'); return; }
+
+  const data = {
+    date:            document.getElementById('f-date').value,
+    company,
+    role:            document.getElementById('f-role').value.trim(),
+    stage:           document.getElementById('f-stage').value,
+    url:             document.getElementById('f-url').value.trim(),
+    recruiter:       document.getElementById('f-recruiter').value.trim(),
+    notes:           document.getElementById('f-notes').value.trim(),
+    recruiterReplied:document.getElementById('f-recruiter-replied').checked,
+    followedUp:      document.getElementById('f-followedup').checked,
+    first:           document.getElementById('f-first').checked,
+    technical:       document.getElementById('f-technical').checked,
+    pair:            document.getElementById('f-pair').checked,
+    offer:           document.getElementById('f-offer').checked,
+  };
+
+  if (editingId) {
+    const idx = applications.findIndex(a => a.id === editingId);
+    applications[idx] = { ...applications[idx], ...data };
+  } else {
+    applications.push({ id: nextId++, ...data });
+  }
+
+  closeModal();
+  renderTable();
+}
+
+// ─────────────────────────────────────────────
+//  DELETE
+// ─────────────────────────────────────────────
+
+function deleteApp(id) {
+  if (!confirm('Delete this application?')) return;
+  applications = applications.filter(a => a.id !== id);
+  renderTable();
+}
+
+// ─────────────────────────────────────────────
+//  KEYBOARD
+// ─────────────────────────────────────────────
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+// ─────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────
+
+window.addEventListener('resize', () => {
+  renderSankey();
+});
+
+renderTable();
+</script>
+</body>
+</html>

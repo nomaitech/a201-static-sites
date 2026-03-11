@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jobseeking Tracker</title>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f3f4f6;
+      color: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .app-header {
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 0 24px;
+      height: 54px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    }
+    .logo {
+      width: 30px; height: 30px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 800; font-size: 13px; letter-spacing: -0.5px;
+      flex-shrink: 0;
+    }
+    .app-title { font-size: 16px; font-weight: 700; color: #111; }
+    .header-sep { width: 1px; height: 22px; background: #e5e7eb; }
+    .view-tabs { display: flex; gap: 2px; }
+    .view-tab {
+      padding: 5px 12px; border-radius: 6px; font-size: 13px;
+      cursor: pointer; color: #6b7280; border: none; background: none;
+      transition: all .15s; font-family: inherit;
+    }
+    .view-tab.active { background: #eff6ff; color: #3b82f6; font-weight: 600; }
+    .header-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+    .btn-primary {
+      background: #3b82f6; color: #fff; border: none; border-radius: 7px;
+      padding: 7px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+      font-family: inherit; transition: background .15s;
+    }
+    .btn-primary:hover { background: #2563eb; }
+
+    /* ── Stats Bar ── */
+    .stats-bar {
+      display: flex; gap: 12px; padding: 16px 24px;
+      background: #fff; border-bottom: 1px solid #e5e7eb;
+    }
+    .stat-card {
+      display: flex; align-items: center; gap: 12px;
+      background: #fafafa; border: 1px solid #e5e7eb;
+      border-radius: 10px; padding: 12px 18px; flex: 1;
+    }
+    .stat-icon {
+      width: 38px; height: 38px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .stat-value { font-size: 24px; font-weight: 800; line-height: 1; }
+    .stat-label {
+      font-size: 10px; color: #9ca3af; margin-top: 3px;
+      text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600;
+    }
+
+    /* ── Table Section ── */
+    .table-section { padding: 20px 24px 12px; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .section-title { font-size: 14px; font-weight: 700; color: #374151; text-transform: uppercase; letter-spacing: 0.5px; }
+    .table-wrapper {
+      background: #fff; border-radius: 10px; border: 1px solid #e5e7eb;
+      overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .table-scroll { overflow-x: auto; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+    thead th {
+      background: #f9fafb; color: #6b7280; font-weight: 700;
+      font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.65px;
+      padding: 0 14px; height: 38px; text-align: left;
+      border-bottom: 1px solid #e5e7eb; border-right: 1px solid #f0f0f0;
+      white-space: nowrap; user-select: none; cursor: pointer;
+    }
+    thead th.no-sort { cursor: default; }
+    thead th:last-child { border-right: none; }
+    thead th.col-check { text-align: center; }
+    thead th.col-num { text-align: center; width: 46px; cursor: default; }
+    thead th.col-actions { width: 42px; cursor: default; }
+    thead th.sorted-asc::after { content: ' ↑'; color: #3b82f6; }
+    thead th.sorted-desc::after { content: ' ↓'; color: #3b82f6; }
+
+    tbody tr { border-bottom: 1px solid #f3f4f6; transition: background .08s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #f0f7ff; }
+    tbody tr.selected { background: #eff6ff; }
+
+    tbody td {
+      padding: 0; border-right: 1px solid #f0f0f0;
+      vertical-align: middle; height: 42px;
+    }
+    tbody td:last-child { border-right: none; }
+
+    .td-inner {
+      padding: 0 14px; height: 42px;
+      display: flex; align-items: center;
+    }
+    .td-center { justify-content: center; }
+    .td-num { color: #d1d5db; font-size: 11px; justify-content: center; }
+
+    /* Date input */
+    .date-input {
+      border: none; background: transparent; font-size: 12px; color: #6b7280;
+      font-family: inherit; cursor: pointer; width: 100%; padding: 0;
+    }
+    .date-input:focus { outline: none; color: #3b82f6; }
+
+    /* Company input */
+    .company-input {
+      border: none; background: transparent; font-size: 13px; font-weight: 600;
+      color: #111; font-family: inherit; cursor: text; width: 100%; padding: 0;
+    }
+    .company-input:focus { outline: none; }
+    .company-input::placeholder { color: #d1d5db; font-weight: 400; }
+
+    /* Stage status pill (auto-computed) */
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 9px; border-radius: 20px;
+      font-size: 11px; font-weight: 600; white-space: nowrap;
+    }
+    .status-pill .dot {
+      width: 6px; height: 6px; border-radius: 50%; background: currentColor;
+    }
+
+    /* Custom checkbox */
+    .stage-check {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px; border: 1.5px solid #d1d5db;
+      border-radius: 5px; cursor: pointer; transition: all .15s;
+      background: #fff; user-select: none; flex-shrink: 0; position: relative;
+    }
+    .stage-check:hover { border-color: #9ca3af; background: #f9fafb; }
+    .stage-check.checked { background: #22c55e; border-color: #22c55e; }
+    .stage-check.checked::after {
+      content: '';
+      display: block; width: 5px; height: 9px;
+      border: 2.5px solid #fff; border-top: none; border-left: none;
+      transform: rotate(45deg) translateY(-1px);
+    }
+    .stage-check.style-amber.checked { background: #f59e0b; border-color: #f59e0b; }
+    .stage-check.style-blue.checked { background: #3b82f6; border-color: #3b82f6; }
+    .stage-check.style-violet.checked { background: #8b5cf6; border-color: #8b5cf6; }
+    .stage-check.style-pink.checked { background: #ec4899; border-color: #ec4899; }
+    .stage-check.style-emerald.checked { background: #10b981; border-color: #10b981; }
+
+    /* Delete button */
+    .delete-btn {
+      opacity: 0; background: none; border: none; cursor: pointer;
+      color: #9ca3af; font-size: 16px; width: 30px; height: 30px;
+      border-radius: 5px; display: flex; align-items: center; justify-content: center;
+      transition: all .1s; margin: auto; font-family: inherit;
+    }
+    tr:hover .delete-btn { opacity: 1; }
+    .delete-btn:hover { background: #fee2e2; color: #ef4444; }
+
+    /* Add row button */
+    .add-row-btn {
+      display: flex; align-items: center; gap: 8px; padding: 0 14px;
+      height: 42px; color: #9ca3af; font-size: 13px; cursor: pointer;
+      border: none; background: none; width: 100%; text-align: left;
+      border-top: 1px solid #f0f0f0; transition: all .1s; font-family: inherit;
+    }
+    .add-row-btn:hover { background: #f9fafb; color: #6b7280; }
+    .add-row-btn .plus { font-size: 16px; font-weight: 300; }
+
+    /* ── Sankey Section ── */
+    .sankey-section { padding: 0 24px 32px; }
+    .sankey-wrapper {
+      background: #fff; border-radius: 10px; border: 1px solid #e5e7eb;
+      padding: 28px; box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .sankey-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; }
+    .sankey-title { font-size: 15px; font-weight: 700; color: #111; }
+    .sankey-sub { font-size: 12px; color: #9ca3af; margin-top: 3px; }
+    .sankey-legend { display: flex; gap: 16px; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #6b7280; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+    #sankey-svg { width: 100%; display: block; }
+
+    .sankey-empty {
+      display: flex; align-items: center; justify-content: center;
+      height: 200px; color: #d1d5db; font-size: 13px;
+    }
+
+    /* Tooltip */
+    .tooltip {
+      position: fixed; background: rgba(17, 24, 39, 0.9);
+      color: #fff; padding: 8px 13px; border-radius: 7px;
+      font-size: 12px; pointer-events: none; z-index: 9999;
+      opacity: 0; transition: opacity .12s; white-space: nowrap;
+      backdrop-filter: blur(4px); box-shadow: 0 4px 12px rgba(0,0,0,.2);
+    }
+    .tooltip.show { opacity: 1; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="app-header">
+  <div class="logo">JT</div>
+  <span class="app-title">Jobseeking Tracker</span>
+  <div class="header-sep"></div>
+  <div class="view-tabs">
+    <button class="view-tab active" onclick="showPage('grid', this)">Grid</button>
+    <button class="view-tab" onclick="showPage('sankey', this)">Sankey chart</button>
+  </div>
+  <div class="header-right">
+    <button class="btn-primary" onclick="addRow()">+ Add Application</button>
+  </div>
+</header>
+
+<!-- ── Grid page ── -->
+<div id="page-grid">
+
+<!-- ── Stats Bar ── -->
+<div class="stats-bar" id="stats-bar"></div>
+
+<!-- ── Table ── -->
+<div class="table-section">
+  <div class="section-header">
+    <span class="section-title">All Applications</span>
+  </div>
+  <div class="table-wrapper">
+    <div class="table-scroll">
+      <table id="apps-table">
+        <thead>
+          <tr>
+            <th class="col-num no-sort">#</th>
+            <th data-sort="date">Date Applied</th>
+            <th data-sort="company">Company</th>
+            <th class="col-check" data-sort="recruiterAnswered">Recruiter Answered</th>
+            <th class="col-check" data-sort="followedUp">Had to Follow-up</th>
+            <th class="col-check" data-sort="firstStage">First Stage</th>
+            <th class="col-check" data-sort="technicalStage">Technical Stage</th>
+            <th class="col-check" data-sort="pairProgramming">Pair Programming</th>
+            <th class="col-check" data-sort="offer">Offer Stage</th>
+            <th class="col-actions no-sort"></th>
+          </tr>
+        </thead>
+        <tbody id="apps-tbody"></tbody>
+      </table>
+    </div>
+    <button class="add-row-btn" onclick="addRow()">
+      <span class="plus">+</span> Add application
+    </button>
+  </div>
+</div>
+
+</div><!-- end #page-grid -->
+
+<!-- ── Sankey page ── -->
+<div id="page-sankey" style="display:none">
+<div class="sankey-section" style="padding-top:24px">
+  <div class="sankey-wrapper">
+    <div class="sankey-header">
+      <div>
+        <div class="sankey-title">Application Funnel</div>
+        <div class="sankey-sub">Flow of applications through each stage — updates dynamically as you edit</div>
+      </div>
+      <div class="sankey-legend" id="sankey-legend"></div>
+    </div>
+    <svg id="sankey-svg"></svg>
+  </div>
+</div>
+
+</div><!-- end .sankey-section -->
+</div><!-- end #page-sankey -->
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+/* ─────────────────────────────────────────────
+   DATA
+───────────────────────────────────────────── */
+const STAGE_COLORS = {
+  applied:         '#3b82f6',
+  recruiterAnswered: '#10b981',
+  noResponse:      '#94a3b8',
+  firstStage:      '#8b5cf6',
+  stalled:         '#94a3b8',
+  technicalStage:  '#f59e0b',
+  droppedFirst:    '#94a3b8',
+  pairProgramming: '#ec4899',
+  droppedTech:     '#94a3b8',
+  offer:           '#22c55e',
+  rejected:        '#94a3b8',
+};
+
+let applications = [
+  { id:  1, date: '2026-01-08', company: 'Google',     recruiterAnswered: true,  followedUp: false, firstStage: true,  technicalStage: true,  pairProgramming: true,  offer: true  },
+  { id:  2, date: '2026-01-10', company: 'Meta',        recruiterAnswered: true,  followedUp: false, firstStage: true,  technicalStage: true,  pairProgramming: false, offer: false },
+  { id:  3, date: '2026-01-12', company: 'Stripe',      recruiterAnswered: true,  followedUp: false, firstStage: true,  technicalStage: false, pairProgramming: false, offer: false },
+  { id:  4, date: '2026-01-15', company: 'Airbnb',      recruiterAnswered: false, followedUp: true,  firstStage: false, technicalStage: false, pairProgramming: false, offer: false },
+  { id:  5, date: '2026-01-18', company: 'Netflix',     recruiterAnswered: false, followedUp: false, firstStage: false, technicalStage: false, pairProgramming: false, offer: false },
+  { id:  6, date: '2026-01-20', company: 'Uber',        recruiterAnswered: false, followedUp: true,  firstStage: false, technicalStage: false, pairProgramming: false, offer: false },
+  { id:  7, date: '2026-01-22', company: 'Spotify',     recruiterAnswered: true,  followedUp: false, firstStage: true,  technicalStage: true,  pairProgramming: true,  offer: false },
+  { id:  8, date: '2026-01-25', company: 'Twitter / X', recruiterAnswered: false, followedUp: false, firstStage: false, technicalStage: false, pairProgramming: false, offer: false },
+  { id:  9, date: '2026-01-28', company: 'Shopify',     recruiterAnswered: true,  followedUp: false, firstStage: false, technicalStage: false, pairProgramming: false, offer: false },
+  { id: 10, date: '2026-02-01', company: 'GitHub',      recruiterAnswered: true,  followedUp: true,  firstStage: true,  technicalStage: false, pairProgramming: false, offer: false },
+  { id: 11, date: '2026-02-03', company: 'Figma',       recruiterAnswered: true,  followedUp: false, firstStage: true,  technicalStage: true,  pairProgramming: false, offer: false },
+  { id: 12, date: '2026-02-05', company: 'Notion',      recruiterAnswered: false, followedUp: true,  firstStage: false, technicalStage: false, pairProgramming: false, offer: false },
+  { id: 13, date: '2026-02-08', company: 'Linear',      recruiterAnswered: true,  followedUp: false, firstStage: true,  technicalStage: false, pairProgramming: false, offer: false },
+  { id: 14, date: '2026-02-12', company: 'Vercel',      recruiterAnswered: false, followedUp: false, firstStage: false, technicalStage: false, pairProgramming: false, offer: false },
+  { id: 15, date: '2026-02-15', company: 'Anthropic',   recruiterAnswered: true,  followedUp: false, firstStage: true,  technicalStage: true,  pairProgramming: true,  offer: true  },
+];
+
+let nextId = 16;
+let sortField = 'date';
+let sortDir = 'desc';
+
+/* ─────────────────────────────────────────────
+   STATUS HELPER
+───────────────────────────────────────────── */
+function getStatus(app) {
+  if (app.offer)           return { label: 'Offer',        color: '#22c55e', bg: '#f0fdf4' };
+  if (app.pairProgramming) return { label: 'Pair Prog.',   color: '#ec4899', bg: '#fdf2f8' };
+  if (app.technicalStage)  return { label: 'Technical',    color: '#f59e0b', bg: '#fffbeb' };
+  if (app.firstStage)      return { label: '1st Interview', color: '#8b5cf6', bg: '#f5f3ff' };
+  if (app.recruiterAnswered) return { label: 'Responded',  color: '#10b981', bg: '#f0fdf4' };
+  if (app.followedUp)      return { label: 'Followed Up',  color: '#f59e0b', bg: '#fffbeb' };
+  return { label: 'Applied', color: '#6b7280', bg: '#f3f4f6' };
+}
+
+/* ─────────────────────────────────────────────
+   TABLE RENDERING
+───────────────────────────────────────────── */
+function sorted() {
+  const dir = sortDir === 'asc' ? 1 : -1;
+  return [...applications].sort((a, b) => {
+    let av = a[sortField], bv = b[sortField];
+    if (typeof av === 'boolean') av = av ? 1 : 0;
+    if (typeof bv === 'boolean') bv = bv ? 1 : 0;
+    if (av < bv) return -1 * dir;
+    if (av > bv) return  1 * dir;
+    return 0;
+  });
+}
+
+function renderTable() {
+  const tbody = document.getElementById('apps-tbody');
+  tbody.innerHTML = '';
+
+  sorted().forEach((app, idx) => {
+    const st = getStatus(app);
+    const tr = document.createElement('tr');
+    tr.dataset.id = app.id;
+
+    tr.innerHTML = `
+      <td><div class="td-inner td-num">${idx + 1}</div></td>
+      <td>
+        <div class="td-inner">
+          <input type="date" class="date-input" value="${app.date}"
+            onchange="updateApp(${app.id},'date',this.value)">
+        </div>
+      </td>
+      <td>
+        <div class="td-inner" style="gap:10px">
+          <input type="text" class="company-input" value="${app.company}"
+            placeholder="Company name"
+            oninput="updateApp(${app.id},'company',this.value)">
+          <span class="status-pill" style="color:${st.color};background:${st.bg}">
+            <span class="dot"></span>${st.label}
+          </span>
+        </div>
+      </td>
+      <td><div class="td-inner td-center">
+        <div class="stage-check style-emerald ${app.recruiterAnswered?'checked':''}"
+          onclick="toggleField(${app.id},'recruiterAnswered',this)"></div>
+      </div></td>
+      <td><div class="td-inner td-center">
+        <div class="stage-check style-amber ${app.followedUp?'checked':''}"
+          onclick="toggleField(${app.id},'followedUp',this)"></div>
+      </div></td>
+      <td><div class="td-inner td-center">
+        <div class="stage-check style-violet ${app.firstStage?'checked':''}"
+          onclick="toggleField(${app.id},'firstStage',this)"></div>
+      </div></td>
+      <td><div class="td-inner td-center">
+        <div class="stage-check style-amber ${app.technicalStage?'checked':''}"
+          onclick="toggleField(${app.id},'technicalStage',this)"></div>
+      </div></td>
+      <td><div class="td-inner td-center">
+        <div class="stage-check style-pink ${app.pairProgramming?'checked':''}"
+          onclick="toggleField(${app.id},'pairProgramming',this)"></div>
+      </div></td>
+      <td><div class="td-inner td-center">
+        <div class="stage-check style-blue ${app.offer?'checked':''}"
+          onclick="toggleField(${app.id},'offer',this)"></div>
+      </div></td>
+      <td><div class="td-inner td-center">
+        <button class="delete-btn" onclick="deleteRow(${app.id})" title="Delete row">×</button>
+      </div></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  updateSortHeaders();
+}
+
+function updateSortHeaders() {
+  document.querySelectorAll('thead th[data-sort]').forEach(th => {
+    th.classList.remove('sorted-asc', 'sorted-desc');
+    if (th.dataset.sort === sortField) {
+      th.classList.add(sortDir === 'asc' ? 'sorted-asc' : 'sorted-desc');
+    }
+  });
+}
+
+// Sort on header click
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('thead th[data-sort]').forEach(th => {
+    th.addEventListener('click', () => {
+      const field = th.dataset.sort;
+      if (sortField === field) {
+        sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortField = field;
+        sortDir = 'asc';
+      }
+      renderTable();
+    });
+  });
+});
+
+/* ─────────────────────────────────────────────
+   DATA MUTATIONS
+───────────────────────────────────────────── */
+function updateApp(id, field, value) {
+  const app = applications.find(a => a.id === id);
+  if (!app) return;
+  app[field] = value;
+  saveData();
+  // Re-render status pill without full table re-render
+  const st = getStatus(app);
+  const row = document.querySelector(`tr[data-id="${id}"]`);
+  if (row) {
+    const pill = row.querySelector('.status-pill');
+    if (pill) {
+      pill.style.color = st.color;
+      pill.style.background = st.bg;
+      pill.innerHTML = `<span class="dot"></span>${st.label}`;
+    }
+  }
+  renderStats();
+}
+
+function toggleField(id, field, el) {
+  const app = applications.find(a => a.id === id);
+  if (!app) return;
+  app[field] = !app[field];
+  el.classList.toggle('checked', app[field]);
+  // Update status pill
+  const st = getStatus(app);
+  const row = document.querySelector(`tr[data-id="${id}"]`);
+  if (row) {
+    const pill = row.querySelector('.status-pill');
+    if (pill) {
+      pill.style.color = st.color;
+      pill.style.background = st.bg;
+      pill.innerHTML = `<span class="dot"></span>${st.label}`;
+    }
+  }
+  saveData();
+  renderStats();
+}
+
+function addRow() {
+  const today = new Date().toISOString().split('T')[0];
+  applications.unshift({
+    id: nextId++, date: today, company: '',
+    recruiterAnswered: false, followedUp: false,
+    firstStage: false, technicalStage: false,
+    pairProgramming: false, offer: false,
+  });
+  saveData();
+  renderTable();
+  renderStats();
+  // Focus new row's company input without scrolling (it's now at the top)
+  const inputs = document.querySelectorAll('.company-input');
+  if (inputs.length) inputs[0].focus({ preventScroll: true });
+}
+
+function deleteRow(id) {
+  applications = applications.filter(a => a.id !== id);
+  saveData();
+  renderTable();
+  renderStats();
+}
+
+/* ─────────────────────────────────────────────
+   STATS
+───────────────────────────────────────────── */
+function renderStats() {
+  const n    = applications.length;
+  const resp = applications.filter(a => a.recruiterAnswered).length;
+  const intr = applications.filter(a => a.firstStage).length;
+  const offr = applications.filter(a => a.offer).length;
+
+  const pct = (x) => n > 0 ? Math.round(x / n * 100) + '%' : '—';
+
+  const items = [
+    { value: n,       label: 'Total Applied',   icon: '📋', color: '#3b82f6', bg: '#eff6ff' },
+    { value: pct(resp), label: 'Response Rate', icon: '💬', color: '#10b981', bg: '#f0fdf4' },
+    { value: pct(intr), label: 'Interview Rate',icon: '🎯', color: '#8b5cf6', bg: '#f5f3ff' },
+    { value: pct(offr), label: 'Offer Rate',    icon: '🎉', color: '#22c55e', bg: '#f0fdf4' },
+  ];
+
+  document.getElementById('stats-bar').innerHTML = items.map(s => `
+    <div class="stat-card">
+      <div class="stat-icon" style="background:${s.bg}">${s.icon}</div>
+      <div>
+        <div class="stat-value" style="color:${s.color}">${s.value}</div>
+        <div class="stat-label">${s.label}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ─────────────────────────────────────────────
+   SANKEY
+───────────────────────────────────────────── */
+function buildSankeyData() {
+  const total   = applications.length;
+  if (!total) return null;
+
+  const resp    = applications.filter(a => a.recruiterAnswered).length;
+  const noResp  = total - resp;
+  const first   = applications.filter(a => a.firstStage).length;
+  const stalled = resp - first;           // answered but no interview
+  const tech    = applications.filter(a => a.technicalStage).length;
+  const drop1   = first - tech;           // 1st interview but no technical
+  const pair    = applications.filter(a => a.pairProgramming).length;
+  const dropT   = tech - pair;            // technical but no pair
+  const offers  = applications.filter(a => a.offer).length;
+  const reject  = pair - offers;          // pair but no offer
+
+  const nodeArr = [];
+  const linkArr = [];
+  const idx = {};
+
+  function node(name, color) {
+    if (!(name in idx)) { idx[name] = nodeArr.length; nodeArr.push({ name, color }); }
+    return name;
+  }
+  function link(src, tgt, val) {
+    if (val > 0) linkArr.push({ source: idx[src], target: idx[tgt], value: val });
+  }
+
+  // Build nodes only if they carry flow
+  node('Applied', STAGE_COLORS.applied);
+  if (resp   > 0) node('Responded',      STAGE_COLORS.recruiterAnswered);
+  if (noResp > 0) node('No Response',    STAGE_COLORS.noResponse);
+  if (first  > 0) node('1st Interview',  STAGE_COLORS.firstStage);
+  if (stalled> 0 && resp > 0) node('Stalled',    STAGE_COLORS.stalled);
+  if (tech   > 0) node('Technical',      STAGE_COLORS.technicalStage);
+  if (drop1  > 0 && first > 0) node('Dropped (1st)', STAGE_COLORS.droppedFirst);
+  if (pair   > 0) node('Pair Program.',  STAGE_COLORS.pairProgramming);
+  if (dropT  > 0 && tech  > 0) node('Dropped (Tech)', STAGE_COLORS.droppedTech);
+  if (offers > 0) node('Offer 🎉',       STAGE_COLORS.offer);
+  if (reject > 0 && pair  > 0) node('Rejected',    STAGE_COLORS.rejected);
+
+  // Links
+  if (resp   > 0) link('Applied',      'Responded',       resp);
+  if (noResp > 0) link('Applied',      'No Response',     noResp);
+  if (first  > 0) link('Responded',    '1st Interview',   first);
+  if (stalled> 0 && resp > 0) link('Responded',    'Stalled',         stalled);
+  if (tech   > 0) link('1st Interview','Technical',        tech);
+  if (drop1  > 0 && first > 0) link('1st Interview','Dropped (1st)',   drop1);
+  if (pair   > 0) link('Technical',   'Pair Program.',    pair);
+  if (dropT  > 0 && tech  > 0) link('Technical',   'Dropped (Tech)',  dropT);
+  if (offers > 0) link('Pair Program.','Offer 🎉',         offers);
+  if (reject > 0 && pair  > 0) link('Pair Program.','Rejected',        reject);
+
+  return { nodes: nodeArr, links: linkArr };
+}
+
+function renderSankey() {
+  const svgEl = document.getElementById('sankey-svg');
+  svgEl.innerHTML = '';
+
+  const data = buildSankeyData();
+  if (!data || data.nodes.length < 2) {
+    svgEl.setAttribute('height', 80);
+    svgEl.innerHTML = '<text x="50%" y="50%" text-anchor="middle" fill="#d1d5db" dy=".3em" font-size="14" font-family="system-ui">Add applications to see the funnel</text>';
+    document.getElementById('sankey-legend').innerHTML = '';
+    return;
+  }
+
+  const W = svgEl.parentElement.clientWidth - 56;
+  const H = Math.max(340, Math.min(460, data.nodes.length * 38));
+  const margin = { t: 12, r: 180, b: 12, l: 12 };
+
+  svgEl.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svgEl.setAttribute('height', H);
+
+  const sankey = d3.sankey()
+    .nodeWidth(18)
+    .nodePadding(14)
+    .extent([[margin.l, margin.t], [W - margin.r, H - margin.b]])
+    .nodeAlign(d3.sankeyLeft);
+
+  const graph = sankey({
+    nodes: data.nodes.map(d => ({ ...d })),
+    links: data.links.map(d => ({ ...d })),
+  });
+
+  const svg = d3.select(svgEl);
+  const defs = svg.append('defs');
+
+  // Gradient per link
+  graph.links.forEach((lk, i) => {
+    const g = defs.append('linearGradient')
+      .attr('id', `sg${i}`)
+      .attr('gradientUnits', 'userSpaceOnUse')
+      .attr('x1', lk.source.x1).attr('x2', lk.target.x0);
+    g.append('stop').attr('offset', '0%')
+      .attr('stop-color', lk.source.color).attr('stop-opacity', 0.45);
+    g.append('stop').attr('offset', '100%')
+      .attr('stop-color', lk.target.color).attr('stop-opacity', 0.45);
+  });
+
+  // Links
+  svg.append('g').selectAll('path')
+    .data(graph.links)
+    .join('path')
+      .attr('d', d3.sankeyLinkHorizontal())
+      .attr('stroke', (_, i) => `url(#sg${i})`)
+      .attr('stroke-width', d => Math.max(2, d.width))
+      .attr('fill', 'none')
+      .style('cursor', 'default')
+      .on('mouseover', function(ev, d) {
+        d3.select(this).attr('stroke-opacity', 1);
+        showTip(ev, `${d.source.name} → ${d.target.name}: ${d.value} application${d.value!==1?'s':''}`);
+      })
+      .on('mousemove', moveTip)
+      .on('mouseout', function() {
+        d3.select(this).attr('stroke-opacity', null);
+        hideTip();
+      });
+
+  // Nodes
+  const ng = svg.append('g').selectAll('g')
+    .data(graph.nodes)
+    .join('g')
+      .style('cursor', 'default')
+      .on('mouseover', (ev, d) => showTip(ev, `${d.name}: ${d.value} application${d.value!==1?'s':''}`))
+      .on('mousemove', moveTip)
+      .on('mouseout', hideTip);
+
+  ng.append('rect')
+    .attr('x', d => d.x0).attr('y', d => d.y0)
+    .attr('width', d => d.x1 - d.x0)
+    .attr('height', d => Math.max(2, d.y1 - d.y0))
+    .attr('fill', d => d.color)
+    .attr('rx', 4);
+
+  // Labels
+  ng.append('text')
+    .attr('y', d => (d.y0 + d.y1) / 2)
+    .attr('dy', '0.35em')
+    .attr('font-size', 12)
+    .attr('font-family', 'system-ui, -apple-system, sans-serif')
+    .attr('fill', '#374151')
+    .attr('font-weight', 600)
+    .each(function(d) {
+      const isRight = d.x1 > W - margin.r - 10;
+      d3.select(this)
+        .attr('x', isRight ? d.x0 - 8 : d.x1 + 8)
+        .attr('text-anchor', isRight ? 'end' : 'start')
+        .text(`${d.name} (${d.value})`);
+    });
+
+  // Legend
+  const legendData = [
+    { label: 'Applied',      color: STAGE_COLORS.applied },
+    { label: 'Responded',    color: STAGE_COLORS.recruiterAnswered },
+    { label: 'In Progress',  color: STAGE_COLORS.firstStage },
+    { label: 'Offer',        color: STAGE_COLORS.offer },
+    { label: 'Dropped',      color: STAGE_COLORS.noResponse },
+  ];
+  document.getElementById('sankey-legend').innerHTML = legendData.map(l => `
+    <div class="legend-item">
+      <div class="legend-dot" style="background:${l.color}"></div>
+      ${l.label}
+    </div>
+  `).join('');
+}
+
+/* ─────────────────────────────────────────────
+   TOOLTIP
+───────────────────────────────────────────── */
+const tip = document.getElementById('tooltip');
+function showTip(ev, text) {
+  tip.textContent = text;
+  tip.classList.add('show');
+  moveTip(ev);
+}
+function moveTip(ev) {
+  tip.style.left = (ev.clientX + 14) + 'px';
+  tip.style.top  = (ev.clientY - 34) + 'px';
+}
+function hideTip() { tip.classList.remove('show'); }
+
+/* ─────────────────────────────────────────────
+   PERSISTENCE
+───────────────────────────────────────────── */
+function saveData() {
+  try {
+    localStorage.setItem('jt_apps', JSON.stringify(applications));
+    localStorage.setItem('jt_nextId', nextId);
+  } catch(_) {}
+}
+function loadData() {
+  try {
+    const saved = localStorage.getItem('jt_apps');
+    if (saved) {
+      applications = JSON.parse(saved);
+      nextId = parseInt(localStorage.getItem('jt_nextId') || applications.length + 1);
+    }
+  } catch(_) {}
+}
+
+/* ─────────────────────────────────────────────
+   NAVIGATION
+───────────────────────────────────────────── */
+function showPage(name, btn) {
+  document.getElementById('page-grid').style.display   = name === 'grid'   ? '' : 'none';
+  document.getElementById('page-sankey').style.display = name === 'sankey' ? '' : 'none';
+  document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  if (name === 'sankey') renderSankey();
+}
+
+/* ─────────────────────────────────────────────
+   INIT
+───────────────────────────────────────────── */
+loadData();
+renderTable();
+renderStats();
+
+window.addEventListener('resize', () => {
+  if (document.getElementById('page-sankey').style.display !== 'none') renderSankey();
+});
+</script>
+</body>
+</html>
