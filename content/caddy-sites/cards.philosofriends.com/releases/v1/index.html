@@ -283,7 +283,7 @@
 
   async function init() {
     // Fetch build-time generated manifest
-    const res = await fetch('/cards.json');
+    const res = await fetch('/cards.json?v=' + Date.now());
     const files = await res.json();
 
     const cards = files.map(f => f.name).sort();
