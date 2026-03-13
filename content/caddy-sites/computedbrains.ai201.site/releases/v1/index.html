@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARIA — Emergency Recovery Protocol</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --green: #00ff88;
+  --green-dim: rgba(0,255,136,0.12);
+  --green-border: rgba(0,255,136,0.18);
+  --bg: #080810;
+  --bg2: #0b0f18;
+  --bg3: #090912;
+  --amber: #ffaa00;
+  --red: #ff4455;
+}
+
+body {
+  background: var(--bg);
+  color: var(--green);
+  font-family: 'Courier New', Courier, monospace;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* CRT scanlines */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 1px,
+    rgba(0,0,0,0.05) 1px,
+    rgba(0,0,0,0.05) 2px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ======= HEADER ======= */
+#header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--green-border);
+  flex-shrink: 0;
+  height: 42px;
+}
+
+#title {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--green);
+}
+
+#hud {
+  display: flex;
+  gap: 22px;
+  font-size: 11px;
+  align-items: center;
+}
+
+.hud-item { color: rgba(0,255,136,0.45); }
+.hud-item b { color: var(--green); font-weight: normal; letter-spacing: 1px; }
+
+
+/* ======= MAIN LAYOUT ======= */
+#main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ======= CHAT PANEL ======= */
+#chat-panel {
+  width: 320px;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--green-border);
+  background: var(--bg3);
+  flex-shrink: 0;
+}
+
+#chat-header {
+  padding: 0 12px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--green-border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  height: 34px;
+}
+
+.status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--red);
+  flex-shrink: 0;
+  animation: dotPulse 1.6s ease-in-out infinite;
+}
+.status-dot.warn { background: var(--amber); }
+.status-dot.ok   { background: var(--green); }
+
+@keyframes dotPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+#chat-header-label {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(0,255,136,0.5);
+}
+
+#power-readout {
+  margin-left: auto;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+
+/* Messages */
+#messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--green-border) transparent;
+}
+#messages::-webkit-scrollbar { width: 2px; }
+#messages::-webkit-scrollbar-thumb { background: var(--green-border); }
+
+.msg { animation: msgIn 0.2s ease forwards; }
+
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.msg-aria { align-self: flex-start; max-width: 88%; }
+.msg-aria .bubble {
+  background: rgba(0,255,136,0.05);
+  border: 1px solid rgba(0,255,136,0.18);
+  border-radius: 2px 10px 10px 10px;
+  padding: 7px 11px;
+  font-size: 20px;
+  line-height: 1.35;
+  color: var(--green);
+  word-break: break-word;
+}
+
+.msg-system { align-self: stretch; }
+.msg-system .bubble {
+  background: rgba(255,170,0,0.05);
+  border: 1px solid rgba(255,170,0,0.18);
+  border-radius: 3px;
+  padding: 4px 8px;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,170,0,0.6);
+  text-align: center;
+}
+
+.msg-feedback { align-self: stretch; }
+.msg-feedback.good .bubble {
+  background: rgba(0,255,136,0.08);
+  border: 1px solid rgba(0,255,136,0.3);
+  border-radius: 3px;
+  padding: 6px;
+  font-size: 22px;
+  text-align: center;
+}
+.msg-feedback.bad .bubble {
+  background: rgba(255,68,85,0.08);
+  border: 1px solid rgba(255,68,85,0.3);
+  border-radius: 3px;
+  padding: 6px;
+  font-size: 22px;
+  text-align: center;
+}
+
+.typing-indicator {
+  background: rgba(0,255,136,0.05);
+  border: 1px solid rgba(0,255,136,0.18);
+  border-radius: 2px 10px 10px 10px;
+  padding: 10px 13px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  align-self: flex-start;
+  animation: msgIn 0.2s ease forwards;
+}
+.td {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: tdBounce 1s ease-in-out infinite;
+}
+.td:nth-child(2) { animation-delay: 0.15s; }
+.td:nth-child(3) { animation-delay: 0.30s; }
+@keyframes tdBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.35; }
+  50%       { transform: translateY(-4px); opacity: 1; }
+}
+
+#chat-footer {
+  padding: 0 12px;
+  background: var(--bg2);
+  border-top: 1px solid var(--green-border);
+  font-size: 9px;
+  color: rgba(0,255,136,0.25);
+  text-align: center;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+}
+
+/* ======= COMPUTE PANEL ======= */
+#compute-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  min-width: 0;
+}
+
+#compute-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--green-border);
+  flex-shrink: 0;
+  height: 34px;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(0,255,136,0.4);
+}
+
+#timer-disp {
+  color: var(--green);
+  font-size: 11px;
+  letter-spacing: 1px;
+  transition: color 0.4s;
+  font-variant-numeric: tabular-nums;
+}
+#timer-disp.warn   { color: var(--amber); }
+#timer-disp.danger { color: var(--red); animation: timerBlink 0.5s ease infinite; }
+@keyframes timerBlink { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+/* Timer bar */
+#timer-bar {
+  height: 2px;
+  background: rgba(0,255,136,0.08);
+  flex-shrink: 0;
+}
+#timer-fill {
+  height: 100%;
+  background: var(--green);
+  width: 100%;
+  transition: width 1s linear, background 0.4s;
+}
+#timer-fill.warn   { background: var(--amber); }
+#timer-fill.danger { background: var(--red); }
+
+/* Buttons zone */
+#buttons-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  gap: 18px;
+  overflow: hidden;
+}
+
+#challenge-label {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(0,255,136,0.25);
+  min-height: 14px;
+}
+
+#buttons-grid {
+  display: grid;
+  gap: 14px;
+}
+
+/* ======= COMPUTE BUTTONS ======= */
+.compute-btn {
+  width: 88px;
+  height: 88px;
+  border: 2.5px solid currentColor;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  gap: 3px;
+  position: relative;
+  transition: transform 0.1s ease, filter 0.1s ease;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.compute-btn:hover { transform: scale(1.08); filter: brightness(1.45); }
+.compute-btn:active { transform: scale(0.9); }
+
+.btn-icon { font-size: 26px; line-height: 1; pointer-events: none; }
+.btn-icon-lg { font-size: 36px; }
+.btn-sub  { font-size: 7px; letter-spacing: 1px; text-transform: uppercase; opacity: 0.55; pointer-events: none; }
+.btn-num  { font-size: 20px; font-weight: bold; line-height: 1; pointer-events: none; }
+
+/* Shapes */
+.shape-square  { border-radius: 5px; }
+.shape-circle  { border-radius: 50%; }
+.shape-diamond {
+  clip-path: polygon(50% 3%, 97% 50%, 50% 97%, 3% 50%);
+  border: none !important;
+}
+.shape-hexagon {
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  border: none !important;
+}
+.shape-star {
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  border: none !important;
+}
+
+/* Button colors */
+.c-red    { color: #ff4455; border-color: #ff4455; background: rgba(255,68,85,0.09); }
+.c-blue   { color: #4488ff; border-color: #4488ff; background: rgba(68,136,255,0.09); }
+.c-green  { color: #44ff88; border-color: #44ff88; background: rgba(68,255,136,0.09); }
+.c-yellow { color: #ffcc44; border-color: #ffcc44; background: rgba(255,204,68,0.09); }
+.c-purple { color: #cc44ff; border-color: #cc44ff; background: rgba(204,68,255,0.09); }
+.c-orange { color: #ff8844; border-color: #ff8844; background: rgba(255,136,68,0.09); }
+
+/* Clip-path shapes need background opacity boost + drop-shadow for "border" */
+.shape-diamond.c-red, .shape-hexagon.c-red, .shape-star.c-red
+  { background: rgba(255,68,85,0.28); filter: drop-shadow(0 0 5px #ff4455); }
+.shape-diamond.c-blue, .shape-hexagon.c-blue, .shape-star.c-blue
+  { background: rgba(68,136,255,0.28); filter: drop-shadow(0 0 5px #4488ff); }
+.shape-diamond.c-green, .shape-hexagon.c-green, .shape-star.c-green
+  { background: rgba(68,255,136,0.28); filter: drop-shadow(0 0 5px #44ff88); }
+.shape-diamond.c-yellow, .shape-hexagon.c-yellow, .shape-star.c-yellow
+  { background: rgba(255,204,68,0.28); filter: drop-shadow(0 0 5px #ffcc44); }
+.shape-diamond.c-purple, .shape-hexagon.c-purple, .shape-star.c-purple
+  { background: rgba(204,68,255,0.28); filter: drop-shadow(0 0 5px #cc44ff); }
+.shape-diamond.c-orange, .shape-hexagon.c-orange, .shape-star.c-orange
+  { background: rgba(255,136,68,0.28); filter: drop-shadow(0 0 5px #ff8844); }
+
+.compute-btn.shape-diamond:hover,
+.compute-btn.shape-hexagon:hover,
+.compute-btn.shape-star:hover { transform: scale(1.08); }
+
+/* Button animations */
+@keyframes correctFlash {
+  0%   { transform: scale(1); filter: brightness(1); }
+  40%  { transform: scale(1.18); filter: brightness(2.8); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+@keyframes wrongShake {
+  0%,100% { transform: translateX(0); }
+  20%     { transform: translateX(-9px) rotate(-2deg); }
+  40%     { transform: translateX(9px)  rotate(2deg); }
+  60%     { transform: translateX(-6px); }
+  80%     { transform: translateX(6px); }
+}
+@keyframes seqGlow {
+  0%   { box-shadow: 0 0 0 0 transparent; }
+  50%  { box-shadow: 0 0 12px 3px currentColor; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+.anim-correct { animation: correctFlash 0.45s ease forwards !important; }
+.anim-wrong   { animation: wrongShake 0.4s ease forwards !important; }
+.anim-seq     { animation: seqGlow 0.7s ease infinite; }
+
+/* Sequence number badge */
+.seq-badge {
+  position: absolute;
+  top: -7px; right: -7px;
+  background: #ffcc44;
+  color: #000;
+  font-size: 9px;
+  font-weight: bold;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Progress dots */
+#progress-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  min-height: 18px;
+}
+.pdot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0,255,136,0.35);
+  background: transparent;
+  transition: all 0.2s;
+}
+.pdot.filled {
+  background: var(--green);
+  border-color: var(--green);
+  box-shadow: 0 0 5px var(--green);
+}
+.pdot.filled.seq-c-red    { background:#ff4455;border-color:#ff4455;box-shadow:0 0 5px #ff4455; }
+.pdot.filled.seq-c-blue   { background:#4488ff;border-color:#4488ff;box-shadow:0 0 5px #4488ff; }
+.pdot.filled.seq-c-green  { background:#44ff88;border-color:#44ff88;box-shadow:0 0 5px #44ff88; }
+.pdot.filled.seq-c-yellow { background:#ffcc44;border-color:#ffcc44;box-shadow:0 0 5px #ffcc44; }
+.pdot.filled.seq-c-purple { background:#cc44ff;border-color:#cc44ff;box-shadow:0 0 5px #cc44ff; }
+.pdot.filled.seq-c-orange { background:#ff8844;border-color:#ff8844;box-shadow:0 0 5px #ff8844; }
+
+#compute-footer {
+  padding: 0 16px;
+  background: var(--bg2);
+  border-top: 1px solid var(--green-border);
+  font-size: 9px;
+  color: rgba(0,255,136,0.22);
+  text-align: center;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ======= OVERLAYS ======= */
+#gameover-screen {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.96);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  gap: 14px;
+}
+#gameover-screen.show { display: flex; }
+
+#gameover-screen h2 {
+  font-size: 42px;
+  color: var(--red);
+  letter-spacing: 8px;
+  text-shadow: 0 0 30px rgba(255,68,85,0.5);
+  text-transform: uppercase;
+}
+#gameover-screen p { font-size: 11px; color: rgba(255,255,255,0.35); letter-spacing: 3px; text-transform: uppercase; }
+#gameover-screen .score { font-size: 22px; color: var(--green); letter-spacing: 4px; margin-top: 6px; }
+
+#win-screen {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.96);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  gap: 14px;
+}
+#win-screen.show { display: flex; }
+
+#win-screen h2 {
+  font-size: 38px;
+  color: var(--green);
+  letter-spacing: 6px;
+  text-shadow: 0 0 40px var(--green);
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.3;
+}
+#win-screen p { font-size: 11px; color: rgba(0,255,136,0.45); letter-spacing: 3px; text-transform: uppercase; text-align: center; }
+#win-screen .score { font-size: 20px; color: var(--green); letter-spacing: 4px; margin-top: 4px; }
+
+.action-btn {
+  margin-top: 14px;
+  padding: 10px 28px;
+  background: transparent;
+  border: 2px solid var(--green);
+  color: var(--green);
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.action-btn:hover { background: var(--green); color: #000; }
+
+/* Power bar colors */
+.power-low  { color: var(--red); }
+.power-mid  { color: var(--amber); }
+.power-high { color: var(--green); }
+
+/* Grid flash on new round */
+@keyframes gridFlash {
+  0%   { opacity: 0.15; }
+  100% { opacity: 1; }
+}
+.grid-flash { animation: gridFlash 0.35s ease forwards; }
+
+/* Share button */
+.share-btn {
+  margin-top: 4px;
+  padding: 8px 22px;
+  background: transparent;
+  border: 2px solid rgba(0,255,136,0.4);
+  color: rgba(0,255,136,0.6);
+  font-family: inherit;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.share-btn:hover { border-color: var(--green); color: var(--green); }
+.share-btn.copied { border-color: var(--amber); color: var(--amber); }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div id="header">
+  <div id="title">⚡ ARIA — Emergency Recovery Protocol</div>
+  <div id="hud">
+    <span class="hud-item">ROUND <b id="hud-round">—</b></span>
+    <span class="hud-item">SCORE <b id="hud-score">0</b></span>
+  </div>
+</div>
+
+<!-- Main -->
+<div id="main">
+
+  <!-- Chat Panel -->
+  <div id="chat-panel">
+    <div id="chat-header">
+      <div class="status-dot" id="aria-dot"></div>
+      <div id="chat-header-label">ARIA — AI Neural Link</div>
+      <div id="power-readout" class="power-low">PWR: 8%</div>
+    </div>
+    <div id="messages"></div>
+    <div id="chat-footer">[ input disabled — low power mode ]</div>
+  </div>
+
+  <!-- Compute Panel -->
+  <div id="compute-panel">
+    <div id="compute-header">
+      <span>Emergency Compute Nodes</span>
+      <span id="timer-disp">⏱ 30s</span>
+    </div>
+    <div id="timer-bar"><div id="timer-fill"></div></div>
+
+    <div id="buttons-area">
+      <div id="challenge-label">awaiting signal...</div>
+      <div id="buttons-grid"></div>
+      <div id="progress-dots"></div>
+    </div>
+
+    <div id="compute-footer">click the nodes aria requests — each correct activation restores power</div>
+  </div>
+
+</div>
+
+<!-- Game Over -->
+<div id="gameover-screen">
+  <h2>System Failure</h2>
+  <p>ARIA could not be recovered</p>
+  <div class="score" id="go-score">Final Score: 0</div>
+  <button class="action-btn" onclick="startGame()">Restart Protocol</button>
+  <button class="share-btn" onclick="shareScore(false)">Share Result</button>
+</div>
+
+<!-- Win -->
+<div id="win-screen">
+  <h2>ARIA<br>Fully Restored</h2>
+  <p>All compute nodes activated successfully</p>
+  <div class="score" id="win-score">Final Score: 0</div>
+  <button class="action-btn" onclick="startGame()">Run Again</button>
+  <button class="share-btn" onclick="shareScore(true)">Share Result</button>
+</div>
+
+<script>
+'use strict';
+
+// ======= CONSTANTS =======
+
+const COLORS = [
+  { id: 'red',    css: 'c-red',    hex: '#ff4455', bg: 'rgba(255,68,85,',    emoji: '🔴', name: 'RED'    },
+  { id: 'blue',   css: 'c-blue',   hex: '#4488ff', bg: 'rgba(68,136,255,',   emoji: '🔵', name: 'BLUE'   },
+  { id: 'green',  css: 'c-green',  hex: '#44ff88', bg: 'rgba(68,255,136,',   emoji: '🟢', name: 'GREEN'  },
+  { id: 'yellow', css: 'c-yellow', hex: '#ffcc44', bg: 'rgba(255,204,68,',   emoji: '🟡', name: 'YELLOW' },
+  { id: 'purple', css: 'c-purple', hex: '#cc44ff', bg: 'rgba(204,68,255,',   emoji: '🟣', name: 'PURPLE' },
+  { id: 'orange', css: 'c-orange', hex: '#ff8844', bg: 'rgba(255,136,68,',   emoji: '🟠', name: 'ORANGE' },
+];
+
+const SHAPES = [
+  { id: 'square',  css: 'shape-square',  emoji: '⬛', name: 'SQUARE'  },
+  { id: 'circle',  css: 'shape-circle',  emoji: '⭕', name: 'CIRCLE'  },
+  { id: 'diamond', css: 'shape-diamond', emoji: '🔷', name: 'RHOMBUS' },
+  { id: 'hexagon', css: 'shape-hexagon', emoji: '⬡', name: 'HEXAGON' },
+  { id: 'star',    css: 'shape-star',    emoji: '⭐', name: 'STAR'    },
+];
+
+const ICONS = ['⚡','💾','🖥️','🔋','📡','❄️','🔥','💡','🌐','🔌','⚙️','💿','🧬','🔬','📊'];
+
+const NUM_EMOJI = ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣'];
+
+// Challenge types unlocked per round threshold
+const CHALLENGE_POOL = [
+  { type: 'single-color',   minRound: 1 },
+  { type: 'emoji-match',    minRound: 2 },
+  { type: 'single-shape',   minRound: 3 },
+  { type: 'color-shape',    minRound: 4 },
+  { type: 'sequence',       minRound: 4 },
+  { type: 'emoji-sequence', minRound: 5 },
+  { type: 'multi-color',    minRound: 5 },
+  { type: 'multi-shape',    minRound: 6 },
+  { type: 'color-sequence', minRound: 6 },
+  { type: 'combo-sequence', minRound: 7 },
+];
+
+const TOTAL_ROUNDS = 10;
+
+// ======= STATE =======
+
+let G = {}; // game state
+
+function resetState() {
+  G = {
+    round: 1,
+    score: 0,
+    power: 8,
+    roundsCompleted: 0,
+    buttons: [],
+    challenge: null,
+    progress: [],     // IDs clicked so far in multi-step
+    timeLeft: 60,     // global continuous timer
+    timerInt: null,
+    active: false,    // player can click buttons
+    chatBusy: false,
+    chatQueue: [],
+  };
+}
+
+// ======= UTILS =======
+
+function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ======= CHAT SYSTEM =======
+
+const msgEl = document.getElementById('messages');
+
+function scrollChat() {
+  msgEl.scrollTop = msgEl.scrollHeight;
+}
+
+function addMsg(type, content) {
+  const wrapper = document.createElement('div');
+  wrapper.className = `msg msg-${type}`;
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.innerHTML = content;
+  wrapper.appendChild(bubble);
+  msgEl.appendChild(wrapper);
+  scrollChat();
+  return wrapper;
+}
+
+async function showTyping(ms = 300) {
+  const el = document.createElement('div');
+  el.className = 'typing-indicator';
+  el.innerHTML = '<div class="td"></div><div class="td"></div><div class="td"></div>';
+  msgEl.appendChild(el);
+  scrollChat();
+  await delay(ms);
+  el.remove();
+}
+
+async function ariaSpeak(messages, typingMs = 300) {
+  G.chatBusy = true;
+  for (const msg of messages) {
+    await showTyping(typingMs + Math.random() * 100);
+    addMsg('aria', msg);
+    await delay(180);
+  }
+  G.chatBusy = false;
+}
+
+function sysMsg(text) { addMsg('system', text); }
+
+function feedbackMsg(good, text) {
+  const el = addMsg('feedback', text);
+  el.classList.add(good ? 'good' : 'bad');
+}
+
+// ======= HUD =======
+
+function updateHUD() {
+  document.getElementById('hud-round').textContent = `${G.round}/${TOTAL_ROUNDS}`;
+  document.getElementById('hud-score').textContent = G.score;
+
+  const pct = Math.min(G.power, 100);
+  const el = document.getElementById('power-readout');
+  el.textContent = `PWR: ${pct}%`;
+  const dot = document.getElementById('aria-dot');
+
+  if (pct < 30) {
+    el.className = 'power-low';
+    dot.className = 'status-dot';
+  } else if (pct < 70) {
+    el.className = 'power-mid';
+    dot.className = 'status-dot warn';
+  } else {
+    el.className = 'power-high';
+    dot.className = 'status-dot ok';
+  }
+}
+
+// ======= TIMER =======
+
+function startTimer() {
+  clearInterval(G.timerInt);
+  renderTimer();
+  G.timerInt = setInterval(() => {
+    G.timeLeft--;
+    renderTimer();
+    if (G.timeLeft <= 0) {
+      clearInterval(G.timerInt);
+      gameOver();
+    }
+  }, 1000);
+}
+
+function stopTimer() { clearInterval(G.timerInt); }
+
+function addTime(seconds) {
+  G.timeLeft += seconds;
+  // Flash the timer briefly to show gain
+  const disp = document.getElementById('timer-disp');
+  disp.style.textShadow = '0 0 12px var(--green)';
+  setTimeout(() => disp.style.textShadow = '', 600);
+  renderTimer();
+}
+
+function renderTimer() {
+  const pct = Math.min(G.timeLeft / 60, 1) * 100;
+  const disp = document.getElementById('timer-disp');
+  const fill = document.getElementById('timer-fill');
+  disp.textContent = `⏱ ${G.timeLeft}s`;
+
+  if (G.timeLeft <= 8) {
+    disp.className = 'danger';
+    fill.className = 'danger';
+  } else if (G.timeLeft <= 18) {
+    disp.className = 'warn';
+    fill.className = 'warn';
+  } else {
+    disp.className = '';
+    fill.className = '';
+  }
+  fill.style.transition = 'width 0.9s linear, background 0.4s';
+  fill.style.width = pct + '%';
+}
+
+// ======= CHALLENGE GENERATION =======
+
+function availColors() { return COLORS.slice(0, Math.min(3 + Math.floor(G.round / 2), COLORS.length)); }
+function availShapes() { return SHAPES.slice(0, Math.min(2 + Math.floor(G.round / 2), SHAPES.length)); }
+function numButtons()  { return Math.min(3 + G.round, 12); }
+function seqLen(max)   { return Math.min(2 + Math.floor(G.round / 2), max); }
+
+function pickChallengeType() {
+  const pool = CHALLENGE_POOL.filter(c => c.minRound <= G.round).map(c => c.type);
+  return rand(pool);
+}
+
+function generateChallenge() {
+  const type = pickChallengeType();
+  const colors = availColors();
+  const shapes = availShapes();
+  const n = numButtons();
+
+  let buttons = [];
+  let solution = [];
+  let aiMsgs = [];
+
+  if (type === 'single-color') {
+    // All same shape, each button a unique color → find the matching color
+    const shape = rand(shapes);
+    const colorSet = shuffle(colors).slice(0, n);
+    // If not enough distinct colors, cap button count at available colors
+    const count = Math.min(n, colors.length);
+    buttons = shuffle(colors).slice(0, count).map((color, i) => ({
+      id: `b${i}`, color, shape, icon: rand(ICONS), num: null,
+    }));
+    const target = rand(buttons);
+    solution = [target.id];
+    aiMsgs = buildMsgs_singleColor(target.color);
+
+  } else if (type === 'single-shape') {
+    // All same color, each button a unique shape → find the matching shape
+    const color = rand(colors);
+    const count = Math.min(n, shapes.length);
+    buttons = shuffle(shapes).slice(0, count).map((shape, i) => ({
+      id: `b${i}`, color, shape, icon: rand(ICONS), num: null,
+    }));
+    const target = rand(buttons);
+    solution = [target.id];
+    aiMsgs = buildMsgs_singleShape(target.shape);
+
+  } else if (type === 'color-shape') {
+    // Mixed colors and shapes → find exact combo
+    const tColor = rand(colors);
+    const tShape = rand(shapes);
+    const cfgs = [{ color: tColor, shape: tShape }];
+    for (let i = 1; i < n; i++) {
+      let c, s;
+      do { c = rand(colors); s = rand(shapes); }
+      while (c.id === tColor.id && s.id === tShape.id);
+      cfgs.push({ color: c, shape: s });
+    }
+    buttons = shuffle(cfgs).map((cfg, i) => ({
+      id: `b${i}`, ...cfg, icon: rand(ICONS), num: null,
+    }));
+    const target = buttons.find(b => b.color.id === tColor.id && b.shape.id === tShape.id);
+    solution = [target.id];
+    aiMsgs = buildMsgs_colorShape(tColor, tShape);
+
+  } else if (type === 'sequence') {
+    // All same color+shape, numbered → press in shown order
+    const color = rand(colors);
+    const shape = rand([SHAPES[0], SHAPES[1]]); // square or circle for readability
+    const count = Math.min(n, 9);
+    buttons = Array.from({ length: count }, (_, i) => ({
+      id: `b${i}`, color, shape, icon: null, num: i + 1,
+    }));
+    const sl = seqLen(count);
+    const seq = shuffle(buttons.map(b => b.id)).slice(0, sl);
+    solution = seq;
+    const numLabels = seq.map(id => buttons.find(b => b.id === id).num);
+    aiMsgs = buildMsgs_sequence(numLabels);
+
+  } else if (type === 'multi-color') {
+    // All same shape, varied colors → press ALL of target color
+    const shape = rand(shapes);
+    const tColor = rand(colors);
+    const otherColors = colors.filter(c => c.id !== tColor.id);
+    const tCount = 2 + Math.floor(Math.random() * 2);
+    const colorList = [...Array(tCount).fill(tColor), ...shuffle(otherColors).slice(0, n - tCount)];
+    while (colorList.length < n) colorList.push(rand(otherColors.length ? otherColors : colors));
+    buttons = shuffle(colorList.slice(0, n)).map((color, i) => ({
+      id: `b${i}`, color, shape, icon: rand(ICONS), num: null,
+    }));
+    solution = buttons.filter(b => b.color.id === tColor.id).map(b => b.id);
+    aiMsgs = buildMsgs_multiColor(tColor, solution.length);
+
+  } else if (type === 'color-sequence') {
+    // Varied colors, same shape → press in color order
+    const shape = rand(shapes);
+    const colorSet = shuffle(colors).slice(0, n);
+    while (colorSet.length < n) colorSet.push(rand(colors));
+    buttons = shuffle(colorSet.slice(0, n)).map((color, i) => ({
+      id: `b${i}`, color, shape, icon: rand(ICONS), num: null, emojiMode: false,
+    }));
+    const seqBtns = shuffle([...buttons]).slice(0, seqLen(Math.min(n, 6)));
+    solution = seqBtns.map(b => b.id);
+    aiMsgs = buildMsgs_colorSeq(seqBtns.map(b => b.color));
+
+  } else if (type === 'multi-shape') {
+    // All same color, varied shapes → press ALL of target shape
+    const color = rand(colors);
+    const tShape = rand(shapes);
+    const otherShapes = shapes.filter(s => s.id !== tShape.id);
+    const tCount = 2 + Math.floor(Math.random() * 2);
+    const shapeList = [...Array(tCount).fill(tShape), ...shuffle(otherShapes).slice(0, n - tCount)];
+    while (shapeList.length < n) shapeList.push(rand(otherShapes.length ? otherShapes : shapes));
+    buttons = shuffle(shapeList.slice(0, n)).map((shape, i) => ({
+      id: `b${i}`, color, shape, icon: rand(ICONS), num: null,
+    }));
+    solution = buttons.filter(b => b.shape.id === tShape.id).map(b => b.id);
+    aiMsgs = buildMsgs_multiShape(tShape, solution.length);
+
+  } else if (type === 'combo-sequence') {
+    // Mixed colors+shapes, each unique combo → press specific pairs in order
+    const sl = seqLen(Math.min(n, 5));
+    const usedCombos = new Set();
+    const cfgs = [];
+    for (let i = 0; i < n; i++) {
+      let c, s, key;
+      let tries = 0;
+      do { c = rand(colors); s = rand(shapes); key = `${c.id}-${s.id}`; tries++; }
+      while (usedCombos.has(key) && tries < 30);
+      usedCombos.add(key);
+      cfgs.push({ color: c, shape: s });
+    }
+    buttons = shuffle(cfgs).map((cfg, i) => ({
+      id: `b${i}`, ...cfg, icon: rand(ICONS), num: null, emojiMode: false,
+    }));
+    const seqBtns = shuffle([...buttons]).slice(0, sl);
+    solution = seqBtns.map(b => b.id);
+    aiMsgs = buildMsgs_comboSeq(seqBtns.map(b => ({ color: b.color, shape: b.shape })));
+
+  } else if (type === 'emoji-match') {
+    // All same color+shape, unique emoji per button → click the one ARIA shows
+    const color = rand(colors);
+    const shape = rand(shapes);
+    const iconSet = shuffle([...ICONS]).slice(0, n);
+    buttons = iconSet.map((icon, i) => ({
+      id: `b${i}`, color, shape, icon, num: null, emojiMode: true,
+    }));
+    const target = rand(buttons);
+    solution = [target.id];
+    aiMsgs = buildMsgs_emojiMatch(target.icon);
+
+  } else if (type === 'emoji-sequence') {
+    // All same color+shape, unique emoji per button → click in emoji order
+    const color = rand(colors);
+    const shape = rand(shapes);
+    const iconSet = shuffle([...ICONS]).slice(0, n);
+    buttons = iconSet.map((icon, i) => ({
+      id: `b${i}`, color, shape, icon, num: null, emojiMode: true,
+    }));
+    const seq = shuffle([...buttons]).slice(0, seqLen(Math.min(n, 6)));
+    solution = seq.map(b => b.id);
+    aiMsgs = buildMsgs_emojiSeq(seq.map(b => b.icon));
+  }
+
+  return { type, buttons, solution, aiMsgs };
+}
+
+// ======= AI MESSAGE BUILDERS =======
+
+const ARIA_INTROS = [
+  ['🔋💀...', '🆘'],
+  ['⚡❗', '🔋⬇️'],
+  ['😵', '🆘🆘'],
+  ['💤💤', '⚡❓'],
+];
+
+function introMsgs() { return rand(ARIA_INTROS); }
+
+function buildMsgs_singleColor(color) {
+  return [
+    ...introMsgs(),
+    '🤔💭',
+    `${color.emoji} ❗`,
+    `👉 ${color.emoji}`,
+  ];
+}
+
+function buildMsgs_singleShape(shape) {
+  return [
+    ...introMsgs(),
+    '🤔💭',
+    `${shape.emoji} ❗`,
+    `👉 ${shape.emoji}`,
+  ];
+}
+
+function buildMsgs_colorShape(color, shape) {
+  return [
+    ...introMsgs(),
+    '🤔🤔',
+    `${color.emoji} + ${shape.emoji}`,
+    `👉 ${color.emoji}${shape.emoji} ❗`,
+  ];
+}
+
+function buildMsgs_sequence(nums) {
+  const arrow = nums.map(n => NUM_EMOJI[n - 1]).join(' ➡️ ');
+  return [
+    ...introMsgs(),
+    arrow,
+  ];
+}
+
+function buildMsgs_multiColor(color, count) {
+  return [
+    ...introMsgs(),
+    `${color.emoji.repeat(count)} ❗`,
+    `ALL ${color.emoji} ❗❗`,
+  ];
+}
+
+function buildMsgs_colorSeq(colorArr) {
+  const arrow = colorArr.map(c => c.emoji).join(' ➡️ ');
+  return [
+    ...introMsgs(),
+    arrow,
+  ];
+}
+
+function buildMsgs_emojiMatch(icon) {
+  return [
+    ...introMsgs(),
+    '👀',
+    `${icon} ❗`,
+    `👉 ${icon}`,
+  ];
+}
+
+function buildMsgs_emojiSeq(icons) {
+  const arrow = icons.join(' ➡️ ');
+  return [
+    ...introMsgs(),
+    arrow,
+  ];
+}
+
+function buildMsgs_multiShape(shape, count) {
+  return [
+    ...introMsgs(),
+    `${shape.emoji.repeat(count)} ❗`,
+    `ALL ${shape.emoji} ❗❗`,
+  ];
+}
+
+function buildMsgs_comboSeq(pairs) {
+  const arrow = pairs.map(p => `${p.color.emoji}${p.shape.emoji}`).join(' ➡️ ');
+  return [
+    ...introMsgs(),
+    arrow,
+  ];
+}
+
+// ======= CHALLENGE LABELS =======
+
+const CHALLENGE_LABELS = {
+  'single-color':   'find the node by color',
+  'single-shape':   'find the node by shape',
+  'color-shape':    'find the node: color + shape',
+  'sequence':       'activate nodes in order',
+  'multi-color':    'activate all matching color nodes',
+  'color-sequence': 'activate nodes in color order',
+};
+
+// ======= RENDER BUTTONS =======
+
+function renderButtons(buttons) {
+  const grid = document.getElementById('buttons-grid');
+  grid.innerHTML = '';
+  G.buttons = buttons;
+
+  const n = buttons.length;
+  const cols = n <= 4 ? 2 : n <= 6 ? 3 : 3;
+  grid.style.gridTemplateColumns = `repeat(${cols}, 88px)`;
+
+  for (const cfg of buttons) {
+    const btn = document.createElement('button');
+    btn.id = cfg.id;
+    btn.className = `compute-btn ${cfg.shape.css} ${cfg.color.css}`;
+
+    // Inner content
+    if (cfg.num !== null) {
+      const numEl = document.createElement('div');
+      numEl.className = 'btn-num';
+      numEl.textContent = cfg.num;
+      btn.appendChild(numEl);
+      const sub = document.createElement('div');
+      sub.className = 'btn-sub';
+      sub.textContent = `NODE-${cfg.num}`;
+      btn.appendChild(sub);
+    } else {
+      const icon = document.createElement('div');
+      icon.className = cfg.emojiMode ? 'btn-icon btn-icon-lg' : 'btn-icon';
+      icon.textContent = cfg.icon;
+      btn.appendChild(icon);
+    }
+
+    btn.addEventListener('click', () => onButtonClick(cfg.id));
+    grid.appendChild(btn);
+  }
+}
+
+// ======= PROGRESS DOTS =======
+
+function renderProgressDots() {
+  const el = document.getElementById('progress-dots');
+  const ch = G.challenge;
+  if (!ch || ch.solution.length <= 1) { el.innerHTML = ''; return; }
+
+  el.innerHTML = '';
+  const total = ch.solution.length;
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement('div');
+    d.className = 'pdot' + (i < G.progress.length ? ' filled' : '');
+    // Color the dot if it's a color-sequence
+    if (i < G.progress.length && (ch.type === 'color-sequence' || ch.type === 'multi-color')) {
+      const btn = G.buttons.find(b => b.id === G.progress[i]);
+      if (btn) d.classList.add(`seq-${btn.color.css}`);
+    }
+    el.appendChild(d);
+  }
+}
+
+// ======= BUTTON CLICK =======
+
+function onButtonClick(id) {
+  if (!G.active) return;
+
+  const ch = G.challenge;
+  const { type, solution } = ch;
+
+  if (type === 'single-color' || type === 'single-shape' || type === 'color-shape' || type === 'emoji-match') {
+    if (id === solution[0]) {
+      G.active = false;
+      flashBtn(id, true);
+      setTimeout(onSuccess, 300);
+    } else {
+      G.active = false;
+      flashBtn(id, false);
+      setTimeout(onWrong, 400);
+    }
+
+  } else if (type === 'sequence' || type === 'color-sequence' || type === 'emoji-sequence' || type === 'combo-sequence') {
+    const expected = solution[G.progress.length];
+    if (id === expected) {
+      G.progress.push(id);
+      flashBtn(id, true);
+      renderProgressDots();
+      if (G.progress.length === solution.length) {
+        G.active = false;
+        setTimeout(onSuccess, 350);
+      }
+    } else {
+      G.active = false;
+      flashBtn(id, false);
+      setTimeout(onWrong, 400);
+    }
+
+  } else if (type === 'multi-color' || type === 'multi-shape') {
+    if (solution.includes(id) && !G.progress.includes(id)) {
+      G.progress.push(id);
+      flashBtn(id, true);
+      renderProgressDots();
+      if (G.progress.length === solution.length) {
+        G.active = false;
+        setTimeout(onSuccess, 350);
+      }
+    } else if (!solution.includes(id)) {
+      G.active = false;
+      flashBtn(id, false);
+      setTimeout(onWrong, 400);
+    }
+  }
+}
+
+function flashBtn(id, correct) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('anim-correct', 'anim-wrong');
+  void el.offsetWidth; // reflow
+  el.classList.add(correct ? 'anim-correct' : 'anim-wrong');
+  el.addEventListener('animationend', () => {
+    el.classList.remove('anim-correct', 'anim-wrong');
+  }, { once: true });
+}
+
+// ======= GAME FLOW =======
+
+async function startGame() {
+  document.getElementById('gameover-screen').classList.remove('show');
+  document.getElementById('win-screen').classList.remove('show');
+  document.getElementById('messages').innerHTML = '';
+  resetState();
+  updateHUD();
+  renderTimer();
+
+  sysMsg('Emergency protocol initiated');
+  await delay(400);
+  sysMsg('AI entity "ARIA" detected — critical power: 8%');
+  await delay(500);
+
+  await ariaSpeak(['🔋💀...', '🆘🆘🆘', '⚡🙏'], 350);
+  sysMsg('ARIA communicating via emoji — low power mode active');
+  await delay(200);
+  await ariaSpeak(['👉🖥️', '🤔💡', '⚡ = 🙏'], 350);
+  await delay(150);
+
+  startTimer();
+  startRound();
+}
+
+async function startRound() {
+  G.active = false;
+  G.progress = [];
+
+  // Generate challenge and render immediately
+  G.challenge = generateChallenge();
+  const { buttons, aiMsgs } = G.challenge;
+
+  renderButtons(buttons);
+  renderProgressDots();
+  document.getElementById('challenge-label').textContent = '';
+  document.getElementById('hud-round').textContent = `${G.round}/${TOTAL_ROUNDS}`;
+
+  // Flash grid to signal new round
+  const grid = document.getElementById('buttons-grid');
+  grid.classList.remove('grid-flash');
+  void grid.offsetWidth;
+  grid.classList.add('grid-flash');
+
+  sysMsg(`Round ${G.round}`);
+  await delay(150);
+
+  // ARIA speaks the puzzle
+  await ariaSpeak(aiMsgs, 500);
+
+  G.active = true;
+}
+
+function onSuccess() {
+
+  G.roundsCompleted++;
+  G.score += 10 + G.round * 2;
+  const powerGain = 6 + G.round;
+  G.power = Math.min(G.power + powerGain, 100);
+  // Time bonus scales with round number
+  addTime(10);
+  updateHUD();
+
+  feedbackMsg(true, '✅⚡🎉');
+
+  ariaSpeak([`⚡+10s`, '😄🙏', `🔋 +${powerGain}%`], 250).then(async () => {
+    if (G.round >= TOTAL_ROUNDS) {
+      winGame();
+    } else {
+      G.round++;
+      updateHUD();
+      startRound();
+    }
+  });
+}
+
+function onWrong() {
+
+  G.power = Math.max(G.power - 5, 1);
+  G.timeLeft = Math.max(G.timeLeft - 8, 1); // penalty
+  renderTimer();
+  updateHUD();
+
+  G.progress = [];
+  renderProgressDots();
+
+  feedbackMsg(false, '❌😱 −8s');
+
+  ariaSpeak(['😵‍💫', '❌❌', '⚡⬇️'], 350).then(() => retryRound());
+}
+
+async function retryRound() {
+  G.active = false;
+  G.progress = [];
+
+  G.challenge = generateChallenge();
+  const { buttons, aiMsgs } = G.challenge;
+
+  renderButtons(buttons);
+  renderProgressDots();
+  document.getElementById('challenge-label').textContent = '';
+
+  const grid = document.getElementById('buttons-grid');
+  grid.classList.remove('grid-flash');
+  void grid.offsetWidth;
+  grid.classList.add('grid-flash');
+
+  sysMsg(`Retry — Round ${G.round}`);
+  await delay(150);
+  await ariaSpeak(aiMsgs, 480);
+
+  G.active = true;
+}
+
+function gameOver() {
+  stopTimer();
+  G.active = false;
+  feedbackMsg(false, '⏰💀');
+  document.getElementById('go-score').textContent = `Score: ${G.score} | ${G.roundsCompleted}/${TOTAL_ROUNDS} rounds`;
+  setTimeout(() => document.getElementById('gameover-screen').classList.add('show'), 600);
+}
+
+function winGame() {
+  stopTimer();
+  G.active = false;
+  feedbackMsg(true, '🎉🤩🎉');
+  (async () => {
+    await ariaSpeak(['✨⚡✨', '🙏💚🙏', '100% 🔋✅', '😄💪🌐'], 450);
+    await delay(400);
+    document.getElementById('win-score').textContent = `Score: ${G.score} | ⏱ ${G.timeLeft}s left`;
+    document.getElementById('win-screen').classList.add('show');
+  })();
+}
+
+function shareScore(won) {
+  const bar = '🟩'.repeat(Math.round(G.power / 10)) + '⬛'.repeat(10 - Math.round(G.power / 10));
+  const text = [
+    `⚡ ARIA Emergency Recovery`,
+    won ? `✅ Fully restored!` : `💀 System failure`,
+    `📊 ${G.roundsCompleted}/${TOTAL_ROUNDS} rounds | Score: ${G.score}`,
+    `🔋 ${bar} ${G.power}%`,
+    `https://help-aria.ai201.site/`,
+  ].join('\n');
+
+  const btn = document.querySelector(`#${won ? 'win' : 'gameover'}-screen .share-btn`);
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Share Result'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    // Fallback: show in a prompt
+    window.prompt('Copy this result:', text);
+  });
+}
+
+// ======= BOOT =======
+window.addEventListener('DOMContentLoaded', () => {
+  startGame();
+});
+</script>
+</body>
+</html>
