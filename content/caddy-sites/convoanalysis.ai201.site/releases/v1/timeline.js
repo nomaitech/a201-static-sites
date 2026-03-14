@@ -9,6 +9,7 @@ class AnalysisApp {
         this.hourHeatmapId = options.hourHeatmapId || null;
         this.memberWordCloudsId = options.memberWordCloudsId || null;
         this.weeklyComparisonChartId = options.weeklyComparisonChartId || null;
+        this.memberMonthlyChartId = options.memberMonthlyChartId || null;
         this.errorMessageId = options.errorMessageId;
         this.fileListId = options.fileListId;
         this.messageChartId = options.messageChartId;
@@ -27,6 +28,7 @@ class AnalysisApp {
         this.chart = null;
         this.extraCharts = [];
         this.weeklyComparisonChart = null;
+        this.memberMonthlyChart = null;
         this.loadedChats = new Map();
         this.currentChatId = null;
     }
@@ -45,6 +47,12 @@ class AnalysisApp {
         this.memberWordClouds = this.memberWordCloudsId ? document.getElementById(this.memberWordCloudsId) : null;
         this.weeklyComparisonCanvas = this.weeklyComparisonChartId
             ? document.getElementById(this.weeklyComparisonChartId)
+            : null;
+        this.memberMonthlyCanvas = this.memberMonthlyChartId
+            ? document.getElementById(this.memberMonthlyChartId)
+            : null;
+        this.memberMonthlySection = this.memberMonthlyChartId
+            ? document.getElementById('memberMonthlySection')
             : null;
 
         this.fileInput.addEventListener('change', (event) => this.handleFileUpload(event));
@@ -77,6 +85,7 @@ class AnalysisApp {
         const messageTopicMap = new Map();
         const memberWordCounts = {};
         const memberMessageCounts = {};
+        const memberDates = {};
 
         if (isGroup) {
             messages.forEach(message => {
@@ -166,6 +175,12 @@ class AnalysisApp {
                 return;
             }
             memberMessageCounts[member] = (memberMessageCounts[member] || 0) + 1;
+            if (message.date) {
+                if (!memberDates[member]) {
+                    memberDates[member] = [];
+                }
+                memberDates[member].push(message.date);
+            }
             const text = this.extractMessageText(message);
             if (!text) {
                 return;
@@ -189,7 +204,8 @@ class AnalysisApp {
             isGroup: isGroup,
             topics: Array.from(topicsById, ([id, topic]) => ({ id, ...topic })),
             memberWordCounts: memberWordCounts,
-            memberMessageCounts: memberMessageCounts
+            memberMessageCounts: memberMessageCounts,
+            memberDates: memberDates
         };
     }
 
@@ -266,6 +282,7 @@ class AnalysisApp {
             this.clearExtraDashboards();
             this.clearHourHeatmap();
             this.clearMemberWordClouds();
+            this.clearMemberMonthlyChart();
         }
         this.updateFileList();
         this.updateChatSelector();
@@ -296,6 +313,7 @@ class AnalysisApp {
             this.clearExtraDashboards();
             this.clearHourHeatmap();
             this.clearMemberWordClouds();
+            this.clearMemberMonthlyChart();
             return;
         }
 
@@ -326,7 +344,8 @@ class AnalysisApp {
                     isGroup: parsedData.isGroup,
                     topics: parsedData.topics,
                     memberWordCounts: parsedData.memberWordCounts,
-                    memberMessageCounts: parsedData.memberMessageCounts
+                    memberMessageCounts: parsedData.memberMessageCounts,
+                    memberDates: parsedData.memberDates
                 });
 
                 this.hideError();
@@ -786,6 +805,7 @@ class AnalysisApp {
         this.renderHourHeatmap();
         this.renderMemberWordClouds();
         this.renderWeeklyComparison();
+        this.renderMemberMonthlyChart();
     }
 
     updateChart() {
@@ -1286,6 +1306,137 @@ class AnalysisApp {
         });
     }
 
+    processMemberMonthlyData() {
+        if (!this.currentChatId || !this.loadedChats.has(this.currentChatId)) {
+            return { labels: [], datasets: [] };
+        }
+        const chatData = this.loadedChats.get(this.currentChatId);
+        if (!chatData.isGroup) {
+            return { labels: [], datasets: [] };
+        }
+        const memberDates = chatData.memberDates || {};
+        const members = Object.keys(memberDates);
+        if (members.length === 0) {
+            return { labels: [], datasets: [] };
+        }
+
+        const memberTotals = members.map(m => ({ member: m, total: memberDates[m].length }));
+        memberTotals.sort((a, b) => b.total - a.total);
+        const topMembers = memberTotals.slice(0, 8).map(m => m.member);
+
+        const countsByMember = {};
+        const allKeys = new Set();
+
+        topMembers.forEach(member => {
+            const counts = {};
+            memberDates[member].forEach(dateEntry => {
+                const date = new Date(dateEntry);
+                if (Number.isNaN(date.getTime())) {
+                    return;
+                }
+                const key = this.getTimeKey(date, 'month');
+                counts[key] = (counts[key] || 0) + 1;
+                allKeys.add(key);
+            });
+            countsByMember[member] = counts;
+        });
+
+        const sortedKeys = Array.from(allKeys).sort();
+        const labels = sortedKeys.map(key => this.formatLabelForKey(key, 'month'));
+
+        const datasets = topMembers.map((member, index) => {
+            const counts = countsByMember[member];
+            const data = sortedKeys.map(key => counts[key] || 0);
+            const colors = this.getLineColors(index);
+            return {
+                label: member,
+                data: data,
+                borderColor: colors.borderColor,
+                backgroundColor: colors.backgroundColor,
+                fill: false,
+                pointRadius: 2,
+                tension: 0.25,
+                borderWidth: 2
+            };
+        });
+
+        return { labels, datasets };
+    }
+
+    clearMemberMonthlyChart() {
+        if (this.memberMonthlyChart) {
+            this.memberMonthlyChart.destroy();
+            this.memberMonthlyChart = null;
+        }
+        if (this.memberMonthlySection) {
+            this.memberMonthlySection.style.display = 'none';
+        }
+    }
+
+    renderMemberMonthlyChart() {
+        if (!this.memberMonthlyCanvas) {
+            return;
+        }
+        this.clearMemberMonthlyChart();
+
+        if (this.aggregateBySource) {
+            return;
+        }
+        if (!this.currentChatId || !this.loadedChats.has(this.currentChatId)) {
+            return;
+        }
+        const chatData = this.loadedChats.get(this.currentChatId);
+        if (!chatData.isGroup) {
+            return;
+        }
+
+        const processed = this.processMemberMonthlyData();
+        if (processed.labels.length === 0) {
+            return;
+        }
+
+        if (this.memberMonthlySection) {
+            this.memberMonthlySection.style.display = '';
+        }
+
+        const ctx = this.memberMonthlyCanvas.getContext('2d');
+        this.memberMonthlyChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: processed.labels,
+                datasets: processed.datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Messages'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Month'
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Messages per month by member',
+                        font: {
+                            size: 14
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     getLineColors(index) {
         const palette = [
             { backgroundColor: 'rgba(13, 110, 253, 0.2)', borderColor: 'rgba(13, 110, 253, 1)' },
@@ -1445,6 +1596,7 @@ document.addEventListener('DOMContentLoaded', () => {
         hourHeatmapId: 'hourHeatmap',
         memberWordCloudsId: 'memberWordClouds',
         weeklyComparisonChartId: 'weeklyChannelChart',
+        memberMonthlyChartId: 'memberMonthlyChart',
         errorMessageId: 'errorMessage',
         fileListId: 'fileList',
         messageChartId: 'messageChart',
