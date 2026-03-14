@@ -447,7 +447,16 @@
                         </div>
                     </div>
                     <div id="memberMonthlySection" style="display:none; margin-top:26px;">
-                        <h3>Member activity over time</h3>
+                        <div style="display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;">
+                            <h3 style="margin:0;">Member activity over time</h3>
+                            <select id="memberMonthlyRange" style="font-size:14px; padding:4px 8px;">
+                                <option value="">All time</option>
+                                <option value="12">Last year</option>
+                                <option value="6">Last 6 months</option>
+                                <option value="3">Last 3 months</option>
+                                <option value="1">Last month</option>
+                            </select>
+                        </div>
                         <p class="section-subtitle">Monthly messages from each member in this group (top 8 by volume).</p>
                         <div class="chart-container" style="height:380px;">
                             <canvas id="memberMonthlyChart"></canvas>

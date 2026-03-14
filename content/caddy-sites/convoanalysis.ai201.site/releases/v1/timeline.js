@@ -10,6 +10,7 @@ class AnalysisApp {
         this.memberWordCloudsId = options.memberWordCloudsId || null;
         this.weeklyComparisonChartId = options.weeklyComparisonChartId || null;
         this.memberMonthlyChartId = options.memberMonthlyChartId || null;
+        this.memberMonthlyRangeId = options.memberMonthlyRangeId || null;
         this.errorMessageId = options.errorMessageId;
         this.fileListId = options.fileListId;
         this.messageChartId = options.messageChartId;
@@ -54,6 +55,12 @@ class AnalysisApp {
         this.memberMonthlySection = this.memberMonthlyChartId
             ? document.getElementById('memberMonthlySection')
             : null;
+        this.memberMonthlyRange = this.memberMonthlyRangeId
+            ? document.getElementById(this.memberMonthlyRangeId)
+            : null;
+        if (this.memberMonthlyRange) {
+            this.memberMonthlyRange.addEventListener('change', () => this.renderMemberMonthlyChart());
+        }
 
         this.fileInput.addEventListener('change', (event) => this.handleFileUpload(event));
         this.chatSelector.addEventListener('change', () => this.switchChat());
@@ -283,6 +290,7 @@ class AnalysisApp {
             this.clearHourHeatmap();
             this.clearMemberWordClouds();
             this.clearMemberMonthlyChart();
+            this.hideMemberMonthlySection();
         }
         this.updateFileList();
         this.updateChatSelector();
@@ -314,6 +322,7 @@ class AnalysisApp {
             this.clearHourHeatmap();
             this.clearMemberWordClouds();
             this.clearMemberMonthlyChart();
+            this.hideMemberMonthlySection();
             return;
         }
 
@@ -1306,7 +1315,7 @@ class AnalysisApp {
         });
     }
 
-    processMemberMonthlyData() {
+    processMemberMonthlyData(rangeMonths) {
         if (!this.currentChatId || !this.loadedChats.has(this.currentChatId)) {
             return { labels: [], datasets: [] };
         }
@@ -1320,7 +1329,28 @@ class AnalysisApp {
             return { labels: [], datasets: [] };
         }
 
-        const memberTotals = members.map(m => ({ member: m, total: memberDates[m].length }));
+        // Determine cutoff: use the most recent message date as reference
+        let maxTime = 0;
+        members.forEach(member => {
+            memberDates[member].forEach(dateEntry => {
+                const t = new Date(dateEntry).getTime();
+                if (!Number.isNaN(t) && t > maxTime) {
+                    maxTime = t;
+                }
+            });
+        });
+        const cutoff = rangeMonths
+            ? new Date(maxTime - rangeMonths * 30.44 * 24 * 60 * 60 * 1000)
+            : null;
+
+        // Sort members by total count (within range), take top 8
+        const memberTotals = members.map(m => ({
+            member: m,
+            total: memberDates[m].filter(d => {
+                if (!cutoff) return true;
+                return new Date(d).getTime() >= cutoff.getTime();
+            }).length
+        }));
         memberTotals.sort((a, b) => b.total - a.total);
         const topMembers = memberTotals.slice(0, 8).map(m => m.member);
 
@@ -1332,6 +1362,9 @@ class AnalysisApp {
             memberDates[member].forEach(dateEntry => {
                 const date = new Date(dateEntry);
                 if (Number.isNaN(date.getTime())) {
+                    return;
+                }
+                if (cutoff && date < cutoff) {
                     return;
                 }
                 const key = this.getTimeKey(date, 'month');
@@ -1368,6 +1401,9 @@ class AnalysisApp {
             this.memberMonthlyChart.destroy();
             this.memberMonthlyChart = null;
         }
+    }
+
+    hideMemberMonthlySection() {
         if (this.memberMonthlySection) {
             this.memberMonthlySection.style.display = 'none';
         }
@@ -1390,7 +1426,10 @@ class AnalysisApp {
             return;
         }
 
-        const processed = this.processMemberMonthlyData();
+        const rangeMonths = this.memberMonthlyRange
+            ? (parseInt(this.memberMonthlyRange.value, 10) || null)
+            : null;
+        const processed = this.processMemberMonthlyData(rangeMonths);
         if (processed.labels.length === 0) {
             return;
         }
@@ -1597,6 +1636,7 @@ document.addEventListener('DOMContentLoaded', () => {
         memberWordCloudsId: 'memberWordClouds',
         weeklyComparisonChartId: 'weeklyChannelChart',
         memberMonthlyChartId: 'memberMonthlyChart',
+        memberMonthlyRangeId: 'memberMonthlyRange',
         errorMessageId: 'errorMessage',
         fileListId: 'fileList',
         messageChartId: 'messageChart',
