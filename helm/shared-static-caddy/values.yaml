@@ -4,12 +4,11 @@ nameOverride: ""
 fullnameOverride: "shared-static-sites"
 
 image:
-  repository: pdr.jonbesga.com/shared-static-sites
-  tag: ""
+  repository: caddy
+  tag: "2.10-alpine"
   pullPolicy: IfNotPresent
 
-imagePullSecrets:
-  - name: regcred
+imagePullSecrets: []
 
 service:
   type: ClusterIP

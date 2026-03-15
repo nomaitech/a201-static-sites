@@ -6,8 +6,6 @@ cd "$ROOT_DIR"
 
 namespace="${NAMESPACE:-${USER}}"
 release="${RELEASE_NAME:-shared-static-caddy}"
-image_repo="${IMAGE_REPO:-pdr.jonbesga.com/shared-static-sites}"
-image_tag="${IMAGE_TAG:-$(git rev-parse --short HEAD)}"
 content_root="${CONTENT_ROOT:-content/caddy-sites}"
 fullname_override="${FULLNAME_OVERRIDE:-shared-static-sites}"
 existing_claim="${PERSISTENCE_EXISTING_CLAIM:-}"
@@ -29,8 +27,6 @@ helm_args=(
   upgrade --install "$release" ./helm/shared-static-caddy
   --namespace "$namespace"
   --create-namespace
-  --set "image.repository=$image_repo"
-  --set "image.tag=$image_tag"
   --set-string "fullnameOverride=$fullname_override"
 )
 
@@ -48,7 +44,6 @@ done
 
 echo "Release: $release"
 echo "Namespace: $namespace"
-echo "Image: ${image_repo}:${image_tag}"
 echo "Content root: $content_root"
 echo "Fullname override: $fullname_override"
 if [[ -n "$existing_claim" ]]; then

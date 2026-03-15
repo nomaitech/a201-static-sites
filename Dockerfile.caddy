@@ -1,5 +1,0 @@
-FROM caddy:2.10-alpine
-
-# Runtime config and content are mounted by Helm. Keep image thin so deploys
-# for content-only changes are unnecessary.
-
