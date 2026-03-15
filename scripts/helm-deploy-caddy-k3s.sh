@@ -6,7 +6,7 @@ cd "$ROOT_DIR"
 
 namespace="${NAMESPACE:-${USER}}"
 release="${RELEASE_NAME:-shared-static-caddy}"
-content_root="${CONTENT_ROOT:-content/caddy-sites}"
+content_root="${CONTENT_ROOT:-sites}"
 fullname_override="${FULLNAME_OVERRIDE:-shared-static-sites}"
 existing_claim="${PERSISTENCE_EXISTING_CLAIM:-}"
 

@@ -1,6 +1,6 @@
 {{- if .Values.ingress.enabled }}
 {{- if eq (len .Values.ingress.hosts) 0 }}
-{{- fail "ingress.hosts must contain at least one host (generated from content/caddy-sites by the deploy script)" }}
+{{- fail "ingress.hosts must contain at least one host (generated from sites by the deploy script)" }}
 {{- end }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress

@@ -20,9 +20,9 @@ Key goals:
 
 ## Host Routing Model
 
-- Hosts are derived from folder names in `content/caddy-sites/`
+- Hosts are derived from folder names in `sites/`
 - Each folder name must exactly match the public host (e.g. `spermix.ai201.site`)
-- `scripts/helm-deploy-caddy-k3s.sh` scans `content/caddy-sites/` and populates:
+- `scripts/helm-deploy-caddy-k3s.sh` scans `sites/` and populates:
   - `ingress.hosts[]`
   - `caddy.allowedHosts[]`
 
@@ -33,8 +33,8 @@ This means:
 ## Content Layout (Important)
 
 Per host:
-- `content/caddy-sites/<host>/releases/<release-id>/...`
-- `content/caddy-sites/<host>/current` -> `releases/<release-id>`
+- `sites/<host>/releases/<release-id>/...`
+- `sites/<host>/current` -> `releases/<release-id>`
 
 Why this exists:
 - atomic symlink switch on live PVC
@@ -74,7 +74,7 @@ Current rule:
   - defaults to `fullnameOverride=shared-static-sites`
 
 - `scripts/k3s-sync-content.sh`
-  - additive sync of local `content/caddy-sites/` into PVC
+  - additive sync of local `sites/` into PVC
   - does not delete removed host dirs
 
 - `scripts/k3s-publish-site.sh <host> <source-dir>`
@@ -90,7 +90,7 @@ Current rule:
 ## Cutover Workflow (Per Site)
 
 For source-backed static sites:
-1. Copy site assets into `content/caddy-sites/<host>/releases/v1`
+1. Copy site assets into `sites/<host>/releases/v1`
 2. Create `current -> releases/v1`
 3. Commit to git
 4. Run `./scripts/helm-deploy-caddy-k3s.sh` (host list updates from folders)
@@ -101,7 +101,7 @@ For source-backed static sites:
 
 For sites without local source (but running in cluster):
 - extract files from pod (`kubectl cp ...:/usr/share/nginx/html/...`)
-- import into `content/caddy-sites/<host>/releases/v1`
+- import into `sites/<host>/releases/v1`
 - same cutover steps as above
 
 ## What Is Safe vs Requires Rollout
@@ -121,7 +121,7 @@ Host-list-only changes:
 ## Domain Migration Note
 
 Some migrated sites were renamed from `*.nomaitech.com` to `*.ai201.site`.
-- rename folder in `content/caddy-sites/`
+- rename folder in `sites/`
 - deploy (host list updates)
 - sync content
 - prune old PVC dirs (`APPLY=1 ./scripts/k3s-prune-content.sh`)
@@ -129,7 +129,7 @@ Some migrated sites were renamed from `*.nomaitech.com` to `*.ai201.site`.
 ## Deletion Policy For Old Source Folders
 
 Delete old `~/VibeProjects/<site>` source folders only after:
-- site content exists in `content/caddy-sites/<host>/`
+- site content exists in `sites/<host>/`
 - shared Caddy is serving the host successfully
 - old standalone release is removed (if applicable)
 

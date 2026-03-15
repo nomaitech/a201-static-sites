@@ -5,11 +5,11 @@ Shared Caddy deployment serving multiple static sites from one PVC. Each site us
 ## Layout
 
 - `helm/shared-static-caddy/`: Helm chart (Caddy + PVC + explicit ingress hosts)
-- `content/caddy-sites/<host>/releases/<release>/...`: immutable releases
-- `content/caddy-sites/<host>/current`: active release symlink
+- `sites/<host>/releases/<release>/...`: immutable releases
+- `sites/<host>/current`: active release symlink
 - `scripts/k3s-sync-content.sh`: sync seed content into the PVC
 - `scripts/k3s-publish-site.sh`: publish one host's content with atomic symlink switch
-- `scripts/k3s-prune-content.sh`: remove PVC site directories not present in `content/caddy-sites/` (dry-run by default)
+- `scripts/k3s-prune-content.sh`: remove PVC site directories not present in `sites/` (dry-run by default)
 
 ## Deploy to k3s
 
@@ -19,14 +19,14 @@ Shared Caddy deployment serving multiple static sites from one PVC. Each site us
 ./scripts/build-and-push-caddy-image.sh
 ```
 
-2. Deploy Caddy with explicit hosts discovered from `content/caddy-sites/`:
+2. Deploy Caddy with explicit hosts discovered from `sites/`:
 
 ```bash
 IMAGE_TAG=<pushed-tag> \
 ./scripts/helm-deploy-caddy-k3s.sh
 ```
 
-The script reads hostnames from the folder names in `content/caddy-sites/` (for example `hello1.ai201.site/`, `hello2.ai201.site/`) and passes them into Helm.
+The script reads hostnames from the folder names in `sites/` (for example `hello1.ai201.site/`, `hello2.ai201.site/`) and passes them into Helm.
 
 3. Seed the PVC with demo content:
 
