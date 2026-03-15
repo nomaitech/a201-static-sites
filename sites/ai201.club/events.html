@@ -173,13 +173,13 @@
       font-size: 0.875rem;
       font-weight: 600;
       color: var(--amber);
-      border: 1px solid oklch(72% 0.14 72 / 0.35);
+      border: 1px solid color-mix(in oklch, var(--amber) 35%, transparent);
       padding: var(--s2) var(--s5, 1.25rem);
       transition: background 0.2s, border-color 0.2s;
     }
 
     .event-rsvp:hover {
-      background: oklch(72% 0.14 72 / 0.1);
+      background: color-mix(in oklch, var(--amber) 10%, transparent);
       border-color: var(--amber);
     }
 
@@ -287,6 +287,7 @@
       .how-grid { grid-template-columns: 1fr; }
     }
   </style>
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem('ai201-theme')||'studio'}catch(e){}</script>
 </head>
 <body>
 
@@ -460,5 +461,6 @@
     );
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
   </script>
+  <script src="/theme.js"></script>
 </body>
 </html>

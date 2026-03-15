@@ -8,24 +8,24 @@
    TOKENS
 ───────────────────────────────────── */
 :root {
-  /* Surfaces — warm tinted toward amber hue */
-  --bg:           oklch(11%  0.012 65);
-  --bg-raised:    oklch(16%  0.010 65);
-  --bg-sunken:    oklch(9%   0.012 65);
-  --border:       oklch(22%  0.008 65);
-  --border-dim:   oklch(18%  0.008 65);
+  /* Surfaces — warm cream, light theme */
+  --bg:           oklch(97%  0.010 75);
+  --bg-raised:    oklch(93%  0.014 75);
+  --bg-sunken:    oklch(99%  0.005 75);
+  --border:       oklch(84%  0.016 75);
+  --border-dim:   oklch(89%  0.010 75);
 
-  /* Text */
-  --text:         oklch(93%  0.012 65);
-  --text-2:       oklch(62%  0.018 65);
-  --text-3:       oklch(40%  0.012 65);
+  /* Text — warm dark */
+  --text:         oklch(17%  0.022 65);
+  --text-2:       oklch(42%  0.025 65);
+  --text-3:       oklch(60%  0.018 65);
 
-  /* Accents */
-  --amber:        oklch(72%  0.14  72);
-  --amber-mid:    oklch(56%  0.11  72);
-  --amber-dim:    oklch(28%  0.06  72);
-  --sage:         oklch(63%  0.08  145);
-  --sage-dim:     oklch(40%  0.05  145);
+  /* Accents — richer, darker for light-bg contrast */
+  --amber:        oklch(54%  0.20  68);
+  --amber-mid:    oklch(44%  0.16  68);
+  --amber-dim:    oklch(92%  0.07  72);
+  --sage:         oklch(48%  0.14  145);
+  --sage-dim:     oklch(88%  0.07  145);
 
   /* Type stacks */
   --font-display: 'Fraunces', Georgia, serif;
@@ -44,6 +44,9 @@
   --s24: 6rem;      /* 96px */
   --s32: 8rem;      /* 128px */
 
+  /* Nav backdrop (needs alpha, defined per-theme) */
+  --bg-nav:         oklch(97% 0.010 75 / 0.92);
+
   /* Easing */
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-out-expo:  cubic-bezier(0.16, 1, 0.3, 1);
@@ -61,6 +64,11 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  transition: background-color 0.4s var(--ease-out-quart);
+}
+
+body {
+  transition: background-color 0.4s var(--ease-out-quart), color 0.4s var(--ease-out-quart);
 }
 
 body {
@@ -87,7 +95,7 @@ body::before {
 
 ::selection {
   background: var(--amber);
-  color: var(--bg);
+  color: oklch(99% 0.005 75);
 }
 
 a { color: inherit; text-decoration: none; }
@@ -176,7 +184,7 @@ button { font-family: var(--font-body); }
   align-items: center;
   justify-content: space-between;
   padding: var(--s4) var(--s8);
-  background: oklch(11% 0.012 65 / 0.88);
+  background: var(--bg-nav);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid transparent;
@@ -220,13 +228,13 @@ button { font-family: var(--font-body); }
 
 .nav-cta {
   color: var(--amber) !important;
-  border: 1px solid oklch(72% 0.14 72 / 0.35);
+  border: 1px solid color-mix(in oklch, var(--amber) 35%, transparent);
   padding: var(--s2) var(--s4);
   transition: background 0.2s, border-color 0.2s !important;
 }
 
 .nav-cta:hover {
-  background: oklch(72% 0.14 72 / 0.1) !important;
+  background: color-mix(in oklch, var(--amber) 10%, transparent) !important;
   border-color: var(--amber) !important;
 }
 
@@ -302,12 +310,14 @@ button { font-family: var(--font-body); }
   display: inline-block;
 }
 
-.tag.tag-art     { color: oklch(72% 0.09 145); border-color: oklch(72% 0.09 145 / 0.3); }
-.tag.tag-music   { color: oklch(72% 0.10 300); border-color: oklch(72% 0.10 300 / 0.3); }
-.tag.tag-code    { color: oklch(72% 0.12 200); border-color: oklch(72% 0.12 200 / 0.3); }
-.tag.tag-design  { color: oklch(72% 0.12 30);  border-color: oklch(72% 0.12 30  / 0.3); }
-.tag.tag-fiction { color: oklch(72% 0.10 260); border-color: oklch(72% 0.10 260 / 0.3); }
-.tag.tag-spatial { color: oklch(68% 0.10 180); border-color: oklch(68% 0.10 180 / 0.3); }
+/* Discipline tags — colours adapt to theme via custom properties */
+.tag.tag-art     { --tag-c: oklch(45% 0.13 145); }
+.tag.tag-music   { --tag-c: oklch(48% 0.14 310); }
+.tag.tag-code    { --tag-c: oklch(44% 0.16 200); }
+.tag.tag-design  { --tag-c: oklch(46% 0.16 32);  }
+.tag.tag-fiction { --tag-c: oklch(46% 0.14 265); }
+.tag.tag-spatial { --tag-c: oklch(44% 0.13 182); }
+.tag[class*="tag-"] { color: var(--tag-c); border-color: color-mix(in oklch, var(--tag-c) 40%, transparent); }
 
 /* ─────────────────────────────────────
    JOIN CTA (shared across pages)
@@ -326,8 +336,8 @@ button { font-family: var(--font-body); }
   inset: 0;
   background: radial-gradient(
     ellipse 60% 80% at 50% 50%,
-    oklch(20% 0.05 72 / 0.45),
-    transparent 70%
+    color-mix(in oklch, var(--amber) 14%, var(--bg)),
+    var(--bg) 70%
   );
   pointer-events: none;
 }
@@ -401,7 +411,7 @@ button { font-family: var(--font-body); }
 
 .join-btn {
   background: var(--amber);
-  color: var(--bg);
+  color: oklch(99% 0.005 75);
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 0.875rem;
@@ -412,7 +422,7 @@ button { font-family: var(--font-body); }
   transition: background 0.15s, transform 0.1s;
 }
 
-.join-btn:hover  { background: oklch(78% 0.14 72); }
+.join-btn:hover  { background: color-mix(in oklch, var(--amber) 85%, oklch(0% 0 0)); }
 .join-btn:active { transform: scale(0.98); }
 
 @media (max-width: 600px) {
@@ -510,4 +520,238 @@ button { font-family: var(--font-body); }
     opacity: 1 !important;
     transform: none !important;
   }
+}
+
+/* ═══════════════════════════════════════════════════════
+   THEMES
+   Applied via [data-theme="X"] on <html>
+═══════════════════════════════════════════════════════ */
+
+/* ─ STUDIO (default — warm cream editorial) ─ */
+[data-theme="studio"] {
+  --bg:        oklch(97%  0.010 75);
+  --bg-raised: oklch(93%  0.014 75);
+  --bg-sunken: oklch(99%  0.005 75);
+  --border:    oklch(84%  0.016 75);
+  --border-dim:oklch(89%  0.010 75);
+  --text:      oklch(17%  0.022 65);
+  --text-2:    oklch(42%  0.025 65);
+  --text-3:    oklch(60%  0.018 65);
+  --amber:     oklch(54%  0.20  68);
+  --amber-mid: oklch(44%  0.16  68);
+  --amber-dim: oklch(92%  0.07  72);
+  --sage:      oklch(48%  0.14  145);
+  --sage-dim:  oklch(88%  0.07  145);
+  --bg-nav:    oklch(97%  0.010 75 / 0.92);
+}
+
+/* ─ VAPORWAVE ─ */
+[data-theme="vaporwave"] {
+  --bg:        oklch(14%  0.06  285);
+  --bg-raised: oklch(20%  0.07  285);
+  --bg-sunken: oklch(10%  0.04  285);
+  --border:    oklch(36%  0.10  300);
+  --border-dim:oklch(28%  0.08  295);
+  --text:      oklch(94%  0.04  295);
+  --text-2:    oklch(78%  0.14  320);
+  --text-3:    oklch(58%  0.10  305);
+  --amber:     oklch(78%  0.26  340);  /* hot pink */
+  --amber-mid: oklch(62%  0.22  340);
+  --amber-dim: oklch(24%  0.10  320);
+  --sage:      oklch(74%  0.22  195);  /* cyan */
+  --sage-dim:  oklch(22%  0.10  210);
+  --bg-nav:    oklch(14%  0.06  285 / 0.90);
+
+  /* Discipline tag lightness boost for dark bg */
+  --tag-art-c:     oklch(74% 0.13 145);
+  --tag-music-c:   oklch(78% 0.14 310);
+  --tag-code-c:    oklch(74% 0.16 200);
+  --tag-design-c:  oklch(76% 0.16 32);
+  --tag-fiction-c: oklch(76% 0.14 265);
+  --tag-spatial-c: oklch(74% 0.13 182);
+}
+
+[data-theme="vaporwave"] body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, oklch(22% 0.12 290 / 0.5) 0%, transparent 40%),
+    linear-gradient(to top,    oklch(18% 0.08 310 / 0.4) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-theme="vaporwave"] .site-nav { border-bottom-color: oklch(36% 0.10 300); }
+
+[data-theme="vaporwave"] .page-hero-title em,
+[data-theme="vaporwave"] .manifesto-heading em,
+[data-theme="vaporwave"] .join-heading em {
+  color: var(--sage);
+}
+
+/* Vaporwave: brighten discipline tags */
+[data-theme="vaporwave"] .tag.tag-art     { --tag-c: oklch(74% 0.13 145); }
+[data-theme="vaporwave"] .tag.tag-music   { --tag-c: oklch(78% 0.14 310); }
+[data-theme="vaporwave"] .tag.tag-code    { --tag-c: oklch(74% 0.16 200); }
+[data-theme="vaporwave"] .tag.tag-design  { --tag-c: oklch(76% 0.16 32);  }
+[data-theme="vaporwave"] .tag.tag-fiction { --tag-c: oklch(76% 0.14 265); }
+[data-theme="vaporwave"] .tag.tag-spatial { --tag-c: oklch(74% 0.13 182); }
+
+/* ─ CYBERPUNK ─ */
+[data-theme="cyberpunk"] {
+  --bg:        oklch(9%   0.015 200);
+  --bg-raised: oklch(14%  0.018 200);
+  --bg-sunken: oklch(6%   0.010 200);
+  --border:    oklch(28%  0.06  195);
+  --border-dim:oklch(20%  0.04  200);
+  --text:      oklch(95%  0.02  90);
+  --text-2:    oklch(74%  0.06  90);
+  --text-3:    oklch(52%  0.04  90);
+  --amber:     oklch(88%  0.24  95);  /* neon yellow */
+  --amber-mid: oklch(72%  0.20  95);
+  --amber-dim: oklch(20%  0.10  90);
+  --sage:      oklch(76%  0.28  195); /* electric cyan */
+  --sage-dim:  oklch(18%  0.14  200);
+  --bg-nav:    oklch(9%   0.015 200 / 0.92);
+}
+
+[data-theme="cyberpunk"] body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    oklch(50% 0.10 195 / 0.02) 3px,
+    oklch(50% 0.10 195 / 0.02) 4px
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-theme="cyberpunk"] .site-nav {
+  border-bottom: 1px solid oklch(76% 0.28 195 / 0.3);
+}
+
+[data-theme="cyberpunk"] .work-grid,
+[data-theme="cyberpunk"] .stats-bar-inner,
+[data-theme="cyberpunk"] .events-strip .events-list .event-row {
+  outline: 1px solid color-mix(in oklch, var(--sage) 20%, transparent);
+}
+
+[data-theme="cyberpunk"] .page-hero-title em,
+[data-theme="cyberpunk"] .manifesto-heading em,
+[data-theme="cyberpunk"] .join-heading em {
+  color: var(--sage);
+}
+
+/* Cyberpunk: adapt discipline tags for dark bg */
+[data-theme="cyberpunk"] .tag.tag-art     { --tag-c: oklch(74% 0.13 145); }
+[data-theme="cyberpunk"] .tag.tag-music   { --tag-c: oklch(78% 0.14 310); }
+[data-theme="cyberpunk"] .tag.tag-code    { --tag-c: oklch(74% 0.16 200); }
+[data-theme="cyberpunk"] .tag.tag-design  { --tag-c: oklch(76% 0.16 32);  }
+[data-theme="cyberpunk"] .tag.tag-fiction { --tag-c: oklch(76% 0.14 265); }
+[data-theme="cyberpunk"] .tag.tag-spatial { --tag-c: oklch(74% 0.13 182); }
+
+/* ─ SEVERANCE ─ */
+[data-theme="severance"] {
+  --bg:        oklch(91%  0.009 78);   /* institutional beige */
+  --bg-raised: oklch(86%  0.011 78);   /* manila */
+  --bg-sunken: oklch(96%  0.004 78);
+  --border:    oklch(72%  0.010 78);
+  --border-dim:oklch(80%  0.006 78);
+  --text:      oklch(19%  0.006 220);  /* dark slate — MDR blue-black */
+  --text-2:    oklch(43%  0.009 215);
+  --text-3:    oklch(62%  0.007 215);
+  --amber:     oklch(48%  0.15  185);  /* MDR teal */
+  --amber-mid: oklch(38%  0.12  185);
+  --amber-dim: oklch(85%  0.06  185);
+  --sage:      oklch(54%  0.08  100);  /* muted olive */
+  --sage-dim:  oklch(86%  0.04  100);
+  --bg-nav:    oklch(86%  0.011 78 / 0.95);
+}
+
+[data-theme="severance"] body {
+  font-weight: 400;
+  letter-spacing: 0.005em;
+}
+
+[data-theme="severance"] .site-nav {
+  border-bottom: 1px solid oklch(72% 0.010 78);
+}
+
+/* Severance: cold slate discipline tags */
+[data-theme="severance"] .tag.tag-art     { --tag-c: oklch(43% 0.09 145); }
+[data-theme="severance"] .tag.tag-music   { --tag-c: oklch(43% 0.09 220); }
+[data-theme="severance"] .tag.tag-code    { --tag-c: oklch(42% 0.09 200); }
+[data-theme="severance"] .tag.tag-design  { --tag-c: oklch(43% 0.08 78);  }
+[data-theme="severance"] .tag.tag-fiction { --tag-c: oklch(42% 0.09 250); }
+[data-theme="severance"] .tag.tag-spatial { --tag-c: oklch(42% 0.09 185); }
+
+/* ═══════════════════════════════════════════════════════
+   THEME PICKER
+═══════════════════════════════════════════════════════ */
+.theme-picker {
+  position: fixed;
+  bottom: var(--s6);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  padding: var(--s2) var(--s3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background 0.4s, border-color 0.4s;
+  box-shadow: 0 4px 24px oklch(0% 0 0 / 0.12);
+}
+
+.theme-picker-label {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  padding-right: var(--s2);
+  border-right: 1px solid var(--border);
+  margin-right: var(--s1);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.theme-btn {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  background: none;
+  border: 1px solid transparent;
+  padding: var(--s1) var(--s3);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  white-space: nowrap;
+  line-height: 1.5;
+}
+
+.theme-btn:hover {
+  color: var(--text-2);
+  border-color: var(--border);
+}
+
+.theme-btn.active {
+  color: var(--amber);
+  border-color: color-mix(in oklch, var(--amber) 40%, transparent);
+  background: color-mix(in oklch, var(--amber) 8%, transparent);
+}
+
+@media (max-width: 540px) {
+  .theme-picker { bottom: var(--s4); gap: var(--s1); }
+  .theme-btn { padding: var(--s1) var(--s2); }
+  .theme-picker-label { display: none; }
 }
