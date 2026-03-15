@@ -17,7 +17,7 @@ data:
     :80 {
       @allowed host {{ join " " .Values.caddy.allowedHosts }}
       handle @allowed {
-        root * /srv/sites/{{"{"}}host{{"}"}}/current
+        root * /srv/sites/{{"{"}}host{{"}"}}}
         try_files {path} {path}.html {path}/index.html
         file_server
       }

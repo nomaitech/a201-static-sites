@@ -21,7 +21,7 @@ Key goals:
 ## Host Routing Model
 
 - Hosts are derived from folder names in `sites/`
-- Each folder name must exactly match the public host (e.g. `spermix.ai201.site`)
+- Each folder name must exactly match the public host (e.g. `showcase.ai201.site`)
 - `scripts/helm-deploy-caddy-k3s.sh` scans `sites/` and populates:
   - `ingress.hosts[]`
   - `caddy.allowedHosts[]`
@@ -30,18 +30,16 @@ This means:
 - no hardcoded host lists in repo config
 - adding/removing a folder changes the explicit host list on next deploy
 
-## Content Layout (Important)
+## Content Layout
 
 Per host:
-- `sites/<host>/releases/<release-id>/...`
-- `sites/<host>/current` -> `releases/<release-id>`
+- `sites/<host>/index.html` (and any other assets directly in the folder)
 
-Why this exists:
-- atomic symlink switch on live PVC
-- safer deploys (avoid partial file state)
-- easy rollback by repointing `current`
-
-Git is source history. `releases/current` is runtime deploy safety.
+To add or update a site:
+1. Put files directly in `sites/<host>/`
+2. Commit to git
+3. Run `./scripts/helm-deploy-caddy-k3s.sh` (if adding a new host)
+4. Run `./scripts/k3s-sync-content.sh`
 
 ## Caddy Config Reload (Important)
 
@@ -77,37 +75,15 @@ Current rule:
   - additive sync of local `sites/` into PVC
   - does not delete removed host dirs
 
-- `scripts/k3s-publish-site.sh <host> <source-dir>`
-  - creates a new release dir on PVC
-  - atomically flips `current`
-  - content-only update should not restart pods
-
 - `scripts/k3s-prune-content.sh`
   - compares local host folders vs PVC host folders
   - dry-run by default
   - `APPLY=1` deletes stale PVC site dirs
 
-## Cutover Workflow (Per Site)
-
-For source-backed static sites:
-1. Copy site assets into `sites/<host>/releases/v1`
-2. Create `current -> releases/v1`
-3. Commit to git
-4. Run `./scripts/helm-deploy-caddy-k3s.sh` (host list updates from folders)
-5. Run `./scripts/k3s-sync-content.sh`
-6. Verify site via shared Caddy
-7. Uninstall old standalone Helm release
-8. Optionally prune stale PVC dirs later (`k3s-prune-content.sh`)
-
-For sites without local source (but running in cluster):
-- extract files from pod (`kubectl cp ...:/usr/share/nginx/html/...`)
-- import into `sites/<host>/releases/v1`
-- same cutover steps as above
-
 ## What Is Safe vs Requires Rollout
 
 No rollout needed:
-- content-only update on existing allowed host via `k3s-publish-site.sh`
+- content-only update on an existing allowed host (edit files, sync)
 
 May require pod rollout:
 - image change
