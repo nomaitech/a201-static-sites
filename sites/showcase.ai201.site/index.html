@@ -326,6 +326,46 @@
     .footer-sep {
       color: #d1d5db;
     }
+
+    /* Filter toggle */
+    .filter-toggle {
+      display: flex;
+      gap: 4px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 100px;
+      padding: 4px;
+      margin: 20px auto 0;
+      width: fit-content;
+      position: relative;
+      z-index: 1;
+    }
+    .filter-btn {
+      border: none;
+      background: transparent;
+      border-radius: 100px;
+      padding: 6px 18px;
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.55);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+      letter-spacing: 0.02em;
+    }
+    .filter-btn.active {
+      background: rgba(255,255,255,0.18);
+      color: #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+
+    /* Date view (flat sorted list) */
+    #date-view {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
   </style>
 </head>
 <body>
@@ -335,6 +375,10 @@
     <div class="count-badge"><span class="dot"></span> 38 Projects Live</div>
     <h1>The <span>AI201</span> Universe</h1>
     <p>Weird, experimental, and occasionally useful things built by London's AI collective.</p>
+    <div class="filter-toggle">
+      <button class="filter-btn active" data-filter="category">By Category</button>
+      <button class="filter-btn" data-filter="date">By Date</button>
+    </div>
   </div>
 
   <div class="content">
@@ -756,6 +800,8 @@
       </div>
     </div>
 
+    <div id="date-view"></div>
+
     <footer>
       <p>Built with chaos at <a href="https://ai201.club" target="_blank" rel="noopener">AI201</a> · London's Weirdest AI Collective</p>
       <p style="margin-top:0.4em;opacity:0.5;font-size:0.8em;">This showcase was built on March 15, 2026</p>
@@ -767,5 +813,63 @@
     </footer>
 
   </div>
+<script>
+  const COLORS = {
+    'collective': { bar: '#7c3aed', emoji: '#f5f3ff', date: '#a78bfa' },
+    'tools':      { bar: '#0ea5e9', emoji: '#f0f9ff', date: '#7dd3fc' },
+    'games':      { bar: '#f59e0b', emoji: '#fffbeb', date: '#fcd34d' },
+    'philosophy': { bar: '#10b981', emoji: '#f0fdf4', date: '#6ee7b7' },
+    'wellness':   { bar: '#ec4899', emoji: '#fdf2f8', date: '#f9a8d4' },
+    'dating':     { bar: '#ef4444', emoji: '#fff5f5', date: '#fca5a5' },
+  };
+
+  function getCat(card) {
+    const section = card.closest('.section');
+    for (const cls of section.classList) {
+      if (cls.startsWith('section--')) return cls.replace('section--', '');
+    }
+    return 'collective';
+  }
+
+  function showByDate() {
+    document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+    const dateView = document.getElementById('date-view');
+    dateView.style.display = 'flex';
+    dateView.innerHTML = '';
+
+    const allCards = [...document.querySelectorAll('.section .card')];
+    allCards.sort((a, b) => {
+      const da = new Date(a.querySelector('.card-date').textContent.trim());
+      const db = new Date(b.querySelector('.card-date').textContent.trim());
+      return db - da;
+    });
+
+    allCards.forEach(card => {
+      const cat = getCat(card);
+      const colors = COLORS[cat] || COLORS.collective;
+      const clone = card.cloneNode(true);
+      clone.style.setProperty('--accent-bar', colors.bar);
+      clone.style.setProperty('--emoji-bg', colors.emoji);
+      const dateEl = clone.querySelector('.card-date');
+      if (dateEl) dateEl.style.color = colors.date;
+      dateView.appendChild(clone);
+    });
+  }
+
+  function showByCategory() {
+    document.querySelectorAll('.section').forEach(s => s.style.display = '');
+    const dateView = document.getElementById('date-view');
+    dateView.style.display = 'none';
+    dateView.innerHTML = '';
+  }
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      btn.dataset.filter === 'date' ? showByDate() : showByCategory();
+    });
+  });
+</script>
 </body>
 </html>
