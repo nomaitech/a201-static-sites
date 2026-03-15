@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI201 — Stats</title>
+  <meta name="description" content="Stats and numbers behind the AI201 project universe." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #fafafa;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 0 80px;
+    }
+
+    .hero {
+      width: 100%;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      padding: 52px 20px 64px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; left: -80px;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124,58,237,0.5) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; right: -60px;
+      width: 260px; height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(236,72,153,0.4) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .back-link {
+      position: absolute;
+      top: 24px;
+      left: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 1;
+      transition: color 0.15s;
+    }
+
+    .back-link:hover { color: #fff; }
+
+    .hero h1 {
+      font-size: 32px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(90deg, #a78bfa, #f472b6, #fb923c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 15px;
+      color: rgba(255,255,255,0.65);
+      max-width: 340px;
+      line-height: 1.6;
+      position: relative;
+      z-index: 1;
+    }
+
+    .content {
+      width: 100%;
+      max-width: 520px;
+      padding: 0 16px;
+      margin-top: 28px;
+    }
+
+    /* Big number grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+      border: 1.5px solid #f3f4f6;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 36px;
+      font-weight: 900;
+      letter-spacing: -2px;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+    }
+
+    /* Category breakdown */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 0 2px;
+    }
+
+    .section-icon { font-size: 16px; }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #6b7280;
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: #e5e7eb;
+    }
+
+    .category-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .category-row {
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      border: 1.5px solid #f3f4f6;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .category-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .category-name {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .category-count {
+      font-size: 13px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .category-bar-wrap {
+      width: 80px;
+      height: 6px;
+      background: #f3f4f6;
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .category-bar {
+      height: 100%;
+      border-radius: 100px;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 12px;
+      color: #9ca3af;
+      padding: 0 20px;
+    }
+
+    footer a {
+      color: #7c3aed;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .footer-links {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .footer-sep { color: #d1d5db; }
+  </style>
+</head>
+<body>
+
+  <div class="hero">
+    <a class="back-link" href="/">← All Projects</a>
+    <h1>The <span>AI201</span> Stats</h1>
+    <p>Numbers behind London's weirdest vibecoding collective.</p>
+  </div>
+
+  <div class="content">
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" style="color:#7c3aed;">39</div>
+        <div class="stat-label">Projects Live</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" style="color:#f59e0b;">6</div>
+        <div class="stat-label">Categories</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" style="color:#10b981;">£1,220</div>
+        <div class="stat-label">Mihai Fund</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" style="color:#ec4899;">2025</div>
+        <div class="stat-label">First Project</div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <span class="section-icon">📊</span>
+      <span class="section-title">Projects by Category</span>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="category-list">
+      <div class="category-row">
+        <div class="category-dot" style="background:#7c3aed;"></div>
+        <div class="category-name">Collectives &amp; Studios</div>
+        <div class="category-bar-wrap"><div class="category-bar" style="width:64%;background:#7c3aed;"></div></div>
+        <div class="category-count">5</div>
+      </div>
+      <div class="category-row">
+        <div class="category-dot" style="background:#0ea5e9;"></div>
+        <div class="category-name">Apps &amp; Tools</div>
+        <div class="category-bar-wrap"><div class="category-bar" style="width:100%;background:#0ea5e9;"></div></div>
+        <div class="category-count">8</div>
+      </div>
+      <div class="category-row">
+        <div class="category-dot" style="background:#f59e0b;"></div>
+        <div class="category-name">Games &amp; Experiments</div>
+        <div class="category-bar-wrap"><div class="category-bar" style="width:75%;background:#f59e0b;"></div></div>
+        <div class="category-count">6</div>
+      </div>
+      <div class="category-row">
+        <div class="category-dot" style="background:#10b981;"></div>
+        <div class="category-name">Philosophy &amp; Culture</div>
+        <div class="category-bar-wrap"><div class="category-bar" style="width:100%;background:#10b981;"></div></div>
+        <div class="category-count">10</div>
+      </div>
+      <div class="category-row">
+        <div class="category-dot" style="background:#ec4899;"></div>
+        <div class="category-name">Wellness &amp; Spiritual</div>
+        <div class="category-bar-wrap"><div class="category-bar" style="width:75%;background:#ec4899;"></div></div>
+        <div class="category-count">6</div>
+      </div>
+      <div class="category-row">
+        <div class="category-dot" style="background:#ef4444;"></div>
+        <div class="category-name">Dating &amp; Relationships</div>
+        <div class="category-bar-wrap"><div class="category-bar" style="width:50%;background:#ef4444;"></div></div>
+        <div class="category-count">4</div>
+      </div>
+    </div>
+
+    <footer>
+      <p>Built with chaos at <a href="https://ai201.club" target="_blank" rel="noopener">AI201</a> · London's Weirdest Vibecoding Collective</p>
+      <div class="footer-links">
+        <a href="/">← Back to Projects</a>
+        <span class="footer-sep">·</span>
+        <a href="https://linkedin.com/in/jonbesga" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </footer>
+
+  </div>
+</body>
+</html>
