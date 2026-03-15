@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI201 — Project Showcase</title>
+  <meta name="description" content="All projects from the AI201 vibecoding collective." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0b0b0f;
+      --surface: #161620;
+      --border: rgba(255,255,255,0.08);
+      --border-hover: rgba(255,255,255,0.2);
+      --text: #f0f0f5;
+      --muted: #8b8b9e;
+      --accent: #7c6af7;
+      --accent2: #5ee7c8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 20px 80px;
+    }
+
+    /* Subtle noise texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 460px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Avatar */
+    .avatar-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -1px;
+      box-shadow: 0 0 0 3px rgba(124,106,247,0.25), 0 0 40px rgba(124,106,247,0.15);
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(124,106,247,0.12);
+      border: 1px solid rgba(124,106,247,0.3);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* Links list */
+    .links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .link-btn {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 20px;
+      transition: border-color 0.2s, background 0.2s, transform 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .link-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(124,106,247,0.06), rgba(94,231,200,0.04));
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .link-btn:hover {
+      border-color: var(--border-hover);
+      background: #1c1c2a;
+      transform: translateY(-1px);
+    }
+
+    .link-btn:hover::after {
+      opacity: 1;
+    }
+
+    .link-btn:active {
+      transform: translateY(0);
+    }
+
+    .link-icon {
+      font-size: 18px;
+      width: 32px;
+      flex-shrink: 0;
+      text-align: center;
+    }
+
+    .link-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .link-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.3;
+    }
+
+    .link-host {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .link-arrow {
+      font-size: 14px;
+      color: var(--muted);
+      flex-shrink: 0;
+      margin-left: 8px;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .link-btn:hover .link-arrow {
+      color: var(--text);
+      transform: translateX(2px);
+    }
+
+    /* Section divider */
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin: 24px 0 10px 4px;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 48px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="avatar-wrap">
+      <div class="avatar">AI</div>
+    </div>
+
+    <div class="header">
+      <div class="badge">AI201 Collective</div>
+      <h1>Project Showcase</h1>
+      <p>Weird, experimental, and occasionally useful things built by London's vibecoding collective.</p>
+    </div>
+
+    <div class="links">
+
+      <div class="section-label">Collectives & Studios</div>
+
+      <a class="link-btn" href="https://ai201.club" target="_blank" rel="noopener">
+        <span class="link-icon">🎪</span>
+        <div class="link-content">
+          <div class="link-title">AI201 Club</div>
+          <div class="link-host">ai201.club</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">🌐</span>
+        <div class="link-content">
+          <div class="link-title">AI201 Site</div>
+          <div class="link-host">ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://nomaitech.com" target="_blank" rel="noopener">
+        <span class="link-icon">🛠️</span>
+        <div class="link-content">
+          <div class="link-title">NomaiTech — Product &amp; DevOps Studio</div>
+          <div class="link-host">nomaitech.com</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://wormhole-marketing.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">🌀</span>
+        <div class="link-content">
+          <div class="link-title">Wormhole Marketing</div>
+          <div class="link-host">wormhole-marketing.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <div class="section-label">Apps &amp; Tools</div>
+
+      <a class="link-btn" href="https://svgtoimg.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">🖼️</span>
+        <div class="link-content">
+          <div class="link-title">SVG to PNG Converter</div>
+          <div class="link-host">svgtoimg.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://linkedinemojis.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">🔍</span>
+        <div class="link-content">
+          <div class="link-title">LinkedIn Emoji Decoder</div>
+          <div class="link-host">linkedinemojis.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://phoneticalalphabet.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">📞</span>
+        <div class="link-content">
+          <div class="link-title">Phone Spelling Helper</div>
+          <div class="link-host">phoneticalalphabet.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://convoanalysis.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">💬</span>
+        <div class="link-content">
+          <div class="link-title">Chat Timeline Visualizer</div>
+          <div class="link-host">convoanalysis.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://statemachine.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">⚙️</span>
+        <div class="link-content">
+          <div class="link-title">VibeCoding State Machine</div>
+          <div class="link-host">statemachine.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://betterjobtitles.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">💼</span>
+        <div class="link-content">
+          <div class="link-title">Better Job Titles — LinkedIn Edition</div>
+          <div class="link-host">betterjobtitles.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://jobseekingtracker.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">📋</span>
+        <div class="link-content">
+          <div class="link-title">Jobseeking Tracker</div>
+          <div class="link-host">jobseekingtracker.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://jobtrackerv2.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">📊</span>
+        <div class="link-content">
+          <div class="link-title">Jobseeking Tracker v2</div>
+          <div class="link-host">jobtrackerv2.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <div class="section-label">Games &amp; Experiments</div>
+
+      <a class="link-btn" href="https://baristaclicker.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">☕</span>
+        <div class="link-content">
+          <div class="link-title">Barista Clicker</div>
+          <div class="link-host">baristaclicker.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://textemoticonquiz.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">🤔</span>
+        <div class="link-content">
+          <div class="link-title">ASCII Emoticon Quiz</div>
+          <div class="link-host">textemoticonquiz.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://datingsimulator.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">💘</span>
+        <div class="link-content">
+          <div class="link-title">The Dating Simulator</div>
+          <div class="link-host">datingsimulator.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://feedtheai.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">🤖</span>
+        <div class="link-content">
+          <div class="link-title">Feed The AI — Compute Allocation Terminal</div>
+          <div class="link-host">feedtheai.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://reigns.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">👑</span>
+        <div class="link-content">
+          <div class="link-title">Reigns: Relationship Timeline</div>
+          <div class="link-host">reigns.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://swipevc.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">💸</span>
+        <div class="link-content">
+          <div class="link-title">SwipeVC</div>
+          <div class="link-host">swipevc.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <div class="section-label">Philosophy &amp; Culture</div>
+
+      <a class="link-btn" href="https://philosofriends.com" target="_blank" rel="noopener">
+        <span class="link-icon">🦉</span>
+        <div class="link-content">
+          <div class="link-title">Philosofriends</div>
+          <div class="link-host">philosofriends.com</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://cards.philosofriends.com" target="_blank" rel="noopener">
+        <span class="link-icon">🃏</span>
+        <div class="link-content">
+          <div class="link-title">Philosofriends Official Card Deck</div>
+          <div class="link-host">cards.philosofriends.com</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://camuscoffee.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">☕</span>
+        <div class="link-content">
+          <div class="link-title">Camus Coffee — Existence Precedes the Espresso</div>
+          <div class="link-host">camuscoffee.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://coffegrains.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">🫘</span>
+        <div class="link-content">
+          <div class="link-title">Coffe Grains — Street Roast Collective</div>
+          <div class="link-host">coffegrains.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://paintingincode.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">🎨</span>
+        <div class="link-content">
+          <div class="link-title">Painting in Code — Philosophy of the Modern Maker</div>
+          <div class="link-host">paintingincode.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://coffee-or-suicide.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">⚫</span>
+        <div class="link-content">
+          <div class="link-title">Coffee or Suicide</div>
+          <div class="link-host">coffee-or-suicide.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://whatisreal.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">🌀</span>
+        <div class="link-content">
+          <div class="link-title">What's Real</div>
+          <div class="link-host">whatisreal.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://moonshots.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">🚀</span>
+        <div class="link-content">
+          <div class="link-title">Moonshots — AI Plans for Humanity's Boldest Goals</div>
+          <div class="link-host">moonshots.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://theroadmap.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">🗺️</span>
+        <div class="link-content">
+          <div class="link-title">The Roadmap — Van, Dog, Sunset</div>
+          <div class="link-host">theroadmap.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <div class="section-label">Wellness &amp; Spiritual</div>
+
+      <a class="link-btn" href="https://dreamtherapy.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">🌙</span>
+        <div class="link-content">
+          <div class="link-title">DreamTherapy — Access What Words Cannot Reach</div>
+          <div class="link-host">dreamtherapy.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://spiritual.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">✨</span>
+        <div class="link-content">
+          <div class="link-title">Spiritual Landing Pages</div>
+          <div class="link-host">spiritual.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://limbic-labs.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">🧠</span>
+        <div class="link-content">
+          <div class="link-title">Limbic Labs — Reclaim the Intensity of Being Alive</div>
+          <div class="link-host">limbic-labs.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://mihaidreamseer.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">🔮</span>
+        <div class="link-content">
+          <div class="link-title">Mihai Dream Seer</div>
+          <div class="link-host">mihaidreamseer.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://computedbrains.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">🤖</span>
+        <div class="link-content">
+          <div class="link-title">ARIA — Emergency Recovery Protocol</div>
+          <div class="link-host">computedbrains.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://helixprime.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">🧬</span>
+        <div class="link-content">
+          <div class="link-title">HELIX PRIME — Select. Blend. Evolve.</div>
+          <div class="link-host">helixprime.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <div class="section-label">Dating &amp; Relationships</div>
+
+      <a class="link-btn" href="https://datemihai.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">💌</span>
+        <div class="link-content">
+          <div class="link-title">Swipe Mihai</div>
+          <div class="link-host">datemihai.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://babyeta.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">👶</span>
+        <div class="link-content">
+          <div class="link-title">Baby ETA Countdown</div>
+          <div class="link-host">babyeta.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://couplepointshop.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">💝</span>
+        <div class="link-content">
+          <div class="link-title">Couple Point Shop</div>
+          <div class="link-host">couplepointshop.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://mihaifund.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">💰</span>
+        <div class="link-content">
+          <div class="link-title">The Mihai Fund</div>
+          <div class="link-host">mihaifund.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://reaility.ai201.site" target="_blank" rel="noopener">
+        <span class="link-icon">📱</span>
+        <div class="link-content">
+          <div class="link-title">Reaility</div>
+          <div class="link-host">reaility.ai201.site</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+    </div>
+
+    <footer>
+      <p>Built at <a href="https://ai201.club" target="_blank" rel="noopener">AI201</a> · London's Weirdest Vibecoding Collective</p>
+    </footer>
+  </div>
+</body>
+</html>
