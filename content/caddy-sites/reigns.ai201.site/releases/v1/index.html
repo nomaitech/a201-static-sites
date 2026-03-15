@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reigns: Relationship Timeline</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="hud">
+        <div class="title-block">
+          <p class="eyebrow">Relationship Timeline</p>
+          <h1>Make It Last</h1>
+        </div>
+        <div class="time-pill">
+          <span>Together</span>
+          <strong id="time-together">0 days</strong>
+        </div>
+        <div class="meters">
+          <div class="meter">
+            <span class="meter-label" data-emoji="💘" data-label="Attraction">💘 Attraction</span>
+            <div class="bar"><div class="fill" data-meter="labor"></div></div>
+          </div>
+          <div class="meter">
+            <span class="meter-label" data-emoji="🤝" data-label="Trust">🤝 Trust</span>
+            <div class="bar"><div class="fill" data-meter="ethics"></div></div>
+          </div>
+          <div class="meter">
+            <span class="meter-label" data-emoji="✨" data-label="Spark">✨ Spark</span>
+            <div class="bar"><div class="fill" data-meter="capital"></div></div>
+          </div>
+          <div class="meter">
+            <span class="meter-label" data-emoji="🕊️" data-label="Freedom">🕊️ Freedom</span>
+            <div class="bar"><div class="fill" data-meter="influence"></div></div>
+          </div>
+        </div>
+      </header>
+
+      <section class="board">
+        <div class="card-stack">
+          <article class="card" id="card">
+            <div class="card-head">
+              <div class="sigil"></div>
+              <div>
+                <p class="character" id="character">The First Date</p>
+                <p class="subtitle" id="subtitle">A new beginning.</p>
+              </div>
+            </div>
+            <p class="prompt" id="prompt">You lock eyes across the table. Do you lean into the chemistry or keep it light?</p>
+            <div class="choice-tags">
+              <span id="left-label">Keep Light</span>
+              <span id="right-label">Lean In</span>
+            </div>
+          </article>
+        </div>
+        <div class="hints">
+          <span>Swipe left or right</span>
+          <span>or use the buttons</span>
+        </div>
+        <div class="actions">
+          <button class="action ghost" id="left-btn" type="button">Slow Down</button>
+          <button class="action" id="right-btn" type="button">Go For It</button>
+        </div>
+      </section>
+
+      <section class="log" id="log"></section>
+    </main>
+
+    <dialog class="gameover" id="gameover">
+      <div class="panel">
+        <h2 id="gameover-title">The Crown Falls</h2>
+        <p id="gameover-reason">Your reign ends in legend.</p>
+        <p class="profile-summary" id="profile-summary"></p>
+        <button class="action" id="restart" type="button">Begin Anew</button>
+      </div>
+    </dialog>
+
+    <script src="app.js"></script>
+  </body>
+</html>
