@@ -7,605 +7,684 @@
   <meta name="description" content="All projects from the AI201 vibecoding collective." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --bg: #0b0b0f;
-      --surface: #161620;
-      --border: rgba(255,255,255,0.08);
-      --border-hover: rgba(255,255,255,0.2);
-      --text: #f0f0f5;
-      --muted: #8b8b9e;
-      --accent: #7c6af7;
-      --accent2: #5ee7c8;
-    }
-
-    html { scroll-behavior: smooth; }
-
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #fafafa;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 48px 20px 80px;
+      padding: 0 0 80px;
     }
 
-    /* Subtle noise texture overlay */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .container {
+    /* Hero banner */
+    .hero {
       width: 100%;
-      max-width: 460px;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      padding: 52px 20px 64px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; left: -80px;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124,58,237,0.5) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; right: -60px;
+      width: 260px; height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(236,72,153,0.4) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .avatar {
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #a78bfa, #f472b6, #fb923c);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -2px;
+      margin-bottom: 18px;
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.15), 0 20px 60px rgba(167,139,250,0.4);
       position: relative;
       z-index: 1;
     }
 
-    /* Avatar */
-    .avatar-wrap {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-
-    .avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .hero h1 {
       font-size: 32px;
-      font-weight: 700;
+      font-weight: 900;
       color: #fff;
       letter-spacing: -1px;
-      box-shadow: 0 0 0 3px rgba(124,106,247,0.25), 0 0 40px rgba(124,106,247,0.15);
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
     }
 
-    /* Header */
-    .header {
-      text-align: center;
-      margin-bottom: 36px;
+    .hero h1 span {
+      background: linear-gradient(90deg, #a78bfa, #f472b6, #fb923c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
-    .header h1 {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      margin-bottom: 6px;
+    .hero p {
+      font-size: 15px;
+      color: rgba(255,255,255,0.65);
+      max-width: 340px;
+      line-height: 1.6;
+      position: relative;
+      z-index: 1;
     }
 
-    .header p {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .badge {
+    .count-badge {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      background: rgba(124,106,247,0.12);
-      border: 1px solid rgba(124,106,247,0.3);
-      border-radius: 20px;
-      padding: 3px 10px;
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--accent);
-      margin-bottom: 12px;
+      gap: 6px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 16px;
+      backdrop-filter: blur(8px);
+      position: relative;
+      z-index: 1;
     }
 
-    .badge::before {
-      content: '';
-      width: 6px;
-      height: 6px;
+    .count-badge .dot {
+      width: 7px; height: 7px;
       border-radius: 50%;
-      background: var(--accent);
-      animation: pulse 2s ease-in-out infinite;
+      background: #4ade80;
+      animation: blink 2s ease-in-out infinite;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
+    @keyframes blink {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.3; }
     }
 
-    /* Links list */
-    .links {
+    /* Main content */
+    .content {
+      width: 100%;
+      max-width: 520px;
+      padding: 0 16px;
+      margin-top: -28px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Section */
+    .section {
+      margin-bottom: 28px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 0 2px;
+    }
+
+    .section-icon {
+      font-size: 16px;
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #6b7280;
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: #e5e7eb;
+    }
+
+    /* Cards */
+    .cards {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .link-btn {
+    .card {
       display: flex;
       align-items: center;
       text-decoration: none;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px 20px;
-      transition: border-color 0.2s, background 0.2s, transform 0.15s;
+      background: #fff;
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+      border: 1.5px solid #f3f4f6;
+      transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
       position: relative;
       overflow: hidden;
     }
 
-    .link-btn::after {
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      border-color: transparent;
+    }
+
+    /* Color accent bar on left */
+    .card::before {
       content: '';
       position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(124,106,247,0.06), rgba(94,231,200,0.04));
-      opacity: 0;
-      transition: opacity 0.2s;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      border-radius: 16px 0 0 16px;
+      background: var(--accent-bar, #a78bfa);
     }
 
-    .link-btn:hover {
-      border-color: var(--border-hover);
-      background: #1c1c2a;
-      transform: translateY(-1px);
-    }
-
-    .link-btn:hover::after {
-      opacity: 1;
-    }
-
-    .link-btn:active {
-      transform: translateY(0);
-    }
-
-    .link-icon {
-      font-size: 18px;
-      width: 32px;
+    .card-emoji {
+      font-size: 22px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--emoji-bg, #f5f3ff);
+      border-radius: 10px;
       flex-shrink: 0;
-      text-align: center;
+      margin-left: 4px;
+      margin-right: 12px;
     }
 
-    .link-content {
+    .card-body {
       flex: 1;
       min-width: 0;
     }
 
-    .link-title {
+    .card-title {
       font-size: 14px;
-      font-weight: 500;
-      color: var(--text);
+      font-weight: 600;
+      color: #111827;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      line-height: 1.3;
     }
 
-    .link-host {
+    .card-host {
       font-size: 11px;
-      color: var(--muted);
+      color: #9ca3af;
       margin-top: 2px;
     }
 
-    .link-arrow {
+    .card-arrow {
       font-size: 14px;
-      color: var(--muted);
+      color: #d1d5db;
       flex-shrink: 0;
       margin-left: 8px;
-      transition: color 0.2s, transform 0.2s;
+      transition: color 0.15s, transform 0.15s;
     }
 
-    .link-btn:hover .link-arrow {
-      color: var(--text);
-      transform: translateX(2px);
+    .card:hover .card-arrow {
+      color: #6b7280;
+      transform: translateX(3px);
     }
 
-    /* Section divider */
-    .section-label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-      margin: 24px 0 10px 4px;
+    /* Section color themes */
+    .section--collective .card { --accent-bar: #7c3aed; --emoji-bg: #f5f3ff; }
+    .section--collective .card:hover { box-shadow: 0 4px 24px rgba(124,58,237,0.15); border-color: rgba(124,58,237,0.2); }
+
+    .section--tools .card { --accent-bar: #0ea5e9; --emoji-bg: #f0f9ff; }
+    .section--tools .card:hover { box-shadow: 0 4px 24px rgba(14,165,233,0.15); border-color: rgba(14,165,233,0.2); }
+
+    .section--games .card { --accent-bar: #f59e0b; --emoji-bg: #fffbeb; }
+    .section--games .card:hover { box-shadow: 0 4px 24px rgba(245,158,11,0.15); border-color: rgba(245,158,11,0.2); }
+
+    .section--philosophy .card { --accent-bar: #10b981; --emoji-bg: #f0fdf4; }
+    .section--philosophy .card:hover { box-shadow: 0 4px 24px rgba(16,185,129,0.15); border-color: rgba(16,185,129,0.2); }
+
+    .section--wellness .card { --accent-bar: #ec4899; --emoji-bg: #fdf2f8; }
+    .section--wellness .card:hover { box-shadow: 0 4px 24px rgba(236,72,153,0.15); border-color: rgba(236,72,153,0.2); }
+
+    .section--dating .card { --accent-bar: #ef4444; --emoji-bg: #fff5f5; }
+    .section--dating .card:hover { box-shadow: 0 4px 24px rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.2); }
+
+    /* Featured card (first in collective) */
+    .card--featured {
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      border-color: transparent;
     }
+
+    .card--featured .card-title { color: #fff; }
+    .card--featured .card-host { color: rgba(255,255,255,0.65); }
+    .card--featured .card-arrow { color: rgba(255,255,255,0.5); }
+    .card--featured:hover .card-arrow { color: #fff; }
+    .card--featured .card-emoji { background: rgba(255,255,255,0.15); }
+    .card--featured::before { display: none; }
+    .card--featured:hover { box-shadow: 0 8px 32px rgba(124,58,237,0.35) !important; border-color: transparent !important; }
 
     /* Footer */
     footer {
-      margin-top: 48px;
+      margin-top: 16px;
       text-align: center;
       font-size: 12px;
-      color: var(--muted);
+      color: #9ca3af;
+      padding: 0 20px;
     }
 
     footer a {
-      color: var(--muted);
+      color: #7c3aed;
       text-decoration: none;
-    }
-
-    footer a:hover {
-      color: var(--text);
+      font-weight: 600;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="avatar-wrap">
-      <div class="avatar">AI</div>
+
+  <div class="hero">
+    <div class="avatar">AI</div>
+    <div class="count-badge"><span class="dot"></span> 38 Projects Live</div>
+    <h1>The <span>AI201</span> Universe</h1>
+    <p>Weird, experimental, and occasionally useful things built by London's vibecoding collective.</p>
+  </div>
+
+  <div class="content">
+
+    <!-- Collectives & Studios -->
+    <div class="section section--collective">
+      <div class="section-header">
+        <span class="section-icon">🎪</span>
+        <span class="section-title">Collectives &amp; Studios</span>
+        <div class="section-line"></div>
+      </div>
+      <div class="cards">
+        <a class="card card--featured" href="https://ai201.club" target="_blank" rel="noopener">
+          <div class="card-emoji">🎪</div>
+          <div class="card-body">
+            <div class="card-title">AI201 Club — London's Weirdest Vibecoding Collective</div>
+            <div class="card-host">ai201.club</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">🌐</div>
+          <div class="card-body">
+            <div class="card-title">AI201 Site</div>
+            <div class="card-host">ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://nomaitech.com" target="_blank" rel="noopener">
+          <div class="card-emoji">🛠️</div>
+          <div class="card-body">
+            <div class="card-title">NomaiTech — Product &amp; DevOps Studio</div>
+            <div class="card-host">nomaitech.com</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://wormhole-marketing.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">🌀</div>
+          <div class="card-body">
+            <div class="card-title">Wormhole Marketing</div>
+            <div class="card-host">wormhole-marketing.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+      </div>
     </div>
 
-    <div class="header">
-      <div class="badge">AI201 Collective</div>
-      <h1>Project Showcase</h1>
-      <p>Weird, experimental, and occasionally useful things built by London's vibecoding collective.</p>
+    <!-- Apps & Tools -->
+    <div class="section section--tools">
+      <div class="section-header">
+        <span class="section-icon">🔧</span>
+        <span class="section-title">Apps &amp; Tools</span>
+        <div class="section-line"></div>
+      </div>
+      <div class="cards">
+        <a class="card" href="https://svgtoimg.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">🖼️</div>
+          <div class="card-body">
+            <div class="card-title">SVG to PNG Converter</div>
+            <div class="card-host">svgtoimg.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://linkedinemojis.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">🔍</div>
+          <div class="card-body">
+            <div class="card-title">LinkedIn Emoji Decoder</div>
+            <div class="card-host">linkedinemojis.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://phoneticalalphabet.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">📞</div>
+          <div class="card-body">
+            <div class="card-title">Phone Spelling Helper</div>
+            <div class="card-host">phoneticalalphabet.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://convoanalysis.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">💬</div>
+          <div class="card-body">
+            <div class="card-title">Chat Timeline Visualizer</div>
+            <div class="card-host">convoanalysis.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://statemachine.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">⚙️</div>
+          <div class="card-body">
+            <div class="card-title">VibeCoding State Machine</div>
+            <div class="card-host">statemachine.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://betterjobtitles.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">💼</div>
+          <div class="card-body">
+            <div class="card-title">Better Job Titles — LinkedIn Edition</div>
+            <div class="card-host">betterjobtitles.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://jobseekingtracker.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">📋</div>
+          <div class="card-body">
+            <div class="card-title">Jobseeking Tracker</div>
+            <div class="card-host">jobseekingtracker.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://jobtrackerv2.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">📊</div>
+          <div class="card-body">
+            <div class="card-title">Jobseeking Tracker v2</div>
+            <div class="card-host">jobtrackerv2.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+      </div>
     </div>
 
-    <div class="links">
+    <!-- Games & Experiments -->
+    <div class="section section--games">
+      <div class="section-header">
+        <span class="section-icon">🎮</span>
+        <span class="section-title">Games &amp; Experiments</span>
+        <div class="section-line"></div>
+      </div>
+      <div class="cards">
+        <a class="card" href="https://baristaclicker.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">☕</div>
+          <div class="card-body">
+            <div class="card-title">Barista Clicker</div>
+            <div class="card-host">baristaclicker.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://textemoticonquiz.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">🤔</div>
+          <div class="card-body">
+            <div class="card-title">ASCII Emoticon Quiz</div>
+            <div class="card-host">textemoticonquiz.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://datingsimulator.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">💘</div>
+          <div class="card-body">
+            <div class="card-title">The Dating Simulator</div>
+            <div class="card-host">datingsimulator.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://feedtheai.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">🤖</div>
+          <div class="card-body">
+            <div class="card-title">Feed The AI — Compute Allocation Terminal</div>
+            <div class="card-host">feedtheai.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://reigns.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">👑</div>
+          <div class="card-body">
+            <div class="card-title">Reigns: Relationship Timeline</div>
+            <div class="card-host">reigns.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://swipevc.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">💸</div>
+          <div class="card-body">
+            <div class="card-title">SwipeVC</div>
+            <div class="card-host">swipevc.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+      </div>
+    </div>
 
-      <div class="section-label">Collectives & Studios</div>
+    <!-- Philosophy & Culture -->
+    <div class="section section--philosophy">
+      <div class="section-header">
+        <span class="section-icon">🦉</span>
+        <span class="section-title">Philosophy &amp; Culture</span>
+        <div class="section-line"></div>
+      </div>
+      <div class="cards">
+        <a class="card" href="https://philosofriends.com" target="_blank" rel="noopener">
+          <div class="card-emoji">🦉</div>
+          <div class="card-body">
+            <div class="card-title">Philosofriends</div>
+            <div class="card-host">philosofriends.com</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://cards.philosofriends.com" target="_blank" rel="noopener">
+          <div class="card-emoji">🃏</div>
+          <div class="card-body">
+            <div class="card-title">Philosofriends Official Card Deck</div>
+            <div class="card-host">cards.philosofriends.com</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://camuscoffee.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">☕</div>
+          <div class="card-body">
+            <div class="card-title">Camus Coffee — Existence Precedes the Espresso</div>
+            <div class="card-host">camuscoffee.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://coffegrains.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">🫘</div>
+          <div class="card-body">
+            <div class="card-title">Coffe Grains — Street Roast Collective</div>
+            <div class="card-host">coffegrains.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://paintingincode.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">🎨</div>
+          <div class="card-body">
+            <div class="card-title">Painting in Code — Philosophy of the Modern Maker</div>
+            <div class="card-host">paintingincode.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://coffee-or-suicide.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">⚫</div>
+          <div class="card-body">
+            <div class="card-title">Coffee or Suicide</div>
+            <div class="card-host">coffee-or-suicide.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://whatisreal.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">🌀</div>
+          <div class="card-body">
+            <div class="card-title">What's Real</div>
+            <div class="card-host">whatisreal.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://moonshots.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">🚀</div>
+          <div class="card-body">
+            <div class="card-title">Moonshots — AI Plans for Humanity's Boldest Goals</div>
+            <div class="card-host">moonshots.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://theroadmap.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">🗺️</div>
+          <div class="card-body">
+            <div class="card-title">The Roadmap — Van, Dog, Sunset</div>
+            <div class="card-host">theroadmap.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+      </div>
+    </div>
 
-      <a class="link-btn" href="https://ai201.club" target="_blank" rel="noopener">
-        <span class="link-icon">🎪</span>
-        <div class="link-content">
-          <div class="link-title">AI201 Club</div>
-          <div class="link-host">ai201.club</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
+    <!-- Wellness & Spiritual -->
+    <div class="section section--wellness">
+      <div class="section-header">
+        <span class="section-icon">🌙</span>
+        <span class="section-title">Wellness &amp; Spiritual</span>
+        <div class="section-line"></div>
+      </div>
+      <div class="cards">
+        <a class="card" href="https://dreamtherapy.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">🌙</div>
+          <div class="card-body">
+            <div class="card-title">DreamTherapy — Access What Words Cannot Reach</div>
+            <div class="card-host">dreamtherapy.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://spiritual.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">✨</div>
+          <div class="card-body">
+            <div class="card-title">Spiritual Landing Pages</div>
+            <div class="card-host">spiritual.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://limbic-labs.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">🧠</div>
+          <div class="card-body">
+            <div class="card-title">Limbic Labs — Reclaim the Intensity of Being Alive</div>
+            <div class="card-host">limbic-labs.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://mihaidreamseer.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">🔮</div>
+          <div class="card-body">
+            <div class="card-title">Mihai Dream Seer</div>
+            <div class="card-host">mihaidreamseer.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://computedbrains.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">🤖</div>
+          <div class="card-body">
+            <div class="card-title">ARIA — Emergency Recovery Protocol</div>
+            <div class="card-host">computedbrains.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://helixprime.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">🧬</div>
+          <div class="card-body">
+            <div class="card-title">HELIX PRIME — Select. Blend. Evolve.</div>
+            <div class="card-host">helixprime.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+      </div>
+    </div>
 
-      <a class="link-btn" href="https://ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">🌐</span>
-        <div class="link-content">
-          <div class="link-title">AI201 Site</div>
-          <div class="link-host">ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://nomaitech.com" target="_blank" rel="noopener">
-        <span class="link-icon">🛠️</span>
-        <div class="link-content">
-          <div class="link-title">NomaiTech — Product &amp; DevOps Studio</div>
-          <div class="link-host">nomaitech.com</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://wormhole-marketing.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">🌀</span>
-        <div class="link-content">
-          <div class="link-title">Wormhole Marketing</div>
-          <div class="link-host">wormhole-marketing.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <div class="section-label">Apps &amp; Tools</div>
-
-      <a class="link-btn" href="https://svgtoimg.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">🖼️</span>
-        <div class="link-content">
-          <div class="link-title">SVG to PNG Converter</div>
-          <div class="link-host">svgtoimg.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://linkedinemojis.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">🔍</span>
-        <div class="link-content">
-          <div class="link-title">LinkedIn Emoji Decoder</div>
-          <div class="link-host">linkedinemojis.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://phoneticalalphabet.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">📞</span>
-        <div class="link-content">
-          <div class="link-title">Phone Spelling Helper</div>
-          <div class="link-host">phoneticalalphabet.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://convoanalysis.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">💬</span>
-        <div class="link-content">
-          <div class="link-title">Chat Timeline Visualizer</div>
-          <div class="link-host">convoanalysis.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://statemachine.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">⚙️</span>
-        <div class="link-content">
-          <div class="link-title">VibeCoding State Machine</div>
-          <div class="link-host">statemachine.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://betterjobtitles.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">💼</span>
-        <div class="link-content">
-          <div class="link-title">Better Job Titles — LinkedIn Edition</div>
-          <div class="link-host">betterjobtitles.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://jobseekingtracker.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">📋</span>
-        <div class="link-content">
-          <div class="link-title">Jobseeking Tracker</div>
-          <div class="link-host">jobseekingtracker.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://jobtrackerv2.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">📊</span>
-        <div class="link-content">
-          <div class="link-title">Jobseeking Tracker v2</div>
-          <div class="link-host">jobtrackerv2.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <div class="section-label">Games &amp; Experiments</div>
-
-      <a class="link-btn" href="https://baristaclicker.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">☕</span>
-        <div class="link-content">
-          <div class="link-title">Barista Clicker</div>
-          <div class="link-host">baristaclicker.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://textemoticonquiz.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">🤔</span>
-        <div class="link-content">
-          <div class="link-title">ASCII Emoticon Quiz</div>
-          <div class="link-host">textemoticonquiz.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://datingsimulator.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">💘</span>
-        <div class="link-content">
-          <div class="link-title">The Dating Simulator</div>
-          <div class="link-host">datingsimulator.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://feedtheai.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">🤖</span>
-        <div class="link-content">
-          <div class="link-title">Feed The AI — Compute Allocation Terminal</div>
-          <div class="link-host">feedtheai.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://reigns.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">👑</span>
-        <div class="link-content">
-          <div class="link-title">Reigns: Relationship Timeline</div>
-          <div class="link-host">reigns.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://swipevc.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">💸</span>
-        <div class="link-content">
-          <div class="link-title">SwipeVC</div>
-          <div class="link-host">swipevc.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <div class="section-label">Philosophy &amp; Culture</div>
-
-      <a class="link-btn" href="https://philosofriends.com" target="_blank" rel="noopener">
-        <span class="link-icon">🦉</span>
-        <div class="link-content">
-          <div class="link-title">Philosofriends</div>
-          <div class="link-host">philosofriends.com</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://cards.philosofriends.com" target="_blank" rel="noopener">
-        <span class="link-icon">🃏</span>
-        <div class="link-content">
-          <div class="link-title">Philosofriends Official Card Deck</div>
-          <div class="link-host">cards.philosofriends.com</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://camuscoffee.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">☕</span>
-        <div class="link-content">
-          <div class="link-title">Camus Coffee — Existence Precedes the Espresso</div>
-          <div class="link-host">camuscoffee.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://coffegrains.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">🫘</span>
-        <div class="link-content">
-          <div class="link-title">Coffe Grains — Street Roast Collective</div>
-          <div class="link-host">coffegrains.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://paintingincode.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">🎨</span>
-        <div class="link-content">
-          <div class="link-title">Painting in Code — Philosophy of the Modern Maker</div>
-          <div class="link-host">paintingincode.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://coffee-or-suicide.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">⚫</span>
-        <div class="link-content">
-          <div class="link-title">Coffee or Suicide</div>
-          <div class="link-host">coffee-or-suicide.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://whatisreal.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">🌀</span>
-        <div class="link-content">
-          <div class="link-title">What's Real</div>
-          <div class="link-host">whatisreal.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://moonshots.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">🚀</span>
-        <div class="link-content">
-          <div class="link-title">Moonshots — AI Plans for Humanity's Boldest Goals</div>
-          <div class="link-host">moonshots.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://theroadmap.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">🗺️</span>
-        <div class="link-content">
-          <div class="link-title">The Roadmap — Van, Dog, Sunset</div>
-          <div class="link-host">theroadmap.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <div class="section-label">Wellness &amp; Spiritual</div>
-
-      <a class="link-btn" href="https://dreamtherapy.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">🌙</span>
-        <div class="link-content">
-          <div class="link-title">DreamTherapy — Access What Words Cannot Reach</div>
-          <div class="link-host">dreamtherapy.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://spiritual.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">✨</span>
-        <div class="link-content">
-          <div class="link-title">Spiritual Landing Pages</div>
-          <div class="link-host">spiritual.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://limbic-labs.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">🧠</span>
-        <div class="link-content">
-          <div class="link-title">Limbic Labs — Reclaim the Intensity of Being Alive</div>
-          <div class="link-host">limbic-labs.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://mihaidreamseer.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">🔮</span>
-        <div class="link-content">
-          <div class="link-title">Mihai Dream Seer</div>
-          <div class="link-host">mihaidreamseer.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://computedbrains.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">🤖</span>
-        <div class="link-content">
-          <div class="link-title">ARIA — Emergency Recovery Protocol</div>
-          <div class="link-host">computedbrains.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://helixprime.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">🧬</span>
-        <div class="link-content">
-          <div class="link-title">HELIX PRIME — Select. Blend. Evolve.</div>
-          <div class="link-host">helixprime.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <div class="section-label">Dating &amp; Relationships</div>
-
-      <a class="link-btn" href="https://datemihai.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">💌</span>
-        <div class="link-content">
-          <div class="link-title">Swipe Mihai</div>
-          <div class="link-host">datemihai.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://babyeta.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">👶</span>
-        <div class="link-content">
-          <div class="link-title">Baby ETA Countdown</div>
-          <div class="link-host">babyeta.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://couplepointshop.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">💝</span>
-        <div class="link-content">
-          <div class="link-title">Couple Point Shop</div>
-          <div class="link-host">couplepointshop.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://mihaifund.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">💰</span>
-        <div class="link-content">
-          <div class="link-title">The Mihai Fund</div>
-          <div class="link-host">mihaifund.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
-      <a class="link-btn" href="https://reaility.ai201.site" target="_blank" rel="noopener">
-        <span class="link-icon">📱</span>
-        <div class="link-content">
-          <div class="link-title">Reaility</div>
-          <div class="link-host">reaility.ai201.site</div>
-        </div>
-        <span class="link-arrow">→</span>
-      </a>
-
+    <!-- Dating & Relationships -->
+    <div class="section section--dating">
+      <div class="section-header">
+        <span class="section-icon">💌</span>
+        <span class="section-title">Dating &amp; Relationships</span>
+        <div class="section-line"></div>
+      </div>
+      <div class="cards">
+        <a class="card" href="https://datemihai.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">💌</div>
+          <div class="card-body">
+            <div class="card-title">Swipe Mihai</div>
+            <div class="card-host">datemihai.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://babyeta.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">👶</div>
+          <div class="card-body">
+            <div class="card-title">Baby ETA Countdown</div>
+            <div class="card-host">babyeta.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://couplepointshop.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">💝</div>
+          <div class="card-body">
+            <div class="card-title">Couple Point Shop</div>
+            <div class="card-host">couplepointshop.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://mihaifund.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">💰</div>
+          <div class="card-body">
+            <div class="card-title">The Mihai Fund</div>
+            <div class="card-host">mihaifund.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="https://reaility.ai201.site" target="_blank" rel="noopener">
+          <div class="card-emoji">📱</div>
+          <div class="card-body">
+            <div class="card-title">Reaility</div>
+            <div class="card-host">reaility.ai201.site</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+      </div>
     </div>
 
     <footer>
-      <p>Built at <a href="https://ai201.club" target="_blank" rel="noopener">AI201</a> · London's Weirdest Vibecoding Collective</p>
+      <p>Built with chaos at <a href="https://ai201.club" target="_blank" rel="noopener">AI201</a> · London's Weirdest Vibecoding Collective</p>
     </footer>
+
   </div>
 </body>
 </html>
