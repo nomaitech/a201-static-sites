@@ -1,7 +1,0 @@
-apiVersion: v2
-name: shared-static-caddy
-description: Shared Caddy serving wildcard static hosts from a PVC
-type: application
-version: 0.1.0
-appVersion: "2.10"
-

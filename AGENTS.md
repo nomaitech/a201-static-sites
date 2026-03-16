@@ -1,112 +1,86 @@
-# AGENTS.md
+# CLAUDE.md
 
 ## Purpose
 
-This repo hosts many static sites behind one shared Caddy deployment in k3s.
+This repo hosts many static sites served by Garage (S3-compatible object storage) in k3s.
 
 Key goals:
-- reduce one-pod-per-site overhead
-- keep content updates independent (no pod restart for content-only changes)
-- manage host routing from local folder names in git
+- no pod restarts for content updates
+- repo folder names are the single source of truth for what sites exist
+- one script to deploy everything
 
 ## Current Architecture
 
-- Helm release: `shared-static-caddy` (name kept for continuity)
-- K8s resource names (`Deployment` / `Service` / `Ingress`): `shared-static-sites`
-  - implemented via `fullnameOverride: shared-static-sites`
-- Runtime: Caddy behind Traefik Ingress
-- TLS termination: Traefik (Caddy serves plain HTTP on port `80`)
-- Shared content storage: PVC mounted at `/srv/sites`
+- Content storage: Garage (namespace `garage`), 3-node StatefulSet
+- Web serving: Garage's built-in static website hosting on port `3902`
+- Routing: Traefik Ingress → `garage:3902`, host header matched to bucket name
+- TLS: cert-manager with `letsencrypt-prod` cluster issuer
+- S3 access key for deploys stored in script defaults (override via env vars)
 
 ## Host Routing Model
 
 - Hosts are derived from folder names in `sites/`
 - Each folder name must exactly match the public host (e.g. `showcase.ai201.site`)
-- `scripts/helm-deploy-caddy-k3s.sh` scans `sites/` and populates:
-  - `ingress.hosts[]`
-  - `caddy.allowedHosts[]`
-
-This means:
-- no hardcoded host lists in repo config
-- adding/removing a folder changes the explicit host list on next deploy
+- Garage bucket name must match the host exactly
+- `scripts/garage-deploy.sh` handles everything: bucket creation, content sync, Ingress reconciliation
 
 ## Content Layout
 
 Per host:
-- `sites/<host>/index.html` (and any other assets directly in the folder)
+- `sites/<host>/index.html` (and any other assets)
 
-To add or update a site:
-1. Put files directly in `sites/<host>/`
-2. Commit to git
-3. Run `./scripts/helm-deploy-caddy-k3s.sh` (if adding a new host)
-4. Run `./scripts/k3s-sync-content.sh`
+## To add or update a site
 
-## Caddy Config Reload (Important)
+```bash
+# Add files
+mkdir sites/newsite.ai201.site
+vim sites/newsite.ai201.site/index.html
 
-Host-list changes update a ConfigMap (`Caddyfile`).
+# Deploy (creates bucket, syncs content, updates Ingress + TLS)
+./scripts/garage-deploy.sh
+```
 
-Automatic reload is implemented with a sidecar:
-- container: `caddy-reloader`
-- watches `/etc/caddy/Caddyfile`
-- runs `caddy reload --address 127.0.0.1:2019 ...`
-
-Important gotcha:
-- DO NOT mount `Caddyfile` with `subPath`
-- ConfigMap updates do not propagate through `subPath` mounts
-- mount the whole `/etc/caddy` directory instead
-
-## PVC / Rename Gotcha (Important)
-
-When resource names were renamed to `shared-static-sites`, auto-reusing the old PVC as `existingClaim` caused the old chart-managed PVC to enter `Terminating`.
-
-Current rule:
-- let the chart manage the PVC (`shared-static-sites-content`)
-- do not auto-discover/reuse an old PVC in deploy script
-- only use `PERSISTENCE_EXISTING_CLAIM` manually when you explicitly mean it
+That's it. No pod restarts needed.
 
 ## Scripts
 
-- `scripts/helm-deploy-caddy-k3s.sh`
-  - folder-driven host discovery
-  - deploys Helm release
-  - defaults to `fullnameOverride=shared-static-sites`
+- `scripts/garage-deploy.sh`
+  - scans `sites/` for host folders
+  - creates Garage bucket if missing, enables website mode
+  - grants S3 key permissions
+  - syncs content via `aws s3 sync --delete`
+  - reconciles Traefik Ingress with all current hosts
+  - detects stale buckets (dry-run by default, `APPLY=1` to delete)
 
-- `scripts/k3s-sync-content.sh`
-  - additive sync of local `sites/` into PVC
-  - does not delete removed host dirs
+## Environment variable overrides
 
-- `scripts/k3s-prune-content.sh`
-  - compares local host folders vs PVC host folders
-  - dry-run by default
-  - `APPLY=1` deletes stale PVC site dirs
+| Var | Default | Description |
+|-----|---------|-------------|
+| `GARAGE_ACCESS_KEY` | (in script) | S3 access key ID |
+| `GARAGE_SECRET_KEY` | (in script) | S3 secret key |
+| `GARAGE_S3_ENDPOINT` | `http://localhost:13900` | S3 API endpoint |
+| `CLUSTER_ISSUER` | `letsencrypt-prod` | cert-manager cluster issuer |
+| `APPLY` | `0` | Set to `1` to delete stale buckets |
 
-## What Is Safe vs Requires Rollout
+## What never requires a rollout
 
-No rollout needed:
-- content-only update on an existing allowed host (edit files, sync)
+Everything. Content updates, new sites, removed sites — all handled by syncing to Garage and updating the Ingress. Garage pods are not touched during deploys.
 
-May require pod rollout:
-- image change
-- Caddy deployment template change
-- chart changes affecting pod spec
+## Renaming or removing a site
 
-Host-list-only changes:
-- should no longer require manual `kubectl rollout restart`
-- handled by ConfigMap update + `caddy-reloader` sidecar
+```bash
+# Rename
+mv sites/old.ai201.site sites/new.ai201.site
+./scripts/garage-deploy.sh           # creates new bucket, syncs, updates Ingress
+APPLY=1 ./scripts/garage-deploy.sh  # removes old bucket
 
-## Domain Migration Note
-
-Some migrated sites were renamed from `*.nomaitech.com` to `*.ai201.site`.
-- rename folder in `sites/`
-- deploy (host list updates)
-- sync content
-- prune old PVC dirs (`APPLY=1 ./scripts/k3s-prune-content.sh`)
+# Remove
+rm -rf sites/old.ai201.site
+APPLY=1 ./scripts/garage-deploy.sh
+```
 
 ## Deletion Policy For Old Source Folders
 
 Delete old `~/VibeProjects/<site>` source folders only after:
 - site content exists in `sites/<host>/`
-- shared Caddy is serving the host successfully
-- old standalone release is removed (if applicable)
-
-If local source folder does not exist (some sites were imported from running pods), nothing to delete.
+- Garage is serving the host successfully
