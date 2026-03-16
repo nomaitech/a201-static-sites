@@ -36,8 +36,11 @@ Per host:
 mkdir sites/newsite.ai201.site
 vim sites/newsite.ai201.site/index.html
 
-# Deploy (creates bucket, syncs content, updates Ingress + TLS)
+# Deploy all sites (creates bucket, syncs content, updates Ingress + TLS)
 ./scripts/garage-deploy.sh
+
+# Deploy specific sites only (faster for targeted updates)
+./scripts/garage-deploy.sh newsite.ai201.site another.ai201.site
 ```
 
 That's it. No pod restarts needed.
