@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bastion | Telegram Group</title>
+    <meta
+      name="description"
+      content="Bastion is a Telegram group for builders, defenders, and curious minds. Join the watch, share insights, and grow together."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bungee&family=Fredoka:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #161225;
+        --ink-soft: #3f3753;
+        --sand: #fff4df;
+        --sand-deep: #ffe5b2;
+        --ember: #ff5f6d;
+        --gold: #ffc857;
+        --moss: #2e5b47;
+        --shadow: 0 24px 60px rgba(48, 32, 91, 0.18);
+        --radius-lg: 28px;
+        --radius-md: 18px;
+        --radius-sm: 12px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Fredoka", "Segoe UI", sans-serif;
+        color: var(--ink);
+        background: radial-gradient(circle at top, #fff7ff 0%, #ffe9e0 38%, #fff3cc 100%);
+        min-height: 100vh;
+      }
+
+      .page {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .page::before,
+      .page::after {
+        content: "";
+        position: absolute;
+        inset: auto;
+        width: 500px;
+        height: 500px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(212, 154, 43, 0.18), transparent 70%);
+        z-index: 0;
+      }
+
+      .page::before {
+        top: -140px;
+        right: -120px;
+      }
+
+      .page::after {
+        bottom: -220px;
+        left: -140px;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 4;
+        backdrop-filter: blur(12px);
+        background: rgba(255, 246, 232, 0.85);
+        border-bottom: 2px dashed rgba(22, 18, 37, 0.12);
+      }
+
+      .nav {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 18px 28px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .logo {
+        font-family: "Bungee", "Fredoka", sans-serif;
+        font-size: 22px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      .nav a {
+        text-decoration: none;
+        color: var(--ink);
+        font-weight: 600;
+        margin-left: 18px;
+      }
+
+      .nav .cta {
+        padding: 10px 18px;
+        background: linear-gradient(135deg, #ff5f6d, #ffb347);
+        color: #fff;
+        border-radius: 999px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 12px 30px rgba(255, 95, 109, 0.35);
+      }
+
+      .nav .cta:hover {
+        transform: translateY(-2px);
+      }
+
+      main {
+        position: relative;
+        z-index: 1;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 64px 28px 80px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 32px;
+        align-items: center;
+      }
+
+      .hero h1 {
+        font-family: "Bungee", "Fredoka", sans-serif;
+        font-size: clamp(2.4rem, 3vw + 1.5rem, 4rem);
+        margin: 0 0 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .hero p {
+        margin: 0 0 24px;
+        color: var(--ink-soft);
+        font-size: 1.05rem;
+        line-height: 1.6;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+
+      .btn {
+        padding: 14px 22px;
+        border-radius: 999px;
+        border: none;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn.primary {
+        background: linear-gradient(135deg, var(--ember), #ffb347);
+        color: #fff;
+        box-shadow: 0 18px 35px rgba(255, 95, 109, 0.35);
+      }
+
+      .btn.secondary {
+        background: #fff;
+        color: var(--ink);
+        border: 1px solid rgba(20, 20, 20, 0.12);
+      }
+
+      .hero-card {
+        background: #fffaf6;
+        padding: 30px;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        border: 2px dashed rgba(22, 18, 37, 0.12);
+      }
+
+      .hero-card h2 {
+        font-family: "Bungee", "Fredoka", sans-serif;
+        margin: 0 0 14px;
+        font-size: 1.4rem;
+      }
+
+      .hero-media img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: var(--radius-lg);
+        border: 4px solid #fff;
+        box-shadow: var(--shadow);
+      }
+
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 16px;
+      }
+
+      .stat {
+        background: var(--sand);
+        border-radius: var(--radius-sm);
+        padding: 14px;
+        text-align: center;
+      }
+
+      .stat strong {
+        display: block;
+        font-size: 1.4rem;
+        color: var(--moss);
+      }
+
+      .section {
+        margin-top: 72px;
+      }
+
+      .section h3 {
+        font-family: "Bungee", "Fredoka", sans-serif;
+        font-size: 1.6rem;
+        margin-bottom: 20px;
+      }
+
+      .cards {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+
+      .topics {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .topics span {
+        background: var(--sand);
+        border: 2px dashed rgba(22, 18, 37, 0.12);
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-weight: 600;
+        color: var(--ink);
+        box-shadow: 0 10px 20px rgba(48, 32, 91, 0.1);
+      }
+
+      .card {
+        background: #fff;
+        padding: 22px;
+        border-radius: var(--radius-md);
+        border: 2px dashed rgba(22, 18, 37, 0.1);
+        box-shadow: 0 12px 30px rgba(48, 32, 91, 0.1);
+        transform: translateY(12px);
+        opacity: 0;
+        animation: rise 0.8s ease forwards;
+      }
+
+      .card:nth-child(2) {
+        animation-delay: 0.15s;
+      }
+
+      .card:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+
+      .card:nth-child(4) {
+        animation-delay: 0.45s;
+      }
+
+      .card h4 {
+        margin: 0 0 10px;
+        font-size: 1.1rem;
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--ink-soft);
+      }
+
+      .join {
+        background: linear-gradient(135deg, #1f1740, #3d2860);
+        color: #fff;
+        border-radius: var(--radius-lg);
+        padding: 32px;
+        display: grid;
+        gap: 16px;
+        align-items: center;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+
+      .join h3 {
+        margin: 0;
+        font-family: "Bungee", "Fredoka", sans-serif;
+        font-size: 1.6rem;
+      }
+
+      .join p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.75);
+        line-height: 1.5;
+      }
+
+      .join .btn.primary {
+        justify-content: center;
+      }
+
+      footer {
+        margin-top: 70px;
+        text-align: center;
+        font-size: 0.9rem;
+        color: var(--ink-soft);
+      }
+
+      @keyframes rise {
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .nav {
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .nav a {
+          margin-left: 0;
+        }
+
+        .hero-actions {
+          flex-direction: column;
+          align-items: stretch;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <nav class="nav">
+          <div class="logo">Bastion</div>
+          <div>
+          </div>
+        </nav>
+      </header>
+
+      <main>
+        <section class="hero" id="about">
+          <div>
+            <h1>Bastion is a playground for curious minds.</h1>
+            <p>
+              A fun Telegram hangout for sharing, riffing, and discovering cool stuff together.
+            </p>
+            <div class="hero-actions">
+              <a class="btn primary" href="https://t.me/+yjjjQ2ojWOswYjJk">Join Bastion</a>
+              <a class="btn secondary" href="#topics">See topics</a>
+            </div>
+          </div>
+          <div class="hero-media">
+            <img src="undraw_conversation_15p8.svg" alt="Conversation illustration" />
+          </div>
+        </section>
+
+        <section class="section" id="topics">
+          <h3>Topics we bounce around</h3>
+          <div class="topics">
+            <span>🤖 AI</span>
+            <span>💼 Founders</span>
+            <span>🗞️ The Feed</span>
+            <span>💻 Coding</span>
+            <span>🎵 Music</span>
+            <span>🎫 London events</span>
+            <span>🫠 Shitposting</span>
+            <span>🧪 Feedback</span>
+            <span>⚡ Vibeshow</span>
+            <span>🧠 Brain teasing</span>
+            <span>🫀 Health &amp; Wellness</span>
+            <span>🧭 Philosophy</span>
+            <span>📚 Books</span>
+            <span>🧬 SciTech</span>
+            <span>🎨 Art</span>
+          </div>
+        </section>
+
+        <section class="section join" id="join">
+          <div>
+            <h3>Jump in</h3>
+            <p>
+              Bring a curious brain and some fun takes.
+            </p>
+          </div>
+          <a class="btn primary" href="https://t.me/+yjjjQ2ojWOswYjJk">Enter Bastion</a>
+        </section>
+
+        <footer>
+          Bastion Telegram Group · Bring your curiosity
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>
