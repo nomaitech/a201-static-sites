@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bastion Ventures — Surreal VC</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1b1a17;
+        --cream: #f6f1e7;
+        --copper: #d97752;
+        --jade: #2a8f7a;
+        --sun: #f2c14e;
+        --night: #0d1b1e;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Space Grotesk", "Helvetica Neue", sans-serif;
+        color: var(--ink);
+        background: radial-gradient(circle at 20% 20%, #fef3d1 0%, #f7e7d1 35%, #e9ece3 70%, #d8e2dc 100%);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      header {
+        position: relative;
+        overflow: hidden;
+        padding: 48px 8vw 80px;
+      }
+
+      .brand {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+      }
+
+      .brand span {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .badge {
+        padding: 6px 12px;
+        border: 1px solid var(--ink);
+        border-radius: 999px;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 48px;
+        margin-top: 72px;
+        align-items: center;
+      }
+
+      .hero h1 {
+        font-family: "Fraunces", serif;
+        font-size: clamp(2.6rem, 6vw, 5rem);
+        line-height: 1;
+        margin: 0 0 24px;
+      }
+
+      .hero p {
+        font-size: 1.05rem;
+        line-height: 1.6;
+        max-width: 520px;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-top: 28px;
+      }
+
+      .button {
+        padding: 14px 24px;
+        border-radius: 999px;
+        font-weight: 600;
+        border: 2px solid var(--ink);
+        background: var(--sun);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .button.secondary {
+        background: transparent;
+      }
+
+      .button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(27, 26, 23, 0.15);
+      }
+
+      .orbit {
+        position: relative;
+        width: min(380px, 80vw);
+        height: min(380px, 80vw);
+        margin: 0 auto;
+      }
+
+      .orbit::before,
+      .orbit::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 2px dashed rgba(27, 26, 23, 0.25);
+        animation: spin 18s linear infinite;
+      }
+
+      .orbit::after {
+        inset: 40px;
+        animation-direction: reverse;
+      }
+
+      .planet {
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        border-radius: 24px;
+        background: linear-gradient(135deg, #2a8f7a, #f2c14e);
+        padding: 18px;
+        color: #0f1d1b;
+        font-weight: 600;
+        display: grid;
+        place-items: center;
+        transform: rotate(-4deg);
+        box-shadow: 0 18px 32px rgba(42, 143, 122, 0.35);
+      }
+
+      .planet.small {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        top: 20px;
+        right: 10px;
+        background: linear-gradient(135deg, #f6f1e7, #d97752);
+        color: var(--ink);
+        box-shadow: 0 12px 18px rgba(217, 119, 82, 0.3);
+      }
+
+      section {
+        padding: 80px 8vw;
+      }
+
+      .section-title {
+        font-family: "Fraunces", serif;
+        font-size: clamp(2rem, 4vw, 3rem);
+        margin: 0 0 16px;
+      }
+
+      .manifesto {
+        display: grid;
+        gap: 24px;
+        max-width: 760px;
+      }
+
+      .manifesto p {
+        margin: 0;
+        line-height: 1.7;
+        font-size: 1.05rem;
+      }
+
+      .portfolio {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+        margin-top: 32px;
+      }
+
+      .card {
+        padding: 24px;
+        border-radius: 20px;
+        background: #fff9ef;
+        border: 1px solid rgba(27, 26, 23, 0.12);
+        min-height: 180px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        box-shadow: 0 12px 20px rgba(27, 26, 23, 0.08);
+      }
+
+      .card h3 {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+
+      .card span {
+        font-size: 0.85rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        opacity: 0.7;
+      }
+
+      .grid-split {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 32px;
+        align-items: center;
+      }
+
+      .ticker {
+        padding: 18px 24px;
+        background: var(--night);
+        color: #f8f1e8;
+        border-radius: 16px;
+        font-family: "Fraunces", serif;
+        font-size: 1.05rem;
+      }
+
+      .cta {
+        padding: 56px;
+        border-radius: 32px;
+        background: linear-gradient(120deg, #f2c14e, #d97752, #2a8f7a);
+        color: #101513;
+        display: grid;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .cta p {
+        margin: 0;
+        font-size: 1.05rem;
+      }
+
+      footer {
+        padding: 32px 8vw 48px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 16px;
+        font-size: 0.9rem;
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .fade-up {
+        animation: fadeUp 0.8s ease forwards;
+        opacity: 0;
+      }
+
+      .fade-up.delay {
+        animation-delay: 0.2s;
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 720px) {
+        header {
+          padding-top: 32px;
+        }
+
+        .brand {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 12px;
+        }
+
+        .cta {
+          padding: 36px 28px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <span>
+          <strong>Bastion Ventures</strong>
+          <span class="badge">Totally Real VC</span>
+        </span>
+        <span>Est. 2024 · Slack-Funded · Friend-Backed</span>
+      </div>
+
+      <div class="hero">
+        <div class="fade-up">
+          <h1>We back the companies we invent in the group chat.</h1>
+          <p>
+            Bastion is a satire VC run by a tight circle of friends who treat every late-night brainstorm
+            like a Series A. We fund surreal, delightful businesses that only exist because someone
+            said, “wait… what if?”
+          </p>
+          <div class="hero-actions">
+            <a class="button" href="#portfolio">See the fictional portfolio</a>
+            <a class="button secondary" href="#manifesto">Read the manifesto</a>
+          </div>
+        </div>
+        <div class="orbit fade-up delay" aria-hidden="true">
+          <div class="planet">Bastion</div>
+          <div class="planet small">VC</div>
+        </div>
+      </div>
+    </header>
+
+    <section id="manifesto">
+      <div class="manifesto">
+        <h2 class="section-title">The Bastion Manifesto</h2>
+        <p>
+          Every great venture starts with a group chat and a shared willingness to take a joke too far.
+          We invest in ideas that feel like fever dreams, build decks with emojis, and measure traction in
+          “laughs per minute.”
+        </p>
+        <p>
+          This is not a fund. This is a friendship with term sheets. If you can pitch it over voice notes,
+          you are portfolio material.
+        </p>
+      </div>
+    </section>
+
+    <section id="portfolio">
+      <h2 class="section-title">Surreal Portfolio</h2>
+      <div class="portfolio">
+        <div class="card">
+          <span>Wellness Adjacent</span>
+          <h3>Psychedelic &amp; Yoga Retreats</h3>
+          <p>Breathwork, forest baths, and a waiver long enough to qualify as literature.</p>
+        </div>
+        <div class="card">
+          <span>Real Estate Ops</span>
+          <h3>Heartfort (Theo's House)</h3>
+          <p>Acquire, raise rent, and add public showers. Radical transparency meets tile grout.</p>
+        </div>
+        <div class="card">
+          <span>Vertical Property</span>
+          <h3>Frontier Tower Floor Fund</h3>
+          <p>We own a whole floor. The elevator pitch is literal.</p>
+        </div>
+        <div class="card">
+          <span>Culture &amp; Commerce</span>
+          <h3>Raves + Clothing</h3>
+          <p>Ticketed dance rituals with a merch line that glows under blacklight.</p>
+        </div>
+        <div class="card">
+          <span>Experiential Luxury</span>
+          <h3>Philosophical VIP Dinners</h3>
+          <p>Eight courses, five paradoxes, and a dessert that questions your free will.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="grid-split">
+        <div>
+          <h2 class="section-title">The Chat Is the Fund</h2>
+          <p>
+            Bastion runs on voice notes, screen grabs, and an unhealthy love of naming fictional holding
+            companies. We write checks in the form of encouragement and extremely specific GIFs.
+          </p>
+        </div>
+        <div class="ticker">
+          “Due diligence” means someone Googles if the idea already exists. If it does, we improve it
+          by adding a fog machine.
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="cta">
+        <div>
+          <h2 class="section-title">Pitch us the weird one.</h2>
+          <p>We only respond to ideas that make at least three friends laugh out loud.</p>
+        </div>
+        <div class="hero-actions">
+          <a class="button" href="mailto:hello@bastion.chat">hello@bastion.chat</a>
+          <a class="button secondary" href="#">Download our imaginary deck</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2024 Bastion Ventures. Not a real fund. Very real friends.</span>
+      <span>Based in the group chat, everywhere.</span>
+    </footer>
+  </body>
+</html>
