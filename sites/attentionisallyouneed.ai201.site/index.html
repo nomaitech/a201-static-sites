@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attention Is All You Need — AI-Powered Marketing Agency</title>
+  <meta name="description" content="In 2026, attention is the scarcest resource. We combine AI and creative engineering to make your brand impossible to ignore." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #050505;
+      --white: #fafafa;
+      --yellow: #f5e642;
+      --yellow-dim: #c9bc1f;
+      --gray-1: #111111;
+      --gray-2: #1a1a1a;
+      --gray-3: #2a2a2a;
+      --gray-4: #444;
+      --gray-5: #888;
+      --gray-6: #bbb;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      background: rgba(5,5,5,0.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--gray-3);
+    }
+
+    .nav-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.02em;
+      color: var(--yellow);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray-6);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+
+    .nav-cta {
+      background: var(--yellow);
+      color: var(--black) !important;
+      padding: 9px 20px;
+      border-radius: 6px;
+      font-weight: 700 !important;
+      font-size: 12px !important;
+      letter-spacing: 0.04em !important;
+      text-transform: uppercase;
+      transition: background 0.2s, transform 0.1s !important;
+    }
+
+    .nav-cta:hover {
+      background: #fff176 !important;
+      transform: translateY(-1px);
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 900px; height: 900px;
+      background: radial-gradient(ellipse, rgba(245,230,66,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hero-eyebrow::before,
+    .hero-eyebrow::after {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 1px;
+      background: var(--yellow-dim);
+    }
+
+    .hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(54px, 9vw, 112px);
+      font-weight: 700;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      max-width: 900px;
+    }
+
+    .hero-title .highlight {
+      color: var(--yellow);
+      position: relative;
+      display: inline-block;
+    }
+
+    .hero-title .highlight::after {
+      content: '';
+      position: absolute;
+      bottom: 4px; left: 0; right: 0;
+      height: 3px;
+      background: var(--yellow);
+      border-radius: 2px;
+      opacity: 0.4;
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--gray-5);
+      max-width: 560px;
+      margin: 32px auto 0;
+      font-weight: 400;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 52px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background: var(--yellow);
+      color: var(--black);
+      font-family: 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 16px 36px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+      box-shadow: 0 0 0 0 rgba(245,230,66,0);
+    }
+
+    .btn-primary:hover {
+      background: #fff176;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(245,230,66,0.25);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--gray-6);
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      padding: 16px 36px;
+      border-radius: 8px;
+      border: 1px solid var(--gray-3);
+      text-decoration: none;
+      transition: color 0.2s, border-color 0.2s, transform 0.1s;
+    }
+
+    .btn-ghost:hover {
+      color: var(--white);
+      border-color: var(--gray-4);
+      transform: translateY(-2px);
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 60px;
+      margin-top: 80px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--white);
+    }
+
+    .stat-number span {
+      color: var(--yellow);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--gray-5);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* SCROLL TICKER */
+    .ticker-wrap {
+      overflow: hidden;
+      padding: 16px 0;
+      background: var(--yellow);
+    }
+
+    .ticker {
+      display: flex;
+      gap: 0;
+      animation: ticker 28s linear infinite;
+      width: max-content;
+    }
+
+    .ticker-item {
+      white-space: nowrap;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--black);
+      padding: 0 40px;
+    }
+
+    .ticker-item::after {
+      content: '◆';
+      margin-left: 40px;
+    }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* SECTION COMMONS */
+    section {
+      padding: 120px 24px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(32px, 4.5vw, 54px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .section-sub {
+      font-size: 17px;
+      color: var(--gray-5);
+      line-height: 1.7;
+      max-width: 580px;
+      margin-top: 16px;
+    }
+
+    /* PROBLEM SECTION */
+    .problem {
+      background: var(--gray-1);
+      border-top: 1px solid var(--gray-3);
+      border-bottom: 1px solid var(--gray-3);
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+      margin-top: 60px;
+    }
+
+    .problem-visual {
+      position: relative;
+    }
+
+    .attention-meter {
+      background: var(--gray-2);
+      border: 1px solid var(--gray-3);
+      border-radius: 16px;
+      padding: 40px;
+    }
+
+    .meter-label {
+      font-size: 12px;
+      color: var(--gray-5);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .meter-value {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 72px;
+      font-weight: 700;
+      letter-spacing: -0.05em;
+      color: #ff4d4d;
+      line-height: 1;
+    }
+
+    .meter-unit {
+      font-size: 18px;
+      color: var(--gray-5);
+      margin-left: 4px;
+    }
+
+    .meter-desc {
+      font-size: 14px;
+      color: var(--gray-5);
+      margin-top: 8px;
+    }
+
+    .meter-bar-track {
+      height: 8px;
+      background: var(--gray-3);
+      border-radius: 4px;
+      margin-top: 28px;
+      overflow: hidden;
+    }
+
+    .meter-bar-fill {
+      height: 100%;
+      width: 23%;
+      background: linear-gradient(90deg, #ff4d4d, #ff8c00);
+      border-radius: 4px;
+      animation: pulse-bar 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-bar {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .problem-points {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      margin-top: 0;
+    }
+
+    .problem-point {
+      padding: 28px;
+      background: var(--gray-2);
+      border: 1px solid var(--gray-3);
+      border-radius: 12px;
+      transition: border-color 0.2s;
+    }
+
+    .problem-point:hover { border-color: var(--gray-4); }
+
+    .problem-point h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .problem-point p {
+      font-size: 14px;
+      color: var(--gray-5);
+      line-height: 1.6;
+    }
+
+    /* HOW IT WORKS */
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 64px;
+      background: var(--gray-3);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .how-card {
+      background: var(--gray-1);
+      padding: 48px 40px;
+      position: relative;
+    }
+
+    .how-number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 72px;
+      font-weight: 700;
+      letter-spacing: -0.05em;
+      color: var(--gray-3);
+      line-height: 1;
+      margin-bottom: 24px;
+      transition: color 0.2s;
+    }
+
+    .how-card:hover .how-number { color: var(--yellow); }
+
+    .how-card h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .how-card p {
+      font-size: 15px;
+      color: var(--gray-5);
+      line-height: 1.65;
+    }
+
+    /* SERVICES */
+    .services { background: var(--black); }
+
+    .services-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 64px;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .service-card {
+      background: var(--gray-1);
+      border: 1px solid var(--gray-3);
+      border-radius: 16px;
+      padding: 44px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .service-card:hover {
+      border-color: var(--yellow);
+      transform: translateY(-4px);
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--yellow);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s;
+    }
+
+    .service-card:hover::before { transform: scaleX(1); }
+
+    .service-icon {
+      font-size: 28px;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .service-card h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .service-card p {
+      font-size: 15px;
+      color: var(--gray-5);
+      line-height: 1.65;
+      margin-bottom: 24px;
+    }
+
+    .service-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      background: rgba(245,230,66,0.08);
+      border: 1px solid rgba(245,230,66,0.15);
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+
+    /* MANIFESTO */
+    .manifesto {
+      background: var(--gray-1);
+      border-top: 1px solid var(--gray-3);
+      border-bottom: 1px solid var(--gray-3);
+      text-align: center;
+    }
+
+    .manifesto-quote {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(28px, 5vw, 60px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .manifesto-quote em {
+      font-style: normal;
+      color: var(--yellow);
+    }
+
+    .manifesto-body {
+      max-width: 680px;
+      margin: 40px auto 0;
+      font-size: 18px;
+      color: var(--gray-5);
+      line-height: 1.75;
+    }
+
+    /* PROCESS */
+    .process { background: var(--black); }
+
+    .process-steps {
+      margin-top: 64px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .process-step {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 40px;
+      padding: 40px 0;
+      border-bottom: 1px solid var(--gray-3);
+      align-items: start;
+    }
+
+    .process-step:first-child { border-top: 1px solid var(--gray-3); }
+
+    .step-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--yellow);
+      letter-spacing: 0.1em;
+      padding-top: 4px;
+    }
+
+    .step-content h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .step-content p {
+      font-size: 15px;
+      color: var(--gray-5);
+      line-height: 1.65;
+      max-width: 600px;
+    }
+
+    /* RESULTS */
+    .results {
+      background: var(--gray-1);
+      border-top: 1px solid var(--gray-3);
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 64px;
+    }
+
+    .result-card {
+      background: var(--gray-2);
+      border: 1px solid var(--gray-3);
+      border-radius: 12px;
+      padding: 36px;
+      transition: border-color 0.2s;
+    }
+
+    .result-card:hover { border-color: var(--gray-4); }
+
+    .result-metric {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      color: var(--yellow);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .result-label {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .result-desc {
+      font-size: 13px;
+      color: var(--gray-5);
+      line-height: 1.6;
+    }
+
+    /* CTA */
+    .cta {
+      background: var(--black);
+      text-align: center;
+      padding: 160px 24px;
+    }
+
+    .cta-inner {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .cta h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      margin-bottom: 24px;
+    }
+
+    .cta h2 span { color: var(--yellow); }
+
+    .cta p {
+      font-size: 18px;
+      color: var(--gray-5);
+      line-height: 1.7;
+      margin-bottom: 48px;
+    }
+
+    .cta-form {
+      display: flex;
+      gap: 12px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .cta-input {
+      flex: 1;
+      background: var(--gray-1);
+      border: 1px solid var(--gray-3);
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: var(--white);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .cta-input::placeholder { color: var(--gray-5); }
+    .cta-input:focus { border-color: var(--yellow); }
+
+    .cta-btn {
+      background: var(--yellow);
+      color: var(--black);
+      font-family: 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 16px 28px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .cta-btn:hover {
+      background: #fff176;
+      transform: translateY(-1px);
+    }
+
+    .cta-note {
+      font-size: 12px;
+      color: var(--gray-5);
+      margin-top: 16px;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--gray-3);
+      padding: 48px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .footer-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--yellow);
+      letter-spacing: -0.02em;
+    }
+
+    .footer-copy {
+      font-size: 13px;
+      color: var(--gray-5);
+    }
+
+    /* NOISE OVERLAY */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ANIMATIONS */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+
+      .problem-grid { grid-template-columns: 1fr; gap: 40px; }
+      .how-grid { grid-template-columns: 1fr; }
+      .services-grid { grid-template-columns: 1fr; }
+      .results-grid { grid-template-columns: 1fr; }
+      .services-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+      .hero-stats { gap: 32px; }
+      .cta-form { flex-direction: column; }
+      footer { flex-direction: column; gap: 16px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="#">AIAYN</a>
+    <ul class="nav-links">
+      <li><a href="#problem">The Problem</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#cta" class="nav-cta">Get Attention</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="hero-eyebrow">Marketing for the Attention Economy</p>
+    <h1 class="hero-title">
+      <span class="highlight">Attention</span><br>
+      Is All<br>You Need
+    </h1>
+    <p class="hero-sub">
+      In 2026, the average human attention span is 8 seconds. We use AI, engineering, and bold creative to own every one of them.
+    </p>
+    <div class="hero-actions">
+      <a href="#cta" class="btn-primary">Capture Attention</a>
+      <a href="#services" class="btn-ghost">See How It Works</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-number">8<span>s</span></div>
+        <div class="stat-label">Avg. attention span</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">10<span>k+</span></div>
+        <div class="stat-label">Ads seen daily</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">0.1<span>%</span></div>
+        <div class="stat-label">That get remembered</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">∞</div>
+        <div class="stat-label">Opportunity for you</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <span class="ticker-item">AI-Driven Creative</span>
+      <span class="ticker-item">Attention Engineering</span>
+      <span class="ticker-item">Predictive Targeting</span>
+      <span class="ticker-item">Generative Content</span>
+      <span class="ticker-item">Signal Intelligence</span>
+      <span class="ticker-item">Real-Time Optimization</span>
+      <span class="ticker-item">Neuro-Inspired Design</span>
+      <span class="ticker-item">AI-Driven Creative</span>
+      <span class="ticker-item">Attention Engineering</span>
+      <span class="ticker-item">Predictive Targeting</span>
+      <span class="ticker-item">Generative Content</span>
+      <span class="ticker-item">Signal Intelligence</span>
+      <span class="ticker-item">Real-Time Optimization</span>
+      <span class="ticker-item">Neuro-Inspired Design</span>
+    </div>
+  </div>
+
+  <!-- PROBLEM -->
+  <section class="problem" id="problem">
+    <div class="container">
+      <p class="section-eyebrow fade-up">The 2026 Problem</p>
+      <h2 class="section-title fade-up">Your audience is<br>drowning in noise</h2>
+      <div class="problem-grid">
+        <div class="problem-visual fade-up">
+          <div class="attention-meter">
+            <p class="meter-label">Average consumer attention span</p>
+            <div class="meter-value">8<span class="meter-unit">sec</span></div>
+            <p class="meter-desc">Down from 12 seconds in 2000. Goldfish: 9 seconds.</p>
+            <div class="meter-bar-track">
+              <div class="meter-bar-fill"></div>
+            </div>
+          </div>
+        </div>
+        <div class="problem-points fade-up">
+          <div class="problem-point">
+            <h3>Infinite Content, Zero Recall</h3>
+            <p>The average person is exposed to 10,000+ brand messages per day. Less than 0.1% make any lasting impression. Your current marketing is invisible.</p>
+          </div>
+          <div class="problem-point">
+            <h3>AI Made It Worse</h3>
+            <p>Generic AI content flooded every channel. Blogs, ads, emails — all look and sound the same. Standing out now requires intelligence, not just volume.</p>
+          </div>
+          <div class="problem-point">
+            <h3>Attention Is the New Currency</h3>
+            <p>Every business metric — conversions, retention, revenue — traces back to one thing: did you have their attention first? We're obsessed with answering yes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW -->
+  <section id="how">
+    <div class="container">
+      <p class="section-eyebrow fade-up">Our Approach</p>
+      <h2 class="section-title fade-up">Engineering meets creativity</h2>
+      <p class="section-sub fade-up">We don't choose between data and intuition. We weaponize both.</p>
+      <div class="how-grid">
+        <div class="how-card fade-up">
+          <div class="how-number">01</div>
+          <h3>Signal Intelligence</h3>
+          <p>We run AI across behavioral data, platform signals, and cultural context to pinpoint exactly where your audience's attention lives — and when they're most receptive.</p>
+        </div>
+        <div class="how-card fade-up">
+          <div class="how-number">02</div>
+          <h3>Attention Architecture</h3>
+          <p>Our creative engineers design hooks, sequences, and content systems built around how the human brain actually allocates attention — not marketing intuition.</p>
+        </div>
+        <div class="how-card fade-up">
+          <div class="how-number">03</div>
+          <h3>Continuous Capture</h3>
+          <p>Real-time feedback loops let us adapt creative and targeting on the fly. Every impression teaches the system. Attention compounds over time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services" id="services">
+    <div class="container">
+      <div class="services-header">
+        <div>
+          <p class="section-eyebrow fade-up">What We Do</p>
+          <h2 class="section-title fade-up">Full-spectrum<br>attention capture</h2>
+        </div>
+        <p class="section-sub fade-up" style="max-width:300px; text-align:right;">Every service is engineered to stop the scroll and start the relationship.</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card fade-up">
+          <span class="service-icon">⚡</span>
+          <h3>AI Creative Systems</h3>
+          <p>We build generative creative engines that produce thousands of attention-optimized variants — copy, visuals, formats — then let the data pick winners in real time.</p>
+          <div class="service-tags">
+            <span class="tag">Gen AI</span>
+            <span class="tag">A/B Systems</span>
+            <span class="tag">Dynamic Creative</span>
+          </div>
+        </div>
+        <div class="service-card fade-up">
+          <span class="service-icon">🧠</span>
+          <h3>Behavioral Targeting</h3>
+          <p>Beyond demographics. We model micro-intent signals to reach people in the exact psychological moment they're open to your message — not just demographically close.</p>
+          <div class="service-tags">
+            <span class="tag">Intent Modeling</span>
+            <span class="tag">Predictive Signals</span>
+            <span class="tag">Audience AI</span>
+          </div>
+        </div>
+        <div class="service-card fade-up">
+          <span class="service-icon">🎯</span>
+          <h3>Attention-First Content</h3>
+          <p>From thumb-stopping video hooks to engineered editorial content — every piece is built with a single non-negotiable: earn the first 3 seconds, or don't publish.</p>
+          <div class="service-tags">
+            <span class="tag">Video</span>
+            <span class="tag">Editorial</span>
+            <span class="tag">Social</span>
+          </div>
+        </div>
+        <div class="service-card fade-up">
+          <span class="service-icon">📡</span>
+          <h3>Real-Time Signal Ops</h3>
+          <p>Our proprietary dashboard tracks attention metrics across all channels continuously. When signals drop, we know before you do — and we've already started the fix.</p>
+          <div class="service-tags">
+            <span class="tag">Analytics</span>
+            <span class="tag">Monitoring</span>
+            <span class="tag">Optimization</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MANIFESTO -->
+  <section class="manifesto">
+    <div class="container">
+      <blockquote class="manifesto-quote fade-up">
+        "The brands that win in 2026 won't be the loudest.<br>They'll be the ones that understand <em>why</em> humans pay attention — and engineer every touchpoint around that truth."
+      </blockquote>
+      <p class="manifesto-body fade-up">
+        We are not a traditional agency. We are a team of AI engineers, behavioral scientists, and obsessive creatives who believe that attention is a science — and that science can be applied. Every campaign we run is a hypothesis. Every result, a data point. We never stop learning, and neither does your marketing.
+      </p>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="process" id="process">
+    <div class="container">
+      <p class="section-eyebrow fade-up">How We Work</p>
+      <h2 class="section-title fade-up">From audit to<br>attention in 30 days</h2>
+      <div class="process-steps">
+        <div class="process-step fade-up">
+          <div class="step-num">01 —</div>
+          <div class="step-content">
+            <h3>Attention Audit</h3>
+            <p>We analyze every touchpoint: ads, content, funnel, email, social. We map exactly where you're losing attention and what it's costing you in revenue terms.</p>
+          </div>
+        </div>
+        <div class="process-step fade-up">
+          <div class="step-num">02 —</div>
+          <div class="step-content">
+            <h3>Signal Mapping</h3>
+            <p>Our AI scans platform signals, competitor patterns, and audience behavioral data to build your Attention Map — where to show up, what to say, and when to say it.</p>
+          </div>
+        </div>
+        <div class="process-step fade-up">
+          <div class="step-num">03 —</div>
+          <div class="step-content">
+            <h3>Architecture Sprint</h3>
+            <p>In two weeks, we build your full creative system: hooks, sequences, templates, and the AI layer that powers them — all attention-tested before a single dollar is spent.</p>
+          </div>
+        </div>
+        <div class="process-step fade-up">
+          <div class="step-num">04 —</div>
+          <div class="step-content">
+            <h3>Live & Optimize</h3>
+            <p>We launch, measure real attention signals, and feed results back into the system weekly. Your marketing gets measurably smarter every 7 days.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="results">
+    <div class="container">
+      <p class="section-eyebrow fade-up">The Numbers</p>
+      <h2 class="section-title fade-up">Attention translates<br>directly to revenue</h2>
+      <div class="results-grid">
+        <div class="result-card fade-up">
+          <div class="result-metric">4.7×</div>
+          <div class="result-label">Average ROAS Improvement</div>
+          <div class="result-desc">Clients who switch to attention-first creative see return on ad spend nearly quintuple within 90 days.</div>
+        </div>
+        <div class="result-card fade-up">
+          <div class="result-metric">68%</div>
+          <div class="result-label">Increase in Content Recall</div>
+          <div class="result-desc">Measured via post-exposure surveys. People actually remember our clients' brands — a rarity in today's noise.</div>
+        </div>
+        <div class="result-card fade-up">
+          <div class="result-metric">3.2×</div>
+          <div class="result-label">Faster Funnel Velocity</div>
+          <div class="result-desc">When attention is engineered from first touch, prospects move through the funnel more than 3x faster than the industry average.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta" id="cta">
+    <div class="cta-inner">
+      <h2>Ready to own<br><span>the attention?</span></h2>
+      <p>Start with a free Attention Audit. We'll show you exactly where you're losing attention — and what it's worth to fix it.</p>
+      <form class="cta-form" onsubmit="handleSubmit(event)">
+        <input class="cta-input" type="email" placeholder="your@company.com" required />
+        <button class="cta-btn" type="submit">Get My Audit</button>
+      </form>
+      <p class="cta-note">Free. No pitch call required. Results in 48 hours.</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Attention Is All You Need</div>
+    <p class="footer-copy">© 2026 AIAYN Agency. Built with AI. Optimized for humans.</p>
+  </footer>
+
+  <script>
+    // Intersection Observer for fade-up animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, 60 * (entry.target.dataset.delay || 0));
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.fade-up').forEach((el, i) => {
+      el.dataset.delay = i % 4;
+      observer.observe(el);
+    });
+
+    // Form submission
+    function handleSubmit(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('.cta-btn');
+      const input = e.target.querySelector('.cta-input');
+      btn.textContent = 'Sent!';
+      btn.style.background = '#4ade80';
+      input.value = '';
+      setTimeout(() => {
+        btn.textContent = 'Get My Audit';
+        btn.style.background = '';
+      }, 3000);
+    }
+
+    // Smooth active nav highlighting
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        if (window.scrollY >= section.offsetTop - 200) {
+          current = section.getAttribute('id');
+        }
+      });
+      navLinks.forEach(link => {
+        link.style.color = link.getAttribute('href') === '#' + current ? '#fafafa' : '';
+      });
+    });
+  </script>
+</body>
+</html>
