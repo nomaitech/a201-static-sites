@@ -545,141 +545,77 @@ button { font-family: var(--font-body); }
   --bg-nav:    oklch(97%  0.010 75 / 0.92);
 }
 
-/* ─ VAPORWAVE ─ NOSTALGIC INTERNET ─ */
+/* ─ VAPORWAVE ─ */
 [data-theme="vaporwave"] {
-  --bg:        oklch(7%   0.055 285);   /* near-black purple void */
-  --bg-raised: oklch(13%  0.075 290);
-  --bg-sunken: oklch(4%   0.030 280);
-  --border:    color-mix(in oklch, oklch(68% 0.36 330) 45%, transparent);
-  --border-dim:color-mix(in oklch, oklch(68% 0.36 330) 22%, transparent);
-  --text:      oklch(96%  0.05  295);   /* white with purple ghost */
-  --text-2:    oklch(85%  0.14  320);   /* soft pink */
-  --text-3:    oklch(62%  0.18  308);   /* muted magenta */
-  --amber:     oklch(68%  0.36  330);   /* PURE MAGENTA */
-  --amber-mid: oklch(54%  0.30  330);
-  --amber-dim: oklch(20%  0.14  325);
-  --sage:      oklch(90%  0.24  196);   /* electric cyan */
-  --sage-dim:  oklch(18%  0.14  210);
-  --bg-nav:    oklch(7%   0.055 285 / 0.88);
+  --bg:        oklch(14%  0.06  285);
+  --bg-raised: oklch(20%  0.07  285);
+  --bg-sunken: oklch(10%  0.04  285);
+  --border:    oklch(36%  0.10  300);
+  --border-dim:oklch(28%  0.08  295);
+  --text:      oklch(94%  0.04  295);
+  --text-2:    oklch(78%  0.14  320);
+  --text-3:    oklch(58%  0.10  305);
+  --amber:     oklch(78%  0.26  340);  /* hot pink */
+  --amber-mid: oklch(62%  0.22  340);
+  --amber-dim: oklch(24%  0.10  320);
+  --sage:      oklch(74%  0.22  195);  /* cyan */
+  --sage-dim:  oklch(22%  0.10  210);
+  --bg-nav:    oklch(14%  0.06  285 / 0.90);
 
-  /* The font that defined an era */
-  --font-display: 'Comic Sans MS', 'Chalkboard SE', cursive;
-  --font-body:    'Comic Sans MS', 'Chalkboard SE', cursive;
-  --font-mono:    'Courier New', 'Courier', monospace;
+  /* Discipline tag lightness boost for dark bg */
+  --tag-art-c:     oklch(74% 0.13 145);
+  --tag-music-c:   oklch(78% 0.14 310);
+  --tag-code-c:    oklch(74% 0.16 200);
+  --tag-design-c:  oklch(76% 0.16 32);
+  --tag-fiction-c: oklch(76% 0.14 265);
+  --tag-spatial-c: oklch(74% 0.13 182);
 }
 
-/* Starfield — three offset layers of dots */
-[data-theme="vaporwave"] body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    radial-gradient(circle, oklch(98% 0.02 290) 1px, transparent 1px),
-    radial-gradient(circle, oklch(98% 0.02 290 / 0.7) 1px, transparent 1px),
-    radial-gradient(circle, oklch(98% 0.02 290 / 0.4) 1px, transparent 1px);
-  background-size: 90px 90px, 61px 61px, 43px 43px;
-  background-position: 0 0, 31px 17px, 47px 38px;
-  opacity: 0.35;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* CRT scanlines on top */
 [data-theme="vaporwave"] body::after {
   content: '';
   position: fixed;
   inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    oklch(0% 0 0 / 0.10) 2px,
-    oklch(0% 0 0 / 0.10) 3px
-  );
+  background:
+    linear-gradient(to bottom, oklch(22% 0.12 290 / 0.5) 0%, transparent 40%),
+    linear-gradient(to top,    oklch(18% 0.08 310 / 0.4) 0%, transparent 50%);
   pointer-events: none;
-  z-index: 9997;
+  z-index: 0;
 }
 
-/* Neon glow on all headings */
-[data-theme="vaporwave"] h1,
-[data-theme="vaporwave"] h2,
-[data-theme="vaporwave"] h3 {
-  text-shadow:
-    0 0 6px  color-mix(in oklch, var(--amber) 70%, transparent),
-    0 0 18px color-mix(in oklch, var(--amber) 45%, transparent),
-    0 0 40px color-mix(in oklch, var(--amber) 22%, transparent);
-}
-
-[data-theme="vaporwave"] .site-nav {
-  border-bottom: 2px solid color-mix(in oklch, var(--amber) 55%, transparent);
-  box-shadow: 0 1px 24px color-mix(in oklch, var(--amber) 28%, transparent);
-}
+[data-theme="vaporwave"] .site-nav { border-bottom-color: oklch(36% 0.10 300); }
 
 [data-theme="vaporwave"] .page-hero-title em,
 [data-theme="vaporwave"] .manifesto-heading em,
 [data-theme="vaporwave"] .join-heading em {
   color: var(--sage);
-  text-shadow:
-    0 0 8px  color-mix(in oklch, var(--sage) 65%, transparent),
-    0 0 22px color-mix(in oklch, var(--sage) 40%, transparent),
-    0 0 50px color-mix(in oklch, var(--sage) 18%, transparent);
-}
-
-/* Section labels pulse */
-[data-theme="vaporwave"] .section-label {
-  color: var(--sage);
-  letter-spacing: 0.22em;
-  animation: label-pulse 3s ease-in-out infinite;
-}
-
-@keyframes label-pulse {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.55; }
 }
 
 /* Vaporwave: brighten discipline tags */
-[data-theme="vaporwave"] .tag.tag-art     { --tag-c: oklch(76% 0.17 145); }
-[data-theme="vaporwave"] .tag.tag-music   { --tag-c: oklch(80% 0.18 330); }
-[data-theme="vaporwave"] .tag.tag-code    { --tag-c: oklch(86% 0.22 196); }
-[data-theme="vaporwave"] .tag.tag-design  { --tag-c: oklch(82% 0.20 32);  }
-[data-theme="vaporwave"] .tag.tag-fiction { --tag-c: oklch(78% 0.18 280); }
-[data-theme="vaporwave"] .tag.tag-spatial { --tag-c: oklch(80% 0.18 220); }
+[data-theme="vaporwave"] .tag.tag-art     { --tag-c: oklch(74% 0.13 145); }
+[data-theme="vaporwave"] .tag.tag-music   { --tag-c: oklch(78% 0.14 310); }
+[data-theme="vaporwave"] .tag.tag-code    { --tag-c: oklch(74% 0.16 200); }
+[data-theme="vaporwave"] .tag.tag-design  { --tag-c: oklch(76% 0.16 32);  }
+[data-theme="vaporwave"] .tag.tag-fiction { --tag-c: oklch(76% 0.14 265); }
+[data-theme="vaporwave"] .tag.tag-spatial { --tag-c: oklch(74% 0.13 182); }
 
-/* ─ CYBERPUNK ─ NEON CITY RAIN ─ */
+/* ─ CYBERPUNK ─ */
 [data-theme="cyberpunk"] {
-  --bg:        oklch(7%   0.020 220);   /* oil-slick black */
-  --bg-raised: oklch(12%  0.025 215);
-  --bg-sunken: oklch(4%   0.012 225);
-  --border:    oklch(30%  0.08  210);
-  --border-dim:oklch(20%  0.05  215);
-  --text:      oklch(95%  0.03  85);    /* warm white */
-  --text-2:    oklch(76%  0.08  90);
-  --text-3:    oklch(52%  0.05  90);
-  --amber:     oklch(92%  0.28  94);    /* max-chroma neon yellow */
-  --amber-mid: oklch(74%  0.22  94);
-  --amber-dim: oklch(18%  0.12  90);
-  --sage:      oklch(80%  0.30  195);   /* electric cyan */
-  --sage-dim:  oklch(16%  0.16  200);
-  --bg-nav:    oklch(7%   0.020 220 / 0.94);
+  --bg:        oklch(9%   0.015 200);
+  --bg-raised: oklch(14%  0.018 200);
+  --bg-sunken: oklch(6%   0.010 200);
+  --border:    oklch(28%  0.06  195);
+  --border-dim:oklch(20%  0.04  200);
+  --text:      oklch(95%  0.02  90);
+  --text-2:    oklch(74%  0.06  90);
+  --text-3:    oklch(52%  0.04  90);
+  --amber:     oklch(88%  0.24  95);  /* neon yellow */
+  --amber-mid: oklch(72%  0.20  95);
+  --amber-dim: oklch(20%  0.10  90);
+  --sage:      oklch(76%  0.28  195); /* electric cyan */
+  --sage-dim:  oklch(18%  0.14  200);
+  --bg-nav:    oklch(9%   0.015 200 / 0.92);
 }
 
-/* Diagonal hatch overlay */
-[data-theme="cyberpunk"] body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: repeating-linear-gradient(
-    -45deg,
-    transparent,
-    transparent 20px,
-    oklch(80% 0.30 195 / 0.018) 20px,
-    oklch(80% 0.30 195 / 0.018) 21px
-  );
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Horizontal scanlines */
 [data-theme="cyberpunk"] body::after {
   content: '';
   position: fixed;
@@ -687,106 +623,72 @@ button { font-family: var(--font-body); }
   background: repeating-linear-gradient(
     0deg,
     transparent,
-    transparent 4px,
-    oklch(80% 0.30 195 / 0.025) 4px,
-    oklch(80% 0.30 195 / 0.025) 5px
+    transparent 3px,
+    oklch(50% 0.10 195 / 0.02) 3px,
+    oklch(50% 0.10 195 / 0.02) 4px
   );
   pointer-events: none;
   z-index: 0;
 }
 
 [data-theme="cyberpunk"] .site-nav {
-  border-bottom: 1px solid color-mix(in oklch, var(--sage) 40%, transparent);
-  box-shadow: 0 1px 30px color-mix(in oklch, var(--sage) 20%, transparent);
+  border-bottom: 1px solid oklch(76% 0.28 195 / 0.3);
 }
 
-/* Yellow glow on headings, cyan on em */
-[data-theme="cyberpunk"] h1,
-[data-theme="cyberpunk"] h2,
-[data-theme="cyberpunk"] h3 {
-  text-shadow:
-    0 0 4px  color-mix(in oklch, var(--amber) 80%, transparent),
-    0 0 12px color-mix(in oklch, var(--amber) 50%, transparent),
-    0 0 28px color-mix(in oklch, var(--amber) 25%, transparent);
+[data-theme="cyberpunk"] .work-grid,
+[data-theme="cyberpunk"] .stats-bar-inner,
+[data-theme="cyberpunk"] .events-strip .events-list .event-row {
+  outline: 1px solid color-mix(in oklch, var(--sage) 20%, transparent);
 }
 
 [data-theme="cyberpunk"] .page-hero-title em,
 [data-theme="cyberpunk"] .manifesto-heading em,
 [data-theme="cyberpunk"] .join-heading em {
   color: var(--sage);
-  text-shadow:
-    0 0 5px  color-mix(in oklch, var(--sage) 80%, transparent),
-    0 0 14px color-mix(in oklch, var(--sage) 50%, transparent);
 }
 
-[data-theme="cyberpunk"] .work-grid,
-[data-theme="cyberpunk"] .stats-bar-inner {
-  outline: 1px solid color-mix(in oklch, var(--sage) 18%, transparent);
-}
+/* Cyberpunk: adapt discipline tags for dark bg */
+[data-theme="cyberpunk"] .tag.tag-art     { --tag-c: oklch(74% 0.13 145); }
+[data-theme="cyberpunk"] .tag.tag-music   { --tag-c: oklch(78% 0.14 310); }
+[data-theme="cyberpunk"] .tag.tag-code    { --tag-c: oklch(74% 0.16 200); }
+[data-theme="cyberpunk"] .tag.tag-design  { --tag-c: oklch(76% 0.16 32);  }
+[data-theme="cyberpunk"] .tag.tag-fiction { --tag-c: oklch(76% 0.14 265); }
+[data-theme="cyberpunk"] .tag.tag-spatial { --tag-c: oklch(74% 0.13 182); }
 
-/* Cyberpunk: saturated neon tags */
-[data-theme="cyberpunk"] .tag.tag-art     { --tag-c: oklch(78% 0.18 145); }
-[data-theme="cyberpunk"] .tag.tag-music   { --tag-c: oklch(82% 0.20 330); }
-[data-theme="cyberpunk"] .tag.tag-code    { --tag-c: oklch(80% 0.28 196); }
-[data-theme="cyberpunk"] .tag.tag-design  { --tag-c: oklch(90% 0.26 94);  }
-[data-theme="cyberpunk"] .tag.tag-fiction { --tag-c: oklch(78% 0.18 280); }
-[data-theme="cyberpunk"] .tag.tag-spatial { --tag-c: oklch(82% 0.22 220); }
-
-/* ─ SEVERANCE ─ MDR LUMON INDUSTRIES ─ */
+/* ─ SEVERANCE ─ */
 [data-theme="severance"] {
-  --bg:        oklch(94%  0.006 200);   /* fluorescent office white */
-  --bg-raised: oklch(88%  0.009 198);   /* manila/buff */
-  --bg-sunken: oklch(98%  0.003 200);
-  --border:    oklch(70%  0.012 200);
-  --border-dim:oklch(80%  0.008 200);
-  --text:      oklch(16%  0.010 222);   /* deep MDR blue-black */
-  --text-2:    oklch(36%  0.012 220);
-  --text-3:    oklch(56%  0.009 218);
-  --amber:     oklch(45%  0.18  188);   /* Lumon teal */
-  --amber-mid: oklch(35%  0.14  188);
-  --amber-dim: oklch(86%  0.07  188);
-  --sage:      oklch(50%  0.06  95);    /* bureaucratic khaki */
-  --sage-dim:  oklch(88%  0.04  95);
-  --bg-nav:    oklch(88%  0.009 198 / 0.96);
-}
-
-/* Graph paper background */
-[data-theme="severance"] body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(oklch(45% 0.18 188 / 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(45% 0.18 188 / 0.07) 1px, transparent 1px),
-    linear-gradient(oklch(45% 0.18 188 / 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(45% 0.18 188 / 0.04) 1px, transparent 1px);
-  background-size: 80px 80px, 80px 80px, 16px 16px, 16px 16px;
-  pointer-events: none;
-  z-index: 0;
+  --bg:        oklch(91%  0.009 78);   /* institutional beige */
+  --bg-raised: oklch(86%  0.011 78);   /* manila */
+  --bg-sunken: oklch(96%  0.004 78);
+  --border:    oklch(72%  0.010 78);
+  --border-dim:oklch(80%  0.006 78);
+  --text:      oklch(19%  0.006 220);  /* dark slate — MDR blue-black */
+  --text-2:    oklch(43%  0.009 215);
+  --text-3:    oklch(62%  0.007 215);
+  --amber:     oklch(48%  0.15  185);  /* MDR teal */
+  --amber-mid: oklch(38%  0.12  185);
+  --amber-dim: oklch(85%  0.06  185);
+  --sage:      oklch(54%  0.08  100);  /* muted olive */
+  --sage-dim:  oklch(86%  0.04  100);
+  --bg-nav:    oklch(86%  0.011 78 / 0.95);
 }
 
 [data-theme="severance"] body {
   font-weight: 400;
-  letter-spacing: 0.010em;
+  letter-spacing: 0.005em;
 }
 
 [data-theme="severance"] .site-nav {
-  border-bottom: 2px solid oklch(45% 0.18 188 / 0.4);
+  border-bottom: 1px solid oklch(72% 0.010 78);
 }
 
-[data-theme="severance"] .section-label {
-  font-family: var(--font-mono);
-  letter-spacing: 0.28em;
-  font-size: 0.65rem;
-}
-
-/* Cold slate discipline tags */
-[data-theme="severance"] .tag.tag-art     { --tag-c: oklch(40% 0.10 188); }
-[data-theme="severance"] .tag.tag-music   { --tag-c: oklch(38% 0.09 220); }
-[data-theme="severance"] .tag.tag-code    { --tag-c: oklch(40% 0.10 200); }
-[data-theme="severance"] .tag.tag-design  { --tag-c: oklch(38% 0.08 95);  }
-[data-theme="severance"] .tag.tag-fiction { --tag-c: oklch(38% 0.09 250); }
-[data-theme="severance"] .tag.tag-spatial { --tag-c: oklch(40% 0.10 185); }
+/* Severance: cold slate discipline tags */
+[data-theme="severance"] .tag.tag-art     { --tag-c: oklch(43% 0.09 145); }
+[data-theme="severance"] .tag.tag-music   { --tag-c: oklch(43% 0.09 220); }
+[data-theme="severance"] .tag.tag-code    { --tag-c: oklch(42% 0.09 200); }
+[data-theme="severance"] .tag.tag-design  { --tag-c: oklch(43% 0.08 78);  }
+[data-theme="severance"] .tag.tag-fiction { --tag-c: oklch(42% 0.09 250); }
+[data-theme="severance"] .tag.tag-spatial { --tag-c: oklch(42% 0.09 185); }
 
 /* ═══════════════════════════════════════════════════════
    THEME PICKER
