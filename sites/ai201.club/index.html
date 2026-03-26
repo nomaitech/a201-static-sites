@@ -105,8 +105,8 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse 75% 60% at 72% 25%, color-mix(in oklch, var(--amber) 18%, transparent), transparent 65%),
-        radial-gradient(ellipse 45% 45% at 18% 82%, color-mix(in oklch, var(--sage) 14%, transparent), transparent 60%);
+        radial-gradient(ellipse 75% 60% at 72% 25%, oklch(26% 0.06 65 / 0.55), transparent 65%),
+        radial-gradient(ellipse 45% 45% at 18% 82%, oklch(20% 0.05 72 / 0.4), transparent 60%);
       animation: ambient-breathe 20s ease-in-out infinite alternate;
       pointer-events: none;
     }
@@ -269,13 +269,13 @@
       font-size: clamp(1.5rem, 3.5vw, 2.5rem);
       font-style: italic;
       font-weight: 300;
-      color: color-mix(in oklch, var(--text) 12%, transparent);
+      color: oklch(93% 0.012 65 / 0.12);
       white-space: nowrap;
       transition: color 0.35s;
       cursor: default;
     }
 
-    .marquee-item:hover { color: color-mix(in oklch, var(--text) 40%, transparent); }
+    .marquee-item:hover { color: oklch(93% 0.012 65 / 0.4); }
 
     .marquee-sep {
       display: block;
@@ -585,7 +585,6 @@
       .stats-bar-inner { grid-template-columns: 1fr 1fr; }
     }
   </style>
-  <script>try{document.documentElement.dataset.theme=localStorage.getItem('ai201-theme')||'studio'}catch(e){}</script>
 </head>
 <body>
 
@@ -851,6 +850,5 @@
     );
     fadeEls.forEach(el => observer.observe(el));
   </script>
-  <script src="/theme.js"></script>
 </body>
 </html>

@@ -85,7 +85,7 @@
       font-size: 0.6rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--sage);
+      color: oklch(72% 0.10 300);
       margin-bottom: var(--s3);
     }
 
@@ -136,8 +136,8 @@
     .musician-initial {
       width: 48px;
       height: 48px;
-      background: var(--sage);
-      color: var(--bg);
+      background: oklch(72% 0.10 300);
+      color: oklch(11% 0.012 65);
       font-family: var(--font-display);
       font-size: 1.25rem;
       font-weight: 700;
@@ -166,7 +166,7 @@
       font-size: 0.62rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--sage);
+      color: oklch(72% 0.10 300);
     }
 
     .musician-bio {
@@ -233,7 +233,7 @@
       font-size: 0.6rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--sage);
+      color: oklch(72% 0.10 300);
       margin-bottom: var(--s3);
     }
 
@@ -275,7 +275,6 @@
       .music-projects-grid { grid-template-columns: 1fr; }
     }
   </style>
-  <script>try{document.documentElement.dataset.theme=localStorage.getItem('ai201-theme')||'studio'}catch(e){}</script>
 </head>
 <body>
 
@@ -483,6 +482,5 @@
     );
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
   </script>
-  <script src="/theme.js"></script>
 </body>
 </html>

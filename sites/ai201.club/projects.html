@@ -55,8 +55,8 @@
     .filter-btn:hover,
     .filter-btn.active {
       color: var(--amber);
-      border-color: color-mix(in oklch, var(--amber) 40%, transparent);
-      background: color-mix(in oklch, var(--amber) 6%, transparent);
+      border-color: oklch(72% 0.14 72 / 0.4);
+      background: oklch(72% 0.14 72 / 0.06);
     }
 
     /* Projects grid */
@@ -140,7 +140,6 @@
       .projects-grid { grid-template-columns: 1fr; }
     }
   </style>
-  <script>try{document.documentElement.dataset.theme=localStorage.getItem('ai201-theme')||'studio'}catch(e){}</script>
 </head>
 <body>
 
@@ -302,6 +301,5 @@
       });
     });
   </script>
-  <script src="/theme.js"></script>
 </body>
 </html>
