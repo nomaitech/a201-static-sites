@@ -149,33 +149,71 @@ body {
   max-width: var(--max);
   margin: 0 auto;
   padding: var(--space-2xl) var(--pad) 0;
+  position: relative;
+  overflow: hidden;
 }
 
 .hero-emojis {
-  position: relative;
-  height: 80px;
-  overflow: visible;
+  position: absolute;
+  inset: 0;
   pointer-events: none;
+  z-index: 0;
 }
 
 .emoji {
   position: absolute;
-  left: var(--x);
-  font-size: var(--size);
+  top: 0;
+  left: 0;
   line-height: 1;
-  animation: bounce 2.2s cubic-bezier(0.36, 0, 0.66, -0.56) var(--delay) infinite;
-  will-change: transform;
   user-select: none;
+  opacity: 0;
+  will-change: transform, opacity;
 }
 
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-28px); }
+.e1 { font-size: 2.6rem; animation: drift-ru 18s linear 0s   infinite; }
+.e2 { font-size: 1.5rem; animation: drift-rd 12s linear 4s   infinite; }
+.e3 { font-size: 2.1rem; animation: drift-lu 15s linear 1s   infinite; }
+.e4 { font-size: 3.0rem; animation: drift-ld 20s linear 7s   infinite; }
+.e5 { font-size: 1.8rem; animation: drift-ru 14s linear 10s  infinite; }
+.e6 { font-size: 2.4rem; animation: drift-rd 17s linear 5.5s infinite; }
+
+/* ↗ bottom-left → top-right */
+@keyframes drift-ru {
+  0%   { transform: translate(-120px,  560px); opacity: 0; }
+  10%  { opacity: 0.15; }
+  90%  { opacity: 0.15; }
+  100% { transform: translate(1400px, -120px); opacity: 0; }
+}
+
+/* ↘ top-left → bottom-right */
+@keyframes drift-rd {
+  0%   { transform: translate(-120px, -80px);  opacity: 0; }
+  10%  { opacity: 0.12; }
+  90%  { opacity: 0.12; }
+  100% { transform: translate(1400px,  580px); opacity: 0; }
+}
+
+/* ↖ top-right → bottom-left */
+@keyframes drift-lu {
+  0%   { transform: translate(1400px, -80px);  opacity: 0; }
+  10%  { opacity: 0.14; }
+  90%  { opacity: 0.14; }
+  100% { transform: translate(-120px,  560px); opacity: 0; }
+}
+
+/* ↙ bottom-right → top-left */
+@keyframes drift-ld {
+  0%   { transform: translate(1400px,  560px); opacity: 0; }
+  10%  { opacity: 0.11; }
+  90%  { opacity: 0.11; }
+  100% { transform: translate(-120px, -80px);  opacity: 0; }
 }
 
 .hero-inner {
   padding-bottom: var(--space-xl);
   border-bottom: 1px solid var(--border);
+  position: relative;
+  z-index: 1;
 }
 
 
