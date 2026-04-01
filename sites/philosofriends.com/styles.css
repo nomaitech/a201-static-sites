@@ -686,6 +686,152 @@ body {
 
 .social-link:hover { color: var(--rust); }
 
+/* ─── Pricing ────────────────────────────────────────────────────── */
+.pricing {
+  border-bottom: 1px solid var(--border);
+}
+
+.pricing-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: var(--space-2xl) var(--pad);
+}
+
+.pricing-header {
+  margin-bottom: var(--space-xl);
+}
+
+.pricing-header h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+}
+
+.pricing-header p {
+  font-size: 0.9rem;
+  color: var(--gray);
+  max-width: 48ch;
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+  align-items: start;
+}
+
+.plan {
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  background: white;
+  position: relative;
+}
+
+.plan-paid {
+  border-color: var(--rust);
+  background: oklch(99% 0.006 32);
+}
+
+.plan-badge {
+  position: absolute;
+  top: -1px;
+  right: var(--space-lg);
+  background: var(--rust);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.75rem;
+  border-radius: 0 0 6px 6px;
+}
+
+.plan-top {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.plan-name {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+
+.plan-paid .plan-name {
+  color: var(--rust);
+}
+
+.plan-price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+}
+
+.plan-amount {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.plan-period {
+  font-size: 0.85rem;
+  color: var(--gray);
+  font-weight: 400;
+}
+
+.plan-desc {
+  font-size: 0.85rem;
+  color: var(--gray);
+  line-height: 1.55;
+  max-width: 32ch;
+}
+
+.plan-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+}
+
+.plan-features li {
+  font-size: 0.88rem;
+  color: var(--black);
+  padding-left: 1.2rem;
+  position: relative;
+  line-height: 1.4;
+}
+
+.plan-features li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--gray);
+}
+
+.plan-paid .plan-features li::before {
+  color: var(--rust);
+}
+
+.plan-cta {
+  width: 100%;
+  text-align: center;
+}
+
 /* ─── Footer ─────────────────────────────────────────────────────── */
 .footer {
   padding: var(--space-lg) var(--pad);
@@ -744,6 +890,10 @@ body {
 
   .books-list {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .pricing-grid {
+    grid-template-columns: 1fr;
   }
 
   .newsletter-inner {
