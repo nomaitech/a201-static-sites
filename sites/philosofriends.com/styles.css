@@ -444,6 +444,71 @@ body {
 
 .event-cta { align-self: center; }
 
+/* ─── Formats ────────────────────────────────────────────────────── */
+.formats {
+  background: var(--bg-alt);
+  border-bottom: 1px solid var(--border);
+}
+
+.formats-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: var(--space-2xl) var(--pad);
+}
+
+.formats-header {
+  margin-bottom: var(--space-xl);
+}
+
+.formats-header h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.formats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md);
+}
+
+.format-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.format-card:hover {
+  box-shadow: 0 4px 24px -8px oklch(10% 0.01 55 / 0.1);
+  transform: translateY(-2px);
+}
+
+.format-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.format-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.format-card p {
+  font-size: 0.85rem;
+  color: var(--gray);
+  line-height: 1.65;
+}
+
 /* ─── Testimonials ───────────────────────────────────────────────── */
 .testimonials {
   background: var(--black);
@@ -884,7 +949,15 @@ body {
     gap: var(--space-lg);
   }
 
+  .formats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .formats-grid {
     grid-template-columns: 1fr;
   }
 
