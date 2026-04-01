@@ -176,14 +176,9 @@ body {
   margin-bottom: var(--space-lg);
 }
 
-.question-prefix {
-  display: block;
-  font-style: italic;
-  color: var(--ink-light);
-}
-
 .question-rotating {
   display: block;
+  font-style: italic;
   color: var(--forest);
   transition: opacity 0.35s ease, transform 0.35s ease;
 }
