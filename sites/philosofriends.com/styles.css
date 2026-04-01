@@ -912,6 +912,38 @@ body {
   text-align: center;
 }
 
+/* ─── Join ───────────────────────────────────────────────────────── */
+.join {
+  background: var(--black);
+  border-bottom: 1px solid var(--border);
+}
+
+.join-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: var(--space-2xl) var(--pad);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-md);
+}
+
+.join-inner h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: white;
+}
+
+.join-inner p {
+  font-size: 1rem;
+  color: oklch(62% 0.005 55);
+  max-width: 40ch;
+}
+
 /* ─── Footer ─────────────────────────────────────────────────────── */
 .footer {
   padding: var(--space-lg) var(--pad);
