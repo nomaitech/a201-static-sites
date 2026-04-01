@@ -28,12 +28,7 @@
       <!-- Hero -->
       <section class="hero">
         <div class="hero-inner">
-          <div class="hero-topic">
-            <span class="topic-dot" aria-hidden="true"></span>
-            This month: <span id="rotating-topic">What is justice?</span>
-          </div>
-
-          <h1 class="hero-heading">Philosophy is better<br>done together.</h1>
+          <h1 class="hero-heading" id="rotating-topic">What is justice?</h1>
 
           <p class="hero-sub">Monthly gatherings in London for people who want to think more carefully about the big questions — no philosophy degree required.</p>
 
@@ -61,7 +56,7 @@
         <div class="how-inner">
           <div class="how-header">
             <span class="section-label">How it works</span>
-            <h2>What to expect</h2>
+            <h2>Philosophy is better done together.</h2>
           </div>
           <div class="how-steps">
             <div class="step">
@@ -262,6 +257,7 @@
 
       let current = 0;
       const el = document.getElementById('rotating-topic');
+      el.textContent = topics[0];
 
       function rotate() {
         el.style.opacity = '0';
