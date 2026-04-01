@@ -13,7 +13,7 @@
   --gray:        oklch(55% 0.005 50);
   --gray-light:  oklch(90% 0.005 50);
 
-  --font-display: 'Syne', system-ui, sans-serif;
+  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
   --font-body:    'Space Grotesk', system-ui, sans-serif;
 
   --space-sm:  clamp(0.75rem, 1.5vw, 1rem);
