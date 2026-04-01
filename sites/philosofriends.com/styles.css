@@ -446,77 +446,74 @@ body {
 
 /* ─── Formats ────────────────────────────────────────────────────── */
 .formats {
-  background: var(--black);
   border-bottom: 1px solid var(--border);
 }
 
 .formats-inner {
   max-width: var(--max);
   margin: 0 auto;
-  padding: var(--space-2xl) var(--pad);
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: var(--space-2xl);
-  align-items: start;
+  padding: var(--space-2xl) var(--pad) 0;
 }
 
 .formats-header {
-  position: sticky;
-  top: calc(62px + var(--space-lg));
-}
-
-.formats-header .section-label {
-  color: oklch(65% 0.12 32);
+  margin-bottom: 0;
+  padding-bottom: var(--space-xl);
+  border-bottom: 2px solid var(--black);
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-lg);
 }
 
 .formats-header h2 {
   font-family: var(--font-display);
-  font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.1;
-  color: white;
 }
 
 .formats-grid {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
 }
 
 .format-card {
-  display: grid;
-  grid-template-columns: 44px 1fr;
-  gap: var(--space-md) var(--space-lg);
-  align-items: start;
-  padding: var(--space-xl) 0;
-  border-bottom: 1px solid oklch(20% 0.01 55);
+  padding: var(--space-xl);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
 }
 
-.format-card:first-child {
-  padding-top: 0;
+.format-card:nth-child(odd) {
+  border-right: 1px solid var(--border);
+}
+
+.format-card:nth-child(3),
+.format-card:nth-child(4) {
+  border-bottom: none;
 }
 
 .format-icon {
-  font-size: 1.8rem;
+  font-size: 3rem;
   line-height: 1;
-  padding-top: 2px;
 }
 
 .format-card h3 {
   font-family: var(--font-display);
-  font-size: clamp(1.1rem, 1.8vw, 1.4rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-  color: white;
-  margin-bottom: 0.4rem;
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-top: auto;
 }
 
 .format-card p {
   font-size: 0.88rem;
-  color: oklch(62% 0.005 55);
+  color: var(--gray);
   line-height: 1.7;
-  grid-column: 2;
+  max-width: 42ch;
 }
 
 /* ─── Testimonials ───────────────────────────────────────────────── */
@@ -963,13 +960,20 @@ body {
     grid-template-columns: 1fr;
   }
 
-  .formats-inner {
+  .formats-grid {
     grid-template-columns: 1fr;
-    gap: var(--space-xl);
   }
 
-  .formats-header {
-    position: static;
+  .format-card:nth-child(odd) {
+    border-right: none;
+  }
+
+  .format-card:nth-child(3) {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .format-card:nth-child(4) {
+    border-bottom: none;
   }
 
   .books-list {
