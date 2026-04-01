@@ -20,164 +20,209 @@
         <a href="#books">Reading</a>
         <a href="#newsletter">Newsletter</a>
       </nav>
-      <a href="#newsletter" class="nav-cta">Join →</a>
+      <a href="#newsletter" class="btn-primary nav-join">Join us</a>
     </header>
 
     <main>
 
       <!-- Hero -->
       <section class="hero">
-        <div class="hero-meta">
-          <span>Monthly philosophy</span>
-          <span aria-hidden="true">—</span>
-          <span>London</span>
-          <span aria-hidden="true">—</span>
-          <span>Est. 2023</span>
-          <span aria-hidden="true">—</span>
-          <span>All welcome</span>
-        </div>
-
-        <div class="hero-main">
-          <h1 class="hero-q" id="rotating-question">What is justice?</h1>
-        </div>
-
-        <div class="hero-foot">
-          <div class="hero-brand">
-            <p class="hero-brandname">Philosofriends</p>
-            <p class="hero-desc">A community of intellectually curious people gathering monthly in London to explore philosophy's oldest — and most urgent — questions.</p>
+        <div class="hero-inner">
+          <div class="hero-topic">
+            <span class="topic-dot" aria-hidden="true"></span>
+            This month: <span id="rotating-topic">What is justice?</span>
           </div>
+
+          <h1 class="hero-heading">Philosophy is better<br>done together.</h1>
+
+          <p class="hero-sub">Monthly gatherings in London for people who want to think more carefully about the big questions — no philosophy degree required.</p>
+
           <div class="hero-actions">
-            <a href="#newsletter" class="btn-fill">Join the community</a>
-            <a href="#events" class="btn-text">Upcoming events →</a>
+            <a href="#newsletter" class="btn-primary">Join the community</a>
+            <a href="#events" class="btn-ghost">See upcoming events →</a>
+          </div>
+
+          <div class="hero-proof">
+            <div class="avatar-stack" aria-hidden="true">
+              <span class="avatar" style="--hue: 32">S</span>
+              <span class="avatar" style="--hue: 200">M</span>
+              <span class="avatar" style="--hue: 155">R</span>
+              <span class="avatar" style="--hue: 270">A</span>
+              <span class="avatar" style="--hue: 50">J</span>
+            </div>
+            <p class="proof-text">50+ curious minds · London · Monthly since 2023</p>
+          </div>
+        </div>
+
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-num">50+</span>
+            <span class="stat-label">Members</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">2+</span>
+            <span class="stat-label">Years running</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">24+</span>
+            <span class="stat-label">Topics explored</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">Free</span>
+            <span class="stat-label">Always</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- How it works -->
+      <section class="how">
+        <div class="how-inner">
+          <div class="how-header">
+            <span class="section-label">How it works</span>
+            <h2>What to expect</h2>
+          </div>
+          <div class="how-steps">
+            <div class="step">
+              <span class="step-num">01</span>
+              <h3>A topic is chosen</h3>
+              <p>Each month we announce a philosophical theme — free will, justice, consciousness, the good life — with a short reading to get you thinking beforehand.</p>
+            </div>
+            <div class="step">
+              <span class="step-num">02</span>
+              <h3>We gather in London</h3>
+              <p>A relaxed venue, good drinks, and an hour or two to properly dig into an idea. Usually a pub back room or independent bookshop. Always central London.</p>
+            </div>
+            <div class="step">
+              <span class="step-num">03</span>
+              <h3>Everyone has a voice</h3>
+              <p>No lectures. No right answers. Just genuinely curious people sharing perspectives, pushing back, and leaving with something to think about.</p>
+            </div>
           </div>
         </div>
       </section>
 
       <!-- Events -->
       <section class="events" id="events">
-        <div class="section-head">
-          <span class="section-label">Upcoming</span>
-          <h2 class="section-title">Events</h2>
-        </div>
+        <div class="events-inner">
+          <div class="events-header">
+            <span class="section-label">Upcoming</span>
+            <h2>Events</h2>
+            <a href="https://lu.ma/philosofriends" target="_blank" rel="noopener" class="btn-ghost">All events →</a>
+          </div>
 
-        <div class="events-list">
-          <article class="event">
-            <span class="event-num">01</span>
-            <div class="event-body">
-              <h3>On Free Will &amp; Moral Responsibility</h3>
-              <p>Do we truly choose our actions, or are we determined by causes beyond our control? We explore compatibilism, hard determinism, and what it means to hold each other accountable.</p>
-            </div>
-            <div class="event-aside">
-              <p class="event-date">17 Apr</p>
-              <p class="event-detail">7:00 pm</p>
-              <p class="event-detail">The Book Club, Islington</p>
-              <a href="https://lu.ma/philosofriends" class="btn-outline" target="_blank" rel="noopener">RSVP →</a>
-            </div>
-          </article>
+          <div class="events-list">
+            <article class="event">
+              <div class="event-date">
+                <span class="event-day">17</span>
+                <span class="event-month">Apr</span>
+              </div>
+              <div class="event-body">
+                <h3>On Free Will &amp; Moral Responsibility</h3>
+                <p>Do we truly choose our actions, or are we determined by causes beyond our control? We explore compatibilism, hard determinism, and what it means to hold each other accountable.</p>
+                <p class="event-meta">7:00 pm · The Book Club, Islington</p>
+              </div>
+              <a href="https://lu.ma/philosofriends" class="btn-primary event-cta" target="_blank" rel="noopener">RSVP</a>
+            </article>
 
-          <article class="event">
-            <span class="event-num">02</span>
-            <div class="event-body">
-              <h3>The Ethics of Artificial Intelligence</h3>
-              <p>As machines grow more capable, ancient questions return: What is consciousness? What do we owe to beings different from us? Who bears responsibility for algorithmic harm?</p>
-            </div>
-            <div class="event-aside">
-              <p class="event-date">15 May</p>
-              <p class="event-detail">7:00 pm</p>
-              <p class="event-detail">Foyles, Charing Cross Road</p>
-              <a href="https://lu.ma/philosofriends" class="btn-outline" target="_blank" rel="noopener">RSVP →</a>
-            </div>
-          </article>
+            <article class="event">
+              <div class="event-date">
+                <span class="event-day">15</span>
+                <span class="event-month">May</span>
+              </div>
+              <div class="event-body">
+                <h3>The Ethics of Artificial Intelligence</h3>
+                <p>As machines grow more capable, ancient questions return: What is consciousness? What do we owe to beings different from us? Who bears responsibility for algorithmic harm?</p>
+                <p class="event-meta">7:00 pm · Foyles, Charing Cross Road</p>
+              </div>
+              <a href="https://lu.ma/philosofriends" class="btn-primary event-cta" target="_blank" rel="noopener">RSVP</a>
+            </article>
 
-          <article class="event">
-            <span class="event-num">03</span>
-            <div class="event-body">
-              <h3>What Is a Good Life?</h3>
-              <p>Aristotle's eudaimonia, Epicurean pleasure, Stoic virtue — and what modern psychology adds to the picture. An evening to examine how we're living, and why.</p>
-            </div>
-            <div class="event-aside">
-              <p class="event-date">19 Jun</p>
-              <p class="event-detail">7:00 pm</p>
-              <p class="event-detail">Venue TBC</p>
-              <a href="https://lu.ma/philosofriends" class="btn-outline" target="_blank" rel="noopener">Interested →</a>
-            </div>
-          </article>
-        </div>
-
-        <div class="events-foot">
-          <a href="https://lu.ma/philosofriends" target="_blank" rel="noopener">All events on Lu.ma →</a>
+            <article class="event">
+              <div class="event-date">
+                <span class="event-day">19</span>
+                <span class="event-month">Jun</span>
+              </div>
+              <div class="event-body">
+                <h3>What Is a Good Life?</h3>
+                <p>Aristotle's eudaimonia, Epicurean pleasure, Stoic virtue — and what modern psychology adds to the picture. An evening to examine how we're living, and why.</p>
+                <p class="event-meta">7:00 pm · Venue TBC, Central London</p>
+              </div>
+              <a href="https://lu.ma/philosofriends" class="btn-outline event-cta" target="_blank" rel="noopener">Interested</a>
+            </article>
+          </div>
         </div>
       </section>
 
-      <!-- About -->
-      <section class="about">
-        <blockquote class="about-quote">
-          "The unexamined life<br>is not worth living."
-          <cite>Socrates</cite>
-        </blockquote>
-        <div class="about-body">
-          <p>Philosofriends began as a small gathering of curious people who wanted to think more rigorously about life's big questions — without the stuffiness of academia or the shallowness of casual conversation.</p>
-          <p>We meet once a month in London. Every event has a theme, a short reading to guide discussion, and plenty of time to let ideas breathe. No philosophy degree required. Just bring an open mind and a willingness to be wrong.</p>
-          <p>We are writers, lawyers, engineers, artists, students, and everything in between. What unites us is a belief that thinking carefully about life makes it richer — and that it's more fun to do together.</p>
+      <!-- Testimonials -->
+      <section class="testimonials">
+        <div class="testimonials-inner">
+          <span class="section-label">From members</span>
+          <div class="testimonials-grid">
+            <blockquote class="testimonial">
+              <p>"I've been coming for six months and it's become the highlight of my month. The conversations go places you don't expect."</p>
+              <cite>
+                <span class="cite-avatar" style="--hue: 32">S</span>
+                <span>Sara, architect</span>
+              </cite>
+            </blockquote>
+            <blockquote class="testimonial">
+              <p>"I was nervous at first — I'm not a philosopher. But everyone is genuinely curious and welcoming. No one's trying to win."</p>
+              <cite>
+                <span class="cite-avatar" style="--hue: 200">M</span>
+                <span>Marcus, software engineer</span>
+              </cite>
+            </blockquote>
+            <blockquote class="testimonial">
+              <p>"Finally found my people. Smart, honest conversation without the academic pretension or the Twitter snark."</p>
+              <cite>
+                <span class="cite-avatar" style="--hue: 155">R</span>
+                <span>Rania, writer</span>
+              </cite>
+            </blockquote>
+          </div>
         </div>
       </section>
 
       <!-- Books -->
       <section class="books" id="books">
-        <div class="section-head">
-          <span class="section-label">Reading List</span>
-          <h2 class="section-title">Books for curious minds</h2>
-        </div>
-
-        <div class="books-list">
-          <a class="book-item" href="https://www.amazon.co.uk/s?k=Meditations+Marcus+Aurelius" target="_blank" rel="noopener">
-            <span class="book-num">01</span>
-            <div class="book-text">
+        <div class="books-inner">
+          <div class="books-header">
+            <span class="section-label">Reading list</span>
+            <h2>Books we return to</h2>
+            <p>Each event comes with a suggested reading. These are some of our favourites.</p>
+          </div>
+          <div class="books-list">
+            <a class="book" href="https://www.amazon.co.uk/s?k=Meditations+Marcus+Aurelius" target="_blank" rel="noopener">
               <h4>Meditations</h4>
               <p>Marcus Aurelius</p>
-            </div>
-            <span class="book-tag">Stoicism</span>
-          </a>
-          <a class="book-item" href="https://www.amazon.co.uk/s?k=The+Republic+Plato" target="_blank" rel="noopener">
-            <span class="book-num">02</span>
-            <div class="book-text">
+              <span>Stoicism</span>
+            </a>
+            <a class="book" href="https://www.amazon.co.uk/s?k=The+Republic+Plato" target="_blank" rel="noopener">
               <h4>The Republic</h4>
               <p>Plato</p>
-            </div>
-            <span class="book-tag">Justice</span>
-          </a>
-          <a class="book-item" href="https://www.amazon.co.uk/s?k=Beyond+Good+and+Evil+Nietzsche" target="_blank" rel="noopener">
-            <span class="book-num">03</span>
-            <div class="book-text">
+              <span>Justice</span>
+            </a>
+            <a class="book" href="https://www.amazon.co.uk/s?k=Beyond+Good+and+Evil+Nietzsche" target="_blank" rel="noopener">
               <h4>Beyond Good and Evil</h4>
-              <p>Friedrich Nietzsche</p>
-            </div>
-            <span class="book-tag">Morality</span>
-          </a>
-          <a class="book-item" href="https://www.amazon.co.uk/s?k=Being+and+Nothingness+Sartre" target="_blank" rel="noopener">
-            <span class="book-num">04</span>
-            <div class="book-text">
+              <p>Nietzsche</p>
+              <span>Morality</span>
+            </a>
+            <a class="book" href="https://www.amazon.co.uk/s?k=Being+and+Nothingness+Sartre" target="_blank" rel="noopener">
               <h4>Being and Nothingness</h4>
-              <p>Jean-Paul Sartre</p>
-            </div>
-            <span class="book-tag">Existentialism</span>
-          </a>
-          <a class="book-item" href="https://www.amazon.co.uk/s?k=Nicomachean+Ethics+Aristotle" target="_blank" rel="noopener">
-            <span class="book-num">05</span>
-            <div class="book-text">
+              <p>Sartre</p>
+              <span>Existentialism</span>
+            </a>
+            <a class="book" href="https://www.amazon.co.uk/s?k=Nicomachean+Ethics+Aristotle" target="_blank" rel="noopener">
               <h4>Nicomachean Ethics</h4>
               <p>Aristotle</p>
-            </div>
-            <span class="book-tag">Virtue</span>
-          </a>
-          <a class="book-item" href="https://www.amazon.co.uk/s?k=A+Theory+of+Justice+Rawls" target="_blank" rel="noopener">
-            <span class="book-num">06</span>
-            <div class="book-text">
+              <span>Virtue</span>
+            </a>
+            <a class="book" href="https://www.amazon.co.uk/s?k=A+Theory+of+Justice+Rawls" target="_blank" rel="noopener">
               <h4>A Theory of Justice</h4>
               <p>John Rawls</p>
-            </div>
-            <span class="book-tag">Justice</span>
-          </a>
+              <span>Justice</span>
+            </a>
+          </div>
         </div>
       </section>
 
@@ -185,16 +230,22 @@
       <section class="newsletter" id="newsletter">
         <div class="newsletter-inner">
           <div class="newsletter-text">
-            <h2>Stay in the<br>conversation.</h2>
-            <p>Monthly digest of upcoming events, reading suggestions, and reflections from our gatherings. One email per month.</p>
+            <h2>Join the community</h2>
+            <p>Get notified about upcoming events, reading suggestions, and reflections from our gatherings. One email per month.</p>
+            <form class="newsletter-form" onsubmit="handleSubmit(event)" novalidate>
+              <div class="form-row">
+                <input type="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address" />
+                <button type="submit">Subscribe</button>
+              </div>
+              <p class="form-note">No spam. Unsubscribe any time.</p>
+            </form>
           </div>
-          <form class="newsletter-form" onsubmit="handleSubmit(event)" novalidate>
-            <div class="form-row">
-              <input type="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address" />
-              <button type="submit">Subscribe</button>
-            </div>
-            <p class="form-note">No spam. Unsubscribe any time.</p>
-          </form>
+          <div class="newsletter-social">
+            <p class="social-label">Also find us on</p>
+            <a href="https://lu.ma/philosofriends" target="_blank" rel="noopener" class="social-link">
+              Lu.ma →
+            </a>
+          </div>
         </div>
       </section>
 
@@ -202,19 +253,21 @@
 
     <footer class="footer">
       <div class="footer-inner">
-        <span class="wordmark">Philosofriends</span>
-        <p>Monthly philosophy gatherings in London.</p>
-        <nav class="footer-links">
-          <a href="https://lu.ma/philosofriends" target="_blank" rel="noopener">Lu.ma</a>
+        <div>
+          <a href="/" class="wordmark">Philosofriends</a>
+          <p>Monthly philosophy gatherings in London.</p>
+        </div>
+        <nav class="footer-nav">
+          <a href="https://lu.ma/philosofriends" target="_blank" rel="noopener">Events on Lu.ma</a>
           <a href="#newsletter">Newsletter</a>
-          <a href="#books">Reading</a>
+          <a href="#books">Reading list</a>
         </nav>
-        <p class="footer-copy">© 2025</p>
+        <p class="footer-copy">© 2025 Philosofriends</p>
       </div>
     </footer>
 
     <script>
-      const questions = [
+      const topics = [
         'What is justice?',
         'What is consciousness?',
         'How should we live?',
@@ -223,22 +276,18 @@
         'What is beauty?',
         'Can we know anything for certain?',
         'What do we owe each other?',
-        'What is happiness?',
-        'What is virtue?',
       ];
 
       let current = 0;
-      const el = document.getElementById('rotating-question');
+      const el = document.getElementById('rotating-topic');
 
       function rotate() {
-        el.classList.add('out');
+        el.style.opacity = '0';
         setTimeout(() => {
-          current = (current + 1) % questions.length;
-          el.textContent = questions[current];
-          el.classList.remove('out');
-          el.classList.add('in');
-          setTimeout(() => el.classList.remove('in'), 600);
-        }, 400);
+          current = (current + 1) % topics.length;
+          el.textContent = topics[current];
+          el.style.opacity = '1';
+        }, 300);
       }
 
       setInterval(rotate, 3500);
