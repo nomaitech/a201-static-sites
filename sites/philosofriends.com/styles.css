@@ -151,6 +151,28 @@ body {
   padding: var(--space-2xl) var(--pad) 0;
 }
 
+.hero-emojis {
+  position: relative;
+  height: 80px;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.emoji {
+  position: absolute;
+  left: var(--x);
+  font-size: var(--size);
+  line-height: 1;
+  animation: bounce 2.2s cubic-bezier(0.36, 0, 0.66, -0.56) var(--delay) infinite;
+  will-change: transform;
+  user-select: none;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-28px); }
+}
+
 .hero-inner {
   padding-bottom: var(--space-xl);
   border-bottom: 1px solid var(--border);
