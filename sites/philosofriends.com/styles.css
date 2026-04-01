@@ -491,7 +491,8 @@ body {
 }
 
 .format-card:nth-child(3),
-.format-card:nth-child(4) {
+.format-card:nth-child(4),
+.format-card:nth-child(5) {
   border-bottom: 1px solid var(--border);
 }
 
