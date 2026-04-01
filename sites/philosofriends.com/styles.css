@@ -248,39 +248,6 @@ body {
   color: var(--gray);
 }
 
-/* Stats bar */
-.hero-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border-top: 1px solid var(--border);
-  margin-top: 0;
-}
-
-.stat {
-  padding: var(--space-md) var(--space-lg);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-
-.stat:last-child { border-right: none; }
-
-.stat-num {
-  font-family: var(--font-display);
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  color: var(--black);
-}
-
-.stat-label {
-  font-size: 0.75rem;
-  color: var(--gray);
-  font-weight: 400;
-  letter-spacing: 0.04em;
-}
 
 /* ─── How it works ───────────────────────────────────────────────── */
 .how {
@@ -738,14 +705,6 @@ body {
 @media (max-width: 900px) {
   .nav nav { display: none; }
 
-  .hero-stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .stat:nth-child(2) { border-right: none; }
-  .stat:nth-child(3) { border-top: 1px solid var(--border); }
-  .stat:nth-child(4) { border-top: 1px solid var(--border); }
-
   .how-steps {
     grid-template-columns: 1fr;
     gap: var(--space-lg);
@@ -798,8 +757,6 @@ body {
 }
 
 @media (max-width: 480px) {
-  .hero-stats { grid-template-columns: repeat(2, 1fr); }
-
   .form-row {
     flex-direction: column;
   }
