@@ -446,7 +446,7 @@ body {
 
 /* ─── Formats ────────────────────────────────────────────────────── */
 .formats {
-  background: var(--bg-alt);
+  background: var(--black);
   border-bottom: 1px solid var(--border);
 }
 
@@ -454,18 +454,28 @@ body {
   max-width: var(--max);
   margin: 0 auto;
   padding: var(--space-2xl) var(--pad);
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--space-2xl);
+  align-items: start;
 }
 
 .formats-header {
-  margin-bottom: var(--space-xl);
+  position: sticky;
+  top: calc(62px + var(--space-lg));
+}
+
+.formats-header .section-label {
+  color: oklch(65% 0.12 32);
 }
 
 .formats-header h2 {
   font-family: var(--font-display);
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-size: clamp(1.6rem, 2.5vw, 2.2rem);
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.1;
+  color: white;
 }
 
 .formats-grid {
@@ -475,36 +485,38 @@ body {
 
 .format-card {
   display: grid;
-  grid-template-columns: 48px 1fr 1fr;
-  gap: var(--space-lg);
+  grid-template-columns: 44px 1fr;
+  gap: var(--space-md) var(--space-lg);
   align-items: start;
-  padding: var(--space-lg) 0;
-  border-bottom: 1px solid var(--border);
+  padding: var(--space-xl) 0;
+  border-bottom: 1px solid oklch(20% 0.01 55);
 }
 
 .format-card:first-child {
-  border-top: 1px solid var(--border);
+  padding-top: 0;
 }
 
 .format-icon {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   line-height: 1;
   padding-top: 2px;
 }
 
 .format-card h3 {
   font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-size: clamp(1.1rem, 1.8vw, 1.4rem);
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.2;
+  color: white;
+  margin-bottom: 0.4rem;
 }
 
 .format-card p {
   font-size: 0.88rem;
-  color: var(--gray);
-  line-height: 1.65;
-  max-width: 52ch;
+  color: oklch(62% 0.005 55);
+  line-height: 1.7;
+  grid-column: 2;
 }
 
 /* ─── Testimonials ───────────────────────────────────────────────── */
@@ -951,13 +963,13 @@ body {
     grid-template-columns: 1fr;
   }
 
-  .format-card {
-    grid-template-columns: 40px 1fr;
-    grid-template-rows: auto auto;
+  .formats-inner {
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
   }
 
-  .format-card p {
-    grid-column: 2;
+  .formats-header {
+    position: static;
   }
 
   .books-list {
