@@ -1,246 +1,1722 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>NomaiTech — The AI School for Non-Technical Builders</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Teko:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div class="backdrop">
-      <div class="orb orb-one"></div>
-      <div class="orb orb-two"></div>
-      <div class="orb orb-three"></div>
-      <div class="grid-glow"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NomaiTech — Build Products with AI. No Technical Skills Required.</title>
+    <meta name="description" content="The school for non-technical founders, creators, and entrepreneurs. Learn to build real products using AI — no coding experience needed.">
+    <link rel="canonical" href="https://nomaitech.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="NomaiTech — Build Products with AI. No Technical Skills Required.">
+    <meta property="og:description" content="The school for non-technical founders, creators, and entrepreneurs. Learn to build real products using AI — no coding experience needed.">
+    <meta property="og:url" content="https://nomaitech.com/">
+    <meta property="og:site_name" content="NomaiTech">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="NomaiTech — Build Products with AI. No Technical Skills Required.">
+    <meta name="twitter:description" content="The school for non-technical founders, creators, and entrepreneurs. Learn to build real products using AI — no coding experience needed.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-green: #00ff41;
+            --hot-pink: #ff006e;
+            --electric-blue: #3a86ff;
+            --bright-yellow: #ffbe0b;
+            --acid-orange: #ff5400;
+            --deep-purple: #7b2ff7;
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --text-primary: #f0f0f0;
+            --text-muted: #8888aa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        ::selection { background: var(--hot-pink); color: var(--bg-dark); }
+
+        /* Noise overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Scanlines */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        /* ══════════════════════════════════════════
+           TICKER
+        ══════════════════════════════════════════ */
+        .ticker {
+            background: var(--hot-pink);
+            color: var(--bg-dark);
+            padding: 8px 0;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            z-index: 100;
+        }
+
+        .ticker-inner {
+            display: inline-block;
+            animation: ticker 25s linear infinite;
+        }
+
+        .ticker-inner span { padding: 0 2rem; }
+        .ticker-inner span::after { content: '✦'; padding-left: 2rem; }
+
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* ══════════════════════════════════════════
+           NAV
+        ══════════════════════════════════════════ */
+        nav {
+            position: fixed;
+            top: 32px;
+            left: 0; right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            mix-blend-mode: difference;
+        }
+
+        .nav-logo {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: 1.4rem;
+            color: white;
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-logo .blink { animation: blink 1s step-end infinite; }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--neon-green);
+            text-shadow: 0 0 20px var(--neon-green);
+        }
+
+        /* ══════════════════════════════════════════
+           HERO
+        ══════════════════════════════════════════ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 6rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+        }
+
+        .hero-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.4;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .hero-blob-1 { width: 500px; height: 500px; background: var(--deep-purple); top: -10%; right: -5%; animation-delay: 0s; }
+        .hero-blob-2 { width: 400px; height: 400px; background: var(--electric-blue); bottom: -5%; left: -5%; animation-delay: -3s; }
+        .hero-blob-3 { width: 300px; height: 300px; background: var(--neon-green); top: 40%; left: 50%; animation-delay: -5s; opacity: 0.2; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -20px) scale(1.05); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+
+        .hero-pretitle {
+            font-size: 0.85rem;
+            color: var(--neon-green);
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .hero-title {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: clamp(3rem, 10vw, 8rem);
+            line-height: 0.95;
+            letter-spacing: -0.03em;
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .hero-title .line-1 {
+            display: block;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-primary) 60%, var(--electric-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-title .line-2 {
+            display: block;
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-weight: 400;
+            color: var(--bright-yellow);
+            -webkit-text-fill-color: var(--bright-yellow);
+            font-size: 0.6em;
+            margin-top: 0.1em;
+        }
+
+        .hero-title .line-3 {
+            display: block;
+            background: linear-gradient(135deg, var(--neon-green), var(--electric-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-sub {
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            color: var(--text-muted);
+            max-width: 540px;
+            margin: 2rem auto;
+            line-height: 1.7;
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        .hero-sub strong { color: var(--text-primary); }
+
+        .hero-ctas {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 0.8s ease-out 0.8s both;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2.5rem;
+            background: var(--neon-green);
+            color: var(--bg-dark);
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+        }
+
+        .btn-primary:hover {
+            background: var(--bright-yellow);
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0 var(--neon-green);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2.5rem;
+            background: transparent;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            text-decoration: none;
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--hot-pink);
+            color: var(--hot-pink);
+            box-shadow: 0 0 30px rgba(255, 0, 110, 0.15);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin-top: 4rem;
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 0.8s ease-out 1s both;
+        }
+
+        .hero-stat { text-align: center; }
+
+        .hero-stat-num {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: 2rem;
+            color: var(--bright-yellow);
+        }
+
+        .hero-stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-top: 0.25rem;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .floating-emoji {
+            position: absolute;
+            font-size: 2rem;
+            animation: floatEmoji 6s ease-in-out infinite;
+            z-index: 1;
+            opacity: 0.6;
+            user-select: none;
+        }
+
+        @keyframes floatEmoji {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(10deg); }
+            75% { transform: translateY(15px) rotate(-5deg); }
+        }
+
+        /* ══════════════════════════════════════════
+           HORIZONTAL SCROLLER
+        ══════════════════════════════════════════ */
+        .scroller-section {
+            padding: 0;
+            overflow: hidden;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .scroller-label {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: var(--text-muted);
+            padding: 2rem 2rem 0;
+        }
+
+        .scroller-track {
+            display: flex;
+            animation: scrollTrack 30s linear infinite;
+            padding: 1.5rem 0 2rem;
+        }
+
+        .scroller-track:hover { animation-play-state: paused; }
+
+        .scroller-item {
+            flex-shrink: 0;
+            padding: 0 1.5rem;
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: clamp(2rem, 5vw, 4rem);
+            white-space: nowrap;
+            color: rgba(255,255,255,0.08);
+            transition: color 0.3s;
+            cursor: default;
+        }
+
+        .scroller-item:hover {
+            color: var(--electric-blue);
+            text-shadow: 0 0 40px rgba(58, 134, 255, 0.3);
+        }
+
+        .scroller-item .accent { color: var(--neon-green); opacity: 0.4; }
+
+        @keyframes scrollTrack {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* ══════════════════════════════════════════
+           BADGE SECTION
+        ══════════════════════════════════════════ */
+        .vibecoded-section {
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+
+        .vibecoded-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .vibecoded-question {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+
+        .vibecoded-answer {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: clamp(2rem, 6vw, 4.5rem);
+            background: linear-gradient(135deg, var(--neon-green), var(--bright-yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+
+        /* ══════════════════════════════════════════
+           PERSONA SECTIONS (3 PATHS)
+        ══════════════════════════════════════════ */
+        .persona-sections {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem 2rem;
+        }
+
+        .persona-sections-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .persona-sections-header h2 {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 0.5rem;
+        }
+
+        .persona-sections-header h2 em {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-weight: 400;
+            color: var(--bright-yellow);
+        }
+
+        .persona-sections-header p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .persona-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .persona-card:hover {
+            border-color: rgba(255,255,255,0.12);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .persona-card-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 300px;
+            overflow: hidden;
+        }
+
+        .persona-card-visual .big-emoji {
+            font-size: 5rem;
+            z-index: 2;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .persona-card.founder-card .persona-card-visual {
+            background: linear-gradient(135deg, rgba(0,255,65,0.08), rgba(58,134,255,0.06));
+            background-image:
+                radial-gradient(circle at 30% 50%, rgba(0,255,65,0.15) 0%, transparent 60%),
+                radial-gradient(circle at 70% 50%, rgba(58,134,255,0.1) 0%, transparent 60%);
+        }
+
+        .persona-card.creator-card .persona-card-visual {
+            background: linear-gradient(135deg, rgba(255,0,110,0.08), rgba(123,47,247,0.06));
+            background-image:
+                radial-gradient(circle at 30% 50%, rgba(255,0,110,0.15) 0%, transparent 60%),
+                radial-gradient(circle at 70% 50%, rgba(123,47,247,0.1) 0%, transparent 60%);
+        }
+
+        .persona-card.professional-card .persona-card-visual {
+            background: linear-gradient(135deg, rgba(58,134,255,0.08), rgba(123,47,247,0.06));
+            background-image:
+                radial-gradient(circle at 30% 50%, rgba(58,134,255,0.15) 0%, transparent 60%),
+                radial-gradient(circle at 70% 50%, rgba(123,47,247,0.1) 0%, transparent 60%);
+        }
+
+        .persona-card-content {
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .persona-card-tag {
+            display: inline-block;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            padding: 0.3rem 0.8rem;
+            border: 1px solid;
+            margin-bottom: 1.25rem;
+            width: fit-content;
+        }
+
+        .founder-card .persona-card-tag { color: var(--neon-green); border-color: var(--neon-green); }
+        .creator-card .persona-card-tag { color: var(--hot-pink); border-color: var(--hot-pink); }
+        .professional-card .persona-card-tag { color: var(--electric-blue); border-color: var(--electric-blue); }
+
+        .persona-card-content h3 {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .persona-card-content h3 em {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .founder-card h3 em { color: var(--neon-green); }
+        .creator-card h3 em { color: var(--hot-pink); }
+        .professional-card h3 em { color: var(--electric-blue); }
+
+        .persona-card-content p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .persona-card-content .persona-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.85rem 2rem;
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.3s;
+            width: fit-content;
+            clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+        }
+
+        .founder-card .persona-cta { background: var(--neon-green); color: var(--bg-dark); }
+        .founder-card .persona-cta:hover { background: var(--bright-yellow); transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--neon-green); }
+        .creator-card .persona-cta { background: var(--hot-pink); color: white; }
+        .creator-card .persona-cta:hover { background: var(--deep-purple); transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--hot-pink); }
+        .professional-card .persona-cta { background: var(--electric-blue); color: white; }
+        .professional-card .persona-cta:hover { background: var(--deep-purple); transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--electric-blue); }
+
+        .persona-card:nth-child(even) { direction: rtl; }
+        .persona-card:nth-child(even) > * { direction: ltr; }
+
+        /* ══════════════════════════════════════════
+           ABOUT
+        ══════════════════════════════════════════ */
+        .about {
+            padding: 8rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+            padding: 0.4rem 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .about-left h2 {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-left h2 em {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-weight: 400;
+            color: var(--bright-yellow);
+        }
+
+        .about-left p {
+            color: var(--text-muted);
+            line-height: 1.8;
+            font-size: 0.9rem;
+        }
+
+        .about-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .about-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.06);
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s;
+        }
+
+        .about-card:hover {
+            border-color: var(--electric-blue);
+            transform: translateX(8px);
+        }
+
+        .about-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 3px; height: 100%;
+            background: var(--neon-green);
+            transform: scaleY(0);
+            transition: transform 0.4s;
+        }
+
+        .about-card:hover::before { transform: scaleY(1); }
+
+        .about-card-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+
+        .about-card h3 {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .about-card p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* ══════════════════════════════════════════
+           MANIFESTO TAPE
+        ══════════════════════════════════════════ */
+        .manifesto-tape {
+            background: var(--bright-yellow);
+            color: var(--bg-dark);
+            padding: 1.5rem 2rem;
+            transform: rotate(-1deg);
+            margin: -1rem -2rem;
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+        }
+
+        .manifesto-tape-inner {
+            display: flex;
+            animation: ticker 20s linear infinite;
+            white-space: nowrap;
+        }
+
+        .manifesto-tape span {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: 1rem;
+            text-transform: uppercase;
+            padding: 0 2rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* ══════════════════════════════════════════
+           SHOWCASE
+        ══════════════════════════════════════════ */
+        .showcase {
+            padding: 6rem 2rem 8rem;
+            position: relative;
+        }
+
+        .showcase-header {
+            max-width: 1200px;
+            margin: 0 auto 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+        }
+
+        .showcase-header h2 {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: clamp(2rem, 4vw, 3rem);
+        }
+
+        .showcase-header p { color: var(--text-muted); font-size: 0.8rem; }
+
+        .showcase-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .showcase-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.06);
+            overflow: hidden;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+        }
+
+        .showcase-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255,255,255,0.15);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .showcase-card-preview {
+            aspect-ratio: 16/10;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .showcase-card-preview-inner {
+            width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+        }
+
+        .preview-bastion {
+            background: linear-gradient(135deg, #0d0d1a, #1a1a3e);
+            background-image: radial-gradient(circle at 50% 50%, rgba(58,134,255,0.2) 0%, transparent 60%);
+        }
+        .preview-bastion::after { content: '🏰📊'; font-size: 3rem; position: absolute; }
+
+        .preview-dream {
+            background: linear-gradient(135deg, #1a0a2e, #2d1050);
+            background-image: radial-gradient(circle at 40% 50%, rgba(123,47,247,0.3) 0%, transparent 60%);
+        }
+        .preview-dream::after { content: '🌙✨'; font-size: 3.5rem; position: absolute; animation: floatEmoji 4s ease-in-out infinite; }
+
+        .preview-phonetic {
+            background: linear-gradient(135deg, #f6f1e9, #fffaf2);
+        }
+        .preview-phonetic::after { content: '🗣️📞'; font-size: 3.5rem; position: absolute; }
+
+        .preview-svg {
+            background: linear-gradient(135deg, #0a0a0f, #1a1a2e);
+            background-image:
+                radial-gradient(circle at 20% 80%, var(--neon-green) 0%, transparent 40%),
+                radial-gradient(circle at 80% 20%, var(--hot-pink) 0%, transparent 40%);
+            opacity: 0.9;
+        }
+        .preview-svg::after { content: '🖼️⚡'; font-size: 3rem; position: absolute; }
+
+        .preview-linkedin {
+            background: linear-gradient(135deg, #0077b5, #00a0dc);
+        }
+        .preview-linkedin::after { content: '💼🤡'; font-size: 3.5rem; position: absolute; }
+
+        .preview-babyeta {
+            background: linear-gradient(135deg, #fff8ee, #ffe1be);
+        }
+        .preview-babyeta::after { content: '👶⏳'; font-size: 3.5rem; position: absolute; animation: floatEmoji 4s ease-in-out infinite; }
+
+        .preview-convo {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            background-image:
+                repeating-linear-gradient(90deg, rgba(58,134,255,0.1) 0px, rgba(58,134,255,0.1) 1px, transparent 1px, transparent 40px),
+                repeating-linear-gradient(0deg, rgba(58,134,255,0.05) 0px, rgba(58,134,255,0.05) 1px, transparent 1px, transparent 30px);
+        }
+        .preview-convo::after { content: '💬📊'; font-size: 3rem; position: absolute; }
+
+        .preview-yours {
+            background: linear-gradient(135deg, #0a0a0f, #1a0030);
+            background-image:
+                radial-gradient(circle at 30% 50%, var(--deep-purple) 0%, transparent 50%),
+                radial-gradient(circle at 70% 50%, var(--neon-green) 0%, transparent 50%);
+        }
+        .preview-yours::after { content: '💡🚀'; font-size: 3rem; position: absolute; animation: float 6s ease-in-out infinite; }
+
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .showcase-card-info { padding: 1.25rem; }
+
+        .showcase-card-info h3 {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .showcase-card-info .meta {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .showcase-card-info .author { color: var(--electric-blue); }
+
+        .showcase-card-link {
+            color: inherit;
+            text-decoration: none;
+            display: block;
+        }
+
+        .showcase-card-tag {
+            position: absolute;
+            top: 0.75rem; right: 0.75rem;
+            background: var(--bg-dark);
+            color: var(--neon-green);
+            font-size: 0.6rem;
+            padding: 0.25rem 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            z-index: 2;
+        }
+
+        /* ══════════════════════════════════════════
+           STATS HIGHLIGHT
+        ══════════════════════════════════════════ */
+        .highlight {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .highlight-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.06);
+            padding: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .highlight-grid::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            background: linear-gradient(180deg, var(--neon-green), var(--electric-blue));
+        }
+
+        .highlight-grid h2 {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .highlight-grid h2 em {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-weight: 400;
+            color: var(--bright-yellow);
+        }
+
+        .highlight-grid > div > p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            line-height: 1.7;
+        }
+
+        .stats {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .stat { }
+
+        .stat-number {
+            display: block;
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: clamp(2rem, 4vw, 3rem);
+            color: var(--bright-yellow);
+            line-height: 1;
+        }
+
+        .stat-label {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-top: 0.25rem;
+        }
+
+        /* ══════════════════════════════════════════
+           BIG CTA
+        ══════════════════════════════════════════ */
+        .cta-section {
+            padding: 8rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, rgba(58, 134, 255, 0.08) 0%, transparent 70%);
+        }
+
+        .cta-giant-text {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: clamp(2.5rem, 8vw, 7rem);
+            line-height: 1;
+            position: relative;
+            z-index: 2;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-giant-text .stroke-text {
+            -webkit-text-stroke: 2px var(--text-primary);
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cta-giant-text .fill-text {
+            background: linear-gradient(135deg, var(--neon-green), var(--electric-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cta-description {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            max-width: 480px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-form {
+            display: flex;
+            gap: 0;
+            max-width: 480px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-form input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-right: none;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .cta-form input::placeholder { color: var(--text-muted); }
+        .cta-form input:focus { border-color: var(--neon-green); }
+
+        .cta-form button {
+            padding: 1rem 2rem;
+            background: var(--neon-green);
+            color: var(--bg-dark);
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .cta-form button:hover { background: var(--bright-yellow); }
+
+        .cta-note {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ══════════════════════════════════════════
+           FOOTER
+        ══════════════════════════════════════════ */
+        footer {
+            padding: 4rem 2rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .footer-brand {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand-desc {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            line-height: 1.6;
+            max-width: 280px;
+        }
+
+        .footer-col h4 {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+
+        .footer-col ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .footer-col a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s;
+        }
+
+        .footer-col a:hover { color: var(--neon-green); }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 0;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .footer-bottom a { color: var(--hot-pink); text-decoration: none; }
+
+        /* ══════════════════════════════════════════
+           CURSOR TRAIL
+        ══════════════════════════════════════════ */
+        .cursor-dot {
+            position: fixed;
+            width: 8px; height: 8px;
+            background: var(--neon-green);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            mix-blend-mode: screen;
+            transition: opacity 0.3s;
+        }
+
+        /* ══════════════════════════════════════════
+           MOBILE MENU
+        ══════════════════════════════════════════ */
+        .nav-hamburger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .nav-hamburger span {
+            display: block;
+            width: 24px; height: 2px;
+            background: white;
+            margin: 5px 0;
+            transition: all 0.3s;
+        }
+
+        .nav-hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .nav-hamburger.active span:nth-child(2) { opacity: 0; }
+        .nav-hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10, 10, 15, 0.97);
+            z-index: 999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .mobile-menu.open { display: flex; }
+
+        .mobile-menu a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            transition: color 0.2s;
+        }
+
+        .mobile-menu a:hover { color: var(--neon-green); }
+
+        /* ══════════════════════════════════════════
+           SCROLL REVEAL
+        ══════════════════════════════════════════ */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -100%; left: 0;
+            background: var(--neon-green);
+            color: var(--bg-dark);
+            padding: 0.5rem 1rem;
+            z-index: 10000;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .skip-link:focus { top: 0; }
+
+        /* ══════════════════════════════════════════
+           RESPONSIVE
+        ══════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .nav-hamburger { display: block; }
+            .nav-links { display: none; }
+
+            .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .showcase-grid { grid-template-columns: 1fr; }
+            .highlight-grid { grid-template-columns: 1fr; padding: 2rem; }
+            .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
+
+            .persona-card { grid-template-columns: 1fr; }
+            .persona-card:nth-child(even) { direction: ltr; }
+            .persona-card-visual { min-height: 200px; }
+            .persona-card-content { padding: 2rem; }
+
+            .hero-stats { gap: 1.5rem; }
+
+            .cta-form { flex-direction: column; }
+            .cta-form input { border-right: 1px solid rgba(255,255,255,0.1); border-bottom: none; }
+
+            .manifesto-tape { transform: rotate(-0.5deg); }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- TICKER -->
+    <div class="ticker">
+        <div class="ticker-inner">
+            <span>Now enrolling</span>
+            <span>Build your first product this weekend</span>
+            <span>No CS degree required</span>
+            <span>AI is your co-founder</span>
+            <span>Ship without a dev team</span>
+            <span>Ideas become products here</span>
+            <span>Now enrolling</span>
+            <span>Build your first product this weekend</span>
+            <span>No CS degree required</span>
+            <span>AI is your co-founder</span>
+            <span>Ship without a dev team</span>
+            <span>Ideas become products here</span>
+        </div>
     </div>
 
-    <header class="site-header">
-      <nav class="nav">
-        <div class="logo">NomaiTech</div>
-        <div class="nav-links">
-          <a href="#how">How it works</a>
-          <a href="#services">Curriculum</a>
-          <a href="#portfolio">Student work</a>
-        </div>
-        <a class="btn primary" href="#contact">Join the school</a>
-      </nav>
+    <!-- NAV -->
+    <nav>
+        <a href="/" class="nav-logo">NomaiTech<span class="blink">_</span></a>
+        <ul class="nav-links">
+            <li><a href="#how">How it works</a></li>
+            <li><a href="#about">Curriculum</a></li>
+            <li><a href="#showcase">Builds</a></li>
+            <li><a href="#join">Join</a></li>
+        </ul>
+        <button class="nav-hamburger" aria-label="Toggle menu" onclick="toggleMobileMenu()">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
 
-      <section class="hero">
-        <div class="hero-copy">
-          <p class="eyebrow">AI school for founders, creators &amp; entrepreneurs</p>
-          <h1>Build your own products with AI. No technical skills needed.</h1>
-          <p class="lead">
-            NomaiTech teaches non-technical people to use AI to build real products —
-            websites, tools, and apps — from idea to launch. No coding. No co-founder.
-            Just you and the right AI workflows.
-          </p>
-          <div class="hero-actions">
-            <a class="btn primary" href="#portfolio">See what students built</a>
-            <a class="btn ghost" href="#contact">Join the school</a>
-          </div>
-          <div class="hero-tags">
-            <span>No coding required</span>
-            <span>Ship in a weekend</span>
-            <span>AI-powered workflows</span>
-          </div>
-        </div>
-        <div class="hero-panel">
-          <div class="preview-card">
-            <div class="preview-header">
-              <span class="status-dot"></span>
-              <span>NomaiTech Learning Dashboard</span>
-            </div>
-            <div class="preview-body">
-              <div class="preview-line">
-                <span class="pill">Module 1</span>
-                <span>Prompt to product — in progress</span>
-              </div>
-              <div class="preview-line">
-                <span class="pill">Module 2</span>
-                <span>AI workflows — unlocked</span>
-              </div>
-              <div class="preview-line">
-                <span class="pill">Project</span>
-                <span>Your first launch — 3 days away</span>
-              </div>
-            </div>
-            <div class="preview-footer">
-              <img src="hero-illustration.svg" alt="Product preview" />
-            </div>
-          </div>
-        </div>
-      </section>
-    </header>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#how" onclick="toggleMobileMenu()">How it works</a>
+        <a href="#about" onclick="toggleMobileMenu()">Curriculum</a>
+        <a href="#showcase" onclick="toggleMobileMenu()">Builds</a>
+        <a href="#join" onclick="toggleMobileMenu()">Join</a>
+    </div>
 
-    <main>
-      <section id="how" class="section">
-        <div class="section-header">
-          <h2>How it works</h2>
-          <p>Three steps from "I have an idea" to "my product is live" — no technical background required.</p>
-        </div>
-        <div class="steps-grid">
-          <article class="step-card">
-            <span class="step-number">01</span>
-            <h3>Describe your idea</h3>
-            <p>Tell us what you want to build. We help you turn your vision into a clear AI workflow blueprint you can actually execute.</p>
-          </article>
-          <article class="step-card">
-            <span class="step-number">02</span>
-            <h3>Learn the AI workflow</h3>
-            <p>Follow step-by-step prompting guides that take you from blank page to working product — no code, no jargon, no dev team.</p>
-          </article>
-          <article class="step-card">
-            <span class="step-number">03</span>
-            <h3>Ship it yourself</h3>
-            <p>Deploy your product live. We teach you to own the whole process — so you can build the next one even faster.</p>
-          </article>
-        </div>
-      </section>
+    <!-- HERO -->
+    <section class="hero" id="main-content">
+        <div class="hero-bg-grid"></div>
+        <div class="hero-blob hero-blob-1"></div>
+        <div class="hero-blob hero-blob-2"></div>
+        <div class="hero-blob hero-blob-3"></div>
 
-      <section class="section tutorial" id="services">
-        <div class="section-header">
-          <h2>What you learn at NomaiTech</h2>
-          <p>Practical, hands-on courses designed to get you from idea to launched product.</p>
+        <div class="floating-emoji" style="top:15%; left:8%; animation-delay:-1s;">💡</div>
+        <div class="floating-emoji" style="top:25%; right:12%; animation-delay:-3s;">🚀</div>
+        <div class="floating-emoji" style="bottom:20%; left:15%; animation-delay:-2s;">⚡</div>
+        <div class="floating-emoji" style="bottom:30%; right:8%; animation-delay:-4s;">🤖</div>
+        <div class="floating-emoji" style="top:60%; left:5%; animation-delay:-5s;">✨</div>
+
+        <div class="hero-pretitle">// The school for non-technical builders</div>
+
+        <h1 class="hero-title">
+            <span class="line-1">Build your own</span>
+            <span class="line-2">products with AI.</span>
+            <span class="line-3">No code required.</span>
+        </h1>
+
+        <p class="hero-sub">
+            NomaiTech teaches <strong>non-technical founders, creators, and entrepreneurs</strong> to build real products using AI — websites, tools, and apps — from idea to launch. No dev team. No co-founder. Just you.
+        </p>
+
+        <div class="hero-ctas">
+            <a href="#join" class="btn-primary">Start building →</a>
+            <a href="#showcase" class="btn-secondary">See what's been built ↓</a>
         </div>
-        <div class="tutorial-grid">
-          <div class="tutorial-card">
-            <div class="tutorial-screen">
-              <h3>AI Product Blueprint</h3>
-              <p>Our intensive programme for non-technical founders. Idea to live product in four weeks.</p>
-              <div class="tutorial-stats">
-                <div>
-                  <span class="stat-number">4 wks</span>
-                  <span class="stat-label">Programme length</span>
+
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="hero-stat-num">48h</div>
+                <div class="hero-stat-label">To first product</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-num">10x</div>
+                <div class="hero-stat-label">Faster than hiring a dev</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-num">0</div>
+                <div class="hero-stat-label">Lines of code written</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HORIZONTAL SCROLLER -->
+    <section class="scroller-section">
+        <div class="scroller-label">What you learn ↓</div>
+        <div class="scroller-track">
+            <div class="scroller-item">Prompt engineering <span class="accent">/</span></div>
+            <div class="scroller-item">AI workflows <span class="accent">/</span></div>
+            <div class="scroller-item">No-code building <span class="accent">/</span></div>
+            <div class="scroller-item">Ship in a weekend <span class="accent">/</span></div>
+            <div class="scroller-item">Idea to product <span class="accent">/</span></div>
+            <div class="scroller-item">AI tooling <span class="accent">/</span></div>
+            <div class="scroller-item">Product validation <span class="accent">/</span></div>
+            <div class="scroller-item">Launch without code <span class="accent">/</span></div>
+            <div class="scroller-item">Prompt engineering <span class="accent">/</span></div>
+            <div class="scroller-item">AI workflows <span class="accent">/</span></div>
+            <div class="scroller-item">No-code building <span class="accent">/</span></div>
+            <div class="scroller-item">Ship in a weekend <span class="accent">/</span></div>
+            <div class="scroller-item">Idea to product <span class="accent">/</span></div>
+            <div class="scroller-item">AI tooling <span class="accent">/</span></div>
+            <div class="scroller-item">Product validation <span class="accent">/</span></div>
+            <div class="scroller-item">Launch without code <span class="accent">/</span></div>
+        </div>
+    </section>
+
+    <!-- BADGE -->
+    <section class="vibecoded-section">
+        <div class="vibecoded-inner reveal">
+            <span class="vibecoded-question">Did we build this with AI?</span>
+            <span class="vibecoded-answer">Every single line.</span>
+        </div>
+    </section>
+
+    <!-- THREE PATHS (HOW IT WORKS) -->
+    <section class="persona-sections" id="how">
+        <div class="persona-sections-header reveal">
+            <h2>Three paths to your first <em>product.</em></h2>
+            <p>Pick your starting point. Leave with something live.</p>
+        </div>
+
+        <div class="persona-card founder-card reveal">
+            <div class="persona-card-visual">
+                <span class="big-emoji">⚡</span>
+            </div>
+            <div class="persona-card-content">
+                <div class="persona-card-tag">Build your startup</div>
+                <h3>For <em>Founders</em></h3>
+                <p>You have an idea. You need to build it. We teach you the exact AI workflow to go from concept to working product — no technical co-founder, no agency, no waiting. Idea to launch in a weekend.</p>
+                <a href="#join" class="persona-cta">Start the founder path &rarr;</a>
+            </div>
+        </div>
+
+        <div class="persona-card creator-card reveal">
+            <div class="persona-card-visual">
+                <span class="big-emoji">🎨</span>
+            </div>
+            <div class="persona-card-content">
+                <div class="persona-card-tag">Grow your audience</div>
+                <h3>For <em>Creators</em></h3>
+                <p>Build the tools, newsletters, and digital products your audience will actually pay for. Turn your expertise into AI-powered products — without needing a developer to execute your vision.</p>
+                <a href="#join" class="persona-cta">Start the creator path &rarr;</a>
+            </div>
+        </div>
+
+        <div class="persona-card professional-card reveal">
+            <div class="persona-card-visual">
+                <span class="big-emoji">🚀</span>
+            </div>
+            <div class="persona-card-content">
+                <div class="persona-card-tag">Automate your work</div>
+                <h3>For <em>Professionals</em></h3>
+                <p>Stop waiting for the dev team. Build your own internal tools, automations, and client-facing products — and deliver them in a day, not a quarter. AI makes you the most dangerous person in the room.</p>
+                <a href="#join" class="persona-cta">Start the pro path &rarr;</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="about" id="about">
+        <div class="section-tag reveal">// What is NomaiTech</div>
+        <div class="about-grid">
+            <div class="about-left reveal">
+                <h2>Not your average<br><em>coding bootcamp.</em></h2>
+                <p>
+                    NomaiTech is a school for people with ideas but without technical skills. We don't teach you to code. We teach you to <em>build</em> — using AI as your engineering team, designer, and product manager.
+                    <br><br>
+                    Every week, students ship real products. Not toy projects. Not tutorials. Actual things that work and live on the internet. You're next.
+                </p>
+            </div>
+            <div class="about-cards">
+                <div class="about-card reveal">
+                    <div class="about-card-icon">⚡</div>
+                    <h3>Weekly Build Challenges</h3>
+                    <p>A new product prompt every week. Build something real in days, not months. No prior experience needed — just an idea and the will to ship.</p>
                 </div>
-                <div>
-                  <span class="stat-number">0</span>
-                  <span class="stat-label">Lines of code</span>
+                <div class="about-card reveal">
+                    <div class="about-card-icon">🧠</div>
+                    <h3>AI Workflow Mastery</h3>
+                    <p>From prompting to deploying. Learn the exact workflows our students use to build products that people actually pay for and use.</p>
                 </div>
-              </div>
+                <div class="about-card reveal">
+                    <div class="about-card-icon">👾</div>
+                    <h3>Community of Builders</h3>
+                    <p>Non-technical founders and creators who share wins, ask questions, and build together. No gatekeeping. No jargon.</p>
+                </div>
+                <div class="about-card reveal">
+                    <div class="about-card-icon">🔧</div>
+                    <h3>Hands-On Workshops</h3>
+                    <p>Live build sessions where you work on your own idea in real time. Come with a concept, leave with a working product.</p>
+                </div>
             </div>
-          </div>
-          <div class="services-list">
-            <div class="service-card">
-              <h3>Prompt Engineering</h3>
-              <p>Master the art of communicating with AI to get exactly what you need, every time.</p>
-            </div>
-            <div class="service-card">
-              <h3>AI Product Building</h3>
-              <p>From wireframe to working product using AI tools. Ship something real in a weekend.</p>
-            </div>
-            <div class="service-card">
-              <h3>No-Code Deployment</h3>
-              <p>Get your product live without touching a server. Domains, hosting, and launches made simple.</p>
-            </div>
-            <div class="service-card">
-              <h3>Idea Validation</h3>
-              <p>Use AI to test and validate your idea before you build. Save months of wasted effort.</p>
-            </div>
-          </div>
         </div>
-      </section>
+    </section>
 
-      <section id="portfolio" class="section">
-        <div class="section-header">
-          <h2>Built with AI. Zero technical skills.</h2>
-          <p>Every product below was built using AI tools — the same tools you'll master at NomaiTech.</p>
+    <!-- MANIFESTO TAPE -->
+    <div class="manifesto-tape">
+        <div class="manifesto-tape-inner">
+            <span>Ideas are the product ★</span>
+            <span>AI is your co-founder ★</span>
+            <span>Ship before you're ready ★</span>
+            <span>Technical skills are optional ★</span>
+            <span>Build, don't wait ★</span>
+            <span>Your idea ships today ★</span>
+            <span>Ideas are the product ★</span>
+            <span>AI is your co-founder ★</span>
+            <span>Ship before you're ready ★</span>
+            <span>Technical skills are optional ★</span>
+            <span>Build, don't wait ★</span>
+            <span>Your idea ships today ★</span>
         </div>
-        <div class="portfolio-grid">
-          <article class="card">
-            <div class="card-tag">Venture ops</div>
-            <h3>Bastion Ventures</h3>
-            <p>Signal-driven venture scouting and portfolio ops portal — built in a weekend with AI.</p>
-            <a class="btn small ghost" href="https://bastion-ventures.nomaitech.com" target="_blank" rel="noreferrer">See project</a>
-          </article>
-          <article class="card">
-            <div class="card-tag">Dream tool</div>
-            <h3>Mihaidreamseer</h3>
-            <p>Creative prompt engine and narrative builder for dream analysis. No backend needed.</p>
-            <a class="btn small ghost" href="https://mihaidreamseer.nomaitech.com" target="_blank" rel="noreferrer">See project</a>
-          </article>
-          <article class="card">
-            <div class="card-tag">Productivity</div>
-            <h3>Phone Spelling Helper</h3>
-            <p>NATO phonetic alphabet tool — built, designed, and shipped with AI in a single session.</p>
-            <a class="btn small ghost" href="https://phoneticalalphabet.ai201.site" target="_blank" rel="noreferrer">See project</a>
-          </article>
-          <article class="card">
-            <div class="card-tag">Utility</div>
-            <h3>SVG to Image</h3>
-            <p>Batch converter for clean, high-quality asset exports. Idea to live tool in under an hour.</p>
-            <a class="btn small ghost" href="https://svgtoimg.ai201.site" target="_blank" rel="noreferrer">See project</a>
-          </article>
-          <article class="card">
-            <div class="card-tag">Fun tool</div>
-            <h3>LinkedIn Emoji Decoder</h3>
-            <p>Decode corporate emoji overuse on LinkedIn. Proof that AI products don't have to be boring.</p>
-            <a class="btn small ghost" href="https://linkedinemojis.ai201.site" target="_blank" rel="noreferrer">See project</a>
-          </article>
-          <article class="card">
-            <div class="card-tag">Lifestyle</div>
-            <h3>Baby ETA Countdown</h3>
-            <p>The most important countdown of your life — a real product built by a non-technical founder.</p>
-            <a class="btn small ghost" href="https://babyeta.ai201.site" target="_blank" rel="noreferrer">See project</a>
-          </article>
-          <article class="card">
-            <div class="card-tag">Analytics</div>
-            <h3>Chat Timeline Visualiser</h3>
-            <p>Upload your chat history and see it as a timeline. Built with AI prompts, no engineers.</p>
-            <a class="btn small ghost" href="https://convoanalysis.ai201.site" target="_blank" rel="noreferrer">See project</a>
-          </article>
-          <article class="card">
-            <div class="card-tag">Your idea</div>
-            <h3>What will you build?</h3>
-            <p>Join NomaiTech and your project could be featured here in four weeks.</p>
-            <a class="btn small ghost" href="#contact">Get started</a>
-          </article>
-        </div>
-      </section>
+    </div>
 
-      <section class="section highlight">
-        <div class="highlight-grid">
-          <div>
-            <h2>From idea to launched product — faster than you think.</h2>
-            <p>Our students ship their first real product within weeks. No prior technical knowledge needed.</p>
-          </div>
-          <div class="stats">
-            <div class="stat">
-              <span class="stat-number">1 wknd</span>
-              <span class="stat-label">To your first product</span>
+    <!-- SHOWCASE -->
+    <section class="showcase" id="showcase">
+        <div class="showcase-header reveal">
+            <div>
+                <div class="section-tag">// Built with AI</div>
+                <h2>What's possible</h2>
             </div>
-            <div class="stat">
-              <span class="stat-number">10x</span>
-              <span class="stat-label">Faster than hiring a dev</span>
-            </div>
-            <div class="stat">
-              <span class="stat-number">0</span>
-              <span class="stat-label">Lines of code written</span>
-            </div>
-          </div>
+            <p>Every product below was built using AI tools — no engineers.</p>
         </div>
-      </section>
 
-      <section id="contact" class="section contact">
-        <div class="cta-card">
-          <div>
-            <h2>Ready to build your first product?</h2>
-            <p>Get in touch and we'll send you the first module free — including the exact AI workflow we use to go from idea to live product in 48 hours.</p>
-          </div>
-          <a class="btn primary" href="mailto:hello@nomaitech.com">hello@nomaitech.com</a>
+        <div class="showcase-grid">
+            <a href="https://bastion.ai201.site" target="_blank" rel="noopener noreferrer" class="showcase-card showcase-card-link reveal">
+                <div class="showcase-card-tag">Venture ops</div>
+                <div class="showcase-card-preview">
+                    <div class="showcase-card-preview-inner preview-bastion"></div>
+                </div>
+                <div class="showcase-card-info">
+                    <h3>Bastion Ventures</h3>
+                    <div class="meta">
+                        <span class="author">Signal-driven venture scouting portal</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="https://mihaidreamseer.ai201.site" target="_blank" rel="noopener noreferrer" class="showcase-card showcase-card-link reveal">
+                <div class="showcase-card-tag">Creative tool</div>
+                <div class="showcase-card-preview">
+                    <div class="showcase-card-preview-inner preview-dream"></div>
+                </div>
+                <div class="showcase-card-info">
+                    <h3>Mihaidreamseer</h3>
+                    <div class="meta">
+                        <span class="author">AI-powered dream analysis engine</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="https://phoneticalalphabet.ai201.site" target="_blank" rel="noopener noreferrer" class="showcase-card showcase-card-link reveal">
+                <div class="showcase-card-tag">Productivity</div>
+                <div class="showcase-card-preview">
+                    <div class="showcase-card-preview-inner preview-phonetic"></div>
+                </div>
+                <div class="showcase-card-info">
+                    <h3>Phone Spelling Helper</h3>
+                    <div class="meta">
+                        <span class="author">NATO phonetic alphabet made easy</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="https://svgtoimg.ai201.site" target="_blank" rel="noopener noreferrer" class="showcase-card showcase-card-link reveal">
+                <div class="showcase-card-tag">Utility</div>
+                <div class="showcase-card-preview">
+                    <div class="showcase-card-preview-inner preview-svg"></div>
+                </div>
+                <div class="showcase-card-info">
+                    <h3>SVG to Image</h3>
+                    <div class="meta">
+                        <span class="author">Batch converter for asset exports</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="https://linkedinemojis.ai201.site" target="_blank" rel="noopener noreferrer" class="showcase-card showcase-card-link reveal">
+                <div class="showcase-card-tag">Unhinged</div>
+                <div class="showcase-card-preview">
+                    <div class="showcase-card-preview-inner preview-linkedin"></div>
+                </div>
+                <div class="showcase-card-info">
+                    <h3>LinkedIn Emoji Decoder</h3>
+                    <div class="meta">
+                        <span class="author">Decode corporate emoji overuse</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="https://babyeta.ai201.site" target="_blank" rel="noopener noreferrer" class="showcase-card showcase-card-link reveal">
+                <div class="showcase-card-tag">Lifestyle</div>
+                <div class="showcase-card-preview">
+                    <div class="showcase-card-preview-inner preview-babyeta"></div>
+                </div>
+                <div class="showcase-card-info">
+                    <h3>Baby ETA Countdown</h3>
+                    <div class="meta">
+                        <span class="author">The most important countdown of your life</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="https://convoanalysis.ai201.site" target="_blank" rel="noopener noreferrer" class="showcase-card showcase-card-link reveal">
+                <div class="showcase-card-tag">Analytics</div>
+                <div class="showcase-card-preview">
+                    <div class="showcase-card-preview-inner preview-convo"></div>
+                </div>
+                <div class="showcase-card-info">
+                    <h3>Chat Timeline Visualiser</h3>
+                    <div class="meta">
+                        <span class="author">Visualise your chat history as a timeline</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="#join" class="showcase-card showcase-card-link reveal">
+                <div class="showcase-card-tag">Your idea</div>
+                <div class="showcase-card-preview">
+                    <div class="showcase-card-preview-inner preview-yours"></div>
+                </div>
+                <div class="showcase-card-info">
+                    <h3>What will you build?</h3>
+                    <div class="meta">
+                        <span class="author">Join NomaiTech and find out</span>
+                    </div>
+                </div>
+            </a>
         </div>
-      </section>
-    </main>
+    </section>
 
-    <footer class="footer">
-      <p>NomaiTech. The AI school for non-technical builders.</p>
+    <!-- STATS HIGHLIGHT -->
+    <section class="highlight">
+        <div class="highlight-grid reveal">
+            <div>
+                <h2>From idea to launched product — <em>faster than you think.</em></h2>
+                <p>Our students ship their first real product within 48 hours of starting. No prior technical knowledge. No excuses. Just the right AI workflows and the confidence to ship.</p>
+            </div>
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-number">1 wknd</span>
+                    <span class="stat-label">To your first live product</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">10x</span>
+                    <span class="stat-label">Faster than hiring a dev</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">0</span>
+                    <span class="stat-label">Lines of code written</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section" id="join">
+        <div class="cta-giant-text reveal">
+            <span class="stroke-text">Stop</span> <span class="fill-text">waiting.</span><br>
+            <span class="fill-text">Start</span> <span class="stroke-text">building.</span>
+        </div>
+        <p class="cta-description reveal">
+            Get in touch and we'll send you the first module free — including the exact AI workflow we use to go from idea to live product in 48 hours.
+        </p>
+        <form class="cta-form reveal" onsubmit="handleSubmit(event)">
+            <input type="email" placeholder="your@email.com" required>
+            <button type="submit">Get started</button>
+        </form>
+        <p class="cta-note reveal">No spam. Weekly build prompts and community resources. Unsubscribe anytime.</p>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-top">
+            <div>
+                <div class="footer-brand">NomaiTech</div>
+                <p class="footer-brand-desc">The AI school for non-technical builders. We teach founders, creators, and professionals to ship real products using AI &mdash; no coding required.</p>
+            </div>
+            <div class="footer-col">
+                <h4>School</h4>
+                <ul>
+                    <li><a href="#how">How it works</a></li>
+                    <li><a href="#about">Curriculum</a></li>
+                    <li><a href="#showcase">Builds</a></li>
+                    <li><a href="#join">Join</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Community</h4>
+                <ul>
+                    <li><a href="https://ai201.club" target="_blank" rel="noopener noreferrer">ai201.club</a></li>
+                    <li><a href="https://lu.ma/ai201" target="_blank" rel="noopener noreferrer">Events</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="mailto:hello@nomaitech.com">hello@nomaitech.com</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; 2026 NomaiTech &mdash; Built with <a href="#">AI</a> in London</span>
+            <span>for builders without limits</span>
+        </div>
     </footer>
 
-    <script src="script.js"></script>
-  </body>
+    <script>
+        // MOBILE MENU
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('open');
+            document.querySelector('.nav-hamburger').classList.toggle('active');
+        }
+
+        // SCROLL REVEAL
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, i * 80);
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // CURSOR TRAIL
+        const trail = [];
+        const trailLength = 8;
+
+        for (let i = 0; i < trailLength; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'cursor-dot';
+            dot.style.width = (8 - i) + 'px';
+            dot.style.height = (8 - i) + 'px';
+            dot.style.opacity = (1 - i / trailLength) * 0.6;
+            dot.style.borderRadius = '50%';
+            dot.style.position = 'fixed';
+            dot.style.pointerEvents = 'none';
+            dot.style.zIndex = '99999';
+            dot.style.background = `hsl(${140 + i * 20}, 100%, 50%)`;
+            dot.style.mixBlendMode = 'screen';
+            dot.style.transition = `transform ${0.1 + i * 0.03}s ease`;
+            document.body.appendChild(dot);
+            trail.push({ el: dot, x: 0, y: 0 });
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            trail[0].x = e.clientX;
+            trail[0].y = e.clientY;
+        });
+
+        function animateTrail() {
+            for (let i = trail.length - 1; i > 0; i--) {
+                trail[i].x += (trail[i-1].x - trail[i].x) * 0.35;
+                trail[i].y += (trail[i-1].y - trail[i].y) * 0.35;
+            }
+            trail.forEach(dot => {
+                dot.el.style.transform = `translate(${dot.x - 4}px, ${dot.y - 4}px)`;
+            });
+            requestAnimationFrame(animateTrail);
+        }
+        animateTrail();
+
+        // FORM HANDLER
+        function handleSubmit(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const input = e.target.querySelector('input');
+            btn.textContent = '🎉 You\'re in!';
+            btn.style.background = 'var(--hot-pink)';
+            btn.style.color = 'white';
+            input.value = '';
+            setTimeout(() => {
+                btn.textContent = 'Get started';
+                btn.style.background = '';
+                btn.style.color = '';
+            }, 3000);
+        }
+    </script>
+</body>
 </html>
