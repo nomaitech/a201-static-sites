@@ -16,8 +16,13 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Install wrangler
-        run: npm install -g wrangler
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Detect changed sites
         id: changed
@@ -59,6 +64,6 @@ jobs:
             find "../sites/$host" -type f | while IFS= read -r file; do
               key="${host}/${file#../sites/$host/}"
               echo "  Uploading $key"
-              wrangler r2 object put "static-sites/$key" --file="$file" --remote
+              npx wrangler r2 object put "static-sites/$key" --file="$file" --remote
             done
           done <<< "$CHANGED_SITES"
