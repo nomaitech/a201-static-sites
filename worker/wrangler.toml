@@ -1,0 +1,18 @@
+name = "static-sites-router"
+main = "index.js"
+compatibility_date = "2024-01-01"
+
+routes = [
+  { pattern = "ai201.site/*", zone_id = "d2cd321df75c1a0c85c846faffa0ed73" },
+  { pattern = "*.ai201.site/*", zone_id = "d2cd321df75c1a0c85c846faffa0ed73" },
+  { pattern = "ai201.club/*", zone_id = "764c955a2efd59b515827b2603a3f922" },
+  { pattern = "*.ai201.club/*", zone_id = "764c955a2efd59b515827b2603a3f922" },
+  { pattern = "nomaitech.com/*", zone_id = "1199f6e53b13cc873caed252f4efe5a9" },
+  { pattern = "*.nomaitech.com/*", zone_id = "1199f6e53b13cc873caed252f4efe5a9" },
+  { pattern = "philosofriends.com/*", zone_id = "6a29a3158ab34e759544a8cbfce066d0" },
+  { pattern = "*.philosofriends.com/*", zone_id = "6a29a3158ab34e759544a8cbfce066d0" },
+]
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "static-sites"
