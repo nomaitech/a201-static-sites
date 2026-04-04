@@ -7,7 +7,7 @@ This repo hosts many static sites served by Cloudflare Workers + R2.
 Key goals:
 - no infrastructure to manage
 - repo folder names are the single source of truth for what sites exist
-- deploy by syncing files to R2 and running `wrangler deploy`
+- deploy by pushing to `main` — CI syncs changed sites to R2 automatically
 
 ## Current Architecture
 
@@ -34,25 +34,21 @@ Per host:
 mkdir sites/newsite.ai201.site
 # add index.html and assets
 
-# 2. Upload to R2
-cd worker
-wrangler r2 object put static-sites/newsite.ai201.site/index.html \
-  --file ../sites/newsite.ai201.site/index.html --remote
-
-# 3. Add a proxied DNS A record (192.0.2.1) for the hostname in Cloudflare dashboard
+# 2. Add a proxied DNS A record (192.0.2.1) for the hostname in Cloudflare dashboard
 #    or via API — the Worker intercepts all traffic before it hits the origin
 
-# 4. No Worker redeploy needed — routing is dynamic by hostname
+# 3. Commit and push — CI will sync the new site to R2 automatically
+git add sites/newsite.ai201.site
+git commit -m "feat: add newsite.ai201.site"
+git push
 ```
 
 ## To update an existing site
 
-```bash
-cd worker
-wrangler r2 object put static-sites/<host>/<file> --file ../sites/<host>/<file> --remote
-```
+Edit files under `sites/<host>/`, then commit and push to `main`. CI detects which
+sites changed and syncs only those to R2.
 
-Or sync a full site:
+If you need to sync manually (e.g. bypassing CI):
 
 ```bash
 for f in $(find ../sites/<host> -type f); do
