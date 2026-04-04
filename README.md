@@ -16,20 +16,17 @@ Multiple static sites hosted on Cloudflare Workers + R2.
 mkdir sites/newsite.ai201.site
 # create index.html and assets
 
-# 2. Upload to R2
-cd worker
-wrangler r2 object put static-sites/newsite.ai201.site/index.html \
-  --file ../sites/newsite.ai201.site/index.html --remote
+# 2. Add a proxied DNS A record pointing to 192.0.2.1 in Cloudflare dashboard
 
-# 3. Add a proxied DNS A record pointing to 192.0.2.1 in Cloudflare dashboard
+# 3. Commit and push — CI deploys to R2 automatically
+git add sites/newsite.ai201.site
+git commit -m "feat: add newsite.ai201.site"
+git push
 ```
 
 ## Updating a site
 
-```bash
-cd worker
-wrangler r2 object put static-sites/<host>/<file> --file ../sites/<host>/<file> --remote
-```
+Edit files under `sites/<host>/`, then commit and push to `main`. CI detects which sites changed and syncs only those to R2.
 
 ## Removing a site
 
