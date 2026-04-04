@@ -1,4 +1,4 @@
-# Shared Static Sites
+# a201 Static Sites
 
 Multiple static sites hosted on Cloudflare Workers + R2.
 
