@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DjangoWorks — Django Consulting Company</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            green: {
+              50:  '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            },
+            ink: {
+              50:  '#f7f7f8',
+              100: '#eeeff1',
+              200: '#d9dbe0',
+              300: '#b5b9c3',
+              400: '#8a909f',
+              500: '#6b7280',
+              600: '#4b5563',
+              700: '#374151',
+              800: '#1f2937',
+              900: '#111827',
+              950: '#0a0e17',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: #fafafa; color: #111827; }
+
+    /* Nav */
+    .nav-link {
+      position: relative;
+      color: #4b5563;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0;
+      width: 0; height: 1.5px;
+      background: #16a34a;
+      transition: width 0.2s ease;
+    }
+    .nav-link:hover { color: #111827; }
+    .nav-link:hover::after { width: 100%; }
+
+    /* Hero */
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #dcfce7;
+      color: #15803d;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 100px;
+    }
+
+    /* Client logos */
+    .client-logo {
+      opacity: 0.35;
+      filter: grayscale(100%);
+      transition: opacity 0.2s, filter 0.2s;
+    }
+    .client-logo:hover { opacity: 0.75; filter: grayscale(0%); }
+
+    /* Service cards */
+    .service-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 28px;
+      background: #fff;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .service-card:hover {
+      border-color: #bbf7d0;
+      box-shadow: 0 4px 24px rgba(22,163,74,0.08);
+      transform: translateY(-2px);
+    }
+    .service-icon {
+      width: 40px; height: 40px;
+      background: #f0fdf4;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+      color: #16a34a;
+    }
+
+    /* Stats */
+    .stat-card {
+      text-align: center;
+      padding: 32px 24px;
+    }
+
+    /* Case study cards */
+    .case-card {
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .case-card:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      transform: translateY(-3px);
+    }
+    .case-thumb {
+      width: 100%; height: 200px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    /* Testimonial */
+    .testimonial-block {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 48px 56px;
+    }
+
+    /* Blog cards */
+    .blog-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 28px;
+      background: #fff;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .blog-card:hover {
+      border-color: #d1fae5;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    /* Tag */
+    .tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 100px;
+      background: #f0fdf4;
+      color: #15803d;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #16a34a;
+      color: #fff;
+      font-size: 0.9rem; font-weight: 600;
+      padding: 10px 22px;
+      border-radius: 8px;
+      transition: background 0.2s, transform 0.15s;
+      text-decoration: none;
+    }
+    .btn-primary:hover { background: #15803d; transform: translateY(-1px); }
+
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 6px;
+      border: 1.5px solid #d1d5db;
+      color: #374151;
+      font-size: 0.9rem; font-weight: 500;
+      padding: 9px 20px;
+      border-radius: 8px;
+      transition: border-color 0.2s, color 0.2s;
+      text-decoration: none;
+    }
+    .btn-outline:hover { border-color: #16a34a; color: #16a34a; }
+
+    /* Section label */
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #16a34a;
+      margin-bottom: 12px;
+    }
+
+    /* Divider */
+    .divider { border: none; border-top: 1px solid #f0f0f0; margin: 0; }
+
+    /* Fade-in on scroll */
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* Mobile menu */
+    #mobile-menu { display: none; }
+    #mobile-menu.open { display: block; }
+
+    @media (max-width: 768px) {
+      .testimonial-block { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── HEADER ─────────────────────────────────────────────────────────── -->
+<header class="sticky top-0 z-50 bg-white border-b border-gray-100" style="backdrop-filter: blur(8px);">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="flex items-center justify-between h-16">
+
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2 text-ink-900 font-bold text-lg tracking-tight" style="text-decoration:none;">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="28" height="28" rx="6" fill="#16a34a"/>
+          <path d="M7 14C7 10.134 10.134 7 14 7V7C17.866 7 21 10.134 21 14V19C21 20.105 20.105 21 19 21H14C10.134 21 7 17.866 7 14V14Z" fill="white"/>
+          <circle cx="14" cy="14" r="3" fill="#16a34a"/>
+        </svg>
+        DjangoWorks
+      </a>
+
+      <!-- Desktop nav -->
+      <nav class="hidden md:flex items-center gap-8">
+        <a href="#services" class="nav-link">Services</a>
+        <a href="#process" class="nav-link">How we work</a>
+        <a href="#work" class="nav-link">Work</a>
+        <a href="#blog" class="nav-link">Blog</a>
+      </nav>
+
+      <div class="hidden md:flex items-center gap-3">
+        <a href="#contact" class="btn-primary">Contact Us</a>
+      </div>
+
+      <!-- Mobile hamburger -->
+      <button id="hamburger" class="md:hidden p-2 text-ink-600" aria-label="Open menu">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="pb-4 border-t border-gray-100 mt-0">
+      <nav class="flex flex-col gap-1 pt-3">
+        <a href="#services" class="py-2 px-2 text-sm font-medium text-ink-700 hover:text-green-600 transition-colors">Services</a>
+        <a href="#process" class="py-2 px-2 text-sm font-medium text-ink-700 hover:text-green-600 transition-colors">How we work</a>
+        <a href="#work" class="py-2 px-2 text-sm font-medium text-ink-700 hover:text-green-600 transition-colors">Work</a>
+        <a href="#blog" class="py-2 px-2 text-sm font-medium text-ink-700 hover:text-green-600 transition-colors">Blog</a>
+        <a href="#contact" class="mt-2 btn-primary w-fit">Contact Us</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+
+<!-- ─── HERO ──────────────────────────────────────────────────────────── -->
+<section class="pt-20 pb-16 px-6" style="background: linear-gradient(180deg, #f0fdf4 0%, #fafafa 100%);">
+  <div class="max-w-6xl mx-auto">
+    <div class="max-w-3xl">
+      <div class="fade-in">
+        <span class="hero-badge">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="5"/></svg>
+          Taking on new projects — Q2 2026
+        </span>
+      </div>
+
+      <h1 class="fade-in mt-6 text-5xl font-bold tracking-tight text-ink-950 leading-tight" style="letter-spacing:-0.025em; font-size: clamp(2rem, 5vw, 3.25rem);">
+        The Django specialists<br/>your engineering team<br/>actually needs
+      </h1>
+
+      <p class="fade-in mt-5 text-lg text-ink-500 leading-relaxed max-w-2xl" style="font-size: clamp(1rem, 2vw, 1.125rem);">
+        We've worked on nothing but Django since 2014. That depth means fewer surprises, faster ramp-up, and software that holds up under load — whether you're an early-stage startup or a scaling enterprise team.
+      </p>
+
+      <div class="fade-in mt-8 flex flex-wrap gap-3">
+        <a href="#contact" class="btn-primary">
+          Work with us
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#services" class="btn-outline">See our services</a>
+      </div>
+    </div>
+
+    <!-- Client logos -->
+    <div id="clients" class="mt-16 fade-in">
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink-400 mb-6">Engineers from teams like these choose us</p>
+      <div class="flex flex-wrap items-center gap-x-10 gap-y-6">
+
+        <!-- Stripe -->
+        <svg class="client-logo h-7" viewBox="0 0 60 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <text y="20" font-family="Inter, sans-serif" font-size="20" font-weight="700" fill="#0a2540">stripe</text>
+        </svg>
+
+        <!-- Notion -->
+        <svg class="client-logo h-7" viewBox="0 0 70 25" fill="none">
+          <text y="20" font-family="Inter, sans-serif" font-size="19" font-weight="700" fill="#000">Notion</text>
+        </svg>
+
+        <!-- Linear -->
+        <svg class="client-logo h-6" viewBox="0 0 60 25" fill="none">
+          <text y="19" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#5e6ad2">Linear</text>
+        </svg>
+
+        <!-- Vercel -->
+        <svg class="client-logo h-6" viewBox="0 0 65 25" fill="none">
+          <text y="19" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#000">▲ Vercel</text>
+        </svg>
+
+        <!-- Shopify -->
+        <svg class="client-logo h-7" viewBox="0 0 70 25" fill="none">
+          <text y="20" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#96bf48">Shopify</text>
+        </svg>
+
+        <!-- Intercom -->
+        <svg class="client-logo h-6" viewBox="0 0 80 25" fill="none">
+          <text y="19" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#1f8cff">Intercom</text>
+        </svg>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+
+<!-- ─── SERVICES ──────────────────────────────────────────────────────── -->
+<section id="services" class="py-20 px-6 bg-white">
+  <div class="max-w-6xl mx-auto">
+    <div class="fade-in mb-12">
+      <p class="section-label">What we do</p>
+      <h2 class="text-3xl font-bold text-ink-900 tracking-tight" style="letter-spacing:-0.02em;">Best-in-class Django development services</h2>
+      <p class="mt-3 text-ink-500 max-w-xl">Whether you're starting from scratch or scaling an existing product, we bring deep Django expertise to every engagement.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+      <!-- Card 1 -->
+      <div class="service-card fade-in">
+        <div class="service-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+          </svg>
+        </div>
+        <h3 class="font-semibold text-ink-900 text-base mb-2">Django Application Development</h3>
+        <p class="text-sm text-ink-500 leading-relaxed">From architecture planning and wireframes to production-ready code. We prioritize clarity, maintainability, and long-term scalability.</p>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="service-card fade-in">
+        <div class="service-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 2H3v16h5v4l4-4h5l4-4V2z"/><path d="M11 7h2v6h-2zM11 15h2v2h-2z"/>
+          </svg>
+        </div>
+        <h3 class="font-semibold text-ink-900 text-base mb-2">Django Upgrades</h3>
+        <p class="text-sm text-ink-500 leading-relaxed">Migrate your project to the latest Django version safely. We handle compatibility, deprecations, and third-party dependencies end-to-end.</p>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="service-card fade-in">
+        <div class="service-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <h3 class="font-semibold text-ink-900 text-base mb-2">Performance Enhancements</h3>
+        <p class="text-sm text-ink-500 leading-relaxed">Database query optimization, caching strategies, async views, and profiling to make your Django app faster and more resilient under load.</p>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="service-card fade-in">
+        <div class="service-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </div>
+        <h3 class="font-semibold text-ink-900 text-base mb-2">Code Audit</h3>
+        <p class="text-sm text-ink-500 leading-relaxed">A thorough review of your codebase for security vulnerabilities, anti-patterns, test coverage gaps, and scalability bottlenecks — with a clear action plan.</p>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="service-card fade-in">
+        <div class="service-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <h3 class="font-semibold text-ink-900 text-base mb-2">Django Maintenance</h3>
+        <p class="text-sm text-ink-500 leading-relaxed">Ongoing support covering security patches, dependency updates, monitoring, and incident response — so your team can focus on building.</p>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="service-card fade-in">
+        <div class="service-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <h3 class="font-semibold text-ink-900 text-base mb-2">Team Augmentation</h3>
+        <p class="text-sm text-ink-500 leading-relaxed">Embed experienced Django engineers directly into your existing team and workflows — code reviews, pair programming, or full feature ownership.</p>
+      </div>
+
+    </div>
+
+    <div class="fade-in mt-10 text-center">
+      <p class="text-ink-500 text-sm mb-4">Not sure which service fits your situation?</p>
+      <a href="#contact" class="btn-primary">Talk to our team — we'll figure it out together
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+
+<!-- ─── HOW WE WORK ───────────────────────────────────────────────────── -->
+<section id="process" class="py-20 px-6" style="background:#fafafa;">
+  <div class="max-w-6xl mx-auto">
+    <div class="fade-in mb-12 text-center">
+      <p class="section-label">How we engage</p>
+      <h2 class="text-3xl font-bold text-ink-900 tracking-tight" style="letter-spacing:-0.02em;">From first conversation to shipped code</h2>
+      <p class="mt-3 text-ink-500 max-w-xl mx-auto">We keep the process lightweight. No long sales cycles, no bloated kickoff decks — just a clear path from problem to solution.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+      <!-- Step connector line (desktop) -->
+      <div class="hidden md:block absolute top-8 left-1/3 right-1/3 h-px bg-green-200" style="top:32px;"></div>
+
+      <!-- Step 1 -->
+      <div class="fade-in text-center">
+        <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-5 relative z-10">
+          <span class="text-green-700 font-bold text-xl">1</span>
+        </div>
+        <h3 class="font-semibold text-ink-900 text-base mb-2">Tell us about your project</h3>
+        <p class="text-sm text-ink-500 leading-relaxed">Send a message with what you're building, what's broken, or what you need help with. No RFP required.</p>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="fade-in text-center">
+        <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-5 relative z-10">
+          <span class="text-green-700 font-bold text-xl">2</span>
+        </div>
+        <h3 class="font-semibold text-ink-900 text-base mb-2">We assess fit</h3>
+        <p class="text-sm text-ink-500 leading-relaxed">We'll get back to you within one business day. If there's a good fit, we schedule a short technical call to understand the scope.</p>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="fade-in text-center">
+        <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-5 relative z-10">
+          <span class="text-green-700 font-bold text-xl">3</span>
+        </div>
+        <h3 class="font-semibold text-ink-900 text-base mb-2">We kick off — fast</h3>
+        <p class="text-sm text-ink-500 leading-relaxed">Once aligned on scope and terms, we can typically start within a week. No months-long onboarding, no unnecessary ceremony.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+
+<!-- ─── ABOUT / STATS ─────────────────────────────────────────────────── -->
+<section id="about" class="py-20 px-6" style="background:#fafafa;">
+  <div class="max-w-6xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+      <div class="fade-in">
+        <p class="section-label">About us</p>
+        <h2 class="text-3xl font-bold text-ink-900 tracking-tight mb-5" style="letter-spacing:-0.02em;">10+ years of Django<br/>and nothing else</h2>
+        <p class="text-ink-500 leading-relaxed mb-4">
+          We founded DjangoWorks in 2014 with a single conviction: being a specialist is more valuable than being a generalist. By working exclusively in Django, we've developed an understanding of the framework that goes well beyond the surface — including internals, ORM edge cases, async patterns, and deployment at scale.
+        </p>
+        <p class="text-ink-500 leading-relaxed mb-8">
+          That depth means fewer surprises, faster ramp-up, and better outcomes for every client we work with.
+        </p>
+        <a href="#contact" class="btn-primary">Talk to our team</a>
+      </div>
+
+      <div class="fade-in grid grid-cols-3 gap-px bg-gray-100 rounded-2xl overflow-hidden border border-gray-100">
+        <div class="stat-card bg-white">
+          <div class="text-4xl font-bold text-ink-900 tracking-tight" style="letter-spacing:-0.04em;">2014</div>
+          <div class="text-sm text-ink-400 mt-1 font-medium">Founded</div>
+        </div>
+        <div class="stat-card bg-white">
+          <div class="text-4xl font-bold text-green-600 tracking-tight" style="letter-spacing:-0.04em;">80+</div>
+          <div class="text-sm text-ink-400 mt-1 font-medium">Projects</div>
+        </div>
+        <div class="stat-card bg-white">
+          <div class="text-4xl font-bold text-ink-900 tracking-tight" style="letter-spacing:-0.04em;">50+</div>
+          <div class="text-sm text-ink-400 mt-1 font-medium">Team members</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+
+<!-- ─── CASE STUDIES ──────────────────────────────────────────────────── -->
+<section id="work" class="py-20 px-6 bg-white">
+  <div class="max-w-6xl mx-auto">
+    <div class="flex items-end justify-between mb-12 flex-wrap gap-4">
+      <div class="fade-in">
+        <p class="section-label">Case studies</p>
+        <h2 class="text-3xl font-bold text-ink-900 tracking-tight" style="letter-spacing:-0.02em;">Work we're proud of</h2>
+      </div>
+      <a href="#" class="fade-in btn-outline text-sm">
+        View all case studies
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <!-- Case 1 -->
+      <div class="case-card fade-in">
+        <div class="case-thumb" style="background: linear-gradient(135deg, #0f172a, #1e3a5f); color: #60a5fa;">
+          PayFlow
+        </div>
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-2">
+            <span class="tag">Fintech</span>
+            <span class="text-xs text-ink-400">2023</span>
+          </div>
+          <h3 class="font-semibold text-ink-900 text-base mb-2">Rebuilding a payment platform for 10× scale</h3>
+          <p class="text-sm text-ink-500 leading-relaxed">Migrated a monolith to Django with Celery workers. Reduced p99 latency from 3.2s to 280ms while handling 5M+ daily transactions.</p>
+        </div>
+      </div>
+
+      <!-- Case 2 -->
+      <div class="case-card fade-in">
+        <div class="case-thumb" style="background: linear-gradient(135deg, #064e3b, #065f46); color: #6ee7b7;">
+          HealthOS
+        </div>
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-2">
+            <span class="tag">Healthcare</span>
+            <span class="text-xs text-ink-400">2023</span>
+          </div>
+          <h3 class="font-semibold text-ink-900 text-base mb-2">HIPAA-compliant patient data platform</h3>
+          <p class="text-sm text-ink-500 leading-relaxed">Built a multi-tenant Django REST API with row-level security, audit logging, and end-to-end encryption for a health records platform serving 400K patients.</p>
+        </div>
+      </div>
+
+      <!-- Case 3 -->
+      <div class="case-card fade-in">
+        <div class="case-thumb" style="background: linear-gradient(135deg, #3b0764, #4c1d95); color: #c4b5fd;">
+          Flowdesk
+        </div>
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-2">
+            <span class="tag">SaaS</span>
+            <span class="text-xs text-ink-400">2022</span>
+          </div>
+          <h3 class="font-semibold text-ink-900 text-base mb-2">CRM migration from Node.js to Django</h3>
+          <p class="text-sm text-ink-500 leading-relaxed">Led a full rewrite of a legacy Node.js API to Django REST Framework, reducing development cycle times by 40% and eliminating systemic data integrity bugs.</p>
+        </div>
+      </div>
+
+      <!-- Case 4 -->
+      <div class="case-card fade-in">
+        <div class="case-thumb" style="background: linear-gradient(135deg, #7c2d12, #92400e); color: #fcd34d;">
+          LogiTrack
+        </div>
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-2">
+            <span class="tag">Logistics</span>
+            <span class="text-xs text-ink-400">2022</span>
+          </div>
+          <h3 class="font-semibold text-ink-900 text-base mb-2">Real-time fleet tracking infrastructure</h3>
+          <p class="text-sm text-ink-500 leading-relaxed">Architected Django Channels WebSocket backend for a real-time fleet management system. Went from 0 to 200K concurrent connections in under 6 months.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="fade-in mt-10 text-center">
+      <a href="#contact" class="btn-primary">
+        Start your project
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+
+<!-- ─── TESTIMONIALS ──────────────────────────────────────────────────── -->
+<section class="py-20 px-6" style="background:#f0fdf4;">
+  <div class="max-w-6xl mx-auto">
+    <div class="fade-in mb-12 text-center">
+      <p class="section-label">What clients say</p>
+      <h2 class="text-3xl font-bold text-ink-900 tracking-tight" style="letter-spacing:-0.02em;">Don't take our word for it</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <!-- Testimonial 1 -->
+      <div class="fade-in bg-white border border-gray-100 rounded-2xl p-8">
+        <svg width="28" height="22" viewBox="0 0 36 28" fill="none" class="mb-5">
+          <path d="M0 28V16.8C0 7.53333 5.06667 2.13333 15.2 0L16.8 2.8C11.7333 4 8.8 6.8 8 11.2H16V28H0ZM20 28V16.8C20 7.53333 25.0667 2.13333 35.2 0L36.8 2.8C31.7333 4 28.8 6.8 28 11.2H36V28H20Z" fill="#bbf7d0"/>
+        </svg>
+        <blockquote class="text-sm text-ink-700 leading-relaxed mb-6">
+          "DjangoWorks joined mid-product and immediately understood our data model, identified three critical N+1 query issues we hadn't caught, and shipped a complex migration with zero downtime. Their Django knowledge is genuinely exceptional."
+        </blockquote>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-green-200 flex items-center justify-center text-green-800 font-bold text-xs flex-shrink-0">AK</div>
+          <div>
+            <div class="font-semibold text-ink-900 text-sm">Arjun Kapoor</div>
+            <div class="text-ink-400 text-xs">CTO, PayFlow</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonial 2 -->
+      <div class="fade-in bg-white border border-gray-100 rounded-2xl p-8">
+        <svg width="28" height="22" viewBox="0 0 36 28" fill="none" class="mb-5">
+          <path d="M0 28V16.8C0 7.53333 5.06667 2.13333 15.2 0L16.8 2.8C11.7333 4 8.8 6.8 8 11.2H16V28H0ZM20 28V16.8C20 7.53333 25.0667 2.13333 35.2 0L36.8 2.8C31.7333 4 28.8 6.8 28 11.2H36V28H20Z" fill="#bbf7d0"/>
+        </svg>
+        <blockquote class="text-sm text-ink-700 leading-relaxed mb-6">
+          "We needed a HIPAA-compliant multi-tenant architecture and we needed it fast. DjangoWorks designed and built the entire thing in 10 weeks. The code quality was so good our internal team barely needed to touch it afterward. I'd hire them again without hesitation."
+        </blockquote>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs flex-shrink-0">SR</div>
+          <div>
+            <div class="font-semibold text-ink-900 text-sm">Sara Reyes</div>
+            <div class="text-ink-400 text-xs">VP Engineering, HealthOS</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonial 3 -->
+      <div class="fade-in bg-white border border-gray-100 rounded-2xl p-8">
+        <svg width="28" height="22" viewBox="0 0 36 28" fill="none" class="mb-5">
+          <path d="M0 28V16.8C0 7.53333 5.06667 2.13333 15.2 0L16.8 2.8C11.7333 4 8.8 6.8 8 11.2H16V28H0ZM20 28V16.8C20 7.53333 25.0667 2.13333 35.2 0L36.8 2.8C31.7333 4 28.8 6.8 28 11.2H36V28H20Z" fill="#bbf7d0"/>
+        </svg>
+        <blockquote class="text-sm text-ink-700 leading-relaxed mb-6">
+          "We'd been burned by generalist agencies who didn't know Django well enough. DjangoWorks was the opposite — they hit the ground running, pointed out architectural issues before they became problems, and our dev cycles dropped by 40% after the migration."
+        </blockquote>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 font-bold text-xs flex-shrink-0">TM</div>
+          <div>
+            <div class="font-semibold text-ink-900 text-sm">Tom Mitchell</div>
+            <div class="text-ink-400 text-xs">Founder, Flowdesk</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+
+<!-- ─── BLOG ──────────────────────────────────────────────────────────── -->
+<section id="blog" class="py-20 px-6 bg-white">
+  <div class="max-w-6xl mx-auto">
+    <div class="flex items-end justify-between mb-12 flex-wrap gap-4">
+      <div class="fade-in">
+        <p class="section-label">From the blog</p>
+        <h2 class="text-3xl font-bold text-ink-900 tracking-tight" style="letter-spacing:-0.02em;">Things we've learned</h2>
+      </div>
+      <a href="#" class="fade-in btn-outline text-sm">
+        Read all articles
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+      <!-- Article 1 -->
+      <article class="blog-card fade-in">
+        <span class="tag">Performance</span>
+        <h3 class="mt-4 font-semibold text-ink-900 leading-snug mb-2">
+          <a href="#" class="hover:text-green-700 transition-colors">How we eliminated 300+ N+1 queries in a Django monolith</a>
+        </h3>
+        <p class="text-sm text-ink-500 leading-relaxed mb-5">A walkthrough of our query audit process using django-silk, select_related, prefetch_related, and when raw SQL is the right call.</p>
+        <div class="flex items-center justify-between text-xs text-ink-400">
+          <span>March 18, 2025</span>
+          <span>8 min read</span>
+        </div>
+      </article>
+
+      <!-- Article 2 -->
+      <article class="blog-card fade-in">
+        <span class="tag">Architecture</span>
+        <h3 class="mt-4 font-semibold text-ink-900 leading-snug mb-2">
+          <a href="#" class="hover:text-green-700 transition-colors">Django async views in production: what nobody tells you</a>
+        </h3>
+        <p class="text-sm text-ink-500 leading-relaxed mb-5">We ran async Django in production for 18 months. Here's what actually matters — ASGI servers, thread pool gotchas, and ORM limitations.</p>
+        <div class="flex items-center justify-between text-xs text-ink-400">
+          <span>February 4, 2025</span>
+          <span>11 min read</span>
+        </div>
+      </article>
+
+      <!-- Article 3 -->
+      <article class="blog-card fade-in">
+        <span class="tag">Security</span>
+        <h3 class="mt-4 font-semibold text-ink-900 leading-snug mb-2">
+          <a href="#" class="hover:text-green-700 transition-colors">The Django security checklist we use on every engagement</a>
+        </h3>
+        <p class="text-sm text-ink-500 leading-relaxed mb-5">SECRET_KEY rotation, CSRF hardening, clickjacking headers, SQL injection surface area, and the settings you've probably never read.</p>
+        <div class="flex items-center justify-between text-xs text-ink-400">
+          <span>January 20, 2025</span>
+          <span>6 min read</span>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+
+<!-- ─── CONTACT CTA ────────────────────────────────────────────────────── -->
+<section id="contact" class="py-24 px-6" style="background:#0a0e17;">
+  <div class="max-w-2xl mx-auto fade-in">
+    <div class="text-center mb-10">
+      <p class="section-label" style="color:#4ade80;">Get in touch</p>
+      <h2 class="text-3xl font-bold text-white mt-2 mb-4 tracking-tight" style="letter-spacing:-0.025em; font-size: clamp(1.75rem, 4vw, 2.5rem);">
+        Tell us what you're building
+      </h2>
+      <p class="text-ink-400 text-base leading-relaxed max-w-xl mx-auto">
+        We take on a small number of projects each quarter to maintain quality. We'll get back to you within one business day.
+      </p>
+    </div>
+
+    <form action="mailto:hello@djangoworks.com" method="post" enctype="text/plain" class="space-y-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label for="contact-name" class="block text-sm font-medium text-ink-300 mb-1.5">Your name</label>
+          <input type="text" id="contact-name" name="name" placeholder="Jane Smith" required
+            class="w-full px-4 py-3 rounded-lg text-sm text-white placeholder-ink-600 border border-ink-700 focus:border-green-500 focus:outline-none transition-colors"
+            style="background:#111827;">
+        </div>
+        <div>
+          <label for="contact-email" class="block text-sm font-medium text-ink-300 mb-1.5">Work email</label>
+          <input type="email" id="contact-email" name="email" placeholder="jane@company.com" required
+            class="w-full px-4 py-3 rounded-lg text-sm text-white placeholder-ink-600 border border-ink-700 focus:border-green-500 focus:outline-none transition-colors"
+            style="background:#111827;">
+        </div>
+      </div>
+
+      <div>
+        <label for="contact-service" class="block text-sm font-medium text-ink-300 mb-1.5">What do you need?</label>
+        <select id="contact-service" name="service"
+          class="w-full px-4 py-3 rounded-lg text-sm text-white border border-ink-700 focus:border-green-500 focus:outline-none transition-colors appearance-none"
+          style="background:#111827;">
+          <option value="" disabled selected>Select a service…</option>
+          <option value="development">Django Application Development</option>
+          <option value="upgrades">Django Upgrades</option>
+          <option value="performance">Performance Enhancements</option>
+          <option value="audit">Code Audit</option>
+          <option value="maintenance">Ongoing Maintenance</option>
+          <option value="augmentation">Team Augmentation</option>
+          <option value="other">Not sure — let's talk</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="contact-message" class="block text-sm font-medium text-ink-300 mb-1.5">Tell us about your project</label>
+        <textarea id="contact-message" name="message" rows="4" placeholder="What are you building? What's the current challenge? Any relevant context…" required
+          class="w-full px-4 py-3 rounded-lg text-sm text-white placeholder-ink-600 border border-ink-700 focus:border-green-500 focus:outline-none transition-colors resize-none"
+          style="background:#111827;"></textarea>
+      </div>
+
+      <button type="submit" class="btn-primary w-full justify-center" style="font-size:1rem; padding:13px 28px;">
+        Send message
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+
+      <p class="text-center text-ink-600 text-xs">Or email us directly at <a href="mailto:hello@djangoworks.com" class="text-ink-400 hover:text-white transition-colors">hello@djangoworks.com</a></p>
+    </form>
+  </div>
+</section>
+
+
+<!-- ─── FOOTER ────────────────────────────────────────────────────────── -->
+<footer class="bg-ink-950 border-t px-6 pb-10" style="background:#0a0e17; border-color:#1f2937;">
+  <div class="max-w-6xl mx-auto pt-10">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+
+      <!-- Brand -->
+      <div class="col-span-2 md:col-span-1">
+        <a href="/" class="flex items-center gap-2 text-white font-bold text-base mb-3" style="text-decoration:none;">
+          <svg width="24" height="24" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#16a34a"/><path d="M7 14C7 10.134 10.134 7 14 7V7C17.866 7 21 10.134 21 14V19C21 20.105 20.105 21 19 21H14C10.134 21 7 17.866 7 14V14Z" fill="white"/><circle cx="14" cy="14" r="3" fill="#16a34a"/></svg>
+          DjangoWorks
+        </a>
+        <p class="text-ink-500 text-sm leading-relaxed">Django consulting, exclusively.</p>
+        <div class="flex gap-4 mt-5">
+          <!-- Twitter/X -->
+          <a href="#" class="text-ink-500 hover:text-white transition-colors">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.736l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <!-- LinkedIn -->
+          <a href="#" class="text-ink-500 hover:text-white transition-colors">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+          <!-- GitHub -->
+          <a href="#" class="text-ink-500 hover:text-white transition-colors">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Services -->
+      <div>
+        <h4 class="text-white font-semibold text-sm mb-4">Services</h4>
+        <ul class="space-y-2 text-sm text-ink-500">
+          <li><a href="#" class="hover:text-white transition-colors">Development</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Upgrades</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Performance</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Code Audits</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Maintenance</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Augmentation</a></li>
+        </ul>
+      </div>
+
+      <!-- Company -->
+      <div>
+        <h4 class="text-white font-semibold text-sm mb-4">Company</h4>
+        <ul class="space-y-2 text-sm text-ink-500">
+          <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Case Studies</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Open Source</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <h4 class="text-white font-semibold text-sm mb-4">Contact</h4>
+        <ul class="space-y-2 text-sm text-ink-500">
+          <li><a href="mailto:hello@djangoworks.com" class="hover:text-white transition-colors">hello@djangoworks.com</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="border-t pt-6 flex flex-col md:flex-row items-center justify-between gap-3" style="border-color:#1f2937;">
+      <p class="text-ink-600 text-xs">© 2025 DjangoWorks. All rights reserved.</p>
+      <p class="text-ink-600 text-xs">Built with Django & love.</p>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ─── JS ────────────────────────────────────────────────────────────── -->
+<script>
+  // Mobile menu toggle
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  hamburger.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+  });
+  // Close mobile menu on link click
+  mobileMenu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => mobileMenu.classList.remove('open'));
+  });
+
+  // Scroll fade-in
+  const fadeEls = document.querySelectorAll('.fade-in');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        // Stagger children in same parent
+        const siblings = Array.from(entry.target.parentElement.querySelectorAll('.fade-in'));
+        const idx = siblings.indexOf(entry.target);
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, idx * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  fadeEls.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

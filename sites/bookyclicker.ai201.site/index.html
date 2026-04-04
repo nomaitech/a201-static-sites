@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BookTok Empire 📚</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --pink: #f472b6;
+    --pink-light: #fce7f3;
+    --pink-dark: #be185d;
+    --purple: #a855f7;
+    --purple-light: #f3e8ff;
+    --purple-dark: #7e22ce;
+    --cream: #fef9f0;
+    --brown: #92400e;
+    --brown-light: #fef3c7;
+    --text: #3b0764;
+    --text-soft: #6b21a8;
+    --surface: #fff;
+    --border: #e9d5ff;
+    --shadow: rgba(168,85,247,0.15);
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    user-select: none;
+  }
+
+  /* ── Layout ── */
+  #app {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    max-width: 480px;
+    margin: 0 auto;
+    background: var(--cream);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── Header ── */
+  #header {
+    background: linear-gradient(135deg, #7e22ce 0%, #be185d 100%);
+    color: white;
+    padding: 12px 16px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    box-shadow: 0 2px 12px rgba(126,34,206,0.4);
+    position: relative;
+    z-index: 10;
+  }
+  #header h1 { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; }
+  #header h1 span { font-size: 20px; }
+
+  #stats-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+  .stat-chip {
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    backdrop-filter: blur(4px);
+    white-space: nowrap;
+  }
+  .stat-chip .label { opacity: 0.85; font-weight: 500; margin-right: 3px; }
+
+  /* ── Nav Tabs ── */
+  #nav {
+    display: flex;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 9;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 10px 0;
+    border: none;
+    background: transparent;
+    font-size: 11px;
+    font-weight: 600;
+    color: #999;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .tab-btn .tab-icon { font-size: 18px; }
+  .tab-btn.active { color: var(--purple-dark); }
+  .tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 10%; right: 10%;
+    height: 3px;
+    background: var(--purple);
+    border-radius: 3px 3px 0 0;
+  }
+  .tab-badge {
+    position: absolute;
+    top: 6px; right: calc(50% - 16px);
+    background: var(--pink);
+    color: white;
+    font-size: 9px;
+    font-weight: 800;
+    border-radius: 10px;
+    padding: 1px 5px;
+    min-width: 16px;
+    text-align: center;
+    line-height: 1.4;
+    display: none;
+  }
+  .tab-badge.show { display: block; }
+
+  /* ── Panels ── */
+  .panel {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  .panel.active { display: flex; flex-direction: column; }
+
+  /* ── Click Panel ── */
+  #panel-click {
+    align-items: center;
+    padding: 16px;
+    gap: 12px;
+    background: linear-gradient(180deg, #fdf4ff 0%, var(--cream) 100%);
+  }
+
+  #click-area {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin: 8px 0;
+  }
+
+  #book-btn {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(145deg, #f9a8d4, #e879f9);
+    box-shadow:
+      0 8px 32px rgba(233,121,249,0.45),
+      0 2px 8px rgba(0,0,0,0.1),
+      inset 0 1px 0 rgba(255,255,255,0.5);
+    font-size: 72px;
+    cursor: pointer;
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: visible;
+    -webkit-user-select: none;
+  }
+  #book-btn:active, #book-btn.clicked {
+    transform: scale(0.92);
+    box-shadow:
+      0 3px 12px rgba(233,121,249,0.35),
+      0 1px 4px rgba(0,0,0,0.08),
+      inset 0 1px 0 rgba(255,255,255,0.3);
+  }
+  #book-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.4) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .float-text {
+    position: fixed;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--purple-dark);
+    pointer-events: none;
+    z-index: 9999;
+    animation: floatUp 0.9s ease-out forwards;
+    text-shadow: 0 1px 4px rgba(255,255,255,0.8);
+    white-space: nowrap;
+  }
+  @keyframes floatUp {
+    0%   { opacity: 1; transform: translateY(0) scale(1); }
+    60%  { opacity: 1; transform: translateY(-50px) scale(1.1); }
+    100% { opacity: 0; transform: translateY(-90px) scale(0.9); }
+  }
+
+  #per-click-label {
+    font-size: 13px;
+    color: var(--text-soft);
+    font-weight: 600;
+  }
+
+  /* progress ring */
+  #xp-ring-wrap {
+    position: relative;
+    width: 56px;
+    height: 56px;
+  }
+  #xp-ring-wrap svg { transform: rotate(-90deg); }
+  #xp-ring-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--purple-dark);
+    line-height: 1.1;
+  }
+  #xp-ring-text span { font-size: 9px; font-weight: 600; color: #9ca3af; }
+
+  #level-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 12px 16px;
+    width: 100%;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  #level-info { flex: 1; }
+  #level-name { font-size: 15px; font-weight: 800; color: var(--text); }
+  #level-sub { font-size: 11px; color: #9ca3af; margin-top: 1px; }
+  #xp-bar-wrap {
+    height: 6px;
+    background: #f3e8ff;
+    border-radius: 10px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+  #xp-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple), var(--pink));
+    border-radius: 10px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  /* milestones row */
+  #milestone-toast {
+    background: linear-gradient(135deg, #7e22ce, #be185d);
+    color: white;
+    border-radius: 14px;
+    padding: 10px 14px;
+    width: 100%;
+    font-size: 13px;
+    font-weight: 700;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    animation: slideIn 0.4s ease;
+  }
+  #milestone-toast.show { display: flex; }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* idle earn popup */
+  #idle-popup {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #7e22ce, #be185d);
+    color: white;
+    border-radius: 20px;
+    padding: 14px 24px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(126,34,206,0.4);
+    z-index: 100;
+    display: none;
+    cursor: pointer;
+    animation: bounceIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+    white-space: nowrap;
+  }
+  #idle-popup.show { display: block; }
+  @keyframes bounceIn {
+    0%  { opacity:0; transform: translateX(-50%) scale(0.5); }
+    100%{ opacity:1; transform: translateX(-50%) scale(1); }
+  }
+  #idle-popup .idle-title { font-size: 12px; opacity: 0.85; }
+  #idle-popup .idle-amount { font-size: 22px; font-weight: 800; }
+  #idle-popup .idle-tap { font-size: 11px; opacity: 0.75; margin-top: 2px; }
+
+  /* quick stats */
+  #quick-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+  }
+  .qs-card {
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 6px var(--shadow);
+  }
+  .qs-card .qs-val { font-size: 18px; font-weight: 800; color: var(--text); }
+  .qs-card .qs-lab { font-size: 10px; color: #9ca3af; font-weight: 600; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Shop Panel ── */
+  #panel-shop { padding: 12px; gap: 0; background: #fdf4ff; }
+
+  .shop-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #9ca3af;
+    padding: 8px 4px 6px;
+  }
+
+  .shop-item {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1.5px solid var(--border);
+    box-shadow: 0 2px 8px var(--shadow);
+    transition: all 0.15s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .shop-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 60%, rgba(168,85,247,0.04));
+  }
+  .shop-item.can-afford { border-color: var(--purple); }
+  .shop-item.can-afford::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 6px; height: 6px;
+    background: var(--purple);
+    border-radius: 0 14px 0 6px;
+  }
+  .shop-item.locked { opacity: 0.45; cursor: not-allowed; }
+  .shop-item:active:not(.locked) { transform: scale(0.98); }
+
+  .shop-icon { font-size: 36px; width: 44px; text-align: center; flex-shrink: 0; }
+  .shop-info { flex: 1; min-width: 0; }
+  .shop-name { font-size: 14px; font-weight: 800; }
+  .shop-desc { font-size: 11px; color: #9ca3af; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .shop-prod {
+    font-size: 11px;
+    color: var(--purple-dark);
+    font-weight: 700;
+    margin-top: 3px;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .shop-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+  .shop-count {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text);
+    min-width: 28px;
+    text-align: right;
+  }
+  .shop-cost {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--pink-dark);
+    background: var(--pink-light);
+    padding: 3px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .shop-item.can-afford .shop-cost {
+    background: var(--purple-light);
+    color: var(--purple-dark);
+  }
+
+  /* ── Upgrades Panel ── */
+  #panel-upgrades { padding: 12px; gap: 0; background: #fff7ed; }
+
+  .upgrade-item {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1.5px solid #fed7aa;
+    box-shadow: 0 2px 6px rgba(234,88,12,0.08);
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .upgrade-item.bought {
+    opacity: 0.5;
+    background: #f9fafb;
+    cursor: default;
+  }
+  .upgrade-item.bought::after {
+    content: '✓ Owned';
+    position: absolute;
+    right: 14px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    font-weight: 700;
+    color: #6b7280;
+  }
+  .upgrade-item.can-afford:not(.bought) { border-color: #f97316; }
+  .upgrade-item:active:not(.bought):not(.locked) { transform: scale(0.98); }
+  .upgrade-icon { font-size: 32px; width: 40px; text-align: center; flex-shrink: 0; }
+  .upgrade-info { flex: 1; min-width: 0; }
+  .upgrade-name { font-size: 13px; font-weight: 800; }
+  .upgrade-effect { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+  .upgrade-cost {
+    font-size: 11px;
+    font-weight: 700;
+    color: #c2410c;
+    background: #fff7ed;
+    padding: 3px 8px;
+    border-radius: 20px;
+    flex-shrink: 0;
+    border: 1px solid #fed7aa;
+  }
+  .upgrade-item.can-afford:not(.bought) .upgrade-cost {
+    background: #fff7ed;
+    color: #c2410c;
+    border-color: #f97316;
+  }
+
+  /* ── Stats Panel ── */
+  #panel-stats { padding: 14px; gap: 12px; background: #f0fdf4; }
+
+  .stats-card {
+    background: var(--surface);
+    border-radius: 18px;
+    padding: 16px;
+    border: 1px solid #bbf7d0;
+    box-shadow: 0 2px 8px rgba(22,163,74,0.08);
+  }
+  .stats-card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #15803d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid #f0fdf4;
+    font-size: 13px;
+  }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-row .sr-label { color: #6b7280; }
+  .stat-row .sr-val { font-weight: 700; color: var(--text); }
+
+  .achiev-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .achiev-item {
+    aspect-ratio: 1;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    border: 1.5px solid #e5e7eb;
+    background: #f9fafb;
+    transition: all 0.2s;
+    gap: 2px;
+  }
+  .achiev-item.unlocked {
+    background: linear-gradient(135deg, #fef9c3, #fef3c7);
+    border-color: #fcd34d;
+  }
+  .achiev-item span { font-size: 9px; font-weight: 700; color: #6b7280; text-align: center; line-height: 1.2; }
+  .achiev-item.unlocked span { color: #92400e; }
+
+  /* scrollbar hide */
+  .panel::-webkit-scrollbar { display: none; }
+  .panel { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* notification */
+  #notif {
+    position: fixed;
+    top: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #15803d, #16a34a);
+    color: white;
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    z-index: 9999;
+    transition: top 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    white-space: nowrap;
+    box-shadow: 0 4px 16px rgba(21,128,61,0.4);
+    pointer-events: none;
+    max-width: calc(100vw - 32px);
+    text-align: center;
+  }
+  #notif.show { top: 12px; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- Header -->
+  <div id="header">
+    <div>
+      <h1><span>📚</span> BookTok Empire</h1>
+      <div style="font-size:11px;opacity:0.8;margin-top:2px" id="header-sub">Building your literary empire…</div>
+    </div>
+    <div id="stats-bar">
+      <div class="stat-chip"><span class="label">Pages:</span><span id="hdr-pages">0</span></div>
+      <div class="stat-chip"><span class="label">⚡</span><span id="hdr-pps">0</span>/s</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div id="nav">
+    <button class="tab-btn active" data-tab="click">
+      <span class="tab-icon">📖</span>Read
+    </button>
+    <button class="tab-btn" data-tab="shop">
+      <span class="tab-icon">🏪</span>Shop
+      <span class="tab-badge" id="badge-shop">0</span>
+    </button>
+    <button class="tab-btn" data-tab="upgrades">
+      <span class="tab-icon">⬆️</span>Upgrades
+      <span class="tab-badge" id="badge-upgrades">0</span>
+    </button>
+    <button class="tab-btn" data-tab="stats">
+      <span class="tab-icon">🏆</span>Stats
+    </button>
+  </div>
+
+  <!-- ── Panel: Click ── -->
+  <div class="panel active" id="panel-click">
+    <div id="milestone-toast">
+      <span style="font-size:24px">🎉</span>
+      <span id="milestone-text">Milestone reached!</span>
+    </div>
+
+    <div id="level-row">
+      <div id="xp-ring-wrap">
+        <svg width="56" height="56" viewBox="0 0 56 56">
+          <circle cx="28" cy="28" r="23" fill="none" stroke="#f3e8ff" stroke-width="5"/>
+          <circle id="xp-ring" cx="28" cy="28" r="23" fill="none" stroke="url(#rg)" stroke-width="5"
+            stroke-linecap="round" stroke-dasharray="144.51" stroke-dashoffset="144.51"/>
+          <defs>
+            <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#a855f7"/>
+              <stop offset="100%" stop-color="#f472b6"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div id="xp-ring-text">
+          <strong id="xp-level">1</strong>
+          <span>level</span>
+        </div>
+      </div>
+      <div id="level-info">
+        <div id="level-name">Casual Reader</div>
+        <div id="level-sub">Keep reading to level up!</div>
+        <div id="xp-bar-wrap"><div id="xp-bar"></div></div>
+      </div>
+    </div>
+
+    <div id="click-area">
+      <button id="book-btn" aria-label="Read a page">📚</button>
+    </div>
+
+    <div id="per-click-label">+<span id="per-click">1</span> pages per tap</div>
+
+    <div id="quick-stats">
+      <div class="qs-card">
+        <div class="qs-val" id="qs-total">0</div>
+        <div class="qs-lab">Total Pages</div>
+      </div>
+      <div class="qs-card">
+        <div class="qs-val" id="qs-followers">0</div>
+        <div class="qs-lab">Followers 👥</div>
+      </div>
+      <div class="qs-card">
+        <div class="qs-val" id="qs-books">0</div>
+        <div class="qs-lab">Books Read 📗</div>
+      </div>
+      <div class="qs-card">
+        <div class="qs-val" id="qs-clicks">0</div>
+        <div class="qs-lab">Taps 👆</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Idle popup (overlay inside panel-click) -->
+  <div id="idle-popup" onclick="collectIdle()">
+    <div class="idle-title">Welcome back, bookworm!</div>
+    <div class="idle-amount" id="idle-amount">+0 pages</div>
+    <div class="idle-tap">Tap to collect 📚</div>
+  </div>
+
+  <!-- ── Panel: Shop ── -->
+  <div class="panel" id="panel-shop">
+    <div class="shop-section-title">📖 Readers & Clubs</div>
+    <div id="shop-list"></div>
+  </div>
+
+  <!-- ── Panel: Upgrades ── -->
+  <div class="panel" id="panel-upgrades">
+    <div class="shop-section-title">✨ Power-Ups & Upgrades</div>
+    <div id="upgrades-list"></div>
+  </div>
+
+  <!-- ── Panel: Stats ── -->
+  <div class="panel" id="panel-stats">
+    <div class="stats-card">
+      <h3>📊 Lifetime Stats</h3>
+      <div class="stat-row"><span class="sr-label">Total pages earned</span><span class="sr-val" id="st-total">0</span></div>
+      <div class="stat-row"><span class="sr-label">Pages per second</span><span class="sr-val" id="st-pps">0</span></div>
+      <div class="stat-row"><span class="sr-label">Pages per tap</span><span class="sr-val" id="st-ppt">0</span></div>
+      <div class="stat-row"><span class="sr-label">Total taps</span><span class="sr-val" id="st-taps">0</span></div>
+      <div class="stat-row"><span class="sr-label">Books finished</span><span class="sr-val" id="st-books">0</span></div>
+      <div class="stat-row"><span class="sr-label">Followers gained</span><span class="sr-val" id="st-followers">0</span></div>
+      <div class="stat-row"><span class="sr-label">Longest reading streak</span><span class="sr-val" id="st-streak">0 days</span></div>
+      <div class="stat-row"><span class="sr-label">Time played</span><span class="sr-val" id="st-time">0m</span></div>
+    </div>
+    <div class="stats-card">
+      <h3>🏆 Achievements</h3>
+      <div class="achiev-grid" id="achiev-grid"></div>
+    </div>
+    <div class="stats-card" style="text-align:center;color:#9ca3af;font-size:12px;border:none;background:transparent;box-shadow:none;">
+      <button onclick="if(confirm('Reset all progress?')) resetGame()" style="background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;border-radius:10px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;">🗑 Reset Game</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Notification -->
+<div id="notif"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  GAME DATA
+// ═══════════════════════════════════════════════
+
+const BUILDINGS = [
+  {
+    id: 'bookmark',
+    name: 'Bookmark',
+    icon: '🔖',
+    desc: 'A trusty bookmark marking your place',
+    baseCost: 15,
+    basePps: 0.1,
+    flavorPps: '0.1 pages/sec',
+  },
+  {
+    id: 'bookclub',
+    name: 'Book Club',
+    icon: '👥',
+    desc: 'Friends read together, earn together',
+    baseCost: 100,
+    basePps: 0.5,
+    flavorPps: '0.5 pages/sec',
+  },
+  {
+    id: 'library',
+    name: 'Library Card',
+    icon: '🏛️',
+    desc: 'Unlimited free books, unlimited pages',
+    baseCost: 500,
+    basePps: 2,
+    flavorPps: '2 pages/sec',
+  },
+  {
+    id: 'tiktok',
+    name: 'BookTok Video',
+    icon: '📱',
+    desc: 'Go viral, gain followers & pages',
+    baseCost: 2000,
+    basePps: 8,
+    flavorPps: '8 pages/sec',
+  },
+  {
+    id: 'review',
+    name: 'Book Review Blog',
+    icon: '✍️',
+    desc: 'Readers trust your taste',
+    baseCost: 8000,
+    basePps: 25,
+    flavorPps: '25 pages/sec',
+  },
+  {
+    id: 'podcast',
+    name: 'Lit Podcast',
+    icon: '🎙️',
+    desc: 'Deep dives into every genre',
+    baseCost: 30000,
+    basePps: 80,
+    flavorPps: '80 pages/sec',
+  },
+  {
+    id: 'subscription',
+    name: 'Book Box Sub',
+    icon: '📦',
+    desc: 'Monthly curated boxes, monthly income',
+    baseCost: 120000,
+    basePps: 250,
+    flavorPps: '250 pages/sec',
+  },
+  {
+    id: 'collab',
+    name: 'Author Collab',
+    icon: '🤝',
+    desc: 'Co-write with a bestseller author',
+    baseCost: 500000,
+    basePps: 800,
+    flavorPps: '800 pages/sec',
+  },
+  {
+    id: 'festival',
+    name: 'Literary Festival',
+    icon: '🎪',
+    desc: 'Host thousands of book lovers',
+    baseCost: 2000000,
+    basePps: 2500,
+    flavorPps: '2.5K pages/sec',
+  },
+  {
+    id: 'publishing',
+    name: 'Publishing House',
+    icon: '🏢',
+    desc: 'Your own empire of stories',
+    baseCost: 10000000,
+    basePps: 10000,
+    flavorPps: '10K pages/sec',
+  },
+];
+
+const UPGRADES = [
+  // Click upgrades
+  { id: 'u_read1',  name: 'Speed Reading',       icon: '⚡', effect: 'Double tap power',            cost: 50,      type: 'click', mult: 2,   req: null },
+  { id: 'u_read2',  name: 'Evelyn Wood Method',   icon: '🔥', effect: '5x tap power',               cost: 500,     type: 'click', mult: 5,   req: () => G.totalPages >= 200 },
+  { id: 'u_read3',  name: 'Photographic Memory',  icon: '🧠', effect: '10x tap power',              cost: 5000,    type: 'click', mult: 10,  req: () => G.totalPages >= 2000 },
+  { id: 'u_read4',  name: 'Bibliophile Trance',   icon: '🌀', effect: '25x tap power',              cost: 50000,   type: 'click', mult: 25,  req: () => G.totalPages >= 20000 },
+  { id: 'u_read5',  name: 'One With The Page',    icon: '✨', effect: '50x tap power',              cost: 500000,  type: 'click', mult: 50,  req: () => G.totalPages >= 200000 },
+  // Building multipliers
+  { id: 'u_bm1',    name: 'Better Bookmarks',     icon: '🔖', effect: '2x Bookmark output',         cost: 200,     type: 'building', bid: 'bookmark',     mult: 2, req: () => G.buildings.bookmark >= 5 },
+  { id: 'u_bc1',    name: 'Snack Night',          icon: '🍕', effect: '2x Book Club output',        cost: 1000,    type: 'building', bid: 'bookclub',     mult: 2, req: () => G.buildings.bookclub >= 5 },
+  { id: 'u_lib1',   name: 'Digital Archive',      icon: '💾', effect: '2x Library output',          cost: 4000,    type: 'building', bid: 'library',      mult: 2, req: () => G.buildings.library >= 5 },
+  { id: 'u_tt1',    name: 'Trending Sound',        icon: '🎵', effect: '2x BookTok output',          cost: 16000,   type: 'building', bid: 'tiktok',       mult: 2, req: () => G.buildings.tiktok >= 5 },
+  { id: 'u_rv1',    name: 'SEO Optimized',         icon: '🔍', effect: '2x Blog output',             cost: 64000,   type: 'building', bid: 'review',       mult: 2, req: () => G.buildings.review >= 5 },
+  { id: 'u_pod1',   name: 'Patreon Launch',        icon: '💰', effect: '2x Podcast output',          cost: 256000,  type: 'building', bid: 'podcast',      mult: 2, req: () => G.buildings.podcast >= 5 },
+  { id: 'u_sub1',   name: 'VIP Tier',             icon: '👑', effect: '2x Book Box output',         cost: 1000000, type: 'building', bid: 'subscription', mult: 2, req: () => G.buildings.subscription >= 5 },
+  // Global boosts
+  { id: 'u_glob1',  name: 'Reading Rainbow',       icon: '🌈', effect: 'All production ×1.5',        cost: 100000,  type: 'global', mult: 1.5, req: () => G.totalPages >= 50000 },
+  { id: 'u_glob2',  name: 'NYT Bestseller List',   icon: '📰', effect: 'All production ×2',          cost: 1000000, type: 'global', mult: 2,   req: () => G.totalPages >= 500000 },
+  { id: 'u_glob3',  name: 'Oprah\'s Book Club',    icon: '🌟', effect: 'All production ×5',          cost: 10000000,type: 'global', mult: 5,   req: () => G.totalPages >= 5000000 },
+  // Followers boosts
+  { id: 'u_fol1',   name: 'Aesthetic Shelf',       icon: '📸', effect: 'Gain followers 2x faster',   cost: 3000,    type: 'followers', mult: 2, req: () => G.followers >= 50 },
+  { id: 'u_fol2',   name: 'Viral Moment',          icon: '💥', effect: 'Gain followers 5x faster',   cost: 50000,   type: 'followers', mult: 5, req: () => G.followers >= 1000 },
+];
+
+const LEVELS = [
+  { name: 'Casual Reader',       xp: 0 },
+  { name: 'Bookworm',            xp: 100 },
+  { name: 'Page Turner',         xp: 500 },
+  { name: 'Library Regular',     xp: 2000 },
+  { name: 'Book Blogger',        xp: 8000 },
+  { name: 'BookTok Creator',     xp: 25000 },
+  { name: 'Literary Influencer', xp: 80000 },
+  { name: 'Published Author',    xp: 250000 },
+  { name: 'Bestseller',          xp: 750000 },
+  { name: 'Literary Legend',     xp: 2500000 },
+];
+
+const ACHIEVEMENTS = [
+  { id: 'ach_1tap',    icon: '👆', name: 'First Tap',      cond: () => G.totalClicks >= 1 },
+  { id: 'ach_100tap',  icon: '🔥', name: '100 Taps',       cond: () => G.totalClicks >= 100 },
+  { id: 'ach_1kpages', icon: '📃', name: '1K Pages',       cond: () => G.totalPages >= 1000 },
+  { id: 'ach_10kpages',icon: '📚', name: '10K Pages',      cond: () => G.totalPages >= 10000 },
+  { id: 'ach_1mpages', icon: '🏆', name: '1M Pages',       cond: () => G.totalPages >= 1000000 },
+  { id: 'ach_bm5',     icon: '🔖', name: '5 Bookmarks',    cond: () => G.buildings.bookmark >= 5 },
+  { id: 'ach_bc1',     icon: '👥', name: 'Book Club',       cond: () => G.buildings.bookclub >= 1 },
+  { id: 'ach_tt1',     icon: '📱', name: 'BookTokker',      cond: () => G.buildings.tiktok >= 1 },
+  { id: 'ach_fol100',  icon: '😍', name: '100 Fans',        cond: () => G.followers >= 100 },
+  { id: 'ach_fol10k',  icon: '🌟', name: '10K Followers',   cond: () => G.followers >= 10000 },
+  { id: 'ach_allbld',  icon: '🏢', name: 'Empire Builder',  cond: () => BUILDINGS.every(b => G.buildings[b.id] >= 1) },
+  { id: 'ach_maxlvl',  icon: '👑', name: 'Literary Legend', cond: () => G.level >= LEVELS.length - 1 },
+];
+
+const MILESTONES = [
+  { pages: 100,       msg: '📗 You read 100 pages! A whole chapter!' },
+  { pages: 1000,      msg: '📘 1,000 pages — you\'re a bookworm!' },
+  { pages: 10000,     msg: '📙 10K pages — starting a TikTok account!' },
+  { pages: 100000,    msg: '📕 100K pages — going viral on BookTok!' },
+  { pages: 1000000,   msg: '🏆 1 Million pages — you\'re a literary legend!' },
+  { pages: 10000000,  msg: '🌟 10 Million! Oprah called!' },
+  { pages: 100000000, msg: '👑 100 Million pages — GOAT reader!' },
+];
+
+// ═══════════════════════════════════════════════
+//  GAME STATE
+// ═══════════════════════════════════════════════
+
+const defaultState = () => ({
+  pages: 0,
+  totalPages: 0,
+  followers: 0,
+  totalClicks: 0,
+  booksRead: 0,
+  buildings: Object.fromEntries(BUILDINGS.map(b => [b.id, 0])),
+  boughtUpgrades: [],
+  level: 0,
+  xp: 0,
+  lastSave: Date.now(),
+  lastActive: Date.now(),
+  totalTime: 0,
+  streak: 0,
+  milestonesReached: [],
+  achievements: [],
+  clickMult: 1,
+  buildingMults: {},
+  globalMult: 1,
+  followerMult: 1,
+});
+
+let G = defaultState();
+let pps = 0;
+let ppt = 1;
+
+// ═══════════════════════════════════════════════
+//  SAVE / LOAD
+// ═══════════════════════════════════════════════
+
+function saveGame() {
+  G.lastSave = Date.now();
+  try { localStorage.setItem('booktok_save', JSON.stringify(G)); } catch(e) {}
+}
+
+function loadGame() {
+  try {
+    const raw = localStorage.getItem('booktok_save');
+    if (!raw) return;
+    const saved = JSON.parse(raw);
+    G = { ...defaultState(), ...saved };
+    G.buildings = { ...defaultState().buildings, ...saved.buildings };
+    // Idle earnings
+    const away = Math.min((Date.now() - G.lastActive) / 1000, 3600 * 8);
+    if (away > 10) {
+      const earned = Math.floor(ppsCalc() * away);
+      if (earned > 0) showIdlePopup(earned);
+    }
+  } catch(e) { G = defaultState(); }
+}
+
+function resetGame() {
+  localStorage.removeItem('booktok_save');
+  G = defaultState();
+  recalc();
+  renderShop();
+  renderUpgrades();
+  renderStats();
+  updateUI();
+  showNotif('🗑 Game reset!');
+}
+
+// ═══════════════════════════════════════════════
+//  CALCULATIONS
+// ═══════════════════════════════════════════════
+
+function ppsCalc() {
+  let total = 0;
+  for (const b of BUILDINGS) {
+    const count = G.buildings[b.id] || 0;
+    if (!count) continue;
+    const bm = G.buildingMults?.[b.id] || 1;
+    total += b.basePps * count * bm * G.globalMult;
+  }
+  return total;
+}
+
+function pptCalc() {
+  return Math.max(1, G.clickMult * G.globalMult);
+}
+
+function buildingCost(b, owned) {
+  return Math.ceil(b.baseCost * Math.pow(1.15, owned));
+}
+
+function recalc() {
+  pps = ppsCalc();
+  ppt = pptCalc();
+}
+
+// ═══════════════════════════════════════════════
+//  CLICK
+// ═══════════════════════════════════════════════
+
+document.getElementById('book-btn').addEventListener('pointerdown', function(e) {
+  e.preventDefault();
+  const earned = Math.ceil(ppt);
+  G.pages += earned;
+  G.totalPages += earned;
+  G.xp += earned;
+  G.totalClicks++;
+
+  // followers from clicks (1 per 200 pages worth of clicks)
+  if (G.totalClicks % 20 === 0) {
+    G.followers += Math.ceil(G.followerMult);
+  }
+  // books read (every 500 pages)
+  G.booksRead = Math.floor(G.totalPages / 500);
+
+  this.classList.add('clicked');
+  setTimeout(() => this.classList.remove('clicked'), 120);
+
+  // float text
+  const rect = this.getBoundingClientRect();
+  showFloatText(`+${fmt(earned)}`, rect.left + rect.width/2 + (Math.random()-0.5)*60, rect.top + (Math.random()-0.5)*30);
+
+  checkMilestones();
+  checkAchievements();
+  checkLevel();
+  updateUI();
+});
+
+function showFloatText(txt, x, y) {
+  const el = document.createElement('div');
+  el.className = 'float-text';
+  el.textContent = txt;
+  el.style.left = x + 'px';
+  el.style.top  = y + 'px';
+  el.style.transform = 'translate(-50%, -50%)';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 950);
+}
+
+// ═══════════════════════════════════════════════
+//  IDLE POPUP
+// ═══════════════════════════════════════════════
+
+let idleEarned = 0;
+function showIdlePopup(amt) {
+  idleEarned = amt;
+  document.getElementById('idle-amount').textContent = `+${fmt(amt)} pages`;
+  document.getElementById('idle-popup').classList.add('show');
+}
+function collectIdle() {
+  if (!idleEarned) return;
+  G.pages += idleEarned;
+  G.totalPages += idleEarned;
+  G.xp += idleEarned;
+  document.getElementById('idle-popup').classList.remove('show');
+  showNotif(`📚 Collected ${fmt(idleEarned)} idle pages!`);
+  idleEarned = 0;
+  updateUI();
+}
+
+// ═══════════════════════════════════════════════
+//  SHOP
+// ═══════════════════════════════════════════════
+
+function renderShop() {
+  const list = document.getElementById('shop-list');
+  list.innerHTML = '';
+  for (const b of BUILDINGS) {
+    const owned = G.buildings[b.id] || 0;
+    const cost = buildingCost(b, owned);
+    const canAfford = G.pages >= cost;
+    const bm = G.buildingMults?.[b.id] || 1;
+    const actualPps = (b.basePps * bm * G.globalMult).toFixed(1);
+
+    const div = document.createElement('div');
+    div.className = 'shop-item' + (canAfford ? ' can-afford' : '');
+    div.innerHTML = `
+      <div class="shop-icon">${b.icon}</div>
+      <div class="shop-info">
+        <div class="shop-name">${b.name}</div>
+        <div class="shop-desc">${b.desc}</div>
+        <div class="shop-prod">📄 ${actualPps} pages/sec each</div>
+      </div>
+      <div class="shop-right">
+        <div class="shop-count">${owned}</div>
+        <div class="shop-cost">📚 ${fmt(cost)}</div>
+      </div>`;
+    div.addEventListener('click', () => buyBuilding(b.id));
+    list.appendChild(div);
+  }
+}
+
+function buyBuilding(id) {
+  const b = BUILDINGS.find(x => x.id === id);
+  const owned = G.buildings[id] || 0;
+  const cost = buildingCost(b, owned);
+  if (G.pages < cost) { showNotif('Not enough pages! 📚'); return; }
+  G.pages -= cost;
+  G.buildings[id]++;
+  G.followers += Math.ceil(5 * G.followerMult);
+  recalc();
+  renderShop();
+  renderUpgrades();
+  checkAchievements();
+  updateUI();
+  showNotif(`${b.icon} Bought ${b.name}!`);
+}
+
+// ═══════════════════════════════════════════════
+//  UPGRADES
+// ═══════════════════════════════════════════════
+
+function renderUpgrades() {
+  const list = document.getElementById('upgrades-list');
+  list.innerHTML = '';
+  let availableCount = 0;
+
+  for (const u of UPGRADES) {
+    const bought = G.boughtUpgrades.includes(u.id);
+    const visible = !u.req || u.req();
+    if (!visible && !bought) continue;
+
+    const canAfford = G.pages >= u.cost && !bought;
+    if (canAfford) availableCount++;
+
+    const div = document.createElement('div');
+    div.className = 'upgrade-item' + (bought ? ' bought' : '') + (canAfford && !bought ? ' can-afford' : '');
+    div.innerHTML = `
+      <div class="upgrade-icon">${u.icon}</div>
+      <div class="upgrade-info">
+        <div class="upgrade-name">${u.name}</div>
+        <div class="upgrade-effect">${u.effect}</div>
+      </div>
+      ${!bought ? `<div class="upgrade-cost">📚 ${fmt(u.cost)}</div>` : ''}`;
+    if (!bought) div.addEventListener('click', () => buyUpgrade(u.id));
+    list.appendChild(div);
+  }
+
+  const badge = document.getElementById('badge-upgrades');
+  badge.textContent = availableCount;
+  badge.classList.toggle('show', availableCount > 0);
+}
+
+function buyUpgrade(id) {
+  const u = UPGRADES.find(x => x.id === id);
+  if (!u || G.boughtUpgrades.includes(id)) return;
+  if (G.pages < u.cost) { showNotif('Not enough pages! 📚'); return; }
+  G.pages -= u.cost;
+  G.boughtUpgrades.push(id);
+  applyUpgrade(u);
+  recalc();
+  renderUpgrades();
+  renderShop();
+  updateUI();
+  showNotif(`${u.icon} ${u.name} unlocked!`);
+}
+
+function applyUpgrade(u) {
+  if (u.type === 'click') {
+    G.clickMult = (G.clickMult || 1) * u.mult;
+  } else if (u.type === 'building') {
+    if (!G.buildingMults) G.buildingMults = {};
+    G.buildingMults[u.bid] = ((G.buildingMults[u.bid] || 1) * u.mult);
+  } else if (u.type === 'global') {
+    G.globalMult = (G.globalMult || 1) * u.mult;
+  } else if (u.type === 'followers') {
+    G.followerMult = (G.followerMult || 1) * u.mult;
+  }
+}
+
+function reapplyAllUpgrades() {
+  G.clickMult = 1;
+  G.buildingMults = {};
+  G.globalMult = 1;
+  G.followerMult = 1;
+  for (const id of G.boughtUpgrades) {
+    const u = UPGRADES.find(x => x.id === id);
+    if (u) applyUpgrade(u);
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  LEVEL SYSTEM
+// ═══════════════════════════════════════════════
+
+function checkLevel() {
+  let lvl = 0;
+  for (let i = LEVELS.length - 1; i >= 0; i--) {
+    if (G.xp >= LEVELS[i].xp) { lvl = i; break; }
+  }
+  if (lvl > G.level) {
+    G.level = lvl;
+    showNotif(`🎉 Level Up! You're now a ${LEVELS[lvl].name}!`);
+  }
+}
+
+function updateLevelUI() {
+  const lvl = G.level;
+  const cur = LEVELS[lvl];
+  const next = LEVELS[lvl + 1];
+  document.getElementById('xp-level').textContent = lvl + 1;
+  document.getElementById('level-name').textContent = cur.name;
+
+  if (next) {
+    const progress = (G.xp - cur.xp) / (next.xp - cur.xp);
+    document.getElementById('xp-bar').style.width = (progress * 100) + '%';
+    document.getElementById('level-sub').textContent = `${fmt(next.xp - G.xp)} pages to ${next.name}`;
+    // ring
+    const circ = 144.51;
+    document.getElementById('xp-ring').style.strokeDashoffset = circ - (circ * progress);
+  } else {
+    document.getElementById('xp-bar').style.width = '100%';
+    document.getElementById('level-sub').textContent = 'Max level reached! 👑';
+    document.getElementById('xp-ring').style.strokeDashoffset = 0;
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  MILESTONES
+// ═══════════════════════════════════════════════
+
+let milestoneTimer = null;
+function checkMilestones() {
+  for (const m of MILESTONES) {
+    if (G.totalPages >= m.pages && !G.milestonesReached.includes(m.pages)) {
+      G.milestonesReached.push(m.pages);
+      showMilestone(m.msg);
+    }
+  }
+}
+function showMilestone(msg) {
+  const toast = document.getElementById('milestone-toast');
+  document.getElementById('milestone-text').textContent = msg;
+  toast.classList.add('show');
+  if (milestoneTimer) clearTimeout(milestoneTimer);
+  milestoneTimer = setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+// ═══════════════════════════════════════════════
+//  ACHIEVEMENTS
+// ═══════════════════════════════════════════════
+
+function checkAchievements() {
+  let newUnlock = false;
+  for (const a of ACHIEVEMENTS) {
+    if (!G.achievements.includes(a.id) && a.cond()) {
+      G.achievements.push(a.id);
+      newUnlock = true;
+      showNotif(`🏆 Achievement: ${a.icon} ${a.name}!`);
+    }
+  }
+  if (newUnlock) renderAchievements();
+}
+
+function renderAchievements() {
+  const grid = document.getElementById('achiev-grid');
+  grid.innerHTML = '';
+  for (const a of ACHIEVEMENTS) {
+    const unlocked = G.achievements.includes(a.id);
+    const div = document.createElement('div');
+    div.className = 'achiev-item' + (unlocked ? ' unlocked' : '');
+    div.innerHTML = `${unlocked ? a.icon : '🔒'}<span>${a.name}</span>`;
+    grid.appendChild(div);
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  FORMAT
+// ═══════════════════════════════════════════════
+
+function fmt(n) {
+  if (n < 1000) return Math.floor(n).toString();
+  if (n < 1e6)  return (n/1000).toFixed(1) + 'K';
+  if (n < 1e9)  return (n/1e6).toFixed(2) + 'M';
+  if (n < 1e12) return (n/1e9).toFixed(2) + 'B';
+  return (n/1e12).toFixed(2) + 'T';
+}
+
+function fmtTime(s) {
+  if (s < 60) return s + 's';
+  if (s < 3600) return Math.floor(s/60) + 'm';
+  if (s < 86400) return Math.floor(s/3600) + 'h ' + Math.floor((s%3600)/60) + 'm';
+  return Math.floor(s/86400) + 'd ' + Math.floor((s%86400)/3600) + 'h';
+}
+
+// ═══════════════════════════════════════════════
+//  UI UPDATE
+// ═══════════════════════════════════════════════
+
+function updateUI() {
+  // Header
+  document.getElementById('hdr-pages').textContent = fmt(G.pages);
+  document.getElementById('hdr-pps').textContent = fmt(pps);
+
+  // Click panel
+  document.getElementById('per-click').textContent = fmt(Math.ceil(ppt));
+  document.getElementById('qs-total').textContent = fmt(G.totalPages);
+  document.getElementById('qs-followers').textContent = fmt(G.followers);
+  document.getElementById('qs-books').textContent = fmt(G.booksRead);
+  document.getElementById('qs-clicks').textContent = fmt(G.totalClicks);
+
+  updateLevelUI();
+  updateHeaderSub();
+
+  // Stats panel
+  document.getElementById('st-total').textContent = fmt(G.totalPages);
+  document.getElementById('st-pps').textContent = fmt(pps) + '/s';
+  document.getElementById('st-ppt').textContent = fmt(Math.ceil(ppt));
+  document.getElementById('st-taps').textContent = fmt(G.totalClicks);
+  document.getElementById('st-books').textContent = fmt(G.booksRead);
+  document.getElementById('st-followers').textContent = fmt(G.followers);
+  document.getElementById('st-streak').textContent = (G.streak || 0) + ' days';
+  document.getElementById('st-time').textContent = fmtTime(Math.floor((G.totalTime || 0) / 1000));
+
+  // Shop badge
+  let shopBadge = 0;
+  for (const b of BUILDINGS) {
+    if (G.pages >= buildingCost(b, G.buildings[b.id] || 0)) shopBadge++;
+  }
+  const sb = document.getElementById('badge-shop');
+  sb.textContent = shopBadge;
+  sb.classList.toggle('show', shopBadge > 0);
+}
+
+function updateHeaderSub() {
+  const subs = [
+    `📗 ${fmt(G.followers)} followers`,
+    `📚 ${fmt(G.booksRead)} books finished`,
+    `⚡ ${fmt(pps)}/sec earning`,
+  ];
+  const idx = Math.floor(Date.now() / 4000) % subs.length;
+  document.getElementById('header-sub').textContent = subs[idx];
+}
+
+// ═══════════════════════════════════════════════
+//  NOTIFICATIONS
+// ═══════════════════════════════════════════════
+
+let notifQueue = [];
+let notifShowing = false;
+function showNotif(msg) {
+  notifQueue.push(msg);
+  if (!notifShowing) processNotif();
+}
+function processNotif() {
+  if (!notifQueue.length) { notifShowing = false; return; }
+  notifShowing = true;
+  const msg = notifQueue.shift();
+  const el = document.getElementById('notif');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => {
+    el.classList.remove('show');
+    setTimeout(processNotif, 350);
+  }, 2200);
+}
+
+// ═══════════════════════════════════════════════
+//  TAB NAVIGATION
+// ═══════════════════════════════════════════════
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab === 'shop') renderShop();
+    if (btn.dataset.tab === 'upgrades') renderUpgrades();
+    if (btn.dataset.tab === 'stats') { renderAchievements(); updateUI(); }
+  });
+});
+
+// ═══════════════════════════════════════════════
+//  GAME LOOP
+// ═══════════════════════════════════════════════
+
+let lastTick = Date.now();
+let sessionTime = 0;
+
+function tick() {
+  const now = Date.now();
+  const dt = (now - lastTick) / 1000;
+  lastTick = now;
+
+  sessionTime += (now - lastTick + dt*1000);
+  G.totalTime = (G.totalTime || 0) + dt * 1000;
+  G.lastActive = now;
+
+  if (pps > 0) {
+    const earned = pps * dt;
+    G.pages += earned;
+    G.totalPages += earned;
+    G.xp += earned * 0.5;
+    // followers from production (1 per 100 pages)
+    G.followers += earned * G.followerMult * 0.01;
+    G.booksRead = Math.floor(G.totalPages / 500);
+  }
+
+  checkMilestones();
+  checkAchievements();
+  checkLevel();
+  updateUI();
+
+  // Periodically re-render shop/upgrade badges
+  if (Math.floor(now / 1000) % 3 === 0) {
+    renderShop();
+    renderUpgrades();
+  }
+
+  requestAnimationFrame(tick);
+}
+
+// Autosave
+setInterval(saveGame, 15000);
+
+// ═══════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════
+
+loadGame();
+reapplyAllUpgrades();
+recalc();
+renderShop();
+renderUpgrades();
+renderAchievements();
+updateUI();
+checkMilestones();
+
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>

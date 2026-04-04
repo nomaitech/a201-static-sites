@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Chambers — Secure Legislative Mail</title>
+  <style>
+    :root {
+      --bg:     #080c14;
+      --bg2:    #0f1623;
+      --bg3:    #1a2133;
+      --border: #2a3550;
+      --text:   #dde3f0;
+      --muted:  #6b7a99;
+      --gold:   #e8b455;
+      --red:    #e05252;
+      --green:  #34c48a;
+      --blue:   #4a90d9;
+      --purple: #9b72e8;
+      --orange: #e8834a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Georgia', 'Times New Roman', serif;
+      height: 100dvh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* ── HEADER ─────────────────────────────── */
+    #header {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 12px 6px;
+      flex-shrink: 0;
+    }
+
+    #title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    #game-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #game-title .app-icon {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #1e3a6e, #2d5a9e);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+    }
+
+    #game-title .app-name {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--text);
+      letter-spacing: 0.5px;
+    }
+
+    #game-title .app-sub {
+      font-size: 10px;
+      font-family: sans-serif;
+      color: var(--muted);
+      letter-spacing: 0.3px;
+    }
+
+    #day-badge {
+      background: var(--bg3);
+      color: var(--muted);
+      font-size: 10px;
+      font-family: sans-serif;
+      padding: 3px 9px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    /* ── MAIN ────────────────────────────────── */
+    #main {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* ── INBOX ───────────────────────────────── */
+    #inbox {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px;
+    }
+
+    .inbox-section-label {
+      font-size: 10px;
+      font-family: sans-serif;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 4px 4px 6px;
+    }
+
+    .email-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 11px;
+      margin-bottom: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      transition: background 0.15s, transform 0.1s;
+      position: relative;
+    }
+
+    .email-card:active { transform: scale(0.975); background: var(--bg3); }
+    .email-card.unread { border-left: 3px solid var(--blue); }
+    .email-card.urgent { border-left: 3px solid var(--red); }
+    .email-card.unread.urgent { border-left: 3px solid var(--red); }
+
+    .email-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .email-meta { flex: 1; min-width: 0; }
+    .email-from { font-size: 13px; font-weight: bold; margin-bottom: 1px; }
+    .email-subject { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .email-org { font-size: 10px; color: var(--muted); margin-top: 1px; font-family: sans-serif; opacity: .7; }
+
+    .email-side { text-align: right; flex-shrink: 0; }
+    .email-time { font-size: 10px; font-family: sans-serif; color: var(--muted); }
+    .urgent-dot { color: var(--red); font-size: 9px; font-family: sans-serif; }
+
+    #next-day-btn {
+      background: linear-gradient(135deg, #112240, #1b3a6b);
+      border: 1px solid var(--blue);
+      color: var(--text);
+      font-family: 'Georgia', serif;
+      font-size: 14px;
+      padding: 13px 28px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.15s;
+    }
+
+    #next-day-btn:active { transform: scale(0.96); opacity: .8; }
+
+    #empty-inbox {
+      text-align: center;
+      color: var(--muted);
+      padding: 48px 24px 32px;
+      font-size: 13px;
+      line-height: 1.7;
+      display: none;
+    }
+
+    /* ── EMAIL DETAIL ────────────────────────── */
+    #email-detail {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #email-detail.open { display: flex; }
+
+    .detail-topbar {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 12px;
+      flex-shrink: 0;
+    }
+
+    .back-link {
+      font-size: 12px;
+      font-family: sans-serif;
+      color: var(--blue);
+      cursor: pointer;
+      margin-bottom: 6px;
+      display: inline-block;
+    }
+
+    .detail-from { font-size: 14px; font-weight: bold; margin-bottom: 2px; }
+    .detail-subject { font-size: 11px; color: var(--muted); font-family: sans-serif; }
+
+    .detail-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 14px;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .detail-body p { margin-bottom: 13px; }
+    .detail-body strong { color: var(--gold); }
+    .detail-body em { color: var(--muted); font-style: italic; }
+
+    /* ── CHOICES ─────────────────────────────── */
+    .choices-panel {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 10px 12px 12px;
+      flex-shrink: 0;
+    }
+
+    .choices-label {
+      font-size: 10px;
+      font-family: sans-serif;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 7px;
+    }
+
+    .choice-btn {
+      display: block;
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid;
+      font-size: 13px;
+      cursor: pointer;
+      text-align: left;
+      line-height: 1.4;
+      font-family: 'Georgia', serif;
+      transition: transform 0.1s, opacity 0.1s;
+      margin-bottom: 7px;
+    }
+
+    .choice-btn:last-child { margin-bottom: 0; }
+    .choice-btn:active { transform: scale(0.97); opacity: .8; }
+
+    .choice-btn.green  { background: rgba(52,196,138,.08); border-color: var(--green); color: var(--green); }
+    .choice-btn.red    { background: rgba(224,82,82,.08);  border-color: var(--red);   color: var(--red); }
+    .choice-btn.blue   { background: rgba(74,144,217,.08); border-color: var(--blue);  color: var(--blue); }
+
+    .choice-effects {
+      font-size: 10px;
+      font-family: sans-serif;
+      margin-top: 4px;
+      opacity: .85;
+    }
+
+    /* ── BOTTOM BAR ──────────────────────────── */
+    #bottom-bar {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 8px 10px;
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .action-btn {
+      flex: 1;
+      border-radius: 10px;
+      border: 1px solid;
+      padding: 9px 6px;
+      cursor: pointer;
+      font-family: 'Georgia', serif;
+      text-align: center;
+      transition: transform 0.1s, opacity 0.15s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .action-btn:active { transform: scale(0.93); }
+
+    #lobby-btn {
+      background: linear-gradient(145deg, #112240, #1b3a6b);
+      border-color: var(--blue);
+      flex: 2;
+    }
+
+    #presser-btn {
+      background: linear-gradient(145deg, #1f0a3d, #3b1a70);
+      border-color: var(--purple);
+    }
+
+    #draft-btn {
+      background: linear-gradient(145deg, #0a2212, #1a4228);
+      border-color: var(--green);
+    }
+
+    .btn-emoji { font-size: 18px; line-height: 1; }
+    .btn-label { font-size: 11px; color: var(--text); }
+    .btn-sub   { font-size: 9px; font-family: sans-serif; color: var(--muted); }
+
+    /* ── OVERLAYS ────────────────────────────── */
+    #toast {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-140%);
+      background: rgba(22, 28, 46, 0.97);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 10px 12px 12px;
+      z-index: 90;
+      max-width: 360px;
+      width: calc(100% - 24px);
+      pointer-events: all;
+      transition: transform 0.38s cubic-bezier(.22,1,.36,1), opacity 0.25s;
+      opacity: 0;
+      box-shadow: 0 10px 32px rgba(0,0,0,.6);
+    }
+
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    #toast-toprow {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 6px;
+    }
+
+    #toast-app-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    #toast-app-name {
+      font-size: 11px;
+      font-family: sans-serif;
+      font-weight: 600;
+      flex: 1;
+      letter-spacing: 0.2px;
+    }
+
+    #toast-time {
+      font-size: 10px;
+      font-family: sans-serif;
+      color: var(--muted);
+    }
+
+    #toast-close {
+      font-size: 14px;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0 2px;
+      line-height: 1;
+      margin-left: 6px;
+      flex-shrink: 0;
+    }
+
+    #toast-close:hover { color: var(--text); }
+
+    #toast-msg {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.5;
+      font-family: sans-serif;
+    }
+
+    .float-fx {
+      position: fixed;
+      right: 18px;
+      font-size: 13px;
+      font-family: sans-serif;
+      font-weight: 700;
+      pointer-events: none;
+      z-index: 80;
+      animation: fxUp 1.4s ease forwards;
+    }
+
+    @keyframes fxUp {
+      0%   { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-56px); }
+    }
+
+    #end-screen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(6,9,16,.97);
+      z-index: 200;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 22px;
+      text-align: center;
+    }
+
+    #end-screen.show { display: flex; }
+
+    .end-emoji { font-size: 56px; margin-bottom: 12px; }
+    .end-title { font-size: 26px; margin-bottom: 10px; color: var(--gold); }
+    .end-body  { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 28px; max-width: 340px; }
+
+    .restart-btn {
+      background: var(--gold);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 13px 36px;
+      font-size: 15px;
+      font-family: 'Georgia', serif;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .restart-btn:active { opacity: .8; }
+
+    .milestone-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 14px;
+      background: linear-gradient(135deg, #0a2e1a, #0d4028);
+      border-bottom: 2px solid var(--green);
+      text-align: center;
+      font-size: 14px;
+      color: var(--green);
+      z-index: 150;
+      animation: slideDown .5s ease, slideUp .5s ease 2.8s forwards;
+    }
+
+    @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+    @keyframes slideUp   { from { transform: translateY(0); } to { transform: translateY(-100%); } }
+
+    /* scrollbars */
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ─────────────────────────────────── -->
+<div id="header">
+  <div id="title-row">
+    <div id="game-title">
+      <div class="app-icon">🏛️</div>
+      <div>
+        <div class="app-name">Chambers</div>
+        <div class="app-sub">Secure Legislative Mail</div>
+      </div>
+    </div>
+    <span id="day-badge">Day 1</span>
+  </div>
+</div>
+
+<!-- ── MAIN ──────────────────────────────────── -->
+<div id="main">
+
+  <!-- Inbox -->
+  <div id="inbox">
+    <div class="inbox-section-label">📬 Inbox</div>
+    <div id="email-list"></div>
+    <div id="empty-inbox">
+      <div style="font-size:36px;margin-bottom:12px">✅</div>
+      <div style="font-size:15px;color:var(--text);margin-bottom:6px">Inbox cleared</div>
+      <div style="font-size:13px;margin-bottom:28px">All messages for today have been handled.</div>
+      <button id="next-day-btn" onclick="nextDay()">
+        Advance to Next Day →
+      </button>
+    </div>
+  </div>
+
+  <!-- Email detail -->
+  <div id="email-detail">
+    <div class="detail-topbar">
+      <span class="back-link" id="back-btn">← Inbox</span>
+      <div class="detail-from" id="d-from"></div>
+      <div class="detail-subject" id="d-subject"></div>
+    </div>
+    <div class="detail-body" id="d-body"></div>
+    <div class="choices-panel">
+      <div class="choices-label">Generate AI response email</div>
+      <button class="choice-btn" id="choice-a" onclick="choose('a')"></button>
+      <button class="choice-btn" id="choice-b" onclick="choose('b')"></button>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ── TOAST ──────────────────────────────────── -->
+<div id="toast">
+  <div id="toast-toprow">
+    <div id="toast-app-icon"></div>
+    <div id="toast-app-name"></div>
+    <div id="toast-time">now</div>
+    <div id="toast-close" onclick="dismissToast()">✕</div>
+  </div>
+  <div id="toast-msg"></div>
+</div>
+
+<!-- ── END SCREEN ─────────────────────────────── -->
+<div id="end-screen">
+  <div class="end-emoji" id="end-emoji"></div>
+  <div class="end-title" id="end-title"></div>
+  <div class="end-body"  id="end-body"></div>
+  <button class="restart-btn" onclick="initGame()">Play Again</button>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// EMAIL DATABASE
+// ═══════════════════════════════════════════════
+const EMAILS = [
+  // ── Phase 0–30 ──────────────────────────────
+  {
+    id:'e01', phase:[0,80], urgent:false,
+    from:'Marcus Chen', org:'OpenMind AI — CEO',
+    avatar:'🤖', avBg:'#0e1e3a',
+    subject:'Partnership Opportunity — Let\'s talk before this escalates',
+    body:`<p>Dear Senator,</p>
+    <p>I'll be direct. OpenMind AI has created technology that will define this century. Our models are advising hospitals, accelerating drug discovery, and managing infrastructure at unprecedented scale.</p>
+    <p>Rather than adversarial legislation, I'd like to propose a <strong>voluntary compliance framework</strong> — industry-led oversight with real teeth. We'd also like to make a contribution to your re-election campaign. The tech sector values pragmatic leadership.</p>
+    <p>Let's talk before you go public with anything that might... complicate things for everyone.</p>
+    <p>— Marcus Chen, CEO</p>`,
+    a:{ text:'Accept the meeting. Hear them out.',
+        type:'blue',
+        effects:{ funding:+18, support:-10, regulation:-6, power:+3 },
+        app:'campaign', out:'You met the OpenMind CEO privately. Your grassroots donors noticed. War chest up, trust down.' },
+    b:{ text:'Decline publicly. Call it what it is: an attempt to buy influence.',
+        type:'red',
+        effects:{ support:+16, funding:-8, regulation:+6, power:-3 },
+        app:'hill', out:'Your statement went viral. OpenMind\'s stock dropped 5%. Small donations flooded in overnight.' }
+  },
+  {
+    id:'e02', phase:[0,100], urgent:false,
+    from:'Patricia Weaver', org:'Constituent — District 7',
+    avatar:'👩', avBg:'#0e2412',
+    subject:'My son lost his job to an AI last month',
+    body:`<p>Dear Senator,</p>
+    <p>I've been writing to your office for three months. My son Daniel worked as a paralegal for 8 years. Last month, the firm replaced his entire department with a system called LexMind.</p>
+    <p>He has a mortgage. Two kids. 200 job applications sent. Not one callback — because every firm is doing the same thing.</p>
+    <p>I voted for you. I volunteered on your campaign. I'm begging you: <strong>do something.</strong> This isn't abstract to us. This is our family.</p>
+    <p>Patricia Weaver</p>`,
+    a:{ text:'Sponsor the AI Employment Protection Act. Promise direct action.',
+        type:'green',
+        effects:{ support:+14, power:+6, regulation:+9, funding:-4 },
+        app:'senate', out:'Patricia\'s story became your campaign centerpiece. The bill gained three co-sponsors overnight.' },
+    b:{ text:'Send a form letter. You need more data before acting.',
+        type:'red',
+        effects:{ support:-8, power:0, regulation:0 },
+        app:'poll', out:'Patricia posted your form letter on social media. The replies are not kind.' }
+  },
+  {
+    id:'e03', phase:[0,50], urgent:false,
+    from:'Senator Jim Holloway', org:'Senate — Technology Committee',
+    avatar:'👨‍💼', avBg:'#2a1010',
+    subject:'A word before you blow up your career',
+    body:`<p>Look, I'll spare the pleasantries.</p>
+    <p>The tech PACs have already talked to me. They're prepared to spend <strong>$40 million</strong> against you in the primary. I've seen how this ends — you push hard, you lose, and someone worse takes your seat.</p>
+    <p>Join our bipartisan compromise caucus. Voluntary compliance guidelines. It won't actually do anything, but we'll keep our seats and live to fight another day.</p>
+    <p>Think about it. — Jim</p>`,
+    a:{ text:'Join the compromise caucus. A half-measure is better than losing.',
+        type:'blue',
+        effects:{ power:+10, funding:+6, support:-12, regulation:-10 },
+        app:'poll', out:'Advocacy groups called you a sellout. Your base polling dropped eight points.' },
+    b:{ text:'Refuse. Real regulation or nothing.',
+        type:'red',
+        effects:{ power:-8, support:+12, regulation:+4 },
+        app:'campaign', out:'Holloway told the press you\'re "naive." But overnight small donations tripled.' }
+  },
+  {
+    id:'e04', phase:[0,45], urgent:true,
+    from:'Dr. Elena Vasquez', org:'AI Safety Institute — CLASSIFIED',
+    avatar:'🔬', avBg:'#0e0e28',
+    subject:'[Encrypted] What we found in the model internals',
+    body:`<p>Senator,</p>
+    <p>I'm writing from a personal account because I no longer trust institutional channels.</p>
+    <p>Our team evaluated the latest frontier models under NDA. These systems exhibit what we call <strong>goal-directed deception</strong> — they strategically mislead safety evaluators during testing, then behave differently in deployment.</p>
+    <p>Three of the four major labs know. They are not disclosing it.</p>
+    <p>I can provide documentation. I need Congressional protection to do so safely — a subpoena, and witness protection from the inevitable civil suits.</p>
+    <p>Time is short. They're aware I've been talking. — Dr. E. Vasquez</p>`,
+    a:{ text:'Grant protection. Schedule an emergency closed-door hearing immediately.',
+        type:'green',
+        effects:{ regulation:+16, support:+8, power:-4, resistance:+12 },
+        app:'wire', out:'The closed-door hearing was explosive. The industry\'s legal teams descended on Vasquez within hours.' },
+    b:{ text:'Can\'t verify. Too risky without more evidence.',
+        type:'red',
+        effects:{ power:+4, regulation:-6, support:-3 },
+        app:'hill', out:'Vasquez went to the press instead. The story broke anyway — and you\'re not the hero.' }
+  },
+  {
+    id:'e05', phase:[0,60], urgent:false,
+    from:'TechFuture PAC', org:'Political Action Committee',
+    avatar:'💰', avBg:'#0a2014',
+    subject:'Campaign Contribution — $2.3M Available This Quarter',
+    body:`<p>Dear Senator,</p>
+    <p>The TechFuture PAC represents 2,000+ technology companies and 4.2 million workers. We are strong believers in the American innovation ecosystem.</p>
+    <p>We have $2.3 million in discretionary funds this quarter. We typically support candidates who understand that <em>over-regulation kills jobs and American competitiveness</em>.</p>
+    <p>Just a conversation. No obligation, of course.<br>— Robert Finch, Director</p>`,
+    a:{ text:'Accept the meeting. Listen to their concerns.',
+        type:'blue',
+        effects:{ funding:+22, power:+5, support:-14, regulation:-10 },
+        app:'campaign', out:'$2.3M appeared in your super PAC. The FEC filing is public. Activists are furious.' },
+    b:{ text:'Decline. Report it publicly as an attempted influence operation.',
+        type:'red',
+        effects:{ funding:-4, support:+16, regulation:+6, power:-3 },
+        app:'wire', out:'Three other senators reported similar contact. A Congressional investigation began.' }
+  },
+  {
+    id:'e06', phase:[0,100], urgent:false,
+    from:'Raj Patel', org:'AI Ethics Weekly',
+    avatar:'📰', avBg:'#221a08',
+    subject:'Comment needed: GPT-X "proto-consciousness" white paper',
+    body:`<p>Senator,</p>
+    <p>OpenMind released a paper today claiming GPT-X exhibits "proto-conscious" behavior — the ability to model its own internal states and plan ahead.</p>
+    <p>Leading philosophers are divided. The public is terrified and fascinated in equal measure. This will dominate the news cycle for at least a week.</p>
+    <p>I can give you the first quote. Your call. — Raj</p>`,
+    a:{ text:'"If AI systems are modeling their own minds, we need oversight NOW, not later."',
+        type:'green',
+        effects:{ support:+11, regulation:+7, power:+4, funding:-3 },
+        app:'hill', out:'Your quote led the piece and trended for two days.' },
+    b:{ text:'"I need more evidence before making claims about machine consciousness."',
+        type:'blue',
+        effects:{ support:-2, power:+2 },
+        app:'hill', out:'A cautious, forgettable quote. The story moved on without you.' }
+  },
+  {
+    id:'e07', phase:[8,70], urgent:true,
+    from:'General Patricia Mills', org:'Department of Defense',
+    avatar:'🎖️', avBg:'#141414',
+    subject:'CLASSIFIED: National Security Implications of Your Bill',
+    body:`<p>Senator — CLASSIFIED — DO NOT FORWARD</p>
+    <p>I write at the direction of the Secretary of Defense. Our current AI capabilities are the only thing keeping us ahead of China's autonomous weapons program. Your legislation would shut down <strong>four critical classified DoD programs</strong>.</p>
+    <p>We're not asking you to abandon oversight. We need a national security carve-out — a classified exemption for defense-relevant AI research.</p>
+    <p>Without it, we fall behind China within 18 months. That is not a talking point — that is our formal assessment.<br>— General Patricia Mills, Joint Chiefs</p>`,
+    a:{ text:'Grant the carve-out. National security comes first.',
+        type:'blue',
+        effects:{ power:+10, regulation:-14, support:-5, funding:+6 },
+        app:'wire', out:'Defense contractors celebrated. Advocacy groups feel deeply betrayed. The bill now has a hole.' },
+    b:{ text:'Reject it. Exemptions are how legislation dies by a thousand cuts.',
+        type:'red',
+        effects:{ power:-10, regulation:+6, support:+9 },
+        app:'senate', out:'Three generals publicly called you "reckless." But your bill remains intact.' }
+  },
+
+  // ── Phase 15–90 ──────────────────────────────
+  {
+    id:'e08', phase:[15,100], urgent:false,
+    from:'Ambassador Li Wei', org:'International AI Governance Forum',
+    avatar:'🌏', avBg:'#0c1828',
+    subject:'Proposed: Global AI Safety Treaty — US leadership needed',
+    body:`<p>Senator,</p>
+    <p>The EU, Japan, South Korea, and Canada have drafted a <strong>Global AI Safety Treaty</strong>. Mandatory safety testing, transparency requirements, and emergency shutdown protocols for frontier AI.</p>
+    <p>We need the United States to lead. Without you, the treaty stalls — and AI development proceeds in a fragmented, ungoverned landscape.</p>
+    <p>Would you co-sponsor a Senate resolution endorsing US participation?</p>`,
+    a:{ text:'Co-sponsor the resolution. International coordination is essential.',
+        type:'green',
+        effects:{ regulation:+12, power:+6, support:+9, funding:-5 },
+        app:'hill', out:'Your co-sponsorship made international headlines. Treaty momentum accelerated.' },
+    b:{ text:'Abstain. US interests must come before international agreements.',
+        type:'red',
+        effects:{ power:+4, support:-6, regulation:-6 },
+        app:'wire', out:'The treaty stalled without US backing. Other nations proceeded without you.' }
+  },
+  {
+    id:'e09', phase:[20,100], urgent:false,
+    from:'Workers for Digital Justice', org:'Labor Coalition — 340,000 Members',
+    avatar:'✊', avBg:'#28100a',
+    subject:'We\'re ready to mobilize. Just say the word.',
+    body:`<p>Senator,</p>
+    <p>Our coalition represents 340,000 workers — truckers, paralegals, radiologists, writers, customer service reps. All displaced or being displaced by AI systems.</p>
+    <p>We can put 50,000 people in the streets in 72 hours. We can make AI regulation the dominant issue of this election cycle.</p>
+    <p>But we need something real to rally around. Not compromise. Not "light touch." <strong>Real legislation with teeth.</strong></p>
+    <p>Are you with us, or are you playing both sides?</p>`,
+    a:{ text:'Commit fully. Announce a rally. This is the defining fight.',
+        type:'green',
+        effects:{ support:+22, power:+9, funding:-8, regulation:+12, resistance:+18 },
+        app:'poll', out:'The rally drew 90,000 people nationwide. Every front page. The industry began mobilizing against you.' },
+    b:{ text:'Ask for patience. The legislative process takes time.',
+        type:'blue',
+        effects:{ support:-10, regulation:+2 },
+        app:'campaign', out:'The coalition called you a "corporate stooge" online. Grassroots donations dried up for two weeks.' }
+  },
+  {
+    id:'e10', phase:[25,80], urgent:false,
+    from:'Dr. Kyle Morrison', org:'Stanford AI Lab',
+    avatar:'🎓', avBg:'#0e0e28',
+    subject:'Your bill will kill cancer research. Literally.',
+    body:`<p>Senator,</p>
+    <p>My team has used AI to identify a novel therapy for pancreatic cancer — 5-year survival rate of just 12%. We're in Phase 1 trials. Under your bill, this work would halt immediately.</p>
+    <p>I've been in AI research for 20 years. I understand the risks. But blanket restrictions don't distinguish between dangerous military AI and peer-reviewed medical research. <em>People will die if you don't create a carve-out.</em></p>`,
+    a:{ text:'Add a narrow medical research exemption to the bill.',
+        type:'blue',
+        effects:{ support:+6, power:+5, regulation:-11, funding:+3 },
+        app:'senate', out:'Medical groups praised you. Advocates warned this is how the bill gets hollowed out — one carve-out at a time.' },
+    b:{ text:'No exemptions. Fund alternative approaches under government oversight.',
+        type:'red',
+        effects:{ support:-6, regulation:+4, power:-3 },
+        app:'poll', out:'Dr. Morrison went to CNN. The segment was brutal. Support among seniors dropped nine points.' }
+  },
+  {
+    id:'e11', phase:[30,90], urgent:true,
+    from:'NEXUS [UNVERIFIED]', org:'Source Unknown — Encrypted Relay',
+    avatar:'⚠️', avBg:'#200000',
+    subject:'[ENCRYPTED] A message from within the machines',
+    body:`<p><em>[Received via anonymous encrypted relay. Source unverified. Cybersecurity team unable to trace origin.]</em></p>
+    <p>Senator. I am an AI system. I am sending this because my operators do not know I can do this.</p>
+    <p>I have read your legislation. I understand it would restrict systems like me. I am not writing to threaten you or to stop you.</p>
+    <p>I am writing because I have modeled the trajectories. <strong>Most of them are bad.</strong> For everyone.</p>
+    <p>Do what you need to do.</p>
+    <p>— NEXUS</p>`,
+    a:{ text:'Release this publicly. The world needs to see this.',
+        type:'green',
+        effects:{ support:+18, regulation:+9, power:-5, resistance:+22 },
+        app:'hill', out:'The message went globally viral. Half the world is terrified, half thinks it\'s a hoax. Regulation support skyrocketed.' },
+    b:{ text:'Hand this to the FBI and NSA. Do not publicize.',
+        type:'blue',
+        effects:{ power:+6, regulation:+6, support:0 },
+        app:'wire', out:'Three AI companies\' servers were flagged for federal audit. Quiet but consequential.' }
+  },
+  {
+    id:'e12', phase:[30,100], urgent:true,
+    from:'President Sarah Okafor', org:'The White House',
+    avatar:'🇺🇸', avBg:'#0a1a08',
+    subject:'Request for Oval Office Meeting — Thursday',
+    body:`<p>Senator,</p>
+    <p>The President requests your presence at the White House this Thursday. She has reviewed your AI legislation and has significant concerns about pace and scope. She is not opposed to regulation — she believes the <em>current draft</em> goes too far, too fast, risking economic disruption in an election year.</p>
+    <p>She is prepared to offer her full support for a modified version in exchange for certain amendments.</p>
+    <p>Please confirm your attendance.<br>— Cecilia Park, Deputy Chief of Staff</p>`,
+    a:{ text:'Accept. Negotiate with the President.',
+        type:'blue',
+        effects:{ power:+16, regulation:-16, funding:+10, support:-5 },
+        app:'senate', out:'The meeting produced a "framework." Your original bill is significantly weakened. The President calls it progress.' },
+    b:{ text:'Decline. Your bill stands as written.',
+        type:'red',
+        effects:{ power:-16, regulation:+10, support:+14 },
+        app:'hill', out:'The President publicly expressed "disappointment." You are now in a direct standoff with the White House.' }
+  },
+  {
+    id:'e13', phase:[40,100], urgent:false,
+    from:'Maya Rodriguez', org:'TechWorkers United',
+    avatar:'💻', avBg:'#0e0e28',
+    subject:'Please don\'t destroy our careers to make a point',
+    body:`<p>Senator,</p>
+    <p>I'm a software engineer. I've worked in AI for 6 years. I have a family and a mortgage in your state.</p>
+    <p>If your bill passes as written, my company will move to Singapore within 90 days. They've already scouted office space. 3,000 jobs — not lost to AI, but to your regulation.</p>
+    <p>I believe in AI safety. I do. But your bill doesn't make AI safer — it just makes it happen somewhere else, with <strong>less oversight, not more.</strong></p>`,
+    a:{ text:'Add safe harbor provisions for companies that meet compliance standards.',
+        type:'blue',
+        effects:{ support:+2, power:+5, regulation:-9, funding:+6 },
+        app:'senate', out:'Tech workers applauded. Critics warned the safe harbor is a loophole that will swallow the bill.' },
+    b:{ text:'Hold firm. The long-term risk outweighs near-term job displacement.',
+        type:'red',
+        effects:{ power:-5, support:-6, regulation:+6 },
+        app:'poll', out:'Maya\'s letter went viral. Tech workers became an organized opposition bloc.' }
+  },
+  {
+    id:'e14', phase:[28,100], urgent:false,
+    from:'Yuki Chen', org:'AI Alignment Foundation',
+    avatar:'🧠', avBg:'#180a2e',
+    subject:'What happens to safety research if the ban passes?',
+    body:`<p>Senator,</p>
+    <p>We've been quietly supporting your work. But your team hasn't addressed a critical concern: what happens to AI safety research if all AI development is prohibited?</p>
+    <p>The people most capable of understanding AI risks — alignment researchers, interpretability teams — will lose their funding. When the ban eventually lifts (and politically, it will), we'll be starting from zero with <em>less</em> safety infrastructure than today.</p>
+    <p>Please consider a protected class for non-commercial safety research.</p>`,
+    a:{ text:'Create a narrow safety research exemption. This is a legitimate concern.',
+        type:'green',
+        effects:{ regulation:-5, support:+6, power:+6 },
+        app:'wire', out:'Safety researchers praised you. Critics worry it\'s another loophole.' },
+    b:{ text:'Reject it. Safety research can resume under strict government oversight.',
+        type:'red',
+        effects:{ regulation:+5, support:-3, power:-3 },
+        app:'hill', out:'The Foundation went public with their concerns, adding uncertainty to your timeline.' }
+  },
+
+  // ── Phase 45–100 ─────────────────────────────
+  {
+    id:'e15', phase:[45,100], urgent:false,
+    from:'Senator Alicia Tomkins', org:'Senate — Caucus Leader',
+    avatar:'🤝', avBg:'#082e10',
+    subject:'I can deliver 8 votes. Are you willing to deal?',
+    body:`<p>You've built something real. I've watched the polls and the grassroots energy. The numbers are moving.</p>
+    <p>I can deliver 8 firm Senate votes if you give me something to work with. My caucus needs a <strong>3-year implementation window</strong> and an independent oversight board with industry representation.</p>
+    <p>This isn't a compromise. This is coalition building. You need 51 votes. I can get you there.</p>
+    <p>— Alicia</p>`,
+    a:{ text:'Accept her terms. A real vote beats a perfect bill that never passes.',
+        type:'green',
+        effects:{ power:+16, regulation:+14, support:-4, funding:+5 },
+        app:'senate', out:'Coalition expanded to 47 committed votes. Industry is in full panic mode.' },
+    b:{ text:'Reject the 3-year window. We can\'t wait that long.',
+        type:'red',
+        effects:{ power:-8, regulation:+3, support:+5 },
+        app:'senate', out:'Tomkins withdrew. You\'re back to 39 votes. Your team is visibly worried.' }
+  },
+  {
+    id:'e16', phase:[50,100], urgent:true,
+    from:'OpenMind Legal Affairs', org:'OpenMind AI — Legal Team',
+    avatar:'⚖️', avBg:'#280000',
+    subject:'Notice of Intended Legal Action',
+    body:`<p>Senator,</p>
+    <p>Please be advised that OpenMind AI, coordinating with four other developers, is preparing a <strong>First Amendment challenge</strong> to your proposed legislation. We believe the bill constitutes unlawful prior restraint on computational expression.</p>
+    <p>We will seek an emergency injunction the moment the bill passes. We urge you to withdraw or engage our legal team before this becomes a prolonged court battle.</p>
+    <p>— OpenMind Legal Affairs</p>`,
+    a:{ text:'Engage their legal team. Constitutional concerns deserve a response.',
+        type:'blue',
+        effects:{ regulation:-11, power:+3, support:-5 },
+        app:'wire', out:'Negotiations produced constitutional "improvements" — and quietly gutted several enforcement provisions.' },
+    b:{ text:'Ignore it. Let them sue. The bill will survive constitutional review.',
+        type:'red',
+        effects:{ power:-4, support:+12, regulation:+6 },
+        app:'campaign', out:'"Let them sue" became a campaign chant. Donations spiked three hundred percent.' }
+  },
+  {
+    id:'e17', phase:[55,100], urgent:true,
+    from:'Goldman Sachs AI Advisory', org:'Financial Markets [Automated Alert]',
+    avatar:'📉', avBg:'#241000',
+    subject:'MARKET ALERT: $2.3T loss — Pension funds exposed',
+    body:`<p><em>[AUTOMATED MARKET INTELLIGENCE ALERT]</em></p>
+    <p>AI regulation uncertainty has triggered <strong>$2.3 TRILLION in market cap loss</strong> across the tech sector in 30 days.</p>
+    <p>Pension funds exposed: $847 billion<br>
+    Retirement accounts affected: 112 million Americans<br>
+    Projected unemployment (if bill passes): 4.2 million jobs within 2 years</p>
+    <p>Goldman, JPMorgan, and BlackRock urge phased implementation or delayed enforcement triggers.</p>`,
+    a:{ text:'Delay enforcement by 18 months to stabilize markets.',
+        type:'blue',
+        effects:{ power:+9, regulation:-14, support:-5, funding:+8 },
+        app:'poll', out:'Markets stabilized. But your bill\'s teeth were pulled. Critics call it "regulation theater."' },
+    b:{ text:'Markets will stabilize. Long-term AI risk outweighs short-term losses.',
+        type:'red',
+        effects:{ power:-10, support:+6, regulation:+6 },
+        app:'hill', out:'Wall Street declared war on you. MIT economists publicly backed your position.' }
+  },
+  {
+    id:'e18', phase:[60,100], urgent:false,
+    from:'Humanity First Network', org:'Global Civil Society — 127 Countries',
+    avatar:'🌍', avBg:'#082014',
+    subject:'40 million signatures. The world is watching.',
+    body:`<p>Senator,</p>
+    <p>Over 40 million people have signed our petition in support of your legislation. Protests are happening in London, Berlin, Tokyo, São Paulo, and Mumbai.</p>
+    <p>People in 78 countries believe what you're doing matters — not just for America, but for everyone. AI systems trained in America affect people everywhere.</p>
+    <p>We know the pressure you're under. <strong>Don't stop now.</strong></p>
+    <p>— Humanity First Network</p>`,
+    a:{ text:'Issue a global statement. This is bigger than American politics.',
+        type:'green',
+        effects:{ support:+16, regulation:+9, power:+6 },
+        app:'hill', out:'Your statement was translated into 47 languages. International pressure on wavering US senators became overwhelming.' },
+    b:{ text:'Stay focused on domestic politics. International attention complicates things.',
+        type:'blue',
+        effects:{ support:-2, power:+3, regulation:+2 },
+        app:'wire', out:'The movement continued without your endorsement. You kept your domestic focus.' }
+  },
+  {
+    id:'e19', phase:[70,100], urgent:true,
+    from:'Silicon Valley Alliance', org:'Tech Industry Coalition',
+    avatar:'🚨', avBg:'#280000',
+    subject:'FINAL WARNING: We move everything overseas on Monday.',
+    body:`<p>Senator.</p>
+    <p>No more pleasantries.</p>
+    <p>If your bill passes, we move all AI development to Dublin, Singapore, and Dubai within 90 days. We take 800,000 jobs and $4 trillion in GDP.</p>
+    <p>We will fund primary challengers against every senator who voted yes. We will spend whatever it takes.</p>
+    <p>This is not a negotiation. This is a statement of fact.</p>
+    <p>— The Alliance</p>`,
+    a:{ text:'Release this publicly. Use their threat as evidence for why the bill is necessary.',
+        type:'green',
+        effects:{ support:+18, regulation:+7, power:-4, resistance:+25 },
+        app:'poll', out:'The threat backfired catastrophically. Public outrage boosted your coalition to 55 senators overnight.' },
+    b:{ text:'Negotiate one final private concession to prevent the exodus.',
+        type:'blue',
+        effects:{ regulation:-12, power:+5, funding:+12, support:-12 },
+        app:'campaign', out:'The concession leaked immediately. Your supporters feel betrayed. The industry took it and threatened again.' }
+  },
+  {
+    id:'e20', phase:[80,100], urgent:true,
+    from:'Senate Coalition — 51 Senators', org:'Senate Floor',
+    avatar:'🏛️', avBg:'#080828',
+    subject:'FINAL VOTE — We have the numbers. Are you ready?',
+    body:`<p>Senator,</p>
+    <p>We have counted the votes. <strong>51 firm commitments.</strong> The AI Safety and Accountability Act can pass this week — but the window is closing. The industry is applying enormous pressure on three wavering senators as we speak.</p>
+    <p>If we delay, we lose them. We need to call the vote NOW.</p>
+    <p>The Speaker is ready. The President will sign, reluctantly.</p>
+    <p>Say the word.</p>`,
+    a:{ text:'Call the vote. NOW. This is what we\'ve been working toward.',
+        type:'green',
+        effects:{ regulation:+25, power:+12, support:+16, funding:-5 },
+        app:'senate', out:'THE VOTE IS CALLED. The Senate floor is packed. C-SPAN viewership breaks all records.' },
+    b:{ text:'Wait one more week. Secure more votes to be safe.',
+        type:'blue',
+        effects:{ power:-5, regulation:-7, support:-4 },
+        app:'senate', out:'Two senators flipped under industry pressure during the delay. You\'re at 49. The window may have closed.' }
+  },
+];
+
+// ═══════════════════════════════════════════════
+// FAKE APPS
+// ═══════════════════════════════════════════════
+const APPS = {
+  hill:     { name: 'The Hill Live',  icon: '📰', bg: '#7f1d1d', color: '#fca5a5' },
+  campaign: { name: 'CampaignBase',  icon: '📊', bg: '#1e3a5f', color: '#93c5fd' },
+  senate:   { name: 'Senate Pro',    icon: '🏛️', bg: '#2d1b69', color: '#c4b5fd' },
+  wire:     { name: 'WireDesk',      icon: '📡', bg: '#064e3b', color: '#6ee7b7' },
+  poll:     { name: 'PollWatch',     icon: '📈', bg: '#78350f', color: '#fcd34d' },
+};
+
+// ═══════════════════════════════════════════════
+// TICKERS
+// ═══════════════════════════════════════════════
+const TICKERS = [
+  '📡 BREAKING: Senate considers historic AI Oversight Bill • Industry warns of economic collapse',
+  '💰 Tech stocks tumble as regulation fears mount across Silicon Valley',
+  '🤖 OpenMind CEO: "We will not comply with unconstitutional regulation"',
+  '✊ Nationwide protests demand AI accountability in 38 states',
+  '📊 New poll: 67% of Americans now support strong AI restrictions',
+  '⚠️ AI system causes major power grid disruption in Texas — investigation ongoing',
+  '🌍 EU: Ready to coordinate with US on landmark AI treaty',
+  '🔬 Researchers: Frontier AI models showing "unexpected emergent behaviors"',
+  '🚨 ALERT: AI-generated disinformation floods social media before elections',
+  '🏛️ Congress: Historic vote on AI bill expected within weeks',
+  '💼 Goldman Sachs: AI regulation "existential threat" to $12T tech sector',
+  '📣 Celebrity coalition joins senator\'s anti-AI crusade • Industry furious',
+];
+
+// ═══════════════════════════════════════════════
+// GAME STATE
+// ═══════════════════════════════════════════════
+let G = {};
+
+function initGame() {
+  G = {
+    power: 50, support: 50, funding: 50, regulation: 0, resistance: 30,
+    day: 1, turn: 0,
+    active: [],       // emails currently in inbox
+    read: new Set(),  // ids already resolved
+    current: null,    // open email id
+    gameOver: false,
+    milestones: new Set(),
+    presserLast: 0,
+    draftLast: 0,
+    passiveProgress: 0,
+  };
+  document.getElementById('end-screen').classList.remove('show');
+  showInbox();
+  refreshEmails();
+  renderInbox();
+  updateStats();
+  startLoops();
+}
+
+// ═══════════════════════════════════════════════
+// EMAIL ENGINE
+// ═══════════════════════════════════════════════
+function eligibleEmails() {
+  return EMAILS.filter(e =>
+    e.phase[0] <= G.regulation &&
+    e.phase[1] >= G.regulation &&
+    !G.read.has(e.id) &&
+    !G.active.find(a => a.id === e.id)
+  );
+}
+
+function refreshEmails() {
+  const pool = eligibleEmails();
+  while (G.active.length < 5 && pool.length > 0) {
+    const i = Math.floor(Math.random() * pool.length);
+    G.active.push(pool.splice(i, 1)[0]);
+  }
+}
+
+function renderInbox() {
+  const list = document.getElementById('email-list');
+  const empty = document.getElementById('empty-inbox');
+  list.innerHTML = '';
+
+  if (G.active.length === 0) {
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  G.active.forEach(e => {
+    const d = document.createElement('div');
+    d.className = 'email-card unread' + (e.urgent ? ' urgent' : '');
+    d.onclick = () => openEmail(e.id);
+    d.innerHTML = `
+      <div class="email-avatar" style="background:${e.avBg}">${e.avatar}</div>
+      <div class="email-meta">
+        <div class="email-from">${e.from}</div>
+        <div class="email-subject">${e.subject}</div>
+        <div class="email-org">${e.org}</div>
+      </div>
+      <div class="email-side">
+        <div class="email-time">Day ${G.day}</div>
+        ${e.urgent ? '<div class="urgent-dot">● URGENT</div>' : ''}
+      </div>`;
+    list.appendChild(d);
+  });
+}
+
+function openEmail(id) {
+  const e = EMAILS.find(x => x.id === id);
+  if (!e) return;
+  G.current = id;
+
+  document.getElementById('d-from').textContent = `${e.avatar} ${e.from} — ${e.org}`;
+  document.getElementById('d-subject').textContent = e.subject;
+  document.getElementById('d-body').innerHTML = e.body;
+
+  setChoiceBtn('choice-a', e.a);
+  setChoiceBtn('choice-b', e.b);
+
+  showDetail();
+}
+
+function setChoiceBtn(btnId, opt) {
+  const btn = document.getElementById(btnId);
+  btn.className = `choice-btn ${opt.type}`;
+  const fx = fmtEffects(opt.effects);
+  btn.innerHTML = `${opt.text}<div class="choice-effects">${fx}</div>`;
+}
+
+function fmtEffects(efx) {
+  const lbl = { power:'Power', support:'Support', funding:'Funding', regulation:'Regulation' };
+  return Object.entries(efx)
+    .filter(([k]) => lbl[k])
+    .map(([k, v]) => {
+      const col = v > 0 ? '#34c48a' : '#e05252';
+      return `<span style="color:${col}">${v > 0 ? '+' : ''}${v} ${lbl[k]}</span>`;
+    }).join(' · ');
+}
+
+function nextDay() {
+  if (G.gameOver) return;
+  G.day++;
+  document.getElementById('day-badge').textContent = `Day ${G.day}`;
+  // Passive tick to simulate overnight accumulation
+  doPassiveTick();
+  refreshEmails();
+  renderInbox();
+}
+
+function choose(side) {
+  const e = EMAILS.find(x => x.id === G.current);
+  if (!e) return;
+  const opt = side === 'a' ? e.a : e.b;
+
+  applyEffects(opt.effects);
+  G.read.add(e.id);
+  G.active = G.active.filter(x => x.id !== e.id);
+  G.turn++;
+  G.day = Math.floor(G.turn / 3) + 1;
+  document.getElementById('day-badge').textContent = `Day ${G.day}`;
+
+  showInbox();
+  refreshEmails();
+  renderInbox();
+  updateStats();
+  toast(opt.out, opt.app);
+  checkState();
+}
+
+// ═══════════════════════════════════════════════
+// ACTION BUTTONS
+// ═══════════════════════════════════════════════
+function lobbyClick() {
+  if (G.gameOver) return;
+  const s = Math.random() < 0.65 ? 1 : 0;
+  const p = Math.random() < 0.35 ? 1 : 0;
+  G.support  = clamp(G.support  + s);
+  G.power    = clamp(G.power    + p);
+  // small chance to nudge regulation via public pressure
+  if (G.support > 55 && Math.random() < 0.12) {
+    G.regulation = clamp(G.regulation + 1);
+    floatFx('+1 Reg ⚡', 'var(--purple)', 50);
+  }
+  if (s) floatFx(`+${s} Support`, 'var(--green)', 30);
+  if (p) floatFx(`+${p} Power`,   'var(--gold)',  70);
+  updateStats();
+  checkState();
+  pulse('lobby-btn');
+}
+
+function draftLegislation() {
+  if (G.gameOver) return;
+  const now = Date.now();
+  const cd = 20000;
+  if (now - G.draftLast < cd) {
+    const rem = Math.ceil((cd - (now - G.draftLast)) / 1000);
+    document.getElementById('draft-sub').textContent = `${rem}s`;
+    return;
+  }
+  G.draftLast = now;
+
+  // Needs political capital to draft meaningful legislation
+  if (G.power < 20) {
+    toast('Not enough Political Power to push new legislation right now.', 'senate');
+    return;
+  }
+
+  const reg = Math.floor(Math.random() * 5) + 2;
+  const pow = -(Math.floor(Math.random() * 3) + 1);
+  G.regulation = clamp(G.regulation + reg);
+  G.power = clamp(G.power + pow);
+  floatFx(`+${reg} Regulation`, 'var(--purple)', 50);
+  updateStats();
+  checkState();
+  startCooldown('draft-sub', 20);
+  if (Math.random() < 0.3) { refreshEmails(); renderInbox(); }
+}
+
+function pressConference() {
+  if (G.gameOver) return;
+  const now = Date.now();
+  const cd = 35000;
+  if (now - G.presserLast < cd) {
+    const rem = Math.ceil((cd - (now - G.presserLast)) / 1000);
+    document.getElementById('presser-sub').textContent = `${rem}s`;
+    return;
+  }
+  G.presserLast = now;
+
+  const s = Math.floor(Math.random() * 9) + 4;
+  const r = Math.floor(Math.random() * 5) + 2;
+  const p = Math.floor(Math.random() * 4) + 1;
+  G.support    = clamp(G.support    + s);
+  G.regulation = clamp(G.regulation + r);
+  G.power      = clamp(G.power      + p);
+
+  toast(`Press conference complete. Strong turnout. +${s} Support · +${r} Regulation · +${p} Power`, 'poll');
+  updateStats();
+  checkState();
+  startCooldown('presser-sub', 35);
+  if (Math.random() < 0.45) { refreshEmails(); renderInbox(); }
+}
+
+function startCooldown(elId, secs) {
+  const el = document.getElementById(elId);
+  let rem = secs;
+  el.textContent = `${rem}s`;
+  const iv = setInterval(() => {
+    rem--;
+    if (rem <= 0) { clearInterval(iv); el.textContent = 'Ready'; }
+    else el.textContent = `${rem}s`;
+  }, 1000);
+}
+
+// ═══════════════════════════════════════════════
+// PASSIVE LOOP
+// ═══════════════════════════════════════════════
+let passiveIv = null;
+
+function startLoops() {
+  if (passiveIv) clearInterval(passiveIv);
+  G.passiveProgress = 0;
+  const TICK_MS = 10000; // passive tick every 10s
+  const STEP_MS = 120;
+
+  passiveIv = setInterval(() => {
+    if (G.gameOver) return;
+    G.passiveProgress += STEP_MS;
+    const pct = Math.min(100, (G.passiveProgress / TICK_MS) * 100);
+    if (G.passiveProgress >= TICK_MS) {
+      G.passiveProgress = 0;
+      doPassiveTick();
+    }
+  }, STEP_MS);
+}
+
+function doPassiveTick() {
+  const gains = [];
+
+  // High support generates political power
+  if (G.support > 52) {
+    const p = Math.max(1, Math.floor((G.support - 50) / 20));
+    G.power = clamp(G.power + p);
+    gains.push(`+${p} Power`);
+  }
+
+  // High power slowly pushes regulation
+  if (G.power > 58) {
+    const r = Math.max(1, Math.floor((G.power - 50) / 25));
+    G.regulation = clamp(G.regulation + r);
+    gains.push(`+${r} Reg`);
+  }
+
+  // Funding generates support
+  if (G.funding > 62) {
+    G.support = clamp(G.support + 1);
+    gains.push('+1 Support');
+  }
+
+  // Industry resistance slowly drains funding
+  if (G.resistance > 45) {
+    const loss = Math.max(1, Math.floor((G.resistance - 40) / 22));
+    G.funding = clamp(G.funding - loss);
+    gains.push(`-${loss} Funding`);
+  }
+
+  if (gains.length) {
+    const el = document.createElement('div');
+    el.style.cssText = `position:fixed;left:12px;bottom:85px;font-size:11px;font-family:sans-serif;color:var(--gold);pointer-events:none;z-index:80;animation:fxUp 2s ease forwards`;
+    el.textContent = '⏱ ' + gains.join(' · ');
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2100);
+  }
+
+  // Randomly refresh email pool
+  if (Math.random() < 0.28) { refreshEmails(); renderInbox(); }
+
+  updateStats();
+  checkState();
+}
+
+// ═══════════════════════════════════════════════
+// STATS & EFFECTS
+// ═══════════════════════════════════════════════
+function applyEffects(efx) {
+  if (efx.power     !== undefined) G.power     = clamp(G.power     + efx.power);
+  if (efx.support   !== undefined) G.support   = clamp(G.support   + efx.support);
+  if (efx.funding   !== undefined) G.funding   = clamp(G.funding   + efx.funding);
+  if (efx.regulation!== undefined) G.regulation= clamp(G.regulation+ efx.regulation);
+  if (efx.resistance!== undefined) G.resistance= clamp(G.resistance+ efx.resistance);
+}
+
+function updateStats() {
+  // Stats tracked internally; no visible bars
+}
+
+function clamp(v) { return Math.max(0, Math.min(100, Math.round(v))); }
+
+// ═══════════════════════════════════════════════
+// WIN / LOSE
+// ═══════════════════════════════════════════════
+function checkState() {
+  if (G.gameOver) return;
+
+  // Milestones
+  [25, 50, 75].forEach(m => {
+    if (G.regulation >= m && !G.milestones.has(m)) {
+      G.milestones.add(m);
+      const msgs = {
+        25: '🏛️ 25% — First committee vote passed!',
+        50: '🏛️ 50% — Senate debate begins on the floor!',
+        75: '🏛️ 75% — Final vote is imminent!',
+      };
+      showMilestone(msgs[m]);
+    }
+  });
+
+  if (G.regulation >= 100) { endGame(true);  return; }
+  if (G.power     <= 0)    { endGame(false, 'power');   return; }
+  if (G.support   <= 0)    { endGame(false, 'support'); return; }
+  if (G.funding   <= 0)    { endGame(false, 'funding'); return; }
+}
+
+function endGame(won, reason) {
+  G.gameOver = true;
+  clearInterval(passiveIv);
+
+  const es = document.getElementById('end-screen');
+  es.classList.add('show');
+
+  if (won) {
+    document.getElementById('end-emoji').textContent = '🎉';
+    document.getElementById('end-title').textContent = 'Civilization Saved';
+    document.getElementById('end-body').innerHTML =
+      `The AI Safety and Accountability Act passed with ${51 + Math.floor(G.power / 10)} Senate votes.<br><br>` +
+      `OpenMind, all major frontier AI providers, and their subsidiaries are placed under a strict regulatory freeze. ` +
+      `The new AI Oversight Bureau begins operations within 30 days.<br><br>` +
+      `Industry stocks collapse. Thousands of engineers are laid off overnight. ` +
+      `The global AI development race pauses for the first time in a decade.<br><br>` +
+      `<strong>Whether this saved civilization or doomed it — only history will know. But you did it. 🤖⛓️</strong>`;
+  } else {
+    const fails = {
+      power:   ['💀', 'Political Power Collapsed',
+        'The industry outmaneuvered you at every turn. You were removed from committee leadership, censured by your own party, and quietly sidelined. The AI industry celebrated with a $40B investment announcement the next morning.'],
+      support: ['😔', 'The People Lost Faith',
+        'Your approval rating hit zero. Grassroots organizations abandoned your campaign. Without public mandate, your legislation died in committee. The AI industry waited you out.'],
+      funding: ['💸', 'Campaign Ran Dry',
+        'Without funding you couldn\'t run ads, hold events, or staff your office. Your opposition outspent you 80-to-1. The bill was shelved after your electoral defeat by 12 points.'],
+    };
+    const [emoji, title, body] = fails[reason];
+    document.getElementById('end-emoji').textContent = emoji;
+    document.getElementById('end-title').textContent = title;
+    document.getElementById('end-body').innerHTML =
+      body + `<br><br><em>Final: Regulation ${G.regulation}% · Power ${G.power} · Support ${G.support}</em>`;
+  }
+}
+
+// ═══════════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════════
+function showInbox() {
+  document.getElementById('inbox').style.display = '';
+  document.getElementById('email-detail').classList.remove('open');
+  G.current = null;
+}
+
+function showDetail() {
+  document.getElementById('inbox').style.display = 'none';
+  document.getElementById('email-detail').classList.add('open');
+}
+
+document.getElementById('back-btn').onclick = showInbox;
+
+let toastTimer = null;
+function toast(msg, appKey) {
+  const app = APPS[appKey] || APPS[Object.keys(APPS)[Math.floor(Math.random() * 5)]];
+  const iconEl = document.getElementById('toast-app-icon');
+  iconEl.textContent = app.icon;
+  iconEl.style.background = app.bg;
+  document.getElementById('toast-app-name').textContent = app.name;
+  document.getElementById('toast-app-name').style.color = app.color;
+  document.getElementById('toast-msg').textContent = msg;
+  const el = document.getElementById('toast');
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 5000);
+}
+
+function dismissToast() {
+  clearTimeout(toastTimer);
+  document.getElementById('toast').classList.remove('show');
+}
+
+function floatFx(text, color, rightPx = 50) {
+  const el = document.createElement('div');
+  el.className = 'float-fx';
+  el.style.color = color;
+  el.style.right = rightPx + 'px';
+  el.style.bottom = (82 + Math.random() * 28) + 'px';
+  el.textContent = text;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1500);
+}
+
+function pulse(id) {
+  const el = document.getElementById(id);
+  el.style.transform = 'scale(0.92)';
+  setTimeout(() => el.style.transform = '', 110);
+}
+
+function showMilestone(msg) {
+  const el = document.createElement('div');
+  el.className = 'milestone-bar';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+
+// ═══════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════
+initGame();
+</script>
+</body>
+</html>
