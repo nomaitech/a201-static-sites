@@ -17,7 +17,8 @@ export default {
       // Try index.html fallback for extensionless paths
       const fallback = await env.BUCKET.get(`${host}${path}/index.html`);
       if (!fallback) {
-        return new Response("Not Found", { status: 404 });
+        // No R2 content for this host — pass through to origin (e.g. backend apps)
+        return fetch(request);
       }
       return respond(fallback);
     }
