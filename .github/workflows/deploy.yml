@@ -1,0 +1,64 @@
+name: Deploy changed sites to R2
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "sites/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Install wrangler
+        run: npm install -g wrangler
+
+      - name: Detect changed sites
+        id: changed
+        run: |
+          # Get list of unique site hostnames that have changed files
+          CHANGED_SITES=$(git diff --name-only HEAD~1 HEAD -- 'sites/' \
+            | grep '^sites/' \
+            | sed 's|^sites/||' \
+            | cut -d'/' -f1 \
+            | sort -u)
+
+          echo "Changed sites:"
+          echo "$CHANGED_SITES"
+
+          # Store as newline-delimited in an output
+          {
+            echo "sites<<EOF"
+            echo "$CHANGED_SITES"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Sync changed sites to R2
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          CHANGED_SITES="${{ steps.changed.outputs.sites }}"
+
+          if [ -z "$CHANGED_SITES" ]; then
+            echo "No site changes detected."
+            exit 0
+          fi
+
+          cd worker
+
+          while IFS= read -r host; do
+            [ -z "$host" ] && continue
+            echo "==> Syncing $host"
+            find "../sites/$host" -type f | while IFS= read -r file; do
+              key="${host}/${file#../sites/$host/}"
+              echo "  Uploading $key"
+              wrangler r2 object put "static-sites/$key" --file="$file" --remote
+            done
+          done <<< "$CHANGED_SITES"
