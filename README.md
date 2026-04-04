@@ -1,64 +1,47 @@
-# Shared Static Sites Demo (Caddy)
+# Shared Static Sites
 
-Shared Caddy deployment serving multiple static sites from one PVC. Each site uses a host-named directory and immutable releases with a `current` symlink.
+Multiple static sites hosted on Cloudflare Workers + R2.
 
-## Layout
+## Architecture
 
-- `helm/shared-static-caddy/`: Helm chart (Caddy + PVC + explicit ingress hosts)
-- `sites/<host>/releases/<release>/...`: immutable releases
-- `sites/<host>/current`: active release symlink
-- `scripts/k3s-sync-content.sh`: sync seed content into the PVC
-- `scripts/k3s-publish-site.sh`: publish one host's content with atomic symlink switch
-- `scripts/k3s-prune-content.sh`: remove PVC site directories not present in `sites/` (dry-run by default)
+- **Storage**: Cloudflare R2 bucket `static-sites` — files stored as `<hostname>/<path>`
+- **Routing**: Cloudflare Worker intercepts requests by hostname and serves the matching R2 object
+- **DNS**: Proxied A records (192.0.2.1) on each Cloudflare zone — traffic never reaches an origin server
+- **TLS**: Automatic via Cloudflare
 
-## Deploy to k3s
-
-1. Build and push the Caddy image (tag = Git SHA):
+## Adding a site
 
 ```bash
-./scripts/build-and-push-caddy-image.sh
+# 1. Add files
+mkdir sites/newsite.ai201.site
+# create index.html and assets
+
+# 2. Upload to R2
+cd worker
+wrangler r2 object put static-sites/newsite.ai201.site/index.html \
+  --file ../sites/newsite.ai201.site/index.html --remote
+
+# 3. Add a proxied DNS A record pointing to 192.0.2.1 in Cloudflare dashboard
 ```
 
-2. Deploy Caddy with explicit hosts discovered from `sites/`:
+## Updating a site
 
 ```bash
-IMAGE_TAG=<pushed-tag> \
-./scripts/helm-deploy-caddy-k3s.sh
+cd worker
+wrangler r2 object put static-sites/<host>/<file> --file ../sites/<host>/<file> --remote
 ```
 
-The script reads hostnames from the folder names in `sites/` (for example `hello1.ai201.site/`, `hello2.ai201.site/`) and passes them into Helm.
-
-3. Seed the PVC with demo content:
+## Removing a site
 
 ```bash
-./scripts/k3s-sync-content.sh
+wrangler r2 object delete static-sites/<host>/index.html --remote
+# Remove DNS record from Cloudflare dashboard
+rm -rf sites/<host>/
 ```
 
-## Content-Only Update (No Pod Restart)
-
-Publish a new release for an existing host directly into the shared PVC:
+## Worker
 
 ```bash
-./scripts/k3s-publish-site.sh hello1.ai201.site /path/to/new/site-build
+cd worker
+wrangler deploy   # redeploy after changing wrangler.toml routes
 ```
-
-This updates only that host's `current` symlink. Caddy pods do not restart.
-
-## Prune Removed Sites From PVC
-
-`k3s-sync-content.sh` is additive. If you delete a site folder locally, you can prune stale PVC directories:
-
-```bash
-./scripts/k3s-prune-content.sh
-APPLY=1 ./scripts/k3s-prune-content.sh
-```
-
-## Adding a New Site
-
-With the current explicit-host setup, adding `hello4.ai201.site` requires:
-
-1. Add `hello4.ai201.site` to Caddy allowed hosts and ingress hosts (Helm values/script)
-2. Run `./scripts/helm-deploy-caddy-k3s.sh` (it re-reads folder names and updates explicit hosts)
-3. Publish `hello4.ai201.site` content to the PVC
-
-That is the tradeoff for explicit host safety (no wildcard ingress).
