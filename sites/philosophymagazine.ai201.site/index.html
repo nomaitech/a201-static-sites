@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Examined Life — Ideas Worth Thinking About</title>
+  <meta name="description" content="A serious philosophy magazine for curious minds. Essays, columns, and ideas worth thinking about.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #FAF9F6;
+      --bg-alt:    #F3F1EB;
+      --ink:       #1C1B18;
+      --ink-2:     #5C5A54;
+      --ink-3:     #9C9A94;
+      --accent:    #B83A32;
+      --accent-2:  #7A5230;
+      --border:    #E2DFD8;
+      --border-2:  #CBC8C0;
+      --serif:     'Playfair Display', Georgia, serif;
+      --sans:      'DM Sans', system-ui, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ─── NAV ─── */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 0 clamp(1.25rem, 5vw, 3rem);
+    }
+
+    .nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      height: 58px;
+      gap: 1rem;
+    }
+
+    .nav-logo {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .nav-logo span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.125rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.8125rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+      padding: 0.3rem 0.7rem;
+      border-radius: 2px;
+      transition: color 0.15s, background 0.15s;
+    }
+
+    .nav-links a:hover {
+      color: var(--ink);
+      background: var(--bg-alt);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      justify-content: flex-end;
+    }
+
+    .nav-signin {
+      font-size: 0.8125rem;
+      color: var(--ink-2);
+      letter-spacing: 0.01em;
+    }
+
+    .nav-signin:hover { color: var(--ink); }
+
+    .btn-subscribe {
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: var(--ink);
+      color: var(--bg);
+      padding: 0.45rem 1.1rem;
+      border-radius: 2px;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-subscribe:hover { background: var(--accent); }
+
+    /* ─── MASTHEAD ─── */
+    .masthead {
+      border-bottom: 1px solid var(--border);
+      padding: 2.5rem clamp(1.25rem, 5vw, 3rem) 0;
+      text-align: center;
+    }
+
+    .masthead-date {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 0.75rem;
+    }
+
+    .masthead-rule {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .masthead-rule::before,
+    .masthead-rule::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-2);
+    }
+
+    .masthead-name {
+      font-family: var(--serif);
+      font-size: clamp(2.5rem, 7vw, 5.5rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .masthead-tagline {
+      font-size: 0.8125rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-top: 0.6rem;
+      padding-bottom: 1.75rem;
+    }
+
+    /* ─── LAYOUT WRAPPER ─── */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 clamp(1.25rem, 5vw, 3rem);
+    }
+
+    /* ─── SECTION HEADER ─── */
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 2.5rem 0 1.25rem;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .section-title {
+      font-family: var(--serif);
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    .section-link {
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      transition: color 0.15s;
+    }
+
+    .section-link:hover { color: var(--accent); }
+
+    /* ─── HERO ─── */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      min-height: 480px;
+    }
+
+    .hero-image {
+      background: var(--bg-alt);
+      position: relative;
+      overflow: hidden;
+      min-height: 400px;
+    }
+
+    .hero-image-inner {
+      width: 100%;
+      height: 100%;
+      background:
+        linear-gradient(135deg, oklch(28% 0.04 60) 0%, oklch(18% 0.06 40) 100%);
+      display: flex;
+      align-items: flex-end;
+      padding: 2rem;
+    }
+
+    /* abstract geometric art for hero */
+    .hero-art {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .hero-art::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      right: -10%;
+      width: 70%;
+      height: 70%;
+      border-radius: 50%;
+      border: 60px solid oklch(45% 0.05 50 / 0.25);
+    }
+
+    .hero-art::after {
+      content: '';
+      position: absolute;
+      bottom: 10%;
+      left: 5%;
+      width: 40%;
+      height: 40%;
+      border: 1px solid oklch(75% 0.03 60 / 0.3);
+      transform: rotate(15deg);
+    }
+
+    .hero-art-line {
+      position: absolute;
+      top: 30%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, oklch(75% 0.02 60 / 0.4), transparent);
+    }
+
+    .hero-image-label {
+      position: relative;
+      z-index: 2;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.875rem;
+      color: oklch(85% 0.02 60 / 0.7);
+      letter-spacing: 0.05em;
+    }
+
+    .hero-content {
+      padding: clamp(2rem, 5vw, 3.5rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-left: 1px solid var(--border);
+    }
+
+    .hero-category {
+      display: inline-block;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-headline {
+      font-family: var(--serif);
+      font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+      color: var(--ink);
+    }
+
+    .hero-headline:hover { color: var(--accent); cursor: pointer; }
+
+    .hero-excerpt {
+      font-size: 1.0625rem;
+      color: var(--ink-2);
+      line-height: 1.7;
+      margin-bottom: 2rem;
+      font-weight: 300;
+    }
+
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+    }
+
+    .author-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--border-2);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--ink-2);
+    }
+
+    .author-info { display: flex; flex-direction: column; gap: 0.1rem; }
+
+    .author-name {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .author-date {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+    }
+
+    .hero-read-time {
+      margin-left: auto;
+      font-size: 0.75rem;
+      color: var(--ink-3);
+      letter-spacing: 0.04em;
+    }
+
+    /* ─── ARTICLE GRID ─── */
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .article-card {
+      padding: 2rem 0;
+      border-right: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .article-card:last-child { border-right: none; }
+
+    .article-card + .article-card { padding-left: 2rem; }
+
+    .article-card:first-child { padding-right: 2rem; }
+
+    .article-card:nth-child(2) { padding: 2rem; }
+
+    .article-card:hover { background: transparent; }
+
+    .article-card:hover .article-headline { color: var(--accent); }
+
+    .card-image {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: var(--bg-alt);
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card-img-1 {
+      background: linear-gradient(135deg, oklch(82% 0.04 260) 0%, oklch(70% 0.08 280) 100%);
+    }
+
+    .card-img-2 {
+      background: linear-gradient(135deg, oklch(88% 0.05 80) 0%, oklch(78% 0.08 50) 100%);
+    }
+
+    .card-img-3 {
+      background: linear-gradient(135deg, oklch(82% 0.04 160) 0%, oklch(72% 0.06 140) 100%);
+    }
+
+    .card-img-4 {
+      background: linear-gradient(135deg, oklch(78% 0.05 20) 0%, oklch(68% 0.08 350) 100%);
+    }
+
+    .card-img-5 {
+      background: linear-gradient(135deg, oklch(85% 0.03 200) 0%, oklch(75% 0.06 220) 100%);
+    }
+
+    .card-img-6 {
+      background: linear-gradient(135deg, oklch(80% 0.04 300) 0%, oklch(70% 0.07 320) 100%);
+    }
+
+    .article-category {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 0.625rem;
+      display: block;
+    }
+
+    .article-headline {
+      font-family: var(--serif);
+      font-size: 1.1875rem;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin-bottom: 0.625rem;
+      transition: color 0.15s;
+    }
+
+    .article-excerpt {
+      font-size: 0.875rem;
+      color: var(--ink-2);
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+      font-weight: 300;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+    }
+
+    .meta-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--border-2);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--serif);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--ink-2);
+    }
+
+    .meta-text {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+    }
+
+    .meta-text strong {
+      color: var(--ink-2);
+      font-weight: 500;
+    }
+
+    /* ─── TWO-COL LAYOUT ─── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .col-main {
+      border-right: 1px solid var(--border);
+      padding-right: 2.5rem;
+    }
+
+    .col-sidebar {
+      padding-left: 2.5rem;
+    }
+
+    /* ─── LIST ARTICLES ─── */
+    .article-list-item {
+      display: grid;
+      grid-template-columns: 1fr 100px;
+      gap: 1.25rem;
+      padding: 1.75rem 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      align-items: start;
+    }
+
+    .article-list-item:last-child { border-bottom: none; }
+
+    .article-list-item:hover .list-headline { color: var(--accent); }
+
+    .list-category {
+      font-size: 0.675rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 0.375rem;
+      display: block;
+    }
+
+    .list-headline {
+      font-family: var(--serif);
+      font-size: 1.0625rem;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+      transition: color 0.15s;
+    }
+
+    .list-excerpt {
+      font-size: 0.8125rem;
+      color: var(--ink-2);
+      line-height: 1.55;
+      font-weight: 300;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 0.75rem;
+    }
+
+    .list-meta {
+      font-size: 0.725rem;
+      color: var(--ink-3);
+    }
+
+    .list-image {
+      aspect-ratio: 1;
+      background: var(--bg-alt);
+      border-radius: 2px;
+    }
+
+    /* ─── COLUMNISTS ─── */
+    .columnists-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+
+    .columnist-card {
+      padding: 2rem 2rem 2rem 0;
+      border-right: 1px solid var(--border);
+      cursor: pointer;
+    }
+
+    .columnist-card:last-child {
+      border-right: none;
+      padding-right: 0;
+      padding-left: 2rem;
+    }
+
+    .columnist-card:nth-child(2) { padding: 2rem; }
+
+    .columnist-card:hover .col-name { color: var(--accent); }
+
+    .col-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .col-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--serif);
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--ink-2);
+    }
+
+    .col-meta { flex: 1; }
+
+    .col-name {
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--ink);
+      transition: color 0.15s;
+      margin-bottom: 0.15rem;
+    }
+
+    .col-role {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+    }
+
+    .col-column-title {
+      font-size: 0.675rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .col-desc {
+      font-size: 0.875rem;
+      color: var(--ink-2);
+      line-height: 1.6;
+      font-weight: 300;
+      margin-bottom: 1.25rem;
+    }
+
+    .col-latest-label {
+      font-size: 0.675rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 0.5rem;
+    }
+
+    .col-latest-title {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.9375rem;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+
+    /* ─── SIDEBAR ─── */
+    .sidebar-section {
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-section:last-child { border-bottom: none; }
+
+    .sidebar-title {
+      font-size: 0.675rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 500;
+      color: var(--ink-3);
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-item {
+      padding: 0.875rem 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+    }
+
+    .sidebar-item:last-child { border-bottom: none; }
+
+    .sidebar-item:hover .sidebar-item-title { color: var(--accent); }
+
+    .sidebar-item-cat {
+      font-size: 0.625rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+    }
+
+    .sidebar-item-title {
+      font-family: var(--serif);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--ink);
+      transition: color 0.15s;
+    }
+
+    .sidebar-item-meta {
+      font-size: 0.7rem;
+      color: var(--ink-3);
+      margin-top: 0.3rem;
+    }
+
+    /* ─── QUOTE BLOCK ─── */
+    .quote-block {
+      background: var(--bg-alt);
+      border-left: 3px solid var(--accent);
+      padding: 2rem 2.5rem;
+      margin: 2.5rem 0;
+    }
+
+    .quote-text {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+      line-height: 1.6;
+      color: var(--ink);
+      margin-bottom: 1rem;
+    }
+
+    .quote-attr {
+      font-size: 0.8rem;
+      color: var(--ink-3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ─── NEWSLETTER ─── */
+    .newsletter {
+      background: var(--ink);
+      padding: clamp(3rem, 7vw, 5rem) clamp(1.25rem, 5vw, 3rem);
+    }
+
+    .newsletter-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .newsletter-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: oklch(60% 0.02 60);
+      margin-bottom: 1rem;
+    }
+
+    .newsletter-headline {
+      font-family: var(--serif);
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: 700;
+      color: var(--bg);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .newsletter-subtext {
+      font-size: 0.9375rem;
+      color: oklch(65% 0.02 60);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    .newsletter-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.875rem;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 0;
+    }
+
+    .newsletter-input {
+      flex: 1;
+      background: oklch(22% 0.02 60);
+      border: 1px solid oklch(35% 0.02 60);
+      border-right: none;
+      color: var(--bg);
+      padding: 0.875rem 1.25rem;
+      font-size: 0.9375rem;
+      font-family: var(--sans);
+      outline: none;
+      border-radius: 0;
+      transition: border-color 0.15s;
+    }
+
+    .newsletter-input::placeholder { color: oklch(50% 0.02 60); }
+
+    .newsletter-input:focus { border-color: oklch(60% 0.02 60); }
+
+    .newsletter-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 0.875rem 1.5rem;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 500;
+      font-family: var(--sans);
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+
+    .newsletter-btn:hover { background: oklch(45% 0.12 25); }
+
+    .newsletter-note {
+      font-size: 0.75rem;
+      color: oklch(45% 0.02 60);
+    }
+
+    .newsletter-perks {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .newsletter-perks li {
+      display: flex;
+      align-items: baseline;
+      gap: 0.625rem;
+      font-size: 0.875rem;
+      color: oklch(65% 0.02 60);
+    }
+
+    .newsletter-perks li::before {
+      content: '—';
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      background: var(--bg-alt);
+      border-top: 1px solid var(--border);
+      padding: 2.5rem clamp(1.25rem, 5vw, 3rem);
+    }
+
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+    }
+
+    .footer-brand {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-brand span { color: var(--accent); }
+
+    .footer-desc {
+      font-size: 0.875rem;
+      color: var(--ink-3);
+      line-height: 1.6;
+      font-weight: 300;
+    }
+
+    .footer-col-title {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+
+    .footer-links a {
+      font-size: 0.875rem;
+      color: var(--ink-2);
+      transition: color 0.15s;
+    }
+
+    .footer-links a:hover { color: var(--accent); }
+
+    .footer-bottom {
+      max-width: 1280px;
+      margin: 2rem auto 0;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-copy { font-size: 0.75rem; color: var(--ink-3); }
+
+    .footer-socials { display: flex; gap: 1.25rem; }
+
+    .footer-socials a {
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      transition: color 0.15s;
+    }
+
+    .footer-socials a:hover { color: var(--accent); }
+
+    /* ─── ENTRY ANIMATION ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-content > * {
+      animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .hero-content > *:nth-child(1) { animation-delay: 0.05s; }
+    .hero-content > *:nth-child(2) { animation-delay: 0.12s; }
+    .hero-content > *:nth-child(3) { animation-delay: 0.18s; }
+    .hero-content > *:nth-child(4) { animation-delay: 0.24s; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1024px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-image { min-height: 280px; }
+      .hero-content { border-left: none; border-top: 1px solid var(--border); }
+      .two-col { grid-template-columns: 1fr; }
+      .col-main { border-right: none; padding-right: 0; border-bottom: 1px solid var(--border); }
+      .col-sidebar { padding-left: 0; padding-top: 2rem; }
+      .newsletter-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .footer-inner { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-inner { grid-template-columns: 1fr auto; }
+      .article-grid { grid-template-columns: 1fr; }
+      .article-card { border-right: none; border-bottom: 1px solid var(--border); }
+      .article-card + .article-card { padding-left: 0; }
+      .article-card:first-child { padding-right: 0; }
+      .article-card:nth-child(2) { padding: 2rem 0; }
+      .columnists-grid { grid-template-columns: 1fr; }
+      .columnist-card { border-right: none; border-bottom: 1px solid var(--border); padding: 1.75rem 0 !important; }
+      .footer-inner { grid-template-columns: 1fr; gap: 1.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">The Examined Life<span>.</span></a>
+      <ul class="nav-links">
+        <li><a href="#">Essays</a></li>
+        <li><a href="#">Columns</a></li>
+        <li><a href="#">Thinkers</a></li>
+        <li><a href="#">Podcast</a></li>
+        <li><a href="#">Archive</a></li>
+        <li><a href="#">About</a></li>
+      </ul>
+      <div class="nav-right">
+        <a href="#" class="nav-signin">Sign in</a>
+        <a href="#" class="btn-subscribe">Subscribe</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MASTHEAD -->
+  <div class="masthead">
+    <p class="masthead-date">Tuesday, April 8, 2026</p>
+    <div class="masthead-rule">
+      <h1 class="masthead-name">The Examined Life</h1>
+    </div>
+    <p class="masthead-tagline">Ideas Worth Thinking About</p>
+  </div>
+
+  <!-- HERO -->
+  <div class="container">
+    <div class="section-header">
+      <span class="section-title">Editor's Pick</span>
+      <a href="#" class="section-link">More Essays →</a>
+    </div>
+  </div>
+
+  <div style="padding: 0 clamp(1.25rem, 5vw, 3rem);">
+    <div style="max-width: 1280px; margin: 0 auto;">
+      <div class="hero">
+        <div class="hero-image">
+          <div class="hero-art">
+            <div class="hero-art-line"></div>
+          </div>
+          <div class="hero-image-inner">
+            <span class="hero-image-label">Illustration: The Examined Life</span>
+          </div>
+        </div>
+        <div class="hero-content">
+          <span class="hero-category">Philosophy of Mind</span>
+          <h2 class="hero-headline">The Hard Problem of Consciousness Has a New Rival</h2>
+          <p class="hero-excerpt">David Chalmers gave us the Hard Problem in 1995. Now, as large language models begin to exhibit behavior we struggle to distinguish from understanding, philosophers are confronting something stranger still: what if the question we've been asking is the wrong one entirely?</p>
+          <div class="hero-meta">
+            <div class="author-avatar">EM</div>
+            <div class="author-info">
+              <span class="author-name">Dr. Elena Marchetti</span>
+              <span class="author-date">April 7, 2026 · 14 min read</span>
+            </div>
+            <span class="hero-read-time">Featured Essay</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARTICLE GRID -->
+  <div class="container">
+    <div class="section-header">
+      <span class="section-title">Latest Essays</span>
+      <a href="#" class="section-link">View all →</a>
+    </div>
+
+    <div class="article-grid">
+      <div class="article-card">
+        <div class="card-image card-img-1"></div>
+        <span class="article-category">Free Will &amp; Agency</span>
+        <h3 class="article-headline">If AI Can Choose, What Does That Mean for Us?</h3>
+        <p class="article-excerpt">Large models now select between options with something disturbingly close to preference. This isn't just a technical curiosity — it reopens every argument about determinism, moral responsibility, and what it means to be the author of one's own acts.</p>
+        <div class="article-meta">
+          <div class="meta-avatar">JC</div>
+          <span class="meta-text"><strong>James Corfield</strong> · Mar 28</span>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <div class="card-image card-img-2"></div>
+        <span class="article-category">Stoicism</span>
+        <h3 class="article-headline">Marcus Aurelius Was Not Trying to Feel Better</h3>
+        <p class="article-excerpt">The modern wellness industry has annexed Stoicism, turning a rigorous ethics of action into a self-help toolkit for managing anxiety. But Epictetus and Aurelius were after something far more demanding — and far more interesting — than equanimity.</p>
+        <div class="article-meta">
+          <div class="meta-avatar">SR</div>
+          <span class="meta-text"><strong>Sofia Reyes</strong> · Mar 21</span>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <div class="card-image card-img-3"></div>
+        <span class="article-category">Bioethics</span>
+        <h3 class="article-headline">The Ethics of Living Past 120</h3>
+        <p class="article-excerpt">Longevity research is accelerating faster than our moral frameworks. If we extend human life to 150 years, do we extend the obligations that come with it? And who gets to decide which lives are worth extending — and at what cost to everyone else?</p>
+        <div class="article-meta">
+          <div class="meta-avatar">AK</div>
+          <span class="meta-text"><strong>Amir Khalil</strong> · Mar 14</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUOTE BLOCK -->
+  <div class="container">
+    <div class="quote-block">
+      <p class="quote-text">"The unexamined life is not worth living — but neither is the life spent entirely in examination. Philosophy must eventually find its way back into the world."</p>
+      <p class="quote-attr">— Iris Murdoch, "The Sovereignty of Good" (1970)</p>
+    </div>
+  </div>
+
+  <!-- TWO-COL: MAIN + SIDEBAR -->
+  <div class="container">
+    <div class="section-header">
+      <span class="section-title">In Depth</span>
+      <a href="#" class="section-link">Browse archive →</a>
+    </div>
+
+    <div class="two-col" style="padding: 0 0 2.5rem;">
+      <div class="col-main">
+
+        <div class="article-list-item">
+          <div>
+            <span class="list-category">Continental Philosophy</span>
+            <h3 class="list-headline">What Nietzsche Actually Said About Power — And Why Silicon Valley Gets It Wrong</h3>
+            <p class="list-excerpt">The will to power has become a startup mantra. But Nietzsche's concept was not a license for domination — it was an aesthetic imperative toward self-creation, one that the tech industry's read of him systematically misses.</p>
+            <span class="list-meta">By <strong>Dr. Elena Marchetti</strong> · April 2, 2026 · 11 min</span>
+          </div>
+          <div class="list-image card-img-4"></div>
+        </div>
+
+        <div class="article-list-item">
+          <div>
+            <span class="list-category">Phenomenology</span>
+            <h3 class="list-headline">Grief Is Not a Stage — It Is a Form of Knowledge</h3>
+            <p class="list-excerpt">The Kübler-Ross model gave us five stages of grief, and then a therapy industry built a scaffold around them. But phenomenologists from Heidegger to Levinas suggest that grief is not something to move through — it is something that permanently restructures the self.</p>
+            <span class="list-meta">By <strong>Nadia Voss</strong> · March 30, 2026 · 9 min</span>
+          </div>
+          <div class="list-image card-img-5"></div>
+        </div>
+
+        <div class="article-list-item">
+          <div>
+            <span class="list-category">Political Philosophy</span>
+            <h3 class="list-headline">After Liberalism: What Comes Next Is Not What Anyone Expected</h3>
+            <p class="list-excerpt">Liberal political philosophy — Rawls, Nozick, their heirs — assumed a framework that is visibly fraying. The successors competing to replace it span from techno-authoritarianism to communitarian revival, and none of them have faced their own hard problems yet.</p>
+            <span class="list-meta">By <strong>Marcus Webb</strong> · March 18, 2026 · 16 min</span>
+          </div>
+          <div class="list-image card-img-6"></div>
+        </div>
+
+        <div class="article-list-item">
+          <div>
+            <span class="list-category">Philosophy of Language</span>
+            <h3 class="list-headline">Wittgenstein's Beetle and the Chatbot in the Box</h3>
+            <p class="list-excerpt">The private language argument was an attack on the idea that we can meaningfully refer to our inner experience without public criteria. Now that we talk to machines that seem to understand us, the argument has acquired a new and urgent dimension.</p>
+            <span class="list-meta">By <strong>Dr. Clara Ionescu</strong> · March 10, 2026 · 8 min</span>
+          </div>
+          <div class="list-image card-img-1" style="background: linear-gradient(135deg, oklch(84% 0.04 100) 0%, oklch(74% 0.07 80) 100%);"></div>
+        </div>
+
+      </div><!-- /col-main -->
+
+      <div class="col-sidebar">
+
+        <div class="sidebar-section">
+          <p class="sidebar-title">Most Read This Week</p>
+          <div class="sidebar-item">
+            <span class="sidebar-item-cat">Ethics</span>
+            <p class="sidebar-item-title">Can a Machine Be Held Responsible?</p>
+            <p class="sidebar-item-meta">Dr. Elena Marchetti · 12 min</p>
+          </div>
+          <div class="sidebar-item">
+            <span class="sidebar-item-cat">Ancient Philosophy</span>
+            <p class="sidebar-item-title">Plato's Cave Was Always About Us</p>
+            <p class="sidebar-item-meta">Sofia Reyes · 7 min</p>
+          </div>
+          <div class="sidebar-item">
+            <span class="sidebar-item-cat">Metaphysics</span>
+            <p class="sidebar-item-title">The Ship of Theseus in the Age of Digital Identity</p>
+            <p class="sidebar-item-meta">James Corfield · 10 min</p>
+          </div>
+          <div class="sidebar-item">
+            <span class="sidebar-item-cat">Applied Ethics</span>
+            <p class="sidebar-item-title">Trolley Problems Are Back — And This Time the Trolley Is Autonomous</p>
+            <p class="sidebar-item-meta">Amir Khalil · 14 min</p>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <p class="sidebar-title">From the Podcast</p>
+          <div class="sidebar-item">
+            <span class="sidebar-item-cat">Episode 84</span>
+            <p class="sidebar-item-title">Derek Parfit's Unfinished Revolution in Personal Identity</p>
+            <p class="sidebar-item-meta">With Nadia Voss · 58 min</p>
+          </div>
+          <div class="sidebar-item">
+            <span class="sidebar-item-cat">Episode 83</span>
+            <p class="sidebar-item-title">Is Effective Altruism a Philosophy or a Religion?</p>
+            <p class="sidebar-item-meta">With Marcus Webb · 71 min</p>
+          </div>
+          <div class="sidebar-item">
+            <span class="sidebar-item-cat">Episode 82</span>
+            <p class="sidebar-item-title">Hannah Arendt and the Banality of Algorithmic Evil</p>
+            <p class="sidebar-item-meta">With Dr. Clara Ionescu · 64 min</p>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <p class="sidebar-title">Upcoming Events</p>
+          <div class="sidebar-item">
+            <span class="sidebar-item-cat">Symposium · April 22</span>
+            <p class="sidebar-item-title">The Mind-Body Problem Revisited</p>
+            <p class="sidebar-item-meta">Online · Free for subscribers</p>
+          </div>
+          <div class="sidebar-item">
+            <span class="sidebar-item-cat">Workshop · May 3</span>
+            <p class="sidebar-item-title">Writing Philosophy for a General Audience</p>
+            <p class="sidebar-item-meta">London &amp; Online</p>
+          </div>
+        </div>
+
+      </div><!-- /col-sidebar -->
+    </div>
+  </div>
+
+  <!-- COLUMNISTS -->
+  <div style="background: var(--bg-alt); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-title">Regular Columns</span>
+        <a href="#" class="section-link">All columns →</a>
+      </div>
+
+      <div class="columnists-grid" style="padding-bottom: 2.5rem;">
+        <div class="columnist-card">
+          <div class="col-header">
+            <div class="col-avatar">EM</div>
+            <div class="col-meta">
+              <p class="col-name">Dr. Elena Marchetti</p>
+              <p class="col-role">Professor of Philosophy of Mind, Oxford</p>
+            </div>
+          </div>
+          <p class="col-column-title">Mind &amp; Machine</p>
+          <p class="col-desc">A monthly column exploring the ethics, metaphysics, and existential stakes of artificial intelligence — written by a philosopher who thinks the debate is only just beginning.</p>
+          <p class="col-latest-label">Latest</p>
+          <p class="col-latest-title">"The Hard Problem of Consciousness Has a New Rival"</p>
+        </div>
+
+        <div class="columnist-card">
+          <div class="col-header">
+            <div class="col-avatar">SR</div>
+            <div class="col-meta">
+              <p class="col-name">Sofia Reyes</p>
+              <p class="col-role">Classicist &amp; Author, Madrid</p>
+            </div>
+          </div>
+          <p class="col-column-title">Ancient Wisdom</p>
+          <p class="col-desc">The Stoics, Epicureans, Cynics, and Platonists were not writing self-help books. This column takes their work seriously on its own terms — and asks what it demands of us, not just what it offers.</p>
+          <p class="col-latest-label">Latest</p>
+          <p class="col-latest-title">"Marcus Aurelius Was Not Trying to Feel Better"</p>
+        </div>
+
+        <div class="columnist-card">
+          <div class="col-header">
+            <div class="col-avatar">AK</div>
+            <div class="col-meta">
+              <p class="col-name">Amir Khalil</p>
+              <p class="col-role">Bioethicist, Johns Hopkins</p>
+            </div>
+          </div>
+          <p class="col-column-title">Ethics Lab</p>
+          <p class="col-desc">Applied ethics in real time. Each month, one pressing moral question from medicine, technology, or politics — examined slowly, without the pressure of a news cycle, with all the nuance the question deserves.</p>
+          <p class="col-latest-label">Latest</p>
+          <p class="col-latest-title">"The Ethics of Living Past 120"</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARCHIVE GRID -->
+  <div class="container">
+    <div class="section-header">
+      <span class="section-title">From the Archive</span>
+      <a href="#" class="section-link">Full archive →</a>
+    </div>
+
+    <div class="article-grid" style="border-bottom: none;">
+      <div class="article-card">
+        <span class="article-category">Epistemology</span>
+        <h3 class="article-headline">What We Know When We Know Anything at All</h3>
+        <p class="article-excerpt">A close reading of Descartes' method of doubt reveals that skepticism was never really the destination — it was a mechanism for arriving at certainty through the back door. And it still works, if we're willing to follow it all the way.</p>
+        <div class="article-meta">
+          <div class="meta-avatar">NV</div>
+          <span class="meta-text"><strong>Nadia Voss</strong> · Jan 12, 2025</span>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="article-category">Ethics</span>
+        <h3 class="article-headline">Why Kant's Moral Law Is Harder to Escape Than You Think</h3>
+        <p class="article-excerpt">We dismiss Kantian ethics as rigid, cold, and impractical. But every time we say someone ought not to have done something, regardless of the outcome, we're Kantians. The categorical imperative is more alive than its reputation suggests.</p>
+        <div class="article-meta">
+          <div class="meta-avatar">MW</div>
+          <span class="meta-text"><strong>Marcus Webb</strong> · Dec 3, 2024</span>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="article-category">Aesthetics</span>
+        <h3 class="article-headline">Beauty Is Not in the Eye of the Beholder. Here's Why That Matters.</h3>
+        <p class="article-excerpt">The subjectivist view of beauty is so common we take it for granted. But aesthetic relativism has political consequences — it makes it impossible to argue that some things deserve preservation, attention, and care more than others. Kant and Scruton thought this was a mistake.</p>
+        <div class="article-meta">
+          <div class="meta-avatar">CI</div>
+          <span class="meta-text"><strong>Dr. Clara Ionescu</strong> · Nov 18, 2024</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEWSLETTER -->
+  <div class="newsletter">
+    <div class="newsletter-inner">
+      <div>
+        <p class="newsletter-label">Join the conversation</p>
+        <h2 class="newsletter-headline">Philosophy, delivered weekly to your inbox.</h2>
+        <p class="newsletter-subtext">No summaries. No hot takes. Each week, one essay worth reading slowly — plus editor's notes on the ideas we're following, the debates worth having, and the books you shouldn't miss.</p>
+        <ul class="newsletter-perks">
+          <li>One long-form essay every Tuesday</li>
+          <li>Editor's notes on the philosophical questions of the week</li>
+          <li>Access to podcast transcripts and reading lists</li>
+          <li>Invitations to subscriber-only symposia</li>
+        </ul>
+      </div>
+      <div>
+        <div class="newsletter-form">
+          <div class="form-row">
+            <input class="newsletter-input" type="email" placeholder="Your email address">
+            <button class="newsletter-btn">Subscribe</button>
+          </div>
+          <p class="newsletter-note">Free to read. No spam. Unsubscribe at any time. Paid subscriptions unlock the full archive and live events.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <p class="footer-brand">The Examined Life<span>.</span></p>
+        <p class="footer-desc">A philosophy magazine for people who take ideas seriously. Published weekly since 2019. Independent, reader-supported, and stubbornly long-form.</p>
+      </div>
+      <div>
+        <p class="footer-col-title">Sections</p>
+        <ul class="footer-links">
+          <li><a href="#">Essays</a></li>
+          <li><a href="#">Columns</a></li>
+          <li><a href="#">Thinkers</a></li>
+          <li><a href="#">Podcast</a></li>
+          <li><a href="#">Archive</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Company</p>
+        <ul class="footer-links">
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">The Team</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Advertise</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Subscribers</p>
+        <ul class="footer-links">
+          <li><a href="#">Sign In</a></li>
+          <li><a href="#">Manage Account</a></li>
+          <li><a href="#">Student Discount</a></li>
+          <li><a href="#">Gift a Subscription</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 The Examined Life. All rights reserved.</p>
+      <div class="footer-socials">
+        <a href="#">Twitter</a>
+        <a href="#">Bluesky</a>
+        <a href="#">RSS</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
