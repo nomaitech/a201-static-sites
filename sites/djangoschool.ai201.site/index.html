@@ -6,885 +6,1158 @@
   <title>Django School — The School for Developers Who Ship</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Lora:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:          oklch(96% 0.02 75);
-      --bg-tint:     oklch(92% 0.04 155);
-      --green:       oklch(30% 0.09 155);
-      --green-mid:   oklch(42% 0.11 155);
-      --green-light: oklch(70% 0.10 155);
-      --amber:       oklch(70% 0.16 72);
-      --amber-light: oklch(85% 0.12 80);
-      --text:        oklch(15% 0.02 155);
-      --text-muted:  oklch(50% 0.04 155);
-      --border:      oklch(82% 0.04 155);
-      --white:       oklch(98% 0.01 75);
+      --bg:          oklch(96.5% 0.018 82);
+      --bg-tint:     oklch(93.5% 0.025 82);
+      --bg-dark:     oklch(13% 0.02 45);
+      --bg-dark2:    oklch(9%  0.015 45);
+      --text:        oklch(11% 0.02 45);
+      --text-mid:    oklch(38% 0.03 45);
+      --text-muted:  oklch(55% 0.022 45);
+      --accent:      oklch(54% 0.19 28);
+      --accent-lt:   oklch(89% 0.055 28);
+      --accent-dim:  oklch(40% 0.14 28);
+      --border:      oklch(88% 0.018 82);
+      --border-dark: oklch(22% 0.02 45);
+      --white:       oklch(99% 0.005 82);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'DM Sans', sans-serif;
-      background-color: var(--bg);
+      font-family: 'Lora', Georgia, serif;
+      background: var(--bg);
       color: var(--text);
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
     /* ── NAV ── */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      padding: 1.25rem 2rem;
+      height: 64px;
       display: flex; align-items: center; justify-content: space-between;
-      background: oklch(96% 0.02 75 / 0.92);
-      backdrop-filter: blur(12px);
+      padding: 0 2.5rem;
+      background: var(--bg);
       border-bottom: 1px solid var(--border);
-      transition: box-shadow 0.3s ease;
     }
 
     .nav-logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.5rem; font-weight: 600;
-      color: var(--green); text-decoration: none; letter-spacing: -0.02em;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.125rem; font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text); text-decoration: none;
     }
-    .nav-logo span { color: var(--amber); }
+    .nav-logo em { font-style: normal; color: var(--accent); }
 
     .nav-links {
-      display: flex; gap: 2rem; list-style: none; align-items: center;
+      display: flex; gap: 2.5rem; list-style: none;
     }
     .nav-links a {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.8125rem; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase;
       text-decoration: none; color: var(--text-muted);
-      font-size: 0.875rem; font-weight: 400; letter-spacing: 0.02em;
       transition: color 0.2s;
     }
-    .nav-links a:hover { color: var(--green); }
+    .nav-links a:hover { color: var(--text); }
 
-    /* ── BUTTONS ── */
-    .btn {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.625rem 1.25rem; border-radius: 2px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.875rem; font-weight: 500;
-      text-decoration: none; cursor: pointer; border: none;
-      transition: all 0.2s ease; letter-spacing: 0.02em;
+    .nav-cta {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.8125rem; font-weight: 600;
+      letter-spacing: 0.03em; text-decoration: none;
+      color: var(--white); background: var(--accent);
+      padding: 0.5rem 1.25rem;
+      transition: background 0.2s;
     }
-    .btn-primary { background: var(--green); color: var(--white); }
-    .btn-primary:hover { background: var(--green-mid); transform: translateY(-1px); }
-    .btn-secondary { background: transparent; color: var(--green); border: 1px solid var(--border); }
-    .btn-secondary:hover { border-color: var(--green); background: var(--bg-tint); }
-    .btn-large { padding: 0.875rem 2rem; font-size: 1rem; }
-    .btn-amber { background: var(--amber); color: oklch(20% 0.08 72); }
-    .btn-amber:hover { background: oklch(75% 0.18 72); transform: translateY(-1px); }
-    .btn-outline-light { background: transparent; color: var(--white); border: 1px solid oklch(70% 0.05 155); }
-    .btn-outline-light:hover { background: oklch(40% 0.09 155); }
+    .nav-cta:hover { background: var(--accent-dim); }
 
     /* ── HERO ── */
     .hero {
-      min-height: 100vh;
-      padding: calc(5rem + 80px) 2rem 6rem;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
-      align-items: center;
-      max-width: 1200px; margin: 0 auto;
+      min-height: 100vh; padding-top: 64px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      align-items: stretch;
     }
 
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.375rem 0.875rem;
-      background: var(--amber-light); border-radius: 2px;
-      font-size: 0.75rem; font-weight: 500;
-      color: oklch(35% 0.12 72); letter-spacing: 0.08em;
-      text-transform: uppercase; margin-bottom: 1.5rem;
+    .hero-left {
+      padding: clamp(3rem, 6vw, 6rem) clamp(2rem, 4vw, 4rem);
+      display: flex; flex-direction: column; justify-content: center;
+      border-right: 1px solid var(--border);
     }
-    .hero-badge::before {
-      content: ''; width: 6px; height: 6px; border-radius: 50%;
-      background: oklch(55% 0.18 72);
+
+    .hero-eyebrow {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 2rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .hero-eyebrow::before {
+      content: ''; width: 2rem; height: 1px; background: var(--accent);
     }
 
     .hero-headline {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(3rem, 6vw, 5.5rem);
-      font-weight: 700; line-height: 1.0; letter-spacing: -0.03em;
-      color: var(--text); margin-bottom: 1.5rem;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(3.25rem, 6.5vw, 6.5rem);
+      font-weight: 800; line-height: 0.95;
+      letter-spacing: -0.04em; color: var(--text);
+      margin-bottom: 2rem;
     }
-    .hero-headline em { font-style: italic; color: var(--green); }
+    .hero-headline em {
+      font-style: italic; font-weight: 400;
+      font-family: 'Lora', serif;
+      color: var(--accent); font-size: 0.88em;
+    }
 
-    .hero-sub {
-      font-size: 1.125rem; color: var(--text-muted);
-      line-height: 1.7; margin-bottom: 0.875rem;
-      max-width: 480px; font-weight: 300;
+    .hero-desc {
+      font-size: 1.0625rem; line-height: 1.75;
+      color: var(--text-mid); max-width: 480px;
+      margin-bottom: 0.75rem;
     }
 
     .hero-prereq {
-      font-size: 0.875rem; color: var(--text-muted);
-      margin-bottom: 2rem; font-weight: 400;
-      display: flex; align-items: center; gap: 0.5rem;
-    }
-    .hero-prereq::before {
-      content: '→'; color: var(--green); font-weight: 600;
+      font-size: 0.875rem; color: var(--text-muted); margin-bottom: 2.5rem;
     }
 
-    .hero-actions { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+
+    .btn {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.875rem; font-weight: 600;
+      letter-spacing: 0.02em; text-decoration: none;
+      padding: 0.875rem 2rem;
+      transition: all 0.2s;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      cursor: pointer; border: none;
+    }
+    .btn-primary { background: var(--accent); color: var(--white); }
+    .btn-primary:hover { background: var(--accent-dim); }
+    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--text-muted); }
 
     .hero-note { font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem; }
 
-    .hero-card-main {
-      background: var(--green); color: var(--white);
-      padding: 2.5rem; border-radius: 4px;
-      position: relative; overflow: hidden;
-    }
-    .hero-card-main::before {
-      content: ''; position: absolute;
-      top: -30%; right: -20%;
-      width: 300px; height: 300px; border-radius: 50%;
-      background: oklch(38% 0.09 155);
+    .hero-right {
+      background: var(--bg-tint);
+      padding: clamp(3rem, 6vw, 6rem) clamp(2rem, 4vw, 4rem);
+      display: flex; flex-direction: column; justify-content: center;
     }
 
-    .hero-card-label {
-      font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--green-light); margin-bottom: 1rem; font-weight: 500;
-    }
-    .hero-card-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.75rem; font-weight: 600; line-height: 1.2;
-      margin-bottom: 1.5rem; position: relative;
+    .track-label {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 1.5rem;
     }
 
-    .hero-modules { display: flex; flex-direction: column; gap: 0.75rem; position: relative; }
-    .hero-module {
-      display: flex; align-items: center; gap: 0.75rem;
-      padding: 0.75rem 1rem;
-      background: oklch(35% 0.09 155); border-radius: 3px;
-    }
-    .hero-module-num {
-      font-size: 0.75rem; font-weight: 600;
-      color: var(--amber); letter-spacing: 0.05em; min-width: 2rem;
-    }
-    .hero-module-name { font-size: 0.875rem; font-weight: 400; color: oklch(85% 0.04 155); }
-    .hero-module-tag {
-      margin-left: auto; font-size: 0.7rem; padding: 0.2rem 0.5rem;
-      background: oklch(28% 0.08 155); border-radius: 2px;
-      color: var(--green-light);
+    .track-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.5rem; font-weight: 700;
+      letter-spacing: -0.03em; color: var(--text);
+      margin-bottom: 2rem;
     }
 
-    .hero-stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
-    .hero-stat {
-      background: var(--bg-tint); padding: 1.25rem;
-      border-radius: 3px; text-align: center;
-    }
-    .hero-stat-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2.5rem; font-weight: 700; color: var(--green);
-      line-height: 1; letter-spacing: -0.02em;
-    }
-    .hero-stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
+    .track-phases { display: flex; flex-direction: column; }
 
-    /* ── TICKER ── */
-    .ticker { background: var(--green); padding: 0.875rem 0; overflow: hidden; }
-    .ticker-track {
-      display: flex; gap: 3rem;
-      animation: ticker 28s linear infinite;
+    .track-phase {
+      display: grid; grid-template-columns: 2.5rem 1fr auto;
+      align-items: center; gap: 1rem;
+      padding: 1.25rem 0; border-top: 1px solid var(--border);
+    }
+    .track-phase:last-child { border-bottom: 1px solid var(--border); }
+
+    .phase-num {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.04em; color: var(--accent);
+    }
+    .phase-name {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.9375rem; font-weight: 500; color: var(--text);
+    }
+    .phase-dur { font-size: 0.8125rem; color: var(--text-muted); white-space: nowrap; }
+
+    .track-stats {
+      display: flex; gap: 2.5rem;
+      margin-top: 2.5rem; padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+    .track-stat-num {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.75rem; font-weight: 800;
+      letter-spacing: -0.04em; color: var(--text); line-height: 1;
+    }
+    .track-stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+    /* ── MARQUEE ── */
+    .marquee { background: var(--text); padding: 0.75rem 0; overflow: hidden; }
+    .marquee-track {
+      display: flex; animation: marquee 32s linear infinite;
       width: max-content;
     }
-    .ticker-item {
-      font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase;
-      font-weight: 500; color: oklch(72% 0.06 155);
-      white-space: nowrap; display: flex; align-items: center; gap: 0.75rem;
+    .marquee-item {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: oklch(38% 0.02 45); white-space: nowrap;
+      padding: 0 2.5rem;
+      display: flex; align-items: center; gap: 2.5rem;
     }
-    .ticker-item::after { content: '·'; color: var(--amber); }
-    @keyframes ticker {
+    .marquee-sep { color: var(--accent); font-size: 0.875rem; }
+    @keyframes marquee {
       from { transform: translateX(0); }
       to   { transform: translateX(-50%); }
     }
 
     /* ── SECTION HELPERS ── */
-    .section { max-width: 1200px; margin: 0 auto; padding: 6rem 2rem; }
-
     .section-label {
-      font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
-      font-weight: 500; color: var(--text-muted); margin-bottom: 1.25rem;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 1rem;
     }
     .section-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 4vw, 3.5rem);
-      font-weight: 700; line-height: 1.1; letter-spacing: -0.02em;
-      color: var(--text); margin-bottom: 1.5rem;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(2.25rem, 4.5vw, 4rem);
+      font-weight: 800; letter-spacing: -0.04em; line-height: 1.0;
+      color: var(--text);
     }
-    .section-title em { font-style: italic; color: var(--green-mid); }
-    .section-body {
-      font-size: 1.0625rem; color: var(--text-muted);
-      line-height: 1.75; max-width: 560px; font-weight: 300;
+    .section-title em {
+      font-family: 'Lora', serif; font-style: italic;
+      font-weight: 400; color: var(--accent); font-size: 0.9em;
     }
 
-    /* ── WHY ── */
-    .why-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 0; margin-top: 4rem;
-      border: 1px solid var(--border);
+    /* ── MANIFESTO / WHY ── */
+    .manifesto {
+      padding: clamp(5rem, 8vw, 9rem) clamp(2rem, 5vw, 5rem);
+      max-width: 1400px; margin: 0 auto;
     }
-    .why-item {
-      padding: 2.5rem;
+
+    .manifesto-header {
+      display: grid; grid-template-columns: 1fr 2fr;
+      gap: 4rem; margin-bottom: 5rem; align-items: end;
+    }
+
+    .manifesto-lead {
+      font-size: 1.125rem; line-height: 1.75;
+      color: var(--text-mid); max-width: 500px; align-self: end;
+    }
+
+    .manifesto-items {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--border);
+    }
+
+    .manifesto-item {
+      padding: 2.5rem 2rem 2.5rem 0;
       border-right: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      transition: background 0.2s;
     }
-    .why-item:hover { background: var(--bg-tint); }
-    .why-item:nth-child(2n)  { border-right: none; }
-    .why-item:nth-child(3),
-    .why-item:nth-child(4)   { border-bottom: none; }
+    .manifesto-item:last-child { border-right: none; }
+    .manifesto-item:not(:first-child) { padding-left: 2rem; }
 
-    .why-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 4rem; font-weight: 300;
-      color: oklch(88% 0.04 155); line-height: 1; margin-bottom: 1.5rem;
+    .manifesto-num {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 5rem; font-weight: 800;
+      letter-spacing: -0.06em; line-height: 1;
+      color: var(--border); margin-bottom: 1.5rem;
     }
-    .why-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.5rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--text);
+    .manifesto-item-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.0625rem; font-weight: 700;
+      letter-spacing: -0.02em; color: var(--text); margin-bottom: 0.75rem;
     }
-    .why-body { font-size: 0.9375rem; color: var(--text-muted); line-height: 1.7; font-weight: 300; }
+    .manifesto-item-body {
+      font-size: 0.9rem; line-height: 1.7; color: var(--text-muted);
+    }
 
     /* ── INSTRUCTORS ── */
-    .instructors-section { max-width: 1200px; margin: 0 auto; padding: 0 2rem 6rem; }
-    .instructors-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 4rem; }
-    .instructor-card {
-      display: flex; gap: 1.5rem; padding: 2rem;
-      border: 1px solid var(--border); border-radius: 3px;
-      transition: background 0.2s;
-    }
-    .instructor-card:hover { background: var(--bg-tint); }
-    .instructor-avatar {
-      width: 72px; height: 72px; border-radius: 50%;
+    .instructors {
       background: var(--bg-tint);
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: clamp(4rem, 7vw, 7rem) clamp(2rem, 5vw, 5rem);
+    }
+    .instructors-inner { max-width: 1400px; margin: 0 auto; }
+    .instructors-header { margin-bottom: 3rem; }
+
+    .instructors-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .instructor-card {
+      background: var(--bg); padding: 2.5rem;
+      display: grid; grid-template-columns: 80px 1fr; gap: 2rem;
+    }
+
+    .instructor-avatar {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: var(--accent-lt);
       display: flex; align-items: center; justify-content: center;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.75rem; font-weight: 600; color: var(--green);
-      flex-shrink: 0; border: 2px solid var(--border);
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.5rem; font-weight: 700; color: var(--accent); flex-shrink: 0;
     }
-    .instructor-info { flex: 1; }
+
     .instructor-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.25rem; font-weight: 600; color: var(--text); margin-bottom: 0.2rem;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.25rem; font-weight: 700;
+      letter-spacing: -0.02em; color: var(--text); margin-bottom: 0.25rem;
     }
-    .instructor-role { font-size: 0.8125rem; color: var(--amber); font-weight: 500; margin-bottom: 0.75rem; }
-    .instructor-bio { font-size: 0.875rem; color: var(--text-muted); line-height: 1.7; font-weight: 300; }
+    .instructor-role {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 0.875rem;
+    }
+    .instructor-bio { font-size: 0.9375rem; line-height: 1.7; color: var(--text-mid); }
 
     /* ── CURRICULUM ── */
-    .curriculum-section { background: var(--green); padding: 6rem 0; }
-    .curriculum-inner { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .curriculum {
+      background: var(--bg-dark);
+      padding: clamp(5rem, 8vw, 9rem) clamp(2rem, 5vw, 5rem);
+    }
+    .curriculum-inner { max-width: 1400px; margin: 0 auto; }
 
     .curriculum-header {
       display: grid; grid-template-columns: 1fr 1fr;
-      gap: 4rem; align-items: end; margin-bottom: 4rem;
+      gap: 5rem; align-items: end; margin-bottom: 4rem;
     }
-    .curriculum-section .section-label { color: var(--green-light); }
-    .curriculum-section .section-title { color: var(--white); }
-    .curriculum-section .section-title em { color: var(--amber); }
-    .curriculum-desc { font-size: 1rem; color: oklch(72% 0.06 155); line-height: 1.75; font-weight: 300; }
-
-    .curriculum-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-
-    .curriculum-card {
-      background: oklch(35% 0.09 155); padding: 2rem; border-radius: 3px;
-      border: 1px solid oklch(38% 0.09 155);
-      transition: background 0.2s, transform 0.2s;
-    }
-    .curriculum-card:hover { background: oklch(38% 0.09 155); transform: translateY(-2px); }
-
-    .curriculum-card-phase {
-      font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--amber); font-weight: 600; margin-bottom: 1rem;
-    }
-    .curriculum-card-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.375rem; font-weight: 600;
-      color: var(--white); margin-bottom: 1rem; line-height: 1.2;
+    .curriculum .section-label { color: oklch(40% 0.03 45); }
+    .curriculum .section-title { color: oklch(92% 0.01 82); }
+    .curriculum .section-title em { color: var(--accent); }
+    .curriculum-desc {
+      font-size: 1rem; line-height: 1.75;
+      color: oklch(45% 0.025 45); align-self: end;
     }
 
-    .curriculum-topics { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
-    .curriculum-topics li {
-      font-size: 0.8125rem; color: oklch(72% 0.06 155);
-      display: flex; align-items: center; gap: 0.5rem;
-      font-weight: 300;
+    .curriculum-phases {
+      border-top: 1px solid var(--border-dark);
     }
-    .curriculum-topics li::before {
-      content: ''; width: 4px; height: 4px; border-radius: 50%;
-      background: var(--amber); flex-shrink: 0;
+
+    .curriculum-phase { border-bottom: 1px solid var(--border-dark); }
+
+    .phase-header {
+      display: grid; grid-template-columns: 10rem 1fr auto;
+      align-items: center; gap: 2rem;
+      padding: 2rem 0; cursor: pointer;
+      transition: background 0.15s;
     }
+    .phase-header:hover { background: oklch(16% 0.02 45); padding-left: 1rem; padding-right: 1rem; margin: 0 -1rem; }
+
+    .phase-header-label {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent);
+    }
+    .phase-header-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.375rem; font-weight: 700;
+      letter-spacing: -0.03em; color: oklch(88% 0.01 82);
+    }
+    .phase-header-right {
+      display: flex; align-items: center; gap: 1.5rem;
+    }
+    .phase-header-dur {
+      font-size: 0.8125rem; color: oklch(40% 0.025 45); white-space: nowrap;
+    }
+    .phase-toggle {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.375rem; font-weight: 300;
+      color: oklch(40% 0.025 45);
+      transition: transform 0.2s; user-select: none;
+      line-height: 1; width: 1.25rem; text-align: center;
+    }
+
+    .phase-body {
+      display: grid; grid-template-rows: 0fr;
+      transition: grid-template-rows 0.3s ease;
+    }
+    .phase-body.open { grid-template-rows: 1fr; }
+    .phase-body-inner { overflow: hidden; }
+
+    .phase-topics {
+      padding: 0 0 2rem 12rem;
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 0.625rem; list-style: none;
+    }
+    .phase-topics li {
+      font-size: 0.875rem; color: oklch(50% 0.025 45);
+      display: flex; align-items: baseline; gap: 0.5rem;
+    }
+    .phase-topics li::before {
+      content: '→'; color: var(--accent);
+      font-family: 'Bricolage Grotesque', sans-serif; flex-shrink: 0;
+    }
+
+    .curriculum-cta {
+      margin-top: 3rem; padding-top: 3rem;
+      border-top: 1px solid var(--border-dark);
+      display: flex; gap: 2rem; align-items: center;
+    }
+    .btn-accent-outline {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.875rem; font-weight: 600; letter-spacing: 0.02em;
+      text-decoration: none; padding: 0.875rem 2rem;
+      background: transparent; color: var(--accent);
+      border: 1px solid var(--accent);
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      transition: all 0.2s;
+    }
+    .btn-accent-outline:hover { background: var(--accent); color: var(--white); }
+    .curriculum-cta-note { font-size: 0.875rem; color: oklch(40% 0.025 45); }
 
     /* ── LEAD CAPTURE ── */
     .lead-capture {
-      background: var(--bg-tint); padding: 4rem 2rem; text-align: center;
-      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 5rem clamp(2rem, 5vw, 5rem);
+      border-bottom: 1px solid var(--border);
     }
-    .lead-capture-inner { max-width: 540px; margin: 0 auto; }
-    .lead-capture-label {
-      font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
-      font-weight: 500; color: var(--text-muted); margin-bottom: 0.75rem;
+    .lead-capture-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: center;
     }
-    .lead-capture-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.875rem; font-weight: 600; color: var(--text);
-      margin-bottom: 0.625rem; line-height: 1.15;
+    .lead-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: 800; letter-spacing: -0.04em;
+      color: var(--text); margin-bottom: 0.75rem;
     }
-    .lead-capture-sub {
-      font-size: 0.9375rem; color: var(--text-muted);
-      margin-bottom: 1.5rem; line-height: 1.6; font-weight: 300;
+    .lead-sub { font-size: 0.9375rem; line-height: 1.7; color: var(--text-muted); }
+
+    .lead-form { display: flex; }
+    .lead-input {
+      flex: 1; padding: 0.875rem 1.25rem;
+      border: 1px solid var(--border); border-right: none;
+      font-family: 'Lora', serif; font-size: 0.9375rem;
+      color: var(--text); background: var(--white);
+      transition: border-color 0.2s; outline: none;
     }
-    .lead-form { display: flex; gap: 0.75rem; max-width: 420px; margin: 0 auto; }
-    .lead-form input {
-      flex: 1; padding: 0.75rem 1rem;
-      border: 1px solid var(--border); border-radius: 2px;
-      font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
-      background: var(--white); color: var(--text); transition: border-color 0.2s;
+    .lead-input:focus { border-color: var(--accent); }
+    .lead-submit {
+      background: var(--accent); color: var(--white);
+      border: 1px solid var(--accent);
+      padding: 0.875rem 1.5rem;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.875rem; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+      transition: background 0.2s;
     }
-    .lead-form input:focus { outline: none; border-color: var(--green); }
-    .lead-form-note { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.75rem; }
-    .lead-success-msg { display: none; font-size: 0.9rem; color: var(--green); font-weight: 500; margin-top: 0.5rem; }
+    .lead-submit:hover { background: var(--accent-dim); }
+    .lead-note { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.625rem; }
+    .lead-success { display: none; font-size: 0.9rem; color: var(--accent); font-weight: 500; margin-top: 0.5rem; }
 
     /* ── OUTCOMES ── */
-    .outcomes-section { padding: 6rem 2rem; max-width: 1200px; margin: 0 auto; }
+    .outcomes {
+      padding: clamp(5rem, 8vw, 9rem) clamp(2rem, 5vw, 5rem);
+      max-width: 1400px; margin: 0 auto;
+    }
     .outcomes-grid {
       display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 0; border: 1px solid var(--border); margin-top: 4rem;
+      border: 1px solid var(--border); margin-top: 4rem;
     }
     .outcome-item {
-      padding: 2.5rem 2rem;
+      padding: 3rem 2.5rem;
       border-right: 1px solid var(--border);
-      text-align: center;
     }
     .outcome-item:last-child { border-right: none; }
     .outcome-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 3.5rem; font-weight: 700; color: var(--green);
-      line-height: 1; letter-spacing: -0.03em;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(3rem, 5vw, 5rem);
+      font-weight: 800; letter-spacing: -0.05em;
+      color: var(--text); line-height: 1;
     }
-    .outcome-suffix { font-size: 1.5rem; color: var(--amber); }
-    .outcome-label { font-size: 0.875rem; color: var(--text-muted); margin-top: 0.5rem; font-weight: 300; }
+    .outcome-suffix { color: var(--accent); }
+    .outcome-label { font-size: 0.875rem; color: var(--text-muted); margin-top: 0.75rem; line-height: 1.4; }
 
     /* ── TESTIMONIALS ── */
-    .testimonials-section { background: oklch(93% 0.025 75); padding: 6rem 0; }
-    .testimonials-inner { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
-    .testimonials-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 4rem; }
-
-    .testimonial-card { background: var(--white); padding: 2.5rem; border-radius: 3px; }
-    .testimonial-quote {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.375rem; font-style: italic; font-weight: 400;
-      line-height: 1.6; color: var(--text); margin-bottom: 1.5rem;
+    .testimonials {
+      background: var(--bg-dark);
+      padding: clamp(5rem, 8vw, 9rem) clamp(2rem, 5vw, 5rem);
     }
-    .testimonial-quote::before { content: '\201C'; color: var(--amber); }
-    .testimonial-quote::after  { content: '\201D'; color: var(--amber); }
+    .testimonials-inner { max-width: 1400px; margin: 0 auto; }
+    .testimonials .section-label { color: oklch(40% 0.03 45); }
+    .testimonials .section-title { color: oklch(92% 0.01 82); }
+    .testimonials .section-title em { color: var(--accent); }
 
-    .testimonial-author { display: flex; align-items: center; gap: 0.875rem; }
-    .testimonial-avatar {
-      width: 42px; height: 42px; border-radius: 50%;
-      background: var(--bg-tint);
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.125rem; font-weight: 600; color: var(--green);
-      flex-shrink: 0;
+    .testimonials-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; background: var(--border-dark);
+      border: 1px solid var(--border-dark); margin-top: 4rem;
     }
-    .testimonial-name { font-size: 0.9375rem; font-weight: 500; color: var(--text); }
-    .testimonial-role { font-size: 0.8125rem; color: var(--text-muted); font-weight: 300; }
+    .testimonial { background: var(--bg-dark); padding: 3rem; }
+    .testimonial-quote-mark {
+      font-family: 'Lora', serif;
+      font-size: 5rem; line-height: 0.6;
+      color: var(--accent); margin-bottom: 1.5rem; display: block;
+    }
+    .testimonial-text {
+      font-size: 1.0625rem; line-height: 1.7;
+      color: oklch(65% 0.02 45); font-style: italic;
+      margin-bottom: 2rem;
+    }
+    .testimonial-name {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.9375rem; font-weight: 700;
+      color: oklch(85% 0.01 82);
+    }
+    .testimonial-role { font-size: 0.8125rem; color: oklch(42% 0.025 45); margin-top: 0.2rem; }
 
     /* ── GUARANTEE ── */
-    .guarantee-section { padding: 6rem 2rem; }
-    .guarantee-inner { max-width: 860px; margin: 0 auto; }
-    .guarantee-card {
-      display: flex; gap: 2.5rem; align-items: flex-start;
-      padding: 3rem; border: 2px solid var(--green); border-radius: 4px;
-      margin-top: 3rem; background: var(--white);
+    .guarantee {
+      padding: clamp(5rem, 8vw, 9rem) clamp(2rem, 5vw, 5rem);
+      max-width: 1400px; margin: 0 auto;
     }
-    .guarantee-icon {
-      font-size: 3.5rem; line-height: 1; flex-shrink: 0;
+    .guarantee-card {
+      border: 2px solid var(--text); padding: 3.5rem 4rem;
+      display: grid; grid-template-columns: auto 1fr;
+      gap: 4rem; align-items: start; margin-top: 3rem;
+    }
+    .guarantee-badge {
+      width: 100px; height: 100px; border-radius: 50%;
+      border: 2px solid var(--text);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .guarantee-badge-days {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.875rem; font-weight: 800;
+      letter-spacing: -0.04em; color: var(--accent); line-height: 1;
+    }
+    .guarantee-badge-label {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.5rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--text-muted); text-align: center; line-height: 1.4;
     }
     .guarantee-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.75rem; font-weight: 600; color: var(--text); margin-bottom: 0.75rem;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(1.375rem, 2.5vw, 1.875rem);
+      font-weight: 800; letter-spacing: -0.03em;
+      color: var(--text); margin-bottom: 1rem;
     }
-    .guarantee-body {
-      font-size: 0.9375rem; color: var(--text-muted); line-height: 1.75; font-weight: 300;
-    }
+    .guarantee-body { font-size: 0.9375rem; line-height: 1.75; color: var(--text-mid); }
     .guarantee-body strong { color: var(--text); font-weight: 500; }
 
     /* ── PRICING ── */
-    .pricing-section { max-width: 1200px; margin: 0 auto; padding: 6rem 2rem; }
+    .pricing {
+      background: var(--bg-tint);
+      border-top: 1px solid var(--border);
+      padding: clamp(5rem, 8vw, 9rem) clamp(2rem, 5vw, 5rem);
+    }
+    .pricing-inner { max-width: 1400px; margin: 0 auto; }
+    .pricing-desc { font-size: 1.0625rem; color: var(--text-mid); margin-top: 1rem; }
+
     .pricing-grid {
       display: grid; grid-template-columns: 1fr 1fr;
-      gap: 2rem; margin: 4rem auto 0; max-width: 800px;
+      max-width: 900px; margin-top: 4rem;
+      border: 1px solid var(--border);
     }
-
-    .pricing-card { padding: 2.5rem; border: 1px solid var(--border); border-radius: 3px; position: relative; }
-    .pricing-card.featured { background: var(--green); border-color: var(--green); }
-
-    .pricing-badge {
-      position: absolute; top: -12px; left: 2rem;
-      font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
-      font-weight: 600; padding: 0.25rem 0.75rem;
-      background: var(--amber); color: oklch(20% 0.08 72); border-radius: 2px;
-    }
+    .pricing-card { padding: 3rem; border-right: 1px solid var(--border); }
+    .pricing-card.featured { background: var(--text); border-right: none; }
 
     .pricing-tier {
-      font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
-      font-weight: 500; color: var(--text-muted); margin-bottom: 1.25rem;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 2rem;
     }
-    .pricing-card.featured .pricing-tier { color: var(--green-light); }
+    .pricing-card.featured .pricing-tier { color: oklch(40% 0.02 45); }
 
     .pricing-price {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 3.5rem; font-weight: 700; color: var(--text);
-      line-height: 1; letter-spacing: -0.03em; margin-bottom: 0.25rem;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(3rem, 5vw, 4.5rem);
+      font-weight: 800; letter-spacing: -0.05em;
+      color: var(--text); line-height: 1; margin-bottom: 0.5rem;
     }
-    .pricing-card.featured .pricing-price { color: var(--white); }
+    .pricing-card.featured .pricing-price { color: oklch(96% 0.01 82); }
 
-    .pricing-period { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 2rem; font-weight: 300; }
-    .pricing-card.featured .pricing-period { color: oklch(70% 0.06 155); }
+    .pricing-period {
+      font-size: 0.875rem; color: var(--text-muted); margin-bottom: 2.5rem;
+    }
+    .pricing-card.featured .pricing-period { color: oklch(42% 0.02 45); }
 
-    .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
+    .pricing-features {
+      list-style: none; display: flex; flex-direction: column;
+      gap: 0.75rem; margin-bottom: 2.5rem;
+    }
     .pricing-features li {
-      font-size: 0.9rem; color: var(--text-muted);
-      display: flex; align-items: flex-start; gap: 0.75rem;
-      font-weight: 300; line-height: 1.5;
+      display: flex; align-items: baseline; gap: 0.75rem;
+      font-size: 0.9rem; color: var(--text-mid); line-height: 1.5;
     }
-    .pricing-card.featured .pricing-features li { color: oklch(78% 0.06 155); }
+    .pricing-card.featured .pricing-features li { color: oklch(52% 0.02 45); }
     .pricing-features li::before {
-      content: '✓'; color: var(--amber);
-      font-weight: 600; font-size: 0.875rem; flex-shrink: 0; margin-top: 0.125rem;
+      content: '✓'; color: var(--accent);
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 700; flex-shrink: 0;
     }
 
-    .pricing-cta { width: 100%; text-align: center; justify-content: center; }
-    .pricing-card.featured .btn-primary { background: var(--amber); color: oklch(20% 0.08 72); }
-    .pricing-card.featured .btn-primary:hover { background: oklch(75% 0.18 72); }
+    .pricing-cta {
+      display: block; text-align: center;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.875rem; font-weight: 600;
+      letter-spacing: 0.03em; text-decoration: none;
+      padding: 1rem; transition: all 0.2s;
+    }
+    .pricing-card:not(.featured) .pricing-cta {
+      background: transparent; border: 1px solid var(--border); color: var(--text);
+    }
+    .pricing-card:not(.featured) .pricing-cta:hover { border-color: var(--text-muted); }
+    .pricing-card.featured .pricing-cta {
+      background: var(--accent); color: var(--white);
+    }
+    .pricing-card.featured .pricing-cta:hover { background: var(--accent-dim); }
+
+    .pricing-badge {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.65rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--accent); background: var(--accent-lt);
+      padding: 0.2rem 0.5rem; margin-left: 0.625rem;
+      vertical-align: middle;
+    }
 
     /* ── FAQ ── */
-    .faq-section { max-width: 800px; margin: 0 auto; padding: 6rem 2rem; }
-    .faq-list {
-      margin-top: 3rem;
-      border: 1px solid var(--border); border-radius: 3px; overflow: hidden;
-    }
-    .faq-item { border-bottom: 1px solid var(--border); }
-    .faq-item:last-child { border-bottom: none; }
+    .faq { padding: clamp(5rem, 8vw, 9rem) clamp(2rem, 5vw, 5rem); max-width: 900px; margin: 0 auto; }
+    .faq-list { margin-top: 3rem; }
+    .faq-item { border-top: 1px solid var(--border); }
+    .faq-item:last-child { border-bottom: 1px solid var(--border); }
+
     .faq-question {
-      padding: 1.25rem 1.5rem; cursor: pointer;
-      display: flex; justify-content: space-between; align-items: center;
-      font-weight: 500; font-size: 0.9375rem; color: var(--text);
-      user-select: none; transition: background 0.15s; list-style: none;
+      padding: 1.5rem 0; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center; gap: 2rem;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1rem; font-weight: 600; letter-spacing: -0.01em;
+      color: var(--text); user-select: none;
     }
-    .faq-question:hover { background: var(--bg-tint); }
-    .faq-chevron {
-      color: var(--green); font-size: 1.25rem; font-weight: 300;
-      flex-shrink: 0; margin-left: 1rem; transition: transform 0.2s;
-      line-height: 1;
+    .faq-icon {
+      font-size: 1.25rem; font-weight: 300; color: var(--accent);
+      flex-shrink: 0; transition: transform 0.2s; line-height: 1;
     }
-    .faq-item.open .faq-chevron { transform: rotate(45deg); }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+
     .faq-answer {
-      display: none; padding: 0 1.5rem 1.25rem;
-      font-size: 0.9rem; color: var(--text-muted); line-height: 1.75; font-weight: 300;
+      display: grid; grid-template-rows: 0fr;
+      transition: grid-template-rows 0.25s ease;
     }
-    .faq-item.open .faq-answer { display: block; }
+    .faq-item.open .faq-answer { grid-template-rows: 1fr; }
+    .faq-answer-inner { overflow: hidden; }
+    .faq-answer-text {
+      padding-bottom: 1.5rem;
+      font-size: 0.9375rem; line-height: 1.75; color: var(--text-mid);
+    }
 
-    /* ── ENROLL FORM ── */
-    .enroll-section { background: var(--green); padding: 8rem 2rem; }
+    /* ── ENROLL ── */
+    .enroll {
+      background: var(--accent);
+      padding: clamp(5rem, 9vw, 10rem) clamp(2rem, 5vw, 5rem);
+    }
     .enroll-inner {
-      max-width: 980px; margin: 0 auto;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
+      max-width: 1400px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 6rem; align-items: center;
     }
-    .enroll-copy .section-label { color: var(--green-light); }
-    .enroll-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 700;
-      color: var(--white); line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 1.25rem;
-    }
-    .enroll-title em { font-style: italic; color: var(--amber); }
-    .enroll-body { font-size: 1rem; color: oklch(70% 0.06 155); line-height: 1.7; font-weight: 300; }
 
-    .enroll-form-card { background: var(--white); padding: 2.5rem; border-radius: 4px; }
-    .enroll-form-title { font-size: 1.125rem; font-weight: 600; color: var(--text); margin-bottom: 0.25rem; }
-    .enroll-form-sub { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 1.75rem; font-weight: 300; }
+    .enroll-eyebrow {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: oklch(88% 0.06 28); margin-bottom: 1.25rem;
+    }
+    .enroll-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 800; letter-spacing: -0.05em;
+      line-height: 0.95; color: var(--white); margin-bottom: 1.5rem;
+    }
+    .enroll-title em {
+      font-family: 'Lora', serif; font-style: italic;
+      font-weight: 400; font-size: 0.88em;
+    }
+    .enroll-desc { font-size: 1rem; line-height: 1.7; color: oklch(88% 0.06 28); }
+
+    .enroll-form-card { background: var(--white); padding: 2.5rem; }
+    .form-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.125rem; font-weight: 700;
+      letter-spacing: -0.02em; color: var(--text); margin-bottom: 0.25rem;
+    }
+    .form-subtitle { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 1.75rem; }
 
     .form-group { margin-bottom: 1rem; }
-    .form-label { display: block; font-size: 0.8125rem; font-weight: 500; color: var(--text); margin-bottom: 0.375rem; }
+    .form-label {
+      display: block;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      color: var(--text-mid); margin-bottom: 0.375rem;
+    }
     .form-input {
       width: 100%; padding: 0.75rem 1rem;
-      border: 1px solid var(--border); border-radius: 2px;
-      font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
-      color: var(--text); background: var(--white); transition: border-color 0.2s;
+      border: 1px solid var(--border);
+      font-family: 'Lora', serif; font-size: 0.9375rem;
+      color: var(--text); background: var(--bg);
+      transition: border-color 0.2s; outline: none;
     }
-    .form-input:focus { outline: none; border-color: var(--green); }
+    .form-input:focus { border-color: var(--accent); }
 
-    .plan-options { display: flex; flex-direction: column; gap: 0.625rem; margin-bottom: 1.25rem; }
+    .plan-options { display: flex; flex-direction: column; gap: 0.5rem; }
     .plan-option {
-      display: flex; align-items: center; gap: 0.875rem; padding: 0.875rem 1rem;
-      border: 1px solid var(--border); border-radius: 2px; cursor: pointer;
-      transition: border-color 0.15s, background 0.15s;
+      display: flex; align-items: center; gap: 1rem; padding: 0.875rem 1rem;
+      border: 1px solid var(--border); cursor: pointer;
+      transition: border-color 0.15s;
     }
-    .plan-option:hover { border-color: var(--green-mid); }
-    .plan-option input[type=radio] { accent-color: var(--green); flex-shrink: 0; }
-    .plan-option-label { display: flex; flex-direction: column; flex: 1; }
-    .plan-option-name { font-size: 0.875rem; font-weight: 500; color: var(--text); }
-    .plan-option-price { font-size: 0.8rem; color: var(--text-muted); font-weight: 300; }
-    .plan-option.selected { border-color: var(--green); background: var(--bg-tint); }
+    .plan-option:hover { border-color: var(--accent); }
+    .plan-option.selected { border-color: var(--accent); background: var(--accent-lt); }
+    .plan-option input[type=radio] { accent-color: var(--accent); }
+    .plan-option-name {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.875rem; font-weight: 600; color: var(--text);
+    }
+    .plan-option-price { font-size: 0.8rem; color: var(--text-muted); }
+    .plan-popular {
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--accent); background: var(--accent-lt);
+      padding: 0.15rem 0.45rem; margin-left: 0.5rem; vertical-align: middle;
+      font-family: 'Bricolage Grotesque', sans-serif;
+    }
 
     .form-submit {
-      width: 100%; background: var(--green); color: var(--white);
-      border: none; padding: 0.9375rem; border-radius: 2px;
-      font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500;
-      cursor: pointer; transition: background 0.2s; letter-spacing: 0.02em;
+      width: 100%; margin-top: 1.25rem;
+      background: var(--text); color: var(--white); border: none;
+      padding: 1rem;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1rem; font-weight: 700; letter-spacing: 0.02em;
+      cursor: pointer; transition: background 0.2s;
     }
-    .form-submit:hover { background: var(--green-mid); }
+    .form-submit:hover { background: oklch(22% 0.02 45); }
+    .form-guarantee { font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 0.875rem; }
 
-    .form-guarantee-note {
-      font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 0.875rem;
-    }
-
-    .enroll-success {
-      display: none; text-align: center; padding: 1.5rem 0;
-    }
+    .enroll-success { display: none; text-align: center; padding: 2rem 0; }
     .enroll-success-icon { font-size: 2.5rem; margin-bottom: 0.875rem; }
     .enroll-success-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.75rem; font-weight: 600; color: var(--text); margin-bottom: 0.5rem;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.75rem; font-weight: 800; letter-spacing: -0.03em;
+      color: var(--text); margin-bottom: 0.5rem;
     }
-    .enroll-success-body { font-size: 0.875rem; color: var(--text-muted); line-height: 1.6; }
+    .enroll-success-body { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
 
     /* ── FOOTER ── */
-    footer { background: oklch(12% 0.02 155); padding: 4rem 2rem 2rem; }
-    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    footer {
+      background: var(--bg-dark2); padding: 4rem clamp(2rem, 5vw, 5rem) 2rem;
+      border-top: 1px solid var(--border-dark);
+    }
+    .footer-inner { max-width: 1400px; margin: 0 auto; }
     .footer-top {
       display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem;
-      padding-bottom: 3rem; border-bottom: 1px solid oklch(22% 0.03 155);
+      padding-bottom: 3rem; border-bottom: 1px solid var(--border-dark);
     }
-    .footer-brand-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.5rem; font-weight: 600; color: var(--white); margin-bottom: 0.875rem;
+    .footer-logo {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.25rem; font-weight: 700; letter-spacing: -0.03em;
+      color: oklch(88% 0.01 82); margin-bottom: 0.875rem;
     }
-    .footer-brand-name span { color: var(--amber); }
-    .footer-brand-desc { font-size: 0.875rem; color: oklch(50% 0.04 155); line-height: 1.7; font-weight: 300; }
+    .footer-logo em { font-style: normal; color: var(--accent); }
+    .footer-desc { font-size: 0.875rem; color: oklch(35% 0.02 45); line-height: 1.7; }
     .footer-col-title {
-      font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
-      font-weight: 500; color: oklch(55% 0.05 155); margin-bottom: 1.25rem;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      color: oklch(38% 0.025 45); margin-bottom: 1.25rem;
     }
     .footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.625rem; }
     .footer-links a {
-      font-size: 0.875rem; color: oklch(50% 0.04 155);
-      text-decoration: none; font-weight: 300; transition: color 0.2s;
+      font-size: 0.875rem; color: oklch(35% 0.02 45);
+      text-decoration: none; transition: color 0.2s;
     }
-    .footer-links a:hover { color: oklch(75% 0.06 155); }
-    .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 1.5rem; }
-    .footer-copy { font-size: 0.8125rem; color: oklch(40% 0.03 155); font-weight: 300; }
-
-    /* ── SCROLL ANIMATIONS ── */
-    .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
-    .fade-up.visible { opacity: 1; transform: translateY(0); }
-
-    .hero-left > * { animation: heroFadeUp 0.7s ease forwards; opacity: 0; }
-    .hero-left > *:nth-child(1) { animation-delay: 0.1s; }
-    .hero-left > *:nth-child(2) { animation-delay: 0.22s; }
-    .hero-left > *:nth-child(3) { animation-delay: 0.34s; }
-    .hero-left > *:nth-child(4) { animation-delay: 0.44s; }
-    .hero-left > *:nth-child(5) { animation-delay: 0.52s; }
-    .hero-left > *:nth-child(6) { animation-delay: 0.58s; }
-    .hero-visual { animation: heroFadeUp 0.7s ease 0.38s forwards; opacity: 0; }
-
-    @keyframes heroFadeUp {
-      from { opacity: 0; transform: translateY(22px); }
-      to   { opacity: 1; transform: translateY(0); }
+    .footer-links a:hover { color: oklch(60% 0.025 45); }
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center; padding-top: 1.5rem;
     }
+    .footer-copy { font-size: 0.8125rem; color: oklch(30% 0.02 45); }
+
+    /* ── REVEAL ANIMATIONS ── */
+    .reveal {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    .hero-left > * {
+      opacity: 0; transform: translateY(16px);
+      animation: fade-up 0.6s ease forwards;
+    }
+    .hero-left > *:nth-child(1) { animation-delay: 0.08s; }
+    .hero-left > *:nth-child(2) { animation-delay: 0.18s; }
+    .hero-left > *:nth-child(3) { animation-delay: 0.28s; }
+    .hero-left > *:nth-child(4) { animation-delay: 0.36s; }
+    .hero-left > *:nth-child(5) { animation-delay: 0.42s; }
+    .hero-left > *:nth-child(6) { animation-delay: 0.48s; }
+    .hero-right {
+      opacity: 0; transform: translateX(16px);
+      animation: fade-right 0.7s ease 0.28s forwards;
+    }
+    @keyframes fade-up   { to { opacity: 1; transform: none; } }
+    @keyframes fade-right { to { opacity: 1; transform: none; } }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 1024px) {
-      .curriculum-grid { grid-template-columns: repeat(2, 1fr); }
+      .manifesto-items { grid-template-columns: repeat(2, 1fr); }
+      .manifesto-item:nth-child(2) { border-right: none; }
+      .manifesto-item:nth-child(3) { border-top: 1px solid var(--border); }
       .outcomes-grid { grid-template-columns: repeat(2, 1fr); }
       .outcome-item:nth-child(2) { border-right: none; }
-      .outcome-item:nth-child(3) { border-top: 1px solid var(--border); }
+      .outcome-item:nth-child(3),
+      .outcome-item:nth-child(4) { border-top: 1px solid var(--border); }
       .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
     }
 
     @media (max-width: 768px) {
       .nav-links { display: none; }
-      .hero { grid-template-columns: 1fr; padding-top: calc(4rem + 70px); }
-      .hero-visual { display: none; }
-      .why-grid { grid-template-columns: 1fr; }
-      .why-item:nth-child(2n) { border-right: 1px solid var(--border); }
-      .why-item:nth-child(3) { border-bottom: 1px solid var(--border); }
+      .hero { grid-template-columns: 1fr; }
+      .hero-left { border-right: none; border-bottom: 1px solid var(--border); }
+      .hero-right { display: none; }
+      .manifesto-header { grid-template-columns: 1fr; gap: 2rem; }
+      .manifesto-items { grid-template-columns: 1fr; }
+      .manifesto-item { border-right: none !important; border-top: 1px solid var(--border); }
       .instructors-grid { grid-template-columns: 1fr; }
-      .instructor-card { flex-direction: column; }
+      .instructor-card { grid-template-columns: 1fr; }
+      .curriculum-header { grid-template-columns: 1fr; gap: 2rem; }
+      .phase-header { grid-template-columns: auto 1fr auto; }
+      .phase-header-label { display: none; }
+      .phase-topics { grid-template-columns: 1fr; padding-left: 1rem; }
+      .lead-capture-inner { grid-template-columns: 1fr; gap: 2rem; }
       .lead-form { flex-direction: column; }
-      .curriculum-header { grid-template-columns: 1fr; gap: 1.5rem; }
-      .curriculum-grid { grid-template-columns: 1fr; }
+      .lead-input { border-right: 1px solid var(--border); }
       .testimonials-grid { grid-template-columns: 1fr; }
-      .guarantee-card { flex-direction: column; gap: 1.5rem; }
-      .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
+      .guarantee-card { grid-template-columns: 1fr; gap: 2rem; padding: 2.5rem 2rem; }
+      .pricing-grid { grid-template-columns: 1fr; max-width: 440px; }
+      .pricing-card { border-right: none; border-bottom: 1px solid var(--border); }
       .enroll-inner { grid-template-columns: 1fr; gap: 3rem; }
       .footer-top { grid-template-columns: 1fr; gap: 2rem; }
       .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .fade-up, .hero-left > *, .hero-visual { animation: none; opacity: 1; transform: none; transition: none; }
-      .ticker-track { animation: none; }
+      .hero-left > *, .hero-right, .reveal {
+        animation: none; opacity: 1; transform: none; transition: none;
+      }
+      .marquee-track { animation: none; }
     }
   </style>
 </head>
 <body>
 
   <!-- NAV -->
-  <nav id="main-nav">
-    <a href="#" class="nav-logo">Django<span>School</span></a>
+  <nav>
+    <a href="#" class="nav-logo">Django<em>School</em></a>
     <ul class="nav-links">
       <li><a href="#curriculum">Curriculum</a></li>
       <li><a href="#outcomes">Outcomes</a></li>
       <li><a href="#testimonials">Stories</a></li>
       <li><a href="#pricing">Pricing</a></li>
-      <li><a href="#enroll" class="btn btn-primary">Enroll Now</a></li>
     </ul>
+    <a href="#enroll" class="nav-cta">Enroll Now</a>
   </nav>
 
   <!-- HERO -->
   <section class="hero">
     <div class="hero-left">
-      <div class="hero-badge">Cohort now open &middot; Enroll anytime</div>
-      <h1 class="hero-headline">
-        Stop watching.<br>
-        Start <em>shipping</em><br>
-        Django.
-      </h1>
-      <p class="hero-sub">
-        The structured path from Python basics to deploying production web apps. Hands-on projects, expert instruction, and a community that holds you accountable.
-      </p>
+      <div class="hero-eyebrow">Cohort now open &middot; Enroll anytime</div>
+      <h1 class="hero-headline">Stop watching.<br>Start <em>shipping</em><br>Django.</h1>
+      <p class="hero-desc">The structured path from Python basics to deploying production web apps. Hands-on projects, expert instruction, and a community that holds you accountable.</p>
       <p class="hero-prereq">No Django experience needed. Some Python familiarity helps.</p>
       <div class="hero-actions">
-        <a href="#enroll" class="btn btn-primary btn-large">Start Building &rarr;</a>
-        <a href="#curriculum" class="btn btn-secondary btn-large">View Curriculum</a>
+        <a href="#enroll" class="btn btn-primary">Start Building &rarr;</a>
+        <a href="#curriculum" class="btn btn-ghost">View Curriculum</a>
       </div>
       <p class="hero-note">Full access &middot; Self-paced + live sessions &middot; 30-day guarantee</p>
     </div>
 
-    <div class="hero-visual">
-      <div class="hero-card-main">
-        <p class="hero-card-label">Course Overview</p>
-        <h3 class="hero-card-title">The Complete<br>Django Track</h3>
-        <div class="hero-modules">
-          <div class="hero-module">
-            <span class="hero-module-num">01</span>
-            <span class="hero-module-name">Python Foundations</span>
-            <span class="hero-module-tag">4 weeks</span>
-          </div>
-          <div class="hero-module">
-            <span class="hero-module-num">02</span>
-            <span class="hero-module-name">Django Core &amp; ORM</span>
-            <span class="hero-module-tag">6 weeks</span>
-          </div>
-          <div class="hero-module">
-            <span class="hero-module-num">03</span>
-            <span class="hero-module-name">REST APIs &amp; Auth</span>
-            <span class="hero-module-tag">4 weeks</span>
-          </div>
-          <div class="hero-module">
-            <span class="hero-module-num">04</span>
-            <span class="hero-module-name">Deploy &amp; Ship</span>
-            <span class="hero-module-tag">2 weeks</span>
-          </div>
+    <div class="hero-right">
+      <p class="track-label">Course Overview</p>
+      <h3 class="track-title">The Complete Django Track</h3>
+      <div class="track-phases">
+        <div class="track-phase">
+          <span class="phase-num">01</span>
+          <span class="phase-name">Python Foundations</span>
+          <span class="phase-dur">4 weeks</span>
+        </div>
+        <div class="track-phase">
+          <span class="phase-num">02</span>
+          <span class="phase-name">Django Core &amp; ORM</span>
+          <span class="phase-dur">6 weeks</span>
+        </div>
+        <div class="track-phase">
+          <span class="phase-num">03</span>
+          <span class="phase-name">REST APIs &amp; Auth</span>
+          <span class="phase-dur">4 weeks</span>
+        </div>
+        <div class="track-phase">
+          <span class="phase-num">04</span>
+          <span class="phase-name">Deploy &amp; Ship</span>
+          <span class="phase-dur">2 weeks</span>
         </div>
       </div>
-      <div class="hero-stats-row">
-        <div class="hero-stat">
-          <div class="hero-stat-num">500+</div>
-          <div class="hero-stat-label">Graduates</div>
+      <div class="track-stats">
+        <div>
+          <div class="track-stat-num">500+</div>
+          <div class="track-stat-label">Graduates</div>
         </div>
-        <div class="hero-stat">
-          <div class="hero-stat-num">12</div>
-          <div class="hero-stat-label">Real Projects</div>
+        <div>
+          <div class="track-stat-num">12</div>
+          <div class="track-stat-label">Real Projects</div>
+        </div>
+        <div>
+          <div class="track-stat-num">4.9&#9733;</div>
+          <div class="track-stat-label">Student Rating</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- TICKER -->
-  <div class="ticker" aria-hidden="true">
-    <div class="ticker-track">
-      <span class="ticker-item">500+ students graduated</span>
-      <span class="ticker-item">12 hands-on projects</span>
-      <span class="ticker-item">Lifetime access included</span>
-      <span class="ticker-item">Live Q&amp;A sessions weekly</span>
-      <span class="ticker-item">Real-world codebases</span>
-      <span class="ticker-item">Community of 1000+ developers</span>
-      <span class="ticker-item">Job-ready curriculum</span>
-      <span class="ticker-item">500+ students graduated</span>
-      <span class="ticker-item">12 hands-on projects</span>
-      <span class="ticker-item">Lifetime access included</span>
-      <span class="ticker-item">Live Q&amp;A sessions weekly</span>
-      <span class="ticker-item">Real-world codebases</span>
-      <span class="ticker-item">Community of 1000+ developers</span>
-      <span class="ticker-item">Job-ready curriculum</span>
+  <!-- MARQUEE -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span class="marquee-item">500+ students graduated <span class="marquee-sep">·</span> 12 hands-on projects <span class="marquee-sep">·</span> Lifetime access included <span class="marquee-sep">·</span> Live Q&amp;A sessions weekly <span class="marquee-sep">·</span> Real-world codebases <span class="marquee-sep">·</span> Community of 1000+ developers <span class="marquee-sep">·</span> Job-ready curriculum <span class="marquee-sep">·</span></span>
+      <span class="marquee-item">500+ students graduated <span class="marquee-sep">·</span> 12 hands-on projects <span class="marquee-sep">·</span> Lifetime access included <span class="marquee-sep">·</span> Live Q&amp;A sessions weekly <span class="marquee-sep">·</span> Real-world codebases <span class="marquee-sep">·</span> Community of 1000+ developers <span class="marquee-sep">·</span> Job-ready curriculum <span class="marquee-sep">·</span></span>
     </div>
   </div>
 
-  <!-- WHY SECTION -->
-  <section class="section">
-    <p class="section-label fade-up">Why Django School</p>
-    <h2 class="section-title fade-up">Built for developers<br>who want to <em>ship.</em></h2>
-    <p class="section-body fade-up">Most courses teach you syntax. We teach you to build. Every lesson connects to a real project, every concept gets applied to production code.</p>
-
-    <div class="why-grid">
-      <div class="why-item fade-up">
-        <div class="why-num">01</div>
-        <h3 class="why-title">Real projects, not toy apps</h3>
-        <p class="why-body">Build a portfolio you're proud of. Each module culminates in a project that mirrors real industry work — authentication systems, REST APIs, deployment pipelines.</p>
+  <!-- WHY -->
+  <section class="manifesto" id="why">
+    <div class="manifesto-header">
+      <div>
+        <p class="section-label reveal">Why Django School</p>
+        <h2 class="section-title reveal">Built for<br>developers<br>who <em>ship.</em></h2>
       </div>
-      <div class="why-item fade-up">
-        <div class="why-num">02</div>
-        <h3 class="why-title">Expert instruction, not lectures</h3>
-        <p class="why-body">Learn from developers who've shipped Django in production at scale. No theory-first, no slide decks. Code alongside instructors who know how real teams work.</p>
+      <p class="manifesto-lead reveal">Most courses teach you syntax. We teach you to build. Every lesson connects to a real project, every concept gets applied to production code.</p>
+    </div>
+    <div class="manifesto-items">
+      <div class="manifesto-item reveal">
+        <div class="manifesto-num">01</div>
+        <h3 class="manifesto-item-title">Real projects, not toy apps</h3>
+        <p class="manifesto-item-body">Build a portfolio you're proud of. Each module culminates in a project that mirrors real industry work — authentication systems, REST APIs, deployment pipelines.</p>
       </div>
-      <div class="why-item fade-up">
-        <div class="why-num">03</div>
-        <h3 class="why-title">A community that helps you ship</h3>
-        <p class="why-body">Access 1000+ active students and alumni in our community. Get code reviewed, find collaborators, and stay accountable throughout the course.</p>
+      <div class="manifesto-item reveal">
+        <div class="manifesto-num">02</div>
+        <h3 class="manifesto-item-title">Expert instruction, not lectures</h3>
+        <p class="manifesto-item-body">Learn from developers who've shipped Django in production at scale. No theory-first, no slide decks. Code alongside instructors who know how real teams work.</p>
       </div>
-      <div class="why-item fade-up">
-        <div class="why-num">04</div>
-        <h3 class="why-title">From zero to deployed</h3>
-        <p class="why-body">We don't stop at "it works locally." You'll learn to deploy on Railway, configure Postgres in production, set up CI/CD, and handle real-world edge cases.</p>
+      <div class="manifesto-item reveal">
+        <div class="manifesto-num">03</div>
+        <h3 class="manifesto-item-title">A community that helps you ship</h3>
+        <p class="manifesto-item-body">Access 1000+ active students and alumni in our community. Get code reviewed, find collaborators, and stay accountable throughout the course.</p>
+      </div>
+      <div class="manifesto-item reveal">
+        <div class="manifesto-num">04</div>
+        <h3 class="manifesto-item-title">From zero to deployed</h3>
+        <p class="manifesto-item-body">We don't stop at "it works locally." You'll learn to deploy on Railway, configure Postgres in production, set up CI/CD, and handle real-world edge cases.</p>
       </div>
     </div>
   </section>
 
   <!-- INSTRUCTORS -->
-  <section class="instructors-section">
-    <p class="section-label fade-up">Your Instructors</p>
-    <h2 class="section-title fade-up">Taught by developers<br>who <em>ship in production.</em></h2>
-    <div class="instructors-grid">
-      <div class="instructor-card fade-up">
-        <div class="instructor-avatar">JM</div>
-        <div class="instructor-info">
-          <div class="instructor-name">James Mercer</div>
-          <div class="instructor-role">Lead Instructor &middot; 10 years Django</div>
-          <p class="instructor-bio">Former backend lead at two YC-backed startups. Built and scaled Django APIs serving millions of requests per day. James wrote the entire curriculum and leads the weekly live sessions.</p>
-        </div>
+  <section class="instructors">
+    <div class="instructors-inner">
+      <div class="instructors-header">
+        <p class="section-label reveal">Your Instructors</p>
+        <h2 class="section-title reveal">Taught by developers<br>who <em>ship in production.</em></h2>
       </div>
-      <div class="instructor-card fade-up">
-        <div class="instructor-avatar">RL</div>
-        <div class="instructor-info">
-          <div class="instructor-name">Rosa Lim</div>
-          <div class="instructor-role">Curriculum &middot; Python &amp; DevOps</div>
-          <p class="instructor-bio">Software engineer with a background in fintech and developer education. Specializes in deployment, CI/CD pipelines, and making production infrastructure approachable for junior developers.</p>
+      <div class="instructors-grid">
+        <div class="instructor-card reveal">
+          <div class="instructor-avatar">JM</div>
+          <div>
+            <div class="instructor-name">James Mercer</div>
+            <div class="instructor-role">Lead Instructor &middot; 10 years Django</div>
+            <p class="instructor-bio">Former backend lead at two YC-backed startups. Built and scaled Django APIs serving millions of requests per day. James wrote the entire curriculum and leads the weekly live sessions.</p>
+          </div>
+        </div>
+        <div class="instructor-card reveal">
+          <div class="instructor-avatar">RL</div>
+          <div>
+            <div class="instructor-name">Rosa Lim</div>
+            <div class="instructor-role">Curriculum &middot; Python &amp; DevOps</div>
+            <p class="instructor-bio">Software engineer with a background in fintech and developer education. Specializes in deployment, CI/CD pipelines, and making production infrastructure approachable for junior developers.</p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- CURRICULUM -->
-  <section class="curriculum-section" id="curriculum">
+  <section class="curriculum" id="curriculum">
     <div class="curriculum-inner">
       <div class="curriculum-header">
         <div>
           <p class="section-label">The Curriculum</p>
-          <h2 class="section-title">16 weeks to<br><em>production-ready</em></h2>
+          <h2 class="section-title">16 weeks to<br><em>production-ready.</em></h2>
         </div>
         <p class="curriculum-desc">A structured path that takes you from Python fundamentals to deploying a full-stack Django application. Designed for developers who want to build, not just learn.</p>
       </div>
 
-      <div class="curriculum-grid">
-        <div class="curriculum-card fade-up">
-          <p class="curriculum-card-phase">Phase 1 &middot; Weeks 1&ndash;4</p>
-          <h3 class="curriculum-card-title">Python Foundations</h3>
-          <ul class="curriculum-topics">
-            <li>Python syntax and data structures</li>
-            <li>Functions, classes, and OOP</li>
-            <li>Working with files and APIs</li>
-            <li>Virtual environments and pip</li>
-            <li>Project: CLI task manager</li>
-          </ul>
+      <div class="curriculum-phases">
+
+        <div class="curriculum-phase">
+          <div class="phase-header" role="button" aria-expanded="false">
+            <span class="phase-header-label">Phase 1 &middot; Weeks 1&ndash;4</span>
+            <span class="phase-header-title">Python Foundations</span>
+            <div class="phase-header-right">
+              <span class="phase-header-dur">4 weeks</span>
+              <span class="phase-toggle">+</span>
+            </div>
+          </div>
+          <div class="phase-body">
+            <div class="phase-body-inner">
+              <ul class="phase-topics">
+                <li>Python syntax and data structures</li>
+                <li>Functions, classes, and OOP</li>
+                <li>Working with files and APIs</li>
+                <li>Virtual environments and pip</li>
+                <li>Project: CLI task manager</li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <div class="curriculum-card fade-up">
-          <p class="curriculum-card-phase">Phase 2 &middot; Weeks 5&ndash;10</p>
-          <h3 class="curriculum-card-title">Django Core</h3>
-          <ul class="curriculum-topics">
-            <li>MTV architecture and URL routing</li>
-            <li>Models, ORM, and migrations</li>
-            <li>Views, templates, and forms</li>
-            <li>Admin panel customization</li>
-            <li>Project: Full-featured blog platform</li>
-          </ul>
+
+        <div class="curriculum-phase">
+          <div class="phase-header" role="button" aria-expanded="false">
+            <span class="phase-header-label">Phase 2 &middot; Weeks 5&ndash;10</span>
+            <span class="phase-header-title">Django Core</span>
+            <div class="phase-header-right">
+              <span class="phase-header-dur">6 weeks</span>
+              <span class="phase-toggle">+</span>
+            </div>
+          </div>
+          <div class="phase-body">
+            <div class="phase-body-inner">
+              <ul class="phase-topics">
+                <li>MTV architecture and URL routing</li>
+                <li>Models, ORM, and migrations</li>
+                <li>Views, templates, and forms</li>
+                <li>Admin panel customization</li>
+                <li>Project: Full-featured blog platform</li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <div class="curriculum-card fade-up">
-          <p class="curriculum-card-phase">Phase 3 &middot; Weeks 11&ndash;14</p>
-          <h3 class="curriculum-card-title">APIs &amp; Authentication</h3>
-          <ul class="curriculum-topics">
-            <li>Django REST Framework</li>
-            <li>JWT authentication &amp; sessions</li>
-            <li>Permissions and throttling</li>
-            <li>Testing APIs with pytest</li>
-            <li>Project: SaaS backend with auth</li>
-          </ul>
+
+        <div class="curriculum-phase">
+          <div class="phase-header" role="button" aria-expanded="false">
+            <span class="phase-header-label">Phase 3 &middot; Weeks 11&ndash;14</span>
+            <span class="phase-header-title">APIs &amp; Authentication</span>
+            <div class="phase-header-right">
+              <span class="phase-header-dur">4 weeks</span>
+              <span class="phase-toggle">+</span>
+            </div>
+          </div>
+          <div class="phase-body">
+            <div class="phase-body-inner">
+              <ul class="phase-topics">
+                <li>Django REST Framework</li>
+                <li>JWT authentication &amp; sessions</li>
+                <li>Permissions and throttling</li>
+                <li>Testing APIs with pytest</li>
+                <li>Project: SaaS backend with auth</li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <div class="curriculum-card fade-up">
-          <p class="curriculum-card-phase">Phase 4 &middot; Weeks 15&ndash;16</p>
-          <h3 class="curriculum-card-title">Deploy &amp; Ship</h3>
-          <ul class="curriculum-topics">
-            <li>Production settings and security</li>
-            <li>PostgreSQL in production</li>
-            <li>Deploy to Railway / Render</li>
-            <li>CI/CD with GitHub Actions</li>
-            <li>Capstone: Your own product</li>
-          </ul>
+
+        <div class="curriculum-phase">
+          <div class="phase-header" role="button" aria-expanded="false">
+            <span class="phase-header-label">Phase 4 &middot; Weeks 15&ndash;16</span>
+            <span class="phase-header-title">Deploy &amp; Ship</span>
+            <div class="phase-header-right">
+              <span class="phase-header-dur">2 weeks</span>
+              <span class="phase-toggle">+</span>
+            </div>
+          </div>
+          <div class="phase-body">
+            <div class="phase-body-inner">
+              <ul class="phase-topics">
+                <li>Production settings and security</li>
+                <li>PostgreSQL in production</li>
+                <li>Deploy to Railway / Render</li>
+                <li>CI/CD with GitHub Actions</li>
+                <li>Capstone: Your own product</li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <div class="curriculum-card fade-up">
-          <p class="curriculum-card-phase">Bonus &middot; Ongoing</p>
-          <h3 class="curriculum-card-title">Advanced Topics</h3>
-          <ul class="curriculum-topics">
-            <li>Celery and background tasks</li>
-            <li>Caching with Redis</li>
-            <li>WebSockets and Django Channels</li>
-            <li>Performance and query optimization</li>
-            <li>Real-world architecture patterns</li>
-          </ul>
+
+        <div class="curriculum-phase">
+          <div class="phase-header" role="button" aria-expanded="false">
+            <span class="phase-header-label">Bonus &middot; Ongoing</span>
+            <span class="phase-header-title">Advanced Topics</span>
+            <div class="phase-header-right">
+              <span class="phase-header-dur">Lifetime</span>
+              <span class="phase-toggle">+</span>
+            </div>
+          </div>
+          <div class="phase-body">
+            <div class="phase-body-inner">
+              <ul class="phase-topics">
+                <li>Celery and background tasks</li>
+                <li>Caching with Redis</li>
+                <li>WebSockets and Django Channels</li>
+                <li>Performance and query optimization</li>
+                <li>Real-world architecture patterns</li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <div class="curriculum-card fade-up" style="display:flex;flex-direction:column;justify-content:center;background:oklch(28% 0.08 155);">
-          <p class="curriculum-card-phase">Ready to start?</p>
-          <h3 class="curriculum-card-title" style="margin-bottom:1.5rem;">Join the next cohort</h3>
-          <a href="#enroll" class="btn btn-amber btn-large">Enroll Now &rarr;</a>
-        </div>
+
+      </div>
+
+      <div class="curriculum-cta">
+        <a href="#enroll" class="btn-accent-outline">Enroll Now &rarr;</a>
+        <p class="curriculum-cta-note">Join 500+ developers who've completed the track</p>
       </div>
     </div>
   </section>
 
   <!-- LEAD CAPTURE -->
-  <div class="lead-capture">
+  <div class="lead-capture" id="free-preview">
     <div class="lead-capture-inner">
-      <p class="lead-capture-label">Free Preview</p>
-      <h3 class="lead-capture-title">Not ready to enroll yet?</h3>
-      <p class="lead-capture-sub">Get the full curriculum breakdown, a sample lesson from Phase 2, and our guide to setting up your Django dev environment — free.</p>
-      <form class="lead-form" id="lead-form" novalidate>
-        <input type="email" placeholder="your@email.com" required autocomplete="email">
-        <button type="submit" class="btn btn-primary">Send it &rarr;</button>
-      </form>
-      <p class="lead-form-note">No spam. Unsubscribe anytime.</p>
-      <p class="lead-success-msg" id="lead-success">Check your inbox — the preview is on its way.</p>
+      <div>
+        <p class="section-label reveal">Free Preview</p>
+        <h3 class="lead-title reveal">Not ready to enroll?</h3>
+        <p class="lead-sub reveal">Get the full curriculum breakdown, a sample lesson from Phase 2, and our guide to setting up your Django dev environment — free.</p>
+      </div>
+      <div>
+        <form id="lead-form" novalidate>
+          <div class="lead-form">
+            <input class="lead-input" type="email" placeholder="your@email.com" required autocomplete="email">
+            <button type="submit" class="lead-submit">Send it &rarr;</button>
+          </div>
+        </form>
+        <p class="lead-note">No spam. Unsubscribe anytime.</p>
+        <p class="lead-success" id="lead-success">Check your inbox — the preview is on its way.</p>
+      </div>
     </div>
   </div>
 
   <!-- OUTCOMES -->
-  <section class="outcomes-section" id="outcomes">
-    <p class="section-label fade-up">Student Outcomes</p>
-    <h2 class="section-title fade-up">Numbers that <em>matter.</em></h2>
-
+  <section class="outcomes" id="outcomes">
+    <p class="section-label reveal">Student Outcomes</p>
+    <h2 class="section-title reveal">Numbers that <em>matter.</em></h2>
     <div class="outcomes-grid">
-      <div class="outcome-item fade-up">
+      <div class="outcome-item reveal">
         <div class="outcome-num">500<span class="outcome-suffix">+</span></div>
         <div class="outcome-label">Developers graduated</div>
       </div>
-      <div class="outcome-item fade-up">
+      <div class="outcome-item reveal">
         <div class="outcome-num">87<span class="outcome-suffix">%</span></div>
         <div class="outcome-label">Found new roles or got promoted</div>
       </div>
-      <div class="outcome-item fade-up">
+      <div class="outcome-item reveal">
         <div class="outcome-num">12</div>
         <div class="outcome-label">Portfolio-ready projects</div>
       </div>
-      <div class="outcome-item fade-up">
+      <div class="outcome-item reveal">
         <div class="outcome-num">4.9<span class="outcome-suffix">&#9733;</span></div>
         <div class="outcome-label">Across 200+ student reviews</div>
       </div>
@@ -892,162 +1165,146 @@
   </section>
 
   <!-- TESTIMONIALS -->
-  <section class="testimonials-section" id="testimonials">
+  <section class="testimonials" id="testimonials">
     <div class="testimonials-inner">
-      <p class="section-label fade-up">Student Stories</p>
-      <h2 class="section-title fade-up">What our graduates <em>say.</em></h2>
-
+      <p class="section-label">Student Stories</p>
+      <h2 class="section-title">What our graduates <em>say.</em></h2>
       <div class="testimonials-grid">
-        <div class="testimonial-card fade-up">
-          <p class="testimonial-quote">Before Django School, I'd been stuck in tutorial hell for two years. Six months after finishing, I shipped my first SaaS and landed a backend role at a startup.</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar">MR</div>
-            <div>
-              <div class="testimonial-name">Marco Reyes</div>
-              <div class="testimonial-role">Backend Developer &middot; Shipped mealplan.app</div>
-            </div>
-          </div>
+        <div class="testimonial reveal">
+          <span class="testimonial-quote-mark">&ldquo;</span>
+          <p class="testimonial-text">Before Django School, I'd been stuck in tutorial hell for two years. Six months after finishing, I shipped my first SaaS and landed a backend role at a startup.</p>
+          <div class="testimonial-name">Marco Reyes</div>
+          <div class="testimonial-role">Backend Developer &middot; Shipped mealplan.app</div>
         </div>
-        <div class="testimonial-card fade-up">
-          <p class="testimonial-quote">The curriculum is genuinely different. You're not just following along — you're making architectural decisions, handling production bugs, and thinking like a real engineer from week one.</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar">SP</div>
-            <div>
-              <div class="testimonial-name">Sara Park</div>
-              <div class="testimonial-role">Full-stack Developer &middot; Freelancing remotely</div>
-            </div>
-          </div>
+        <div class="testimonial reveal">
+          <span class="testimonial-quote-mark">&ldquo;</span>
+          <p class="testimonial-text">The curriculum is genuinely different. You're not just following along — you're making architectural decisions, handling production bugs, and thinking like a real engineer from week one.</p>
+          <div class="testimonial-name">Sara Park</div>
+          <div class="testimonial-role">Full-stack Developer &middot; Freelancing remotely</div>
         </div>
-        <div class="testimonial-card fade-up">
-          <p class="testimonial-quote">I came in knowing some Python. I left able to build and deploy a production API with auth, caching, and proper tests. That's a massive jump in just 16 weeks.</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar">AK</div>
-            <div>
-              <div class="testimonial-name">Andrei Kovacs</div>
-              <div class="testimonial-role">Python Developer &middot; Fintech startup</div>
-            </div>
-          </div>
+        <div class="testimonial reveal">
+          <span class="testimonial-quote-mark">&ldquo;</span>
+          <p class="testimonial-text">I came in knowing some Python. I left able to build and deploy a production API with auth, caching, and proper tests. That's a massive jump in just 16 weeks.</p>
+          <div class="testimonial-name">Andrei Kovacs</div>
+          <div class="testimonial-role">Python Developer &middot; Fintech startup</div>
         </div>
-        <div class="testimonial-card fade-up">
-          <p class="testimonial-quote">The community alone is worth the price. Code reviews, accountability partners, live sessions where instructors debug your actual code — I've never learned this fast before.</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar">LN</div>
-            <div>
-              <div class="testimonial-name">Lina Nguyen</div>
-              <div class="testimonial-role">Junior Backend Dev &middot; E-commerce platform</div>
-            </div>
-          </div>
+        <div class="testimonial reveal">
+          <span class="testimonial-quote-mark">&ldquo;</span>
+          <p class="testimonial-text">The community alone is worth the price. Code reviews, accountability partners, live sessions where instructors debug your actual code — I've never learned this fast before.</p>
+          <div class="testimonial-name">Lina Nguyen</div>
+          <div class="testimonial-role">Junior Backend Dev &middot; E-commerce platform</div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- GUARANTEE -->
-  <section class="guarantee-section">
-    <div class="guarantee-inner">
-      <p class="section-label fade-up" style="text-align:center;">Our Promise</p>
-      <h2 class="section-title fade-up" style="text-align:center;">The Django School <em>Guarantee</em></h2>
-      <div class="guarantee-card fade-up">
-        <div class="guarantee-icon">&#128587;</div>
-        <div>
-          <h3 class="guarantee-title">Ship something real in 16 weeks, or get your money back.</h3>
-          <p class="guarantee-body">
-            We're confident in this curriculum because we've seen it work for 500+ developers. If you complete the coursework and don't finish a deployed project within 16 weeks, we'll refund you in full — <strong>no questions asked, no hoops to jump through.</strong>
-            <br><br>
-            If you're not satisfied for any reason within your first 30 days, that's also a full refund. We'd rather you invest your time in something that works for you.
-          </p>
-        </div>
+  <section class="guarantee">
+    <p class="section-label reveal" style="text-align:center;">Our Promise</p>
+    <h2 class="section-title reveal" style="text-align:center;">The Django School <em>Guarantee</em></h2>
+    <div class="guarantee-card reveal">
+      <div class="guarantee-badge">
+        <div class="guarantee-badge-days">30</div>
+        <div class="guarantee-badge-label">Day Money<br>Back</div>
+      </div>
+      <div>
+        <h3 class="guarantee-title">Ship something real in 16 weeks, or get your money back.</h3>
+        <p class="guarantee-body">
+          We're confident in this curriculum because we've seen it work for 500+ developers. If you complete the coursework and don't finish a deployed project within 16 weeks, we'll refund you in full — <strong>no questions asked, no hoops to jump through.</strong>
+          <br><br>
+          If you're not satisfied for any reason within your first 30 days, that's also a full refund. We'd rather you invest your time in something that works for you.
+        </p>
       </div>
     </div>
   </section>
 
   <!-- PRICING -->
-  <section class="pricing-section" id="pricing">
-    <p class="section-label fade-up">Pricing</p>
-    <h2 class="section-title fade-up">Simple, honest <em>pricing.</em></h2>
-    <p class="section-body fade-up">One payment, lifetime access. No monthly fees, no seat limits, no surprises.</p>
-
-    <div class="pricing-grid">
-      <div class="pricing-card fade-up">
-        <p class="pricing-tier">Self-Paced</p>
-        <div class="pricing-price">$297</div>
-        <p class="pricing-period">One-time payment</p>
-        <ul class="pricing-features">
-          <li>Full 16-week curriculum</li>
-          <li>12 project templates &amp; solutions</li>
-          <li>Community Discord access</li>
-          <li>Lifetime access &amp; future updates</li>
-          <li>30-day money-back guarantee</li>
-        </ul>
-        <a href="#enroll" class="btn btn-primary btn-large pricing-cta">Get Started &rarr;</a>
-      </div>
-      <div class="pricing-card featured fade-up">
-        <span class="pricing-badge">Most Popular</span>
-        <p class="pricing-tier">With Mentorship</p>
-        <div class="pricing-price">$597</div>
-        <p class="pricing-period">One-time payment</p>
-        <ul class="pricing-features">
-          <li>Everything in Self-Paced</li>
-          <li>Weekly live Q&amp;A sessions</li>
-          <li>1-on-1 code review (4 sessions)</li>
-          <li>Career support &amp; resume review</li>
-          <li>Priority Discord support</li>
-          <li>Certificate of completion</li>
-        </ul>
-        <a href="#enroll" class="btn btn-primary btn-large pricing-cta">Enroll Now &rarr;</a>
+  <section class="pricing" id="pricing">
+    <div class="pricing-inner">
+      <p class="section-label reveal">Pricing</p>
+      <h2 class="section-title reveal">Simple, honest <em>pricing.</em></h2>
+      <p class="pricing-desc reveal">One payment, lifetime access. No monthly fees, no seat limits, no surprises.</p>
+      <div class="pricing-grid">
+        <div class="pricing-card reveal">
+          <p class="pricing-tier">Self-Paced</p>
+          <div class="pricing-price">$297</div>
+          <p class="pricing-period">One-time payment</p>
+          <ul class="pricing-features">
+            <li>Full 16-week curriculum</li>
+            <li>12 project templates &amp; solutions</li>
+            <li>Community Discord access</li>
+            <li>Lifetime access &amp; future updates</li>
+            <li>30-day money-back guarantee</li>
+          </ul>
+          <a href="#enroll" class="pricing-cta">Get Started &rarr;</a>
+        </div>
+        <div class="pricing-card featured reveal">
+          <p class="pricing-tier">With Mentorship <span class="pricing-badge">Most Popular</span></p>
+          <div class="pricing-price">$597</div>
+          <p class="pricing-period">One-time payment</p>
+          <ul class="pricing-features">
+            <li>Everything in Self-Paced</li>
+            <li>Weekly live Q&amp;A sessions</li>
+            <li>1-on-1 code review (4 sessions)</li>
+            <li>Career support &amp; resume review</li>
+            <li>Priority Discord support</li>
+            <li>Certificate of completion</li>
+          </ul>
+          <a href="#enroll" class="pricing-cta">Enroll Now &rarr;</a>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- FAQ -->
-  <section class="faq-section">
-    <p class="section-label fade-up">Common Questions</p>
-    <h2 class="section-title fade-up">Everything you want<br>to <em>know.</em></h2>
-    <div class="faq-list fade-up">
+  <section class="faq">
+    <p class="section-label reveal">Common Questions</p>
+    <h2 class="section-title reveal">Everything you want<br>to <em>know.</em></h2>
+    <div class="faq-list">
       <div class="faq-item">
-        <div class="faq-question">Do I need Python experience to start? <span class="faq-chevron">+</span></div>
-        <div class="faq-answer">Phase 1 covers Python fundamentals from scratch, so no prior Python is required. That said, if you've already written some Python — even basic scripting — you'll move through the early modules faster and have more time to focus on Django.</div>
+        <div class="faq-question">Do I need Python experience to start? <span class="faq-icon">+</span></div>
+        <div class="faq-answer"><div class="faq-answer-inner"><p class="faq-answer-text">Phase 1 covers Python fundamentals from scratch, so no prior Python is required. That said, if you've already written some Python — even basic scripting — you'll move through the early modules faster and have more time to focus on Django.</p></div></div>
       </div>
       <div class="faq-item">
-        <div class="faq-question">Is this self-paced or cohort-based? <span class="faq-chevron">+</span></div>
-        <div class="faq-answer">Both options are available. The Self-Paced plan lets you work through the curriculum on your own schedule — the material is always available. The Mentorship plan follows a cohort model with weekly live Q&amp;A sessions, so you have a group to progress with and deadlines to keep you accountable.</div>
+        <div class="faq-question">Is this self-paced or cohort-based? <span class="faq-icon">+</span></div>
+        <div class="faq-answer"><div class="faq-answer-inner"><p class="faq-answer-text">Both options are available. The Self-Paced plan lets you work through the curriculum on your own schedule — the material is always available. The Mentorship plan follows a cohort model with weekly live Q&amp;A sessions, so you have a group to progress with and deadlines to keep you accountable.</p></div></div>
       </div>
       <div class="faq-item">
-        <div class="faq-question">How much time should I set aside each week? <span class="faq-chevron">+</span></div>
-        <div class="faq-answer">Plan for 8–12 hours per week to stay on pace with the 16-week structure. If you're moving faster, the content is there — there's no artificial gating. If life gets busy, you can slow down without penalty since you have lifetime access.</div>
+        <div class="faq-question">How much time should I set aside each week? <span class="faq-icon">+</span></div>
+        <div class="faq-answer"><div class="faq-answer-inner"><p class="faq-answer-text">Plan for 8–12 hours per week to stay on pace with the 16-week structure. If you're moving faster, the content is there — there's no artificial gating. If life gets busy, you can slow down without penalty since you have lifetime access.</p></div></div>
       </div>
       <div class="faq-item">
-        <div class="faq-question">What platform is the course on? <span class="faq-chevron">+</span></div>
-        <div class="faq-answer">All course content lives on our custom Django-built platform (yes, we practice what we teach). Video lessons, project templates, code examples, and community access are all in one place. You'll receive login credentials immediately after enrolling.</div>
+        <div class="faq-question">What platform is the course on? <span class="faq-icon">+</span></div>
+        <div class="faq-answer"><div class="faq-answer-inner"><p class="faq-answer-text">All course content lives on our custom Django-built platform (yes, we practice what we teach). Video lessons, project templates, code examples, and community access are all in one place. You'll receive login credentials immediately after enrolling.</p></div></div>
       </div>
       <div class="faq-item">
-        <div class="faq-question">What if I fall behind? <span class="faq-chevron">+</span></div>
-        <div class="faq-answer">Life happens. Your access never expires, so you can pause and pick back up anytime. If you're on the Mentorship plan and miss a cohort, you can join the next live session cycle at no extra cost. We'd rather you finish late than not at all.</div>
+        <div class="faq-question">What if I fall behind? <span class="faq-icon">+</span></div>
+        <div class="faq-answer"><div class="faq-answer-inner"><p class="faq-answer-text">Life happens. Your access never expires, so you can pause and pick back up anytime. If you're on the Mentorship plan and miss a cohort, you can join the next live session cycle at no extra cost. We'd rather you finish late than not at all.</p></div></div>
       </div>
       <div class="faq-item">
-        <div class="faq-question">Is there job placement support? <span class="faq-chevron">+</span></div>
-        <div class="faq-answer">The Mentorship plan includes career support: resume review, LinkedIn profile feedback, and mock interview prep. We don't have a formal job guarantee, but 87% of our graduates report landing a new role or getting promoted within six months of completing the course (based on our 2024 graduate survey).</div>
+        <div class="faq-question">Is there job placement support? <span class="faq-icon">+</span></div>
+        <div class="faq-answer"><div class="faq-answer-inner"><p class="faq-answer-text">The Mentorship plan includes career support: resume review, LinkedIn profile feedback, and mock interview prep. We don't have a formal job guarantee, but 87% of our graduates report landing a new role or getting promoted within six months of completing the course.</p></div></div>
       </div>
       <div class="faq-item">
-        <div class="faq-question">Why Django instead of FastAPI or Flask? <span class="faq-chevron">+</span></div>
-        <div class="faq-answer">Django's "batteries included" philosophy makes it the fastest path from zero to a production application. The ORM, admin, auth, and deployment tooling are all built in. Once you know Django deeply, picking up FastAPI or Flask takes days — not weeks. It's also the most widely used Python web framework in professional environments.</div>
+        <div class="faq-question">Why Django instead of FastAPI or Flask? <span class="faq-icon">+</span></div>
+        <div class="faq-answer"><div class="faq-answer-inner"><p class="faq-answer-text">Django's "batteries included" philosophy makes it the fastest path from zero to a production application. The ORM, admin, auth, and deployment tooling are all built in. Once you know Django deeply, picking up FastAPI or Flask takes days — not weeks. It's also the most widely used Python web framework in professional environments.</p></div></div>
       </div>
     </div>
   </section>
 
-  <!-- ENROLL FORM -->
-  <section class="enroll-section" id="enroll">
+  <!-- ENROLL -->
+  <section class="enroll" id="enroll">
     <div class="enroll-inner">
       <div class="enroll-copy">
-        <p class="section-label">Start Today</p>
+        <p class="enroll-eyebrow">Start Today</p>
         <h2 class="enroll-title">Stop watching.<br>Start <em>shipping.</em></h2>
-        <p class="enroll-body">Join 500+ developers who've used Django School to build real products, land jobs, and finally make the leap from learning to doing.</p>
+        <p class="enroll-desc">Join 500+ developers who've used Django School to build real products, land jobs, and finally make the leap from learning to doing.</p>
       </div>
 
       <div class="enroll-form-card">
         <div id="enroll-form-wrap">
-          <h3 class="enroll-form-title">Claim your spot</h3>
-          <p class="enroll-form-sub">You'll receive login credentials and getting-started instructions by email.</p>
+          <h3 class="form-title">Claim your spot</h3>
+          <p class="form-subtitle">You'll receive login credentials and getting-started instructions by email.</p>
           <form id="enroll-form" novalidate>
             <div class="form-group">
               <label class="form-label" for="enroll-name">Full name</label>
@@ -1062,23 +1319,23 @@
               <div class="plan-options">
                 <label class="plan-option" id="plan-self">
                   <input type="radio" name="plan" value="self-paced">
-                  <div class="plan-option-label">
-                    <span class="plan-option-name">Self-Paced</span>
-                    <span class="plan-option-price">$297 &middot; one-time payment</span>
+                  <div>
+                    <div class="plan-option-name">Self-Paced</div>
+                    <div class="plan-option-price">$297 &middot; one-time payment</div>
                   </div>
                 </label>
                 <label class="plan-option selected" id="plan-mentorship">
                   <input type="radio" name="plan" value="mentorship" checked>
-                  <div class="plan-option-label">
-                    <span class="plan-option-name">With Mentorship <span style="font-size:0.7rem;background:var(--amber-light);color:oklch(35% 0.12 72);padding:0.1rem 0.4rem;border-radius:2px;margin-left:0.4rem;vertical-align:middle;">Popular</span></span>
-                    <span class="plan-option-price">$597 &middot; one-time payment</span>
+                  <div>
+                    <div class="plan-option-name">With Mentorship <span class="plan-popular">Popular</span></div>
+                    <div class="plan-option-price">$597 &middot; one-time payment</div>
                   </div>
                 </label>
               </div>
             </div>
             <button type="submit" class="form-submit">Enroll &amp; Start Building &rarr;</button>
           </form>
-          <p class="form-guarantee-note">&#128587; 30-day money-back guarantee &middot; Secure checkout</p>
+          <p class="form-guarantee">30-day money-back guarantee &middot; Secure checkout</p>
         </div>
         <div class="enroll-success" id="enroll-success">
           <div class="enroll-success-icon">&#9989;</div>
@@ -1094,14 +1351,14 @@
     <div class="footer-inner">
       <div class="footer-top">
         <div>
-          <div class="footer-brand-name">Django<span>School</span></div>
-          <p class="footer-brand-desc">The Django school built for developers who want to build real things, not just complete tutorials. Production-first, community-driven, lifetime access.</p>
+          <div class="footer-logo">Django<em>School</em></div>
+          <p class="footer-desc">The Django school built for developers who want to build real things, not just complete tutorials. Production-first, community-driven, lifetime access.</p>
         </div>
         <div>
           <p class="footer-col-title">Learn</p>
           <ul class="footer-links">
             <li><a href="#curriculum">Curriculum</a></li>
-            <li><a href="#lead-form-anchor">Free Preview</a></li>
+            <li><a href="#free-preview">Free Preview</a></li>
             <li><a href="#testimonials">Student Stories</a></li>
             <li><a href="#">Blog</a></li>
           </ul>
@@ -1132,70 +1389,58 @@
   </footer>
 
   <script>
-    // ── Scroll-triggered fade-up animations ──
-    const observer = new IntersectionObserver(
-      (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
-      { threshold: 0.08, rootMargin: '0px 0px -36px 0px' }
-    );
-    document.querySelectorAll('.fade-up').forEach((el, i) => {
-      el.style.transitionDelay = `${(i % 4) * 0.07}s`;
-      observer.observe(el);
-    });
+    // Scroll reveal
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(el => observer.observe(el));
 
-    // ── Nav shadow on scroll ──
-    const nav = document.getElementById('main-nav');
-    window.addEventListener('scroll', () => {
-      nav.style.boxShadow = window.scrollY > 40
-        ? '0 1px 24px oklch(0% 0 0 / 0.07)'
-        : 'none';
-    }, { passive: true });
-
-    // ── FAQ accordion ──
+    // FAQ accordion
     document.querySelectorAll('.faq-question').forEach(q => {
       q.addEventListener('click', () => {
         const item = q.closest('.faq-item');
-        const isOpen = item.classList.contains('open');
-        document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
-        if (!isOpen) item.classList.add('open');
+        const wasOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+        if (!wasOpen) item.classList.add('open');
       });
     });
 
-    // ── Plan radio selection highlight ──
-    document.querySelectorAll('.plan-option').forEach(opt => {
-      opt.addEventListener('click', () => {
+    // Curriculum accordion
+    document.querySelectorAll('.phase-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const phase = header.closest('.curriculum-phase');
+        const body = phase.querySelector('.phase-body');
+        const toggle = header.querySelector('.phase-toggle');
+        const wasOpen = body.classList.contains('open');
+        document.querySelectorAll('.phase-body').forEach(b => b.classList.remove('open'));
+        document.querySelectorAll('.phase-toggle').forEach(t => { t.textContent = '+'; });
+        if (!wasOpen) { body.classList.add('open'); toggle.textContent = '–'; }
+      });
+    });
+
+    // Plan selection
+    document.querySelectorAll('.plan-option').forEach(option => {
+      option.addEventListener('click', () => {
         document.querySelectorAll('.plan-option').forEach(o => o.classList.remove('selected'));
-        opt.classList.add('selected');
+        option.classList.add('selected');
       });
     });
 
-    // ── Enrollment form submit ──
-    const enrollForm = document.getElementById('enroll-form');
-    if (enrollForm) {
-      enrollForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name  = document.getElementById('enroll-name').value.trim();
-        const email = document.getElementById('enroll-email').value.trim();
-        const plan  = enrollForm.querySelector('input[name=plan]:checked')?.value;
-        if (!name || !email) return;
-        // TODO: wire to your payment processor (Stripe, Lemon Squeezy, Gumroad, etc.)
-        // with plan and email as parameters before going live.
-        document.getElementById('enroll-form-wrap').style.display = 'none';
-        document.getElementById('enroll-success').style.display = 'block';
-      });
-    }
+    // Lead form
+    document.getElementById('lead-form').addEventListener('submit', e => {
+      e.preventDefault();
+      document.getElementById('lead-success').style.display = 'block';
+    });
 
-    // ── Lead capture form submit ──
-    const leadForm = document.getElementById('lead-form');
-    if (leadForm) {
-      leadForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = leadForm.querySelector('input[type=email]').value.trim();
-        if (!email) return;
-        // TODO: wire to your email provider (ConvertKit, Mailchimp, etc.)
-        leadForm.style.display = 'none';
-        document.getElementById('lead-success').style.display = 'block';
-      });
-    }
+    // Enroll form
+    document.getElementById('enroll-form').addEventListener('submit', e => {
+      e.preventDefault();
+      document.getElementById('enroll-form-wrap').style.display = 'none';
+      document.getElementById('enroll-success').style.display = 'block';
+    });
   </script>
 </body>
 </html>
