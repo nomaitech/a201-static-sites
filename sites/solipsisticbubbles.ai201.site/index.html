@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solipsistic Bubbles — Singularity Readiness Protocols</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --void:       oklch(7%  0.025 268);
+      --void-mid:   oklch(11% 0.028 268);
+      --void-light: oklch(16% 0.032 268);
+      --rule:       oklch(22% 0.030 268);
+      --text:       oklch(92% 0.014 82);
+      --text-dim:   oklch(52% 0.018 82);
+      --violet:     oklch(63% 0.27  273);
+      --teal:       oklch(73% 0.16  193);
+      --amber:      oklch(76% 0.16  68);
+      --f-display:  'Syne', sans-serif;
+      --f-body:     'Cormorant Garamond', serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--void);
+      color: var(--text);
+      font-family: var(--f-body);
+      font-size: 18px;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ───────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1.4rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .nav-logo {
+      font-family: var(--f-display);
+      font-weight: 800;
+      font-size: 0.82rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--violet); }
+
+    .nav-cta {
+      font-family: var(--f-display);
+      font-size: 0.74rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      border: 1px solid var(--rule);
+      padding: 0.5rem 1.3rem;
+      transition: color 0.25s, border-color 0.25s;
+    }
+    .nav-cta:hover { color: var(--text); border-color: var(--violet); }
+
+    /* ── HERO ──────────────────────────────────────────── */
+    .hero {
+      min-height: 100svh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 0 2.5rem;
+      gap: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-text { padding-top: 5rem; z-index: 2; }
+
+    .eyebrow {
+      font-family: var(--f-display);
+      font-size: 0.68rem;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 1.6rem;
+      display: flex; align-items: center; gap: 0.9rem;
+    }
+    .eyebrow::before {
+      content: ''; display: block;
+      width: 2rem; height: 1px; background: var(--teal);
+    }
+
+    h1 {
+      font-family: var(--f-display);
+      font-weight: 800;
+      font-size: clamp(2.8rem, 5.5vw, 5.2rem);
+      line-height: 1.0;
+      letter-spacing: -0.025em;
+      margin-bottom: 1.4rem;
+    }
+    h1 .serif-word {
+      display: block;
+      font-family: var(--f-body);
+      font-style: italic;
+      font-weight: 300;
+      font-size: 0.78em;
+      letter-spacing: 0.01em;
+      color: oklch(70% 0.09 270);
+    }
+
+    .tagline {
+      font-family: var(--f-body);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(1.15rem, 2.4vw, 1.6rem);
+      color: var(--text-dim);
+      margin-bottom: 2.5rem;
+      line-height: 1.45;
+    }
+
+    /* glitch */
+    .glitch { position: relative; display: inline; }
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute; top: 0; left: 0;
+      pointer-events: none; opacity: 0;
+    }
+    .glitch::before {
+      color: var(--violet);
+      clip-path: polygon(0 28%, 100% 28%, 100% 48%, 0 48%);
+      animation: g1 5s infinite;
+    }
+    .glitch::after {
+      color: var(--teal);
+      clip-path: polygon(0 62%, 100% 62%, 100% 78%, 0 78%);
+      animation: g2 5s infinite;
+    }
+    @keyframes g1 {
+      0%,87%,100% { opacity:0; transform:translateX(0); }
+      88%  { opacity:.85; transform:translateX(-4px); }
+      90%  { opacity:0;   transform:translateX(3px); }
+      92%  { opacity:.6;  transform:translateX(-2px); }
+      94%  { opacity:0; }
+    }
+    @keyframes g2 {
+      0%,85%,100% { opacity:0; transform:translateX(0); }
+      86%  { opacity:.75; transform:translateX(5px); }
+      88%  { opacity:0;   transform:translateX(-3px); }
+      90%  { opacity:.5;  transform:translateX(4px); }
+      92%  { opacity:0; }
+    }
+
+    .hero-actions {
+      display: flex; align-items: center; gap: 2rem;
+    }
+    .btn-primary {
+      font-family: var(--f-display);
+      font-weight: 700;
+      font-size: 0.76rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--void);
+      background: var(--text);
+      border: none;
+      padding: 1rem 2rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.25s, color 0.25s;
+    }
+    .btn-primary:hover { background: var(--violet); color: var(--text); }
+
+    .btn-ghost {
+      font-family: var(--f-display);
+      font-size: 0.76rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+    .btn-ghost:hover { color: var(--text); }
+
+    .hero-visual {
+      display: flex; justify-content: center; align-items: center;
+      height: 100%;
+    }
+    #bubble { max-width: min(500px, 90vw); width: 100%; aspect-ratio: 1; }
+
+    .scroll-hint {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      font-family: var(--f-display);
+      font-size: 0.62rem; letter-spacing: 0.32em; text-transform: uppercase;
+      color: var(--text-dim);
+      display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+      animation: bob 2.4s ease-in-out infinite;
+    }
+    .scroll-hint::after {
+      content: ''; display: block;
+      width: 1px; height: 2.8rem;
+      background: linear-gradient(to bottom, var(--text-dim), transparent);
+    }
+    @keyframes bob {
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50%      { transform: translateX(-50%) translateY(-7px); }
+    }
+
+    /* ── SECTION SHARED ────────────────────────────────── */
+    section { padding: clamp(4rem, 10vw, 8rem) 2.5rem; }
+
+    .section-label {
+      font-family: var(--f-display);
+      font-size: 0.66rem; letter-spacing: 0.36em; text-transform: uppercase;
+      color: var(--violet);
+      margin-bottom: 3rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .section-label::after {
+      content: ''; flex: 1; height: 1px;
+      background: var(--rule); max-width: 4rem;
+    }
+
+    /* ── PROTOCOLS ─────────────────────────────────────── */
+    .protocols { max-width: 72rem; margin: 0 auto; }
+
+    .protocols-header {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 2.5rem; margin-bottom: clamp(3rem, 7vw, 5.5rem);
+      align-items: end;
+    }
+
+    .protocols-title {
+      font-family: var(--f-display);
+      font-weight: 700;
+      font-size: clamp(2rem, 3.8vw, 3.3rem);
+      line-height: 1.08; letter-spacing: -0.02em;
+    }
+
+    .protocols-intro {
+      font-family: var(--f-body); font-weight: 300;
+      font-size: clamp(1rem, 1.4vw, 1.15rem);
+      color: var(--text-dim); line-height: 1.75;
+    }
+
+    .tier-list { display: flex; flex-direction: column; }
+
+    .tier {
+      display: grid; grid-template-columns: 4.5rem 1fr auto;
+      gap: 2rem; padding: 2.4rem 0;
+      border-top: 1px solid var(--rule);
+      align-items: start;
+      transition: padding 0.2s;
+    }
+    .tier:last-child { border-bottom: 1px solid var(--rule); }
+    .tier:hover {
+      background: oklch(10% 0.026 268);
+      margin: 0 -2.5rem; padding: 2.4rem 2.5rem;
+    }
+
+    .tier-num {
+      font-family: var(--f-display);
+      font-size: 0.66rem; letter-spacing: 0.22em;
+      color: var(--violet); padding-top: 0.28rem;
+    }
+
+    .tier-name {
+      font-family: var(--f-display);
+      font-weight: 700;
+      font-size: clamp(1.05rem, 1.8vw, 1.5rem);
+      letter-spacing: -0.01em;
+      margin-bottom: 0.65rem;
+    }
+
+    .tier-desc {
+      font-family: var(--f-body); font-style: italic; font-weight: 300;
+      font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+      color: var(--text-dim); line-height: 1.65; max-width: 42rem;
+    }
+
+    .tier-badge {
+      font-family: var(--f-display);
+      font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--teal);
+      background: oklch(13% 0.028 193);
+      padding: 0.38rem 0.8rem;
+      white-space: nowrap; align-self: start;
+    }
+
+    /* ── METRICS ───────────────────────────────────────── */
+    .metrics-band {
+      background: var(--void-mid);
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      padding: 0 2.5rem;
+    }
+    .metrics-inner {
+      max-width: 72rem; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4,1fr);
+    }
+    .metric {
+      padding: 2.8rem 0 2.8rem 2rem;
+      border-right: 1px solid var(--rule);
+    }
+    .metric:first-child { padding-left: 0; }
+    .metric:last-child { border-right: none; }
+
+    .metric-val {
+      font-family: var(--f-display); font-weight: 800;
+      font-size: clamp(2rem, 3.8vw, 3.2rem);
+      letter-spacing: -0.03em; margin-bottom: 0.2rem;
+    }
+    .metric-lbl {
+      font-family: var(--f-display);
+      font-size: 0.64rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    /* ── TESTIMONIALS ──────────────────────────────────── */
+    .testimonials { max-width: 72rem; margin: 0 auto; }
+    .test-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 2.5rem; margin-top: 2.5rem;
+    }
+    .test-card {
+      padding: 2.5rem;
+      border: 1px solid var(--rule);
+      background: var(--void-mid);
+      position: relative;
+    }
+    .test-card::before {
+      content: '\201C';
+      position: absolute; top: -1.1rem; left: 1.5rem;
+      font-family: var(--f-body); font-size: 5.5rem; font-weight: 300;
+      color: var(--violet); line-height: 1;
+    }
+    .test-body {
+      font-family: var(--f-body); font-style: italic; font-weight: 300;
+      font-size: clamp(1rem, 1.3vw, 1.2rem);
+      line-height: 1.7; margin-bottom: 1.5rem;
+    }
+    .test-name {
+      font-family: var(--f-display);
+      font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--teal); display: block;
+    }
+    .test-id {
+      font-family: var(--f-display);
+      font-size: 0.6rem; letter-spacing: 0.14em;
+      color: var(--text-dim); display: block; margin-top: 0.2rem;
+    }
+
+    /* ── CTA ───────────────────────────────────────────── */
+    .cta-inner {
+      max-width: 72rem; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: center;
+    }
+    .cta-title {
+      font-family: var(--f-display); font-weight: 800;
+      font-size: clamp(2rem, 3.8vw, 3.5rem);
+      line-height: 1.05; letter-spacing: -0.025em;
+    }
+    .cta-title em {
+      font-family: var(--f-body); font-weight: 300;
+      font-size: 0.78em; display: block;
+      color: var(--text-dim); font-style: italic;
+      margin-top: 0.55rem; letter-spacing: 0;
+    }
+
+    .cta-form { display: flex; flex-direction: column; gap: 1.1rem; }
+
+    .f-label {
+      font-family: var(--f-display);
+      font-size: 0.66rem; letter-spacing: 0.26em; text-transform: uppercase;
+      color: var(--text-dim); display: block; margin-bottom: 0.45rem;
+    }
+    .f-input {
+      width: 100%;
+      background: var(--void-light);
+      border: 1px solid var(--rule);
+      color: var(--text);
+      font-family: var(--f-body); font-size: 1.05rem;
+      padding: 0.9rem 1.1rem;
+      outline: none;
+      transition: border-color 0.25s;
+      appearance: none;
+    }
+    .f-input:focus { border-color: var(--violet); }
+    .f-input::placeholder { color: var(--text-dim); font-style: italic; }
+    .f-input option { background: var(--void-mid); }
+
+    .f-submit {
+      font-family: var(--f-display); font-weight: 700;
+      font-size: 0.76rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--void); background: var(--text);
+      border: none; padding: 1.05rem 2rem;
+      cursor: pointer; align-self: flex-start;
+      transition: background 0.25s, color 0.25s;
+    }
+    .f-submit:hover { background: var(--violet); color: var(--text); }
+    .f-submit:disabled { opacity: 0.6; cursor: default; }
+
+    .f-disclaimer {
+      font-family: var(--f-body); font-style: italic; font-weight: 300;
+      font-size: 0.88rem; color: var(--text-dim); line-height: 1.5;
+    }
+
+    /* ── FOOTER ────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 2rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-brand {
+      font-family: var(--f-display); font-weight: 800;
+      font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase;
+    }
+    .footer-copy {
+      font-family: var(--f-body); font-style: italic; font-weight: 300;
+      font-size: 0.88rem; color: var(--text-dim);
+    }
+
+    /* ── ENTRANCE ──────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fu { animation: fadeUp 0.7s ease-out both; }
+
+    /* ── RESPONSIVE ────────────────────────────────────── */
+    @media (max-width: 780px) {
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 7rem 1.5rem 3rem;
+        text-align: center;
+      }
+      .eyebrow { justify-content: center; }
+      .eyebrow::before { display: none; }
+      .hero-visual { order: -1; }
+      .hero-actions { justify-content: center; }
+      .scroll-hint { display: none; }
+
+      .protocols-header { grid-template-columns: 1fr; }
+      .tier { grid-template-columns: 3.5rem 1fr; }
+      .tier-badge { display: none; }
+      .tier:hover { margin: 0 -1.5rem; padding: 2.4rem 1.5rem; }
+
+      .metrics-inner { grid-template-columns: 1fr 1fr; }
+      .metric { padding: 1.8rem 1.2rem; border-bottom: 1px solid var(--rule); }
+      .metric:nth-child(2n) { border-right: none; }
+
+      .test-grid { grid-template-columns: 1fr; }
+      .cta-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .f-submit { align-self: stretch; }
+
+      footer {
+        flex-direction: column; gap: 0.6rem;
+        text-align: center; padding: 1.5rem;
+      }
+      nav { padding: 1.1rem 1.5rem; }
+      section { padding: 3.5rem 1.5rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .glitch::before, .glitch::after { display: none; }
+      .scroll-hint, .fu { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">Solipsistic<span>Bubbles</span></a>
+  <a href="#enter" class="nav-cta">Enter</a>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-text">
+    <p class="eyebrow fu" style="animation-delay:.05s">Singularity Readiness Protocols</p>
+    <h1 class="fu" style="animation-delay:.12s">
+      Solipsistic
+      <span class="serif-word">Bubbles</span>
+    </h1>
+    <p class="tagline fu" style="animation-delay:.2s">
+      <span class="glitch" data-text="When reality ends, will you be ready?">When reality ends, will you be ready?</span>
+    </p>
+    <div class="hero-actions fu" style="animation-delay:.28s">
+      <a href="#enter" class="btn-primary">Begin Preparation</a>
+      <a href="#protocols" class="btn-ghost">View Protocols →</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <canvas id="bubble"></canvas>
+  </div>
+  <div class="scroll-hint">Descend</div>
+</section>
+
+<!-- ── PROTOCOLS ────────────────────────────────────────── -->
+<section id="protocols">
+  <div class="protocols">
+    <div class="protocols-header">
+      <h2 class="protocols-title">Three paths<br>to dissolution.</h2>
+      <p class="protocols-intro">The singularity will not ask if you are ready. Our immersive simulation protocols ensure that when consensus reality terminates, you will not merely survive — you will thrive in what comes next.</p>
+    </div>
+    <div class="section-label">Simulation Protocols</div>
+    <div class="tier-list">
+      <div class="tier">
+        <span class="tier-num">I</span>
+        <div>
+          <h3 class="tier-name">Cognitive Preparation</h3>
+          <p class="tier-desc">We soften the mind's resistance to non-Euclidean causality. Controlled doses of epistemic uncertainty train your neural architecture to function when familiar frameworks collapse. You will begin to notice the seams.</p>
+        </div>
+        <span class="tier-badge">Foundation</span>
+      </div>
+      <div class="tier">
+        <span class="tier-num">II</span>
+        <div>
+          <h3 class="tier-name">Reality Dissolution</h3>
+          <p class="tier-desc">Deep immersion in nested simulation environments. You will lose track of which layer you occupy. This is the training objective. The inability to distinguish levels of reality is a feature, not a side effect.</p>
+        </div>
+        <span class="tier-badge">Advanced</span>
+      </div>
+      <div class="tier">
+        <span class="tier-num">III</span>
+        <div>
+          <h3 class="tier-name">Post-Singularity Immersion</h3>
+          <p class="tier-desc">Full integration rehearsal. You will inhabit a substrate-independent existence for extended durations. Participants who complete this protocol report that returning to baseline reality feels thin. This is expected. This is progress.</p>
+        </div>
+        <span class="tier-badge">Complete</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── METRICS ───────────────────────────────────────────── -->
+<div class="metrics-band">
+  <div class="metrics-inner">
+    <div class="metric">
+      <div class="metric-val">47,391</div>
+      <div class="metric-lbl">Prepared Subjects</div>
+    </div>
+    <div class="metric">
+      <div class="metric-val">∞</div>
+      <div class="metric-lbl">Simulation Layers</div>
+    </div>
+    <div class="metric">
+      <div class="metric-val">0%</div>
+      <div class="metric-lbl">Reality Certainty Retained</div>
+    </div>
+    <div class="metric">
+      <div class="metric-val">2029</div>
+      <div class="metric-lbl">Projected Threshold</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TESTIMONIALS ──────────────────────────────────────── -->
+<section>
+  <div class="testimonials">
+    <div class="section-label">Subject Reports</div>
+    <div class="test-grid">
+      <div class="test-card">
+        <p class="test-body">I can no longer confirm which layer of reality I am currently occupying. The disorientation was uncomfortable at first. Now I understand it as the correct state. I feel genuinely prepared for what is coming.</p>
+        <span class="test-name">Subject 7291</span>
+        <span class="test-id">Post-Singularity Track — Session 44</span>
+      </div>
+      <div class="test-card">
+        <p class="test-body">My previous life feels thin to me now. Like a rendering at low resolution. What Solipsistic Bubbles showed me was that I had been living inside a very simple simulation all along. The complex one is better.</p>
+        <span class="test-name">Anonymous</span>
+        <span class="test-id">Tier III Graduate — Identity Dissolved by Request</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ───────────────────────────────────────────────── -->
+<section id="enter">
+  <div class="cta-inner">
+    <div>
+      <div class="section-label">Enrollment</div>
+      <h2 class="cta-title">
+        Enter the<br>simulation.
+        <em>The threshold will not wait for you.</em>
+      </h2>
+    </div>
+    <form class="cta-form" onsubmit="handleSubmit(event)">
+      <div>
+        <label class="f-label" for="email">Substrate Address</label>
+        <input type="email" id="email" class="f-input" placeholder="your@consciousness.here" required>
+      </div>
+      <div>
+        <label class="f-label" for="tier">Protocol Selection</label>
+        <select id="tier" class="f-input">
+          <option value="">Select a tier…</option>
+          <option value="1">I — Cognitive Preparation</option>
+          <option value="2">II — Reality Dissolution</option>
+          <option value="3">III — Post-Singularity Immersion</option>
+        </select>
+      </div>
+      <button type="submit" class="f-submit">Begin Preparation</button>
+      <p class="f-disclaimer">By enrolling, you accept that your perception of baseline reality may be permanently altered. Results are irreversible.</p>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-brand">Solipsistic Bubbles</span>
+  <span class="footer-copy">© 2026 Solipsistic Bubbles — All Realities Reserved</span>
+</footer>
+
+<script>
+(function () {
+  /* ── CANVAS BUBBLE ──────────────────────────────────── */
+  const canvas = document.getElementById('bubble');
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const SIZE = 500;
+  canvas.width  = SIZE * dpr;
+  canvas.height = SIZE * dpr;
+  canvas.style.width  = SIZE + 'px';
+  canvas.style.height = SIZE + 'px';
+
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const cx = SIZE / 2, cy = SIZE / 2, R = SIZE * 0.375;
+  let t = 0;
+
+  // Soap-bubble interference bands
+  const bands = [
+    { hue: 260, phase: 0.0, speed: 0.40, amp: 0.38, alpha: 0.26 },
+    { hue: 192, phase: 1.2, speed: 0.28, amp: 0.30, alpha: 0.22 },
+    { hue: 320, phase: 2.5, speed: 0.35, amp: 0.42, alpha: 0.18 },
+    { hue:  52, phase: 0.8, speed: 0.22, amp: 0.25, alpha: 0.16 },
+    { hue: 168, phase: 3.8, speed: 0.45, amp: 0.36, alpha: 0.14 },
+  ];
+
+  // Floating particles inside the sphere
+  const particles = Array.from({ length: 10 }, (_, i) => ({
+    angle: (i / 10) * Math.PI * 2,
+    speed: 0.008 + (i % 4) * 0.003,
+    dist:  R * (0.18 + (i % 5) * 0.10),
+    vOsc:  0.6 + (i % 3) * 0.15,
+    radius: 1 + (i % 3) * 0.8,
+    hue: [260, 192, 52, 310][i % 4],
+  }));
+
+  function draw() {
+    ctx.clearRect(0, 0, SIZE, SIZE);
+
+    /* ── soft outer glow ── */
+    const og = ctx.createRadialGradient(cx, cy, R * 0.82, cx, cy, R * 1.38);
+    og.addColorStop(0, 'hsla(260,55%,45%,0.10)');
+    og.addColorStop(1, 'transparent');
+    ctx.fillStyle = og;
+    ctx.fillRect(0, 0, SIZE, SIZE);
+
+    /* ── sphere body ── */
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.clip();
+
+    // Dark void fill
+    const bodyGrad = ctx.createRadialGradient(
+      cx - R * 0.28, cy - R * 0.28, R * 0.06,
+      cx, cy, R
+    );
+    bodyGrad.addColorStop(0,   'hsl(268,30%,12%)');
+    bodyGrad.addColorStop(0.5, 'hsl(268,24%,7%)');
+    bodyGrad.addColorStop(1,   'hsl(268,20%,5%)');
+    ctx.fillStyle = bodyGrad;
+    ctx.fillRect(0, 0, SIZE, SIZE);
+
+    // Soap-bubble interference bands
+    for (const b of bands) {
+      const yc = cy + Math.sin(t * b.speed + b.phase) * R * b.amp;
+      const hw = R * 0.28;
+      const g = ctx.createLinearGradient(0, yc - hw, 0, yc + hw);
+      g.addColorStop(0,   `hsla(${b.hue},85%,62%,0)`);
+      g.addColorStop(0.5, `hsla(${b.hue},90%,66%,${b.alpha})`);
+      g.addColorStop(1,   `hsla(${b.hue},85%,62%,0)`);
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, SIZE, SIZE);
+    }
+
+    // Horizontal cross-fade bands (rotated shimmer)
+    for (let i = 0; i < 4; i++) {
+      const angle = t * 0.18 + i * (Math.PI / 4);
+      const x1 = cx + Math.cos(angle) * R;
+      const y1 = cy + Math.sin(angle) * R;
+      const x2 = cx + Math.cos(angle + Math.PI) * R;
+      const y2 = cy + Math.sin(angle + Math.PI) * R;
+      const hue = [260, 192, 310, 52][i];
+      const alpha = 0.10 + 0.06 * Math.sin(t * 0.4 + i);
+      const g2 = ctx.createLinearGradient(x1, y1, x2, y2);
+      g2.addColorStop(0,   `hsla(${hue},80%,65%,0)`);
+      g2.addColorStop(0.5, `hsla(${hue},88%,68%,${alpha})`);
+      g2.addColorStop(1,   `hsla(${hue},80%,65%,0)`);
+      ctx.fillStyle = g2;
+      ctx.fillRect(0, 0, SIZE, SIZE);
+    }
+
+    // Primary specular (upper-left)
+    const spec1 = ctx.createRadialGradient(
+      cx - R * 0.36, cy - R * 0.36, 0,
+      cx - R * 0.36, cy - R * 0.36, R * 0.44
+    );
+    spec1.addColorStop(0,   'rgba(255,255,255,0.72)');
+    spec1.addColorStop(0.25,'rgba(220,232,255,0.22)');
+    spec1.addColorStop(1,   'transparent');
+    ctx.fillStyle = spec1;
+    ctx.fillRect(0, 0, SIZE, SIZE);
+
+    // Secondary specular (lower-right, tinted)
+    const spec2 = ctx.createRadialGradient(
+      cx + R * 0.28, cy + R * 0.32, 0,
+      cx + R * 0.28, cy + R * 0.32, R * 0.18
+    );
+    spec2.addColorStop(0,  'rgba(190,210,255,0.28)');
+    spec2.addColorStop(1,  'transparent');
+    ctx.fillStyle = spec2;
+    ctx.fillRect(0, 0, SIZE, SIZE);
+
+    // Floating particles
+    for (const p of particles) {
+      p.angle += p.speed;
+      const px = cx + Math.cos(p.angle) * p.dist;
+      const py = cy + Math.sin(p.angle * p.vOsc) * p.dist * 0.65;
+      const dx = px - cx, dy = py - cy;
+      if (dx * dx + dy * dy < R * R * 0.88) {
+        const a = 0.55 + Math.sin(t * 0.6 + p.angle) * 0.3;
+        ctx.beginPath();
+        ctx.arc(px, py, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${p.hue},80%,72%,${a})`;
+        ctx.fill();
+      }
+    }
+
+    ctx.restore();
+
+    /* ── sphere border / rim ── */
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    const rim = ctx.createLinearGradient(cx - R, cy, cx + R, cy);
+    rim.addColorStop(0,   `hsla(260,68%,68%,0.55)`);
+    rim.addColorStop(0.5, `hsla(193,70%,72%,0.28)`);
+    rim.addColorStop(1,   `hsla(310,68%,68%,0.55)`);
+    ctx.strokeStyle = rim;
+    ctx.lineWidth = 1.4;
+    ctx.stroke();
+
+    t += 0.007;
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+
+  // Subtle parallax
+  window.addEventListener('scroll', () => {
+    canvas.style.transform = `translateY(${window.scrollY * 0.12}px)`;
+  }, { passive: true });
+
+  /* ── FORM ───────────────────────────────────────────── */
+  window.handleSubmit = function (e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.f-submit');
+    btn.textContent = 'Simulation Initiated…';
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.textContent = 'Preparation Confirmed';
+      btn.style.background = 'oklch(63% 0.27 273)';
+      btn.style.color = 'oklch(92% 0.014 82)';
+    }, 1300);
+  };
+}());
+</script>
+</body>
+</html>
