@@ -7,6 +7,10 @@ on:
     paths:
       - "sites/**"
 
+concurrency:
+  group: deploy-r2
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest

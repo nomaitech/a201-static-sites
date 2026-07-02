@@ -821,8 +821,7 @@
     }
   }
 
-  function startLevel(lvl, opts) {
-    opts = opts || {};
+  function startLevel(lvl) {
     level = lvl;
     cfg = levelConfig(level);
     model = defaultModel(cfg.hidden);
