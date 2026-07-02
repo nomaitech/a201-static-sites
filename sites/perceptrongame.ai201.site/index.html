@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Perceptron Fit — a curve-fitting game</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --border: #30363d;
+    --text: #c9d1d9;
+    --accent: #58a6ff;
+    --target: #f0883e;
+    --perc: #3fb950;
+    --win: #2ea043;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+  }
+  header {
+    text-align: center;
+    padding: 18px 10px 6px;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 1.6rem;
+    letter-spacing: 0.5px;
+  }
+  header p {
+    margin: 4px 0 0;
+    color: #8b949e;
+    font-size: 0.9rem;
+  }
+  #levelBar {
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+  }
+  .stage {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+  }
+  .panel h2 {
+    margin: 0 0 10px;
+    font-size: 1.05rem;
+    color: #8b949e;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #netCanvas {
+    display: block;
+    margin: 0 auto;
+  }
+  .controls {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-height: 420px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .control-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .control-row label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+  }
+  .control-row .val {
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  input[type=range] {
+    width: 260px;
+    accent-color: var(--accent);
+  }
+  .neuron-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #0d1117;
+  }
+  .neuron-card h3 {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--perc);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  #plotCanvas {
+    display: block;
+    background: #0a0e14;
+    border-radius: 6px;
+  }
+  .legend {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+    font-size: 0.85rem;
+    justify-content: center;
+  }
+  .legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .swatch {
+    width: 18px;
+    height: 4px;
+    display: inline-block;
+    border-radius: 2px;
+  }
+  .fit-wrap {
+    margin-top: 14px;
+  }
+  .fit-bar-bg {
+    width: 100%;
+    height: 18px;
+    background: #21262d;
+    border-radius: 9px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .fit-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #d29922, var(--perc));
+    transition: width 0.08s linear;
+  }
+  .fit-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    margin-top: 6px;
+    color: #8b949e;
+  }
+  #fitPct {
+    color: var(--text);
+    font-weight: 700;
+  }
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+    justify-content: center;
+  }
+  button {
+    background: #21262d;
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  button:hover {
+    background: #30363d;
+  }
+  #winBanner {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    text-align: center;
+    background: var(--win);
+    color: white;
+    font-weight: 700;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 0 20px 10px;
+    font-size: 1.05rem;
+    height: 46px;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  #winBanner.show {
+    visibility: visible;
+    opacity: 1;
+  }
+  #nextLevelBtn {
+    background: white;
+    color: var(--win);
+    border: none;
+    font-weight: 700;
+  }
+  #nextLevelBtn:hover {
+    background: #e6ffed;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Perceptron Fit</h1>
+  <p>Adjust the network's weights and biases so its output curve matches the target.</p>
+</header>
+
+<div id="levelBar">Level 1 · Straight Line</div>
+
+<div id="winBanner">
+  <span id="winText">🎉 Fit achieved! 90%+ match.</span>
+  <button id="nextLevelBtn">Next Level →</button>
+</div>
+
+<div class="stage">
+  <div class="panel" id="leftPanel">
+    <h2>Perceptron</h2>
+    <canvas id="netCanvas" width="320" height="240"></canvas>
+    <div class="controls" id="controls"></div>
+  </div>
+
+  <div class="panel" id="rightPanel">
+    <h2>Target vs. Output</h2>
+    <canvas id="plotCanvas" width="420" height="420"></canvas>
+    <div class="legend">
+      <span><i class="swatch" style="background:var(--target)"></i> Target curve</span>
+      <span><i class="swatch" style="background:var(--perc)"></i> Perceptron output</span>
+    </div>
+    <div class="fit-wrap">
+      <div class="fit-bar-bg"><div class="fit-bar-fill" id="fitBar"></div></div>
+      <div class="fit-label"><span>Fit</span><span id="fitPct">0%</span></div>
+    </div>
+    <div class="actions">
+      <button id="newLineBtn">New Target</button>
+      <button id="resetBtn">Reset Weights</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const netCanvas = document.getElementById('netCanvas');
+  const netCtx = netCanvas.getContext('2d');
+  const plotCanvas = document.getElementById('plotCanvas');
+  const plotCtx = plotCanvas.getContext('2d');
+  const controlsEl = document.getElementById('controls');
+  const fitBar = document.getElementById('fitBar');
+  const fitPctEl = document.getElementById('fitPct');
+  const winBanner = document.getElementById('winBanner');
+  const nextLevelBtn = document.getElementById('nextLevelBtn');
+  const newLineBtn = document.getElementById('newLineBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const levelBar = document.getElementById('levelBar');
+
+  const AXIS_RANGE = 10; // plot spans -10..10 on both axes
+  const WIN_THRESHOLD = 0.90;
+  const MAX_HIDDEN = 6; // cap neuron count so the control panel stays usable
+
+  let level = 1;
+  let cfg, target, model, hasWon;
+
+  function levelConfig(lvl) {
+    const kinks = lvl - 1;
+    const hidden = kinks === 0 ? 0 : Math.min(kinks + 1, MAX_HIDDEN);
+    const name = kinks === 0 ? 'Straight Line' : (kinks + ' Bend' + (kinks === 1 ? '' : 's'));
+    return { level: lvl, kinks, hidden, name };
+  }
+
+  // Target is a piecewise-linear function through random breakpoints across the domain.
+  function generateTarget(kinks) {
+    const xs = [-AXIS_RANGE];
+    if (kinks > 0) {
+      const interior = [];
+      for (let i = 0; i < kinks; i++) {
+        const base = -AXIS_RANGE + (2 * AXIS_RANGE * (i + 1)) / (kinks + 1);
+        interior.push(Math.max(-AXIS_RANGE + 0.5, Math.min(AXIS_RANGE - 0.5, base + (Math.random() * 2 - 1))));
+      }
+      interior.sort((a, b) => a - b);
+      xs.push(...interior);
+    }
+    xs.push(AXIS_RANGE);
+    return xs.map(x => ({ x, y: Math.random() * 16 - 8 }));
+  }
+
+  function targetY(x) {
+    for (let i = 0; i < target.length - 1; i++) {
+      const a = target[i], b = target[i + 1];
+      if (x >= a.x && x <= b.x) {
+        const t = (x - a.x) / (b.x - a.x);
+        return a.y + t * (b.y - a.y);
+      }
+    }
+    return target[target.length - 1].y;
+  }
+
+  // Model: linear neuron (hidden === 0) -> y = w*x + b
+  // Or a 1-hidden-layer ReLU network -> y = sum(v_i * ReLU(w_i*x + b_i)) + outBias
+  function defaultModel(hidden) {
+    if (hidden === 0) return { hidden: 0, w: 1, b: 0 };
+    const neurons = [];
+    for (let i = 0; i < hidden; i++) {
+      const bx = -AXIS_RANGE + (2 * AXIS_RANGE * (i + 1)) / (hidden + 1);
+      neurons.push({ w: 1, b: -bx, v: 0 });
+    }
+    return { hidden, neurons, outBias: 0 };
+  }
+
+  function predict(x) {
+    if (model.hidden === 0) return model.w * x + model.b;
+    let sum = model.outBias;
+    for (const n of model.neurons) sum += n.v * Math.max(0, n.w * x + n.b);
+    return sum;
+  }
+
+  function computeFit() {
+    const samples = 100;
+    let totalErr = 0;
+    for (let i = 0; i <= samples; i++) {
+      const x = -AXIS_RANGE + (2 * AXIS_RANGE * i) / samples;
+      totalErr += Math.abs(targetY(x) - predict(x));
+    }
+    const avgErr = totalErr / (samples + 1);
+    const fit = 1 - avgErr / (2 * AXIS_RANGE);
+    return Math.max(0, Math.min(1, fit));
+  }
+
+  function buildControls() {
+    controlsEl.innerHTML = '';
+
+    function addSlider(container, label, min, max, value, onInput) {
+      const row = document.createElement('div');
+      row.className = 'control-row';
+      const lab = document.createElement('label');
+      const span = document.createElement('span');
+      span.className = 'val';
+      span.textContent = value.toFixed(2);
+      lab.textContent = label + ' ';
+      lab.appendChild(span);
+      const input = document.createElement('input');
+      input.type = 'range';
+      input.min = min; input.max = max; input.step = 0.01; input.value = value;
+      input.addEventListener('input', () => {
+        const v = parseFloat(input.value);
+        span.textContent = v.toFixed(2);
+        onInput(v);
+        update();
+      });
+      row.appendChild(lab);
+      row.appendChild(input);
+      container.appendChild(row);
+    }
+
+    if (model.hidden === 0) {
+      addSlider(controlsEl, 'Weight w', -5, 5, model.w, v => model.w = v);
+      addSlider(controlsEl, 'Bias b', -10, 10, model.b, v => model.b = v);
+    } else {
+      model.neurons.forEach((n, i) => {
+        const card = document.createElement('div');
+        card.className = 'neuron-card';
+        const h3 = document.createElement('h3');
+        h3.textContent = 'Neuron ' + (i + 1) + ' (ReLU)';
+        card.appendChild(h3);
+        addSlider(card, 'Input weight w', -5, 5, n.w, v => n.w = v);
+        addSlider(card, 'Bias b', -10, 10, n.b, v => n.b = v);
+        addSlider(card, 'Output weight v', -6, 6, n.v, v => n.v = v);
+        controlsEl.appendChild(card);
+      });
+      addSlider(controlsEl, 'Output bias', -10, 10, model.outBias, v => model.outBias = v);
+    }
+  }
+
+  function weightedLine(ctx, x1, y1, x2, y2, weight, label) {
+    const w = Math.max(0.5, Math.min(5, Math.abs(weight)));
+    ctx.beginPath();
+    ctx.strokeStyle = weight >= 0 ? '#3fb950' : '#f85149';
+    ctx.lineWidth = w;
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    if (label) {
+      const midX = (x1 + x2) / 2, midY = (y1 + y2) / 2;
+      ctx.fillStyle = '#c9d1d9';
+      ctx.font = '11px sans-serif';
+      ctx.fillText(label + '=' + weight.toFixed(2), midX - 18, midY - 6);
+    }
+  }
+
+  function node(ctx, x, y, label, fill, sub) {
+    ctx.beginPath();
+    ctx.arc(x, y, 20, 0, Math.PI * 2);
+    ctx.fillStyle = fill;
+    ctx.fill();
+    ctx.strokeStyle = '#30363d';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = '#0d1117';
+    ctx.font = 'bold 12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, x, y);
+    if (sub) {
+      ctx.fillStyle = '#8b949e';
+      ctx.font = '10px sans-serif';
+      ctx.fillText(sub, x, y + 32);
+    }
+    ctx.textAlign = 'start';
+    ctx.textBaseline = 'alphabetic';
+  }
+
+  function drawNetwork() {
+    let W, H;
+    if (model.hidden === 0) {
+      W = 320; H = 240;
+    } else {
+      W = 360;
+      H = Math.max(220, 100 + (model.hidden - 1) * 60);
+    }
+    netCanvas.width = W; netCanvas.height = H;
+    const ctx = netCtx;
+    ctx.clearRect(0, 0, W, H);
+
+    if (model.hidden === 0) {
+      const inX = 70, outX = W - 70;
+      const xY = 70, biasY = H - 70, outY = H / 2;
+      weightedLine(ctx, inX, xY, outX, outY, model.w, 'w');
+      weightedLine(ctx, inX, biasY, outX, outY, model.b, 'b');
+      node(ctx, inX, xY, 'x', '#58a6ff');
+      node(ctx, inX, biasY, '1', '#d29922');
+      node(ctx, outX, outY, 'y', '#3fb950');
+      ctx.fillStyle = '#8b949e';
+      ctx.font = '11px sans-serif';
+      ctx.fillText('output = w·x + b', outX - 65, outY + 45);
+    } else {
+      const n = model.hidden;
+      const inX = 55, hidX = W / 2, outX = W - 55;
+      const inY = H / 2, outY = H / 2;
+      const topMargin = 50, bottomMargin = 50;
+      const spacing = (H - topMargin - bottomMargin) / (n - 1);
+      const hidYs = [];
+      for (let i = 0; i < n; i++) hidYs.push(topMargin + i * spacing);
+      const showLabels = n <= 4;
+      const biasX = outX, biasY = H - 25;
+
+      for (let i = 0; i < n; i++) weightedLine(ctx, inX, inY, hidX, hidYs[i], model.neurons[i].w, showLabels ? ('w' + (i + 1)) : null);
+      for (let i = 0; i < n; i++) weightedLine(ctx, hidX, hidYs[i], outX, outY, model.neurons[i].v, showLabels ? ('v' + (i + 1)) : null);
+      weightedLine(ctx, biasX, biasY, outX, outY, model.outBias, 'b');
+
+      node(ctx, inX, inY, 'x', '#58a6ff');
+      for (let i = 0; i < n; i++) node(ctx, hidX, hidYs[i], 'h' + (i + 1), '#3fb950', 'ReLU');
+      node(ctx, biasX, biasY, '1', '#d29922');
+      node(ctx, outX, outY, 'y', '#a371f7');
+
+      if (!showLabels) {
+        ctx.fillStyle = '#8b949e';
+        ctx.font = '10px sans-serif';
+        ctx.fillText('exact values shown in controls →', 10, H - 6);
+      }
+    }
+  }
+
+  function toScreen(x, y, W, H) {
+    const sx = W / 2 + (x / AXIS_RANGE) * (W / 2 - 20);
+    const sy = H / 2 - (y / AXIS_RANGE) * (H / 2 - 20);
+    return [sx, sy];
+  }
+
+  function drawCurve(ctx, W, H, fn, color) {
+    const N = 100;
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    for (let i = 0; i <= N; i++) {
+      const x = -AXIS_RANGE + (2 * AXIS_RANGE * i) / N;
+      const [sx, sy] = toScreen(x, fn(x), W, H);
+      if (i === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+    }
+    ctx.stroke();
+  }
+
+  function drawPlot() {
+    const ctx = plotCtx;
+    const W = plotCanvas.width, H = plotCanvas.height;
+    ctx.clearRect(0, 0, W, H);
+
+    ctx.strokeStyle = '#21262d';
+    ctx.lineWidth = 1;
+    for (let g = -AXIS_RANGE; g <= AXIS_RANGE; g += 2) {
+      const [gx] = toScreen(g, 0, W, H);
+      const [, gy] = toScreen(0, g, W, H);
+      ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, H); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(W, gy); ctx.stroke();
+    }
+
+    ctx.strokeStyle = '#484f58';
+    ctx.lineWidth = 2;
+    const [zx, zy] = toScreen(0, 0, W, H);
+    ctx.beginPath(); ctx.moveTo(zx, 0); ctx.lineTo(zx, H); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, zy); ctx.lineTo(W, zy); ctx.stroke();
+
+    drawCurve(ctx, W, H, targetY, getComputedStyle(document.documentElement).getPropertyValue('--target').trim());
+    drawCurve(ctx, W, H, predict, getComputedStyle(document.documentElement).getPropertyValue('--perc').trim());
+  }
+
+  function update() {
+    drawNetwork();
+    drawPlot();
+
+    const fit = computeFit();
+    const pct = Math.round(fit * 100);
+    fitBar.style.width = pct + '%';
+    fitPctEl.textContent = pct + '%';
+
+    if (fit >= WIN_THRESHOLD && !hasWon) {
+      hasWon = true;
+      winBanner.classList.add('show');
+    } else if (fit < WIN_THRESHOLD && hasWon) {
+      hasWon = false;
+      winBanner.classList.remove('show');
+    }
+  }
+
+  function startLevel(lvl, opts) {
+    opts = opts || {};
+    level = lvl;
+    cfg = levelConfig(level);
+    target = generateTarget(cfg.kinks);
+    model = defaultModel(cfg.hidden);
+    hasWon = false;
+    winBanner.classList.remove('show');
+    levelBar.textContent = 'Level ' + level + ' · ' + cfg.name;
+    buildControls();
+    update();
+  }
+
+  newLineBtn.addEventListener('click', () => {
+    target = generateTarget(cfg.kinks);
+    hasWon = false;
+    winBanner.classList.remove('show');
+    update();
+  });
+
+  resetBtn.addEventListener('click', () => {
+    model = defaultModel(cfg.hidden);
+    buildControls();
+    update();
+  });
+
+  nextLevelBtn.addEventListener('click', () => {
+    startLevel(level + 1);
+  });
+
+  startLevel(1);
+})();
+</script>
+</body>
+</html>
