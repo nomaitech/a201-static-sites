@@ -511,7 +511,7 @@
   const AXIS_RANGE = 10; // plot spans -10..10 on both axes
   const WIN_THRESHOLD = 0.90;
   const MAX_HIDDEN = 6; // cap neuron count so the control panel stays usable
-  const LEVEL_BASE_SECONDS = 20; // level 1 = 20s, level 2 = 40s, level 3 = 80s, doubling each level
+  const LEVEL_BASE_SECONDS = 40; // level 1 = 40s, level 2 = 80s, level 3 = 160s, doubling each level
 
   function levelTimeSeconds(lvl) {
     return LEVEL_BASE_SECONDS * Math.pow(2, lvl - 1);
