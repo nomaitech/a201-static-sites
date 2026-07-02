@@ -423,13 +423,13 @@
   #nextLevelBtn:hover {
     background: #e6ffed;
   }
-  #finishShareBtn {
+  #winShareBtn {
     background: transparent;
     color: white;
     border: 1px solid white;
     font-weight: 700;
   }
-  #finishShareBtn:hover {
+  #winShareBtn:hover {
     background: rgba(255, 255, 255, 0.15);
   }
   @media (max-width: 480px) {
@@ -474,7 +474,7 @@
       <div id="winBanner">
         <span id="winText">🎉 Fit achieved! 90% match.</span>
         <button id="nextLevelBtn">Next Level</button>
-        <button id="finishShareBtn">Finish &amp; Share</button>
+        <button id="winShareBtn">Share</button>
       </div>
     </div>
   </div>
@@ -512,7 +512,7 @@
   const fitPctEl = document.getElementById('fitPct');
   const topBar = document.getElementById('topBar');
   const nextLevelBtn = document.getElementById('nextLevelBtn');
-  const finishShareBtn = document.getElementById('finishShareBtn');
+  const winShareBtn = document.getElementById('winShareBtn');
   const levelBarTop = document.getElementById('levelBarTop');
   const elapsedTimerEl = document.getElementById('elapsedTimer');
   const AXIS_RANGE = 10; // plot spans -10..10 on both axes
@@ -717,7 +717,7 @@
       W = 320; H = 240;
     } else {
       W = 360;
-      H = Math.max(220, 100 + (model.hidden - 1) * 60);
+      H = Math.max(220, 100 + (model.hidden - 1) * 60) + 40;
     }
     netCanvas.width = W; netCanvas.height = H;
     const ctx = netCtx;
@@ -733,7 +733,9 @@
       node(ctx, outX, outY, 'y', '#3fb950');
       ctx.fillStyle = '#8b949e';
       ctx.font = '11px sans-serif';
-      ctx.fillText('output = w·x + b', outX - 65, outY + 45);
+      ctx.textAlign = 'right';
+      ctx.fillText('output = w·x + b', W - 8, H - 10);
+      ctx.textAlign = 'start';
     } else {
       const n = model.hidden;
       const inX = 55, hidX = W / 2, outX = W - 55;
@@ -743,7 +745,7 @@
       const hidYs = [];
       for (let i = 0; i < n; i++) hidYs.push(topMargin + i * spacing);
       const showLabels = n <= 4;
-      const biasX = outX, biasY = H - 25;
+      const biasX = outX, biasY = H - 65;
 
       for (let i = 0; i < n; i++) weightedLine(ctx, inX, inY, hidX, hidYs[i], model.neurons[i].w, showLabels ? ('w' + (i + 1)) : null);
       for (let i = 0; i < n; i++) weightedLine(ctx, hidX, hidYs[i], outX, outY, model.neurons[i].v, showLabels ? ('v' + (i + 1)) : null);
@@ -754,8 +756,13 @@
       node(ctx, biasX, biasY, '1', '#d29922');
       node(ctx, outX, outY, 'y', '#a371f7');
 
+      ctx.fillStyle = '#8b949e';
+      ctx.font = '11px sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('y = vᵀ·ReLU(w·x + b) + c', W - 8, H - 10);
+      ctx.textAlign = 'start';
+
       if (!showLabels) {
-        ctx.fillStyle = '#8b949e';
         ctx.font = '10px sans-serif';
         ctx.fillText('exact values shown in controls →', 10, H - 6);
       }
@@ -881,19 +888,13 @@
     startElapsedTimer();
   });
 
-  finishShareBtn.addEventListener('click', () => {
-    clearInterval(elapsedTimerId);
-    gameOverText.textContent = 'You reached Level ' + level + ' · ' + cfg.name + ' in ' + formatElapsed(elapsedSeconds);
-    gameOverOverlay.classList.remove('hidden');
-  });
-
   playAgainBtn.addEventListener('click', () => {
     gameOverOverlay.classList.add('hidden');
     startLevel(1);
     startElapsedTimer();
   });
 
-  shareBtn.addEventListener('click', async () => {
+  async function shareScore(btn) {
     const shareData = {
       title: 'NeuralFit',
       text: 'I reached Level ' + level + ' · ' + cfg.name + ' in ' + formatElapsed(elapsedSeconds) + ' playing NeuralFit! Can you beat me?',
@@ -913,9 +914,9 @@
     if (window.isSecureContext && navigator.clipboard) {
       try {
         await navigator.clipboard.writeText(fullText);
-        const original = shareBtn.textContent;
-        shareBtn.textContent = 'Copied!';
-        setTimeout(() => { shareBtn.textContent = original; }, 1500);
+        const original = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = original; }, 1500);
         return;
       } catch (e) {
         // fall through to prompt below
@@ -923,7 +924,10 @@
     }
 
     window.prompt('Copy your score:', fullText);
-  });
+  }
+
+  winShareBtn.addEventListener('click', () => shareScore(winShareBtn));
+  shareBtn.addEventListener('click', () => shareScore(shareBtn));
 
   startLevel(1);
 })();
