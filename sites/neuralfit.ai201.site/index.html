@@ -29,66 +29,189 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
+    height: 100dvh;
   }
   #scrollArea {
-    flex: 1 1 auto;
+    flex: 0 0 53%;
     min-height: 0;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
-  header {
+  #welcomeOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1000;
+  }
+  #welcomeOverlay.hidden {
+    display: none;
+  }
+  #welcomeCard {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px 28px;
+    max-width: 380px;
+    width: 100%;
     text-align: center;
-    padding: 18px 10px 6px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   }
-  header h1 {
-    margin: 0;
+  #welcomeCard h1 {
+    margin: 0 0 12px;
+    font-size: 1.8rem;
+    letter-spacing: 0.5px;
+    color: var(--text);
+  }
+  #welcomeCard p {
+    margin: 0 0 24px;
+    color: #8b949e;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  #startBtn {
+    background: var(--perc);
+    color: #0d1117;
+    border: none;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 12px 32px;
+    border-radius: 8px;
+    width: 100%;
+    cursor: pointer;
+  }
+  #startBtn:hover {
+    background: #4fd961;
+  }
+  #gameOverOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1000;
+  }
+  #gameOverOverlay.hidden {
+    display: none;
+  }
+  #gameOverCard {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px 28px;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  }
+  #gameOverCard h1 {
+    margin: 0 0 12px;
     font-size: 1.6rem;
     letter-spacing: 0.5px;
+    color: var(--text);
   }
-  header p {
-    margin: 4px 0 0;
+  #gameOverCard p {
+    margin: 0 0 24px;
     color: #8b949e;
-    font-size: 0.9rem;
+    font-size: 1rem;
+    line-height: 1.5;
   }
-  #levelBar {
-    text-align: center;
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--accent);
-    letter-spacing: 0.5px;
+  #gameOverCard .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  #shareBtn {
+    background: var(--accent);
+    color: #0d1117;
+    border: none;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 12px 32px;
+    border-radius: 8px;
+    width: 100%;
+    cursor: pointer;
+  }
+  #shareBtn:hover {
+    background: #79b8ff;
+  }
+  #playAgainBtn {
+    background: var(--perc);
+    color: #0d1117;
+    border: none;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 12px 32px;
+    border-radius: 8px;
+    width: 100%;
+    cursor: pointer;
+  }
+  #playAgainBtn:hover {
+    background: #4fd961;
   }
   .stage {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 6px;
     justify-content: center;
-    align-items: flex-start;
-    padding: 20px;
+    align-items: center;
+    padding: 4px 6px;
   }
   .panel {
     background: var(--panel);
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 16px 20px;
+    padding: 8px 10px;
+    width: 100%;
+    min-width: 0;
+    max-width: 460px;
   }
   .panel h2 {
-    margin: 0 0 10px;
-    font-size: 1.05rem;
+    margin: 0 0 6px;
+    font-size: 0.85rem;
     color: #8b949e;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
   }
-  #netCanvas {
-    display: block;
+  .canvas-stack {
+    position: relative;
+    width: 100%;
+    max-width: min(460px, 40vh);
+    max-width: min(460px, 40dvh);
+    aspect-ratio: 1 / 1;
     margin: 0 auto;
+    background: #0a0e14;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  #netCanvas {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0.18;
   }
   #controlsBar {
-    flex: 0 0 auto;
+    flex: 0 0 35%;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
     background: var(--panel);
     border-top: 1px solid var(--border);
     padding: 14px 20px 18px;
   }
   #controlsBar h2 {
+    flex: 0 0 auto;
     margin: 0 0 10px;
     font-size: 1.05rem;
     color: #8b949e;
@@ -103,7 +226,8 @@
     flex-wrap: wrap;
     gap: 14px;
     justify-content: center;
-    max-height: 34vh;
+    flex: 1 1 auto;
+    min-height: 0;
     overflow-y: auto;
     padding-bottom: 4px;
   }
@@ -156,14 +280,16 @@
     justify-content: center;
   }
   #plotCanvas {
+    position: absolute;
+    inset: 0;
     display: block;
-    background: #0a0e14;
-    border-radius: 6px;
+    width: 100%;
+    height: 100%;
   }
   .legend {
     display: flex;
     gap: 20px;
-    margin-top: 10px;
+    margin-top: 6px;
     font-size: 0.85rem;
     justify-content: center;
   }
@@ -177,9 +303,6 @@
     height: 4px;
     display: inline-block;
     border-radius: 2px;
-  }
-  .fit-wrap {
-    margin-top: 14px;
   }
   .fit-bar-bg {
     width: 100%;
@@ -218,7 +341,50 @@
   button:hover {
     background: #30363d;
   }
+  #topBar {
+    flex: 0 0 12%;
+    padding: 10px 20px 0;
+    display: flex;
+    flex-direction: column;
+  }
+  #levelRow {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.3px;
+    padding-bottom: 4px;
+  }
+  #countdown {
+    font-variant-numeric: tabular-nums;
+  }
+  #countdown.urgent {
+    color: #f85149;
+  }
+  #fitWrap {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+  #fitProgress {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.15s ease;
+  }
+  #topBar.won #fitProgress {
+    opacity: 0;
+    visibility: hidden;
+  }
   #winBanner {
+    position: absolute;
+    inset: 0;
     box-sizing: border-box;
     display: flex;
     align-items: center;
@@ -230,14 +396,12 @@
     font-weight: 700;
     padding: 10px;
     border-radius: 8px;
-    margin: 0 20px 10px;
     font-size: 1.05rem;
-    height: 46px;
     visibility: hidden;
     opacity: 0;
     transition: opacity 0.15s ease;
   }
-  #winBanner.show {
+  #topBar.won #winBanner {
     visibility: visible;
     opacity: 1;
   }
@@ -250,40 +414,63 @@
   #nextLevelBtn:hover {
     background: #e6ffed;
   }
+  @media (max-width: 480px) {
+    #topBar {
+      padding: 10px 8px 0;
+    }
+  }
 </style>
 </head>
 <body>
 
-<div id="app">
-  <div id="scrollArea">
-    <header>
-      <h1>NeuralFit</h1>
-      <p>Adjust the network's weights and biases so its output curve matches the target.</p>
-    </header>
+<div id="welcomeOverlay">
+  <div id="welcomeCard">
+    <h1>NeuralFit</h1>
+    <p>Adjust the network's weights and biases so its output curve matches the target.</p>
+    <button id="startBtn">Start</button>
+  </div>
+</div>
 
-    <div id="levelBar">Level 1 · Straight Line</div>
-
-    <div id="winBanner">
-      <span id="winText">🎉 Fit achieved! 90%+ match.</span>
-      <button id="nextLevelBtn">Next Level →</button>
+<div id="gameOverOverlay" class="hidden">
+  <div id="gameOverCard">
+    <h1>⏱️ Time's Up!</h1>
+    <p id="gameOverText">You reached Level 1 · Straight Line</p>
+    <div class="actions">
+      <button id="shareBtn">Share</button>
+      <button id="playAgainBtn">Play Again</button>
     </div>
+  </div>
+</div>
 
-    <div class="stage">
-      <div class="panel" id="leftPanel">
-        <h2>Neural Network Visualization</h2>
-        <canvas id="netCanvas" width="320" height="240"></canvas>
+<div id="app">
+  <div id="topBar">
+    <div id="levelRow">
+      <span id="levelBarTop">Level 1 · Straight Line</span>
+      <span id="countdown">10s</span>
+    </div>
+    <div id="fitWrap">
+      <div id="fitProgress">
+        <div class="fit-bar-bg"><div class="fit-bar-fill" id="fitBar"></div></div>
+        <div class="fit-label"><span>Fit</span><span id="fitPct">0%</span></div>
       </div>
+      <div id="winBanner">
+        <span id="winText">🎉 Fit achieved! 95% match.</span>
+        <button id="nextLevelBtn">Next Level</button>
+      </div>
+    </div>
+  </div>
 
-      <div class="panel" id="rightPanel">
+  <div id="scrollArea">
+    <div class="stage">
+      <div class="panel" id="visPanel">
         <h2>Target vs. Output</h2>
-        <canvas id="plotCanvas" width="420" height="420"></canvas>
+        <div class="canvas-stack">
+          <canvas id="netCanvas" width="320" height="240"></canvas>
+          <canvas id="plotCanvas" width="420" height="420"></canvas>
+        </div>
         <div class="legend">
           <span><i class="swatch" style="background:var(--target)"></i> Target curve</span>
           <span><i class="swatch" style="background:var(--perc)"></i> Perceptron output</span>
-        </div>
-        <div class="fit-wrap">
-          <div class="fit-bar-bg"><div class="fit-bar-fill" id="fitBar"></div></div>
-          <div class="fit-label"><span>Fit</span><span id="fitPct">0%</span></div>
         </div>
       </div>
     </div>
@@ -304,21 +491,40 @@
   const controlsEl = document.getElementById('controls');
   const fitBar = document.getElementById('fitBar');
   const fitPctEl = document.getElementById('fitPct');
-  const winBanner = document.getElementById('winBanner');
+  const topBar = document.getElementById('topBar');
   const nextLevelBtn = document.getElementById('nextLevelBtn');
-  const levelBar = document.getElementById('levelBar');
+  const levelBarTop = document.getElementById('levelBarTop');
+  const countdownEl = document.getElementById('countdown');
 
   const AXIS_RANGE = 10; // plot spans -10..10 on both axes
-  const WIN_THRESHOLD = 0.90;
+  const WIN_THRESHOLD = 0.95;
   const MAX_HIDDEN = 6; // cap neuron count so the control panel stays usable
+  const LEVEL_BASE_SECONDS = 30; // level 1 = 30s, level 2 = 60s, level 3 = 120s, doubling each level
+
+  function levelTimeSeconds(lvl) {
+    return LEVEL_BASE_SECONDS * Math.pow(2, lvl - 1);
+  }
 
   let level = 1;
   let cfg, target, model, hasWon;
 
+  const LEVEL_NAMES = [
+    'Straight Shooter',
+    'First Bend',
+    'Double Trouble',
+    'Zigzag Zone',
+    'Wavy Gravy',
+    'Serpentine Storm',
+    'Chaos Curve',
+    'Neural Nightmare',
+    'Overfit Overdrive',
+    'Gradient Gauntlet'
+  ];
+
   function levelConfig(lvl) {
     const kinks = lvl - 1;
     const hidden = kinks === 0 ? 0 : Math.min(kinks + 1, MAX_HIDDEN);
-    const name = kinks === 0 ? 'Straight Line' : (kinks + ' Bend' + (kinks === 1 ? '' : 's'));
+    const name = kinks < LEVEL_NAMES.length ? LEVEL_NAMES[kinks] : ('Curveball ' + (kinks + 1));
     return { level: lvl, kinks, hidden, name };
   }
 
@@ -578,12 +784,40 @@
     fitBar.style.width = pct + '%';
     fitPctEl.textContent = pct + '%';
 
-    if (fit >= WIN_THRESHOLD && !hasWon) {
+    const winPct = Math.round(WIN_THRESHOLD * 100);
+    if (pct >= winPct && !hasWon) {
       hasWon = true;
-      winBanner.classList.add('show');
-    } else if (fit < WIN_THRESHOLD && hasWon) {
+      topBar.classList.add('won');
+    } else if (pct < winPct && hasWon) {
       hasWon = false;
-      winBanner.classList.remove('show');
+      topBar.classList.remove('won');
+    }
+  }
+
+  let timeLeft = 0;
+  let timerId = null;
+  let gameActive = false;
+
+  function updateCountdownDisplay() {
+    countdownEl.textContent = timeLeft + 's';
+    countdownEl.classList.toggle('urgent', timeLeft <= 3);
+  }
+
+  function tick() {
+    timeLeft--;
+    updateCountdownDisplay();
+    if (timeLeft <= 0) {
+      clearInterval(timerId);
+      endGame();
+    }
+  }
+
+  function resetTimerForLevel() {
+    clearInterval(timerId);
+    timeLeft = levelTimeSeconds(level);
+    updateCountdownDisplay();
+    if (gameActive) {
+      timerId = setInterval(tick, 1000);
     }
   }
 
@@ -591,17 +825,80 @@
     opts = opts || {};
     level = lvl;
     cfg = levelConfig(level);
-    target = generateTarget(cfg.kinks);
     model = defaultModel(cfg.hidden);
+    let attempts = 0;
+    do {
+      target = generateTarget(cfg.kinks);
+      attempts++;
+    } while (Math.round(computeFit() * 100) >= Math.round(WIN_THRESHOLD * 100) && attempts < 50);
     hasWon = false;
-    winBanner.classList.remove('show');
-    levelBar.textContent = 'Level ' + level + ' · ' + cfg.name;
+    topBar.classList.remove('won');
+    levelBarTop.textContent = 'Level ' + level + ' · ' + cfg.name;
     buildControls();
     update();
+    resetTimerForLevel();
   }
 
   nextLevelBtn.addEventListener('click', () => {
     startLevel(level + 1);
+  });
+
+  const welcomeOverlay = document.getElementById('welcomeOverlay');
+  const startBtn = document.getElementById('startBtn');
+  const gameOverOverlay = document.getElementById('gameOverOverlay');
+  const gameOverText = document.getElementById('gameOverText');
+  const shareBtn = document.getElementById('shareBtn');
+  const playAgainBtn = document.getElementById('playAgainBtn');
+
+  function endGame() {
+    gameActive = false;
+    clearInterval(timerId);
+    gameOverText.textContent = 'You reached Level ' + level + ' · ' + cfg.name;
+    gameOverOverlay.classList.remove('hidden');
+  }
+
+  startBtn.addEventListener('click', () => {
+    welcomeOverlay.classList.add('hidden');
+    gameActive = true;
+    resetTimerForLevel();
+  });
+
+  playAgainBtn.addEventListener('click', () => {
+    gameOverOverlay.classList.add('hidden');
+    gameActive = true;
+    startLevel(1);
+  });
+
+  shareBtn.addEventListener('click', async () => {
+    const shareData = {
+      title: 'NeuralFit',
+      text: 'I reached Level ' + level + ' · ' + cfg.name + ' in NeuralFit!',
+      url: location.href
+    };
+    const fullText = shareData.text + ' ' + shareData.url;
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (e) {
+        return; // user cancelled the native share sheet
+      }
+    }
+
+    if (window.isSecureContext && navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(fullText);
+        const original = shareBtn.textContent;
+        shareBtn.textContent = 'Copied!';
+        setTimeout(() => { shareBtn.textContent = original; }, 1500);
+        return;
+      } catch (e) {
+        // fall through to prompt below
+      }
+    }
+
+    window.prompt('Copy your score:', fullText);
   });
 
   startLevel(1);
