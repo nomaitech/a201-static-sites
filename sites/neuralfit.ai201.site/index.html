@@ -370,6 +370,9 @@
     letter-spacing: 0.3px;
     padding-bottom: 4px;
   }
+  #elapsedTimer {
+    font-variant-numeric: tabular-nums;
+  }
   #fitWrap {
     position: relative;
     flex: 1 1 auto;
@@ -420,6 +423,15 @@
   #nextLevelBtn:hover {
     background: #e6ffed;
   }
+  #finishShareBtn {
+    background: transparent;
+    color: white;
+    border: 1px solid white;
+    font-weight: 700;
+  }
+  #finishShareBtn:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
   @media (max-width: 480px) {
     #topBar {
       padding: 10px 8px 0;
@@ -452,6 +464,7 @@
   <div id="topBar">
     <div id="levelRow">
       <span id="levelBarTop">Level 1 · Straight Line</span>
+      <span id="elapsedTimer">0:00</span>
     </div>
     <div id="fitWrap">
       <div id="fitProgress">
@@ -461,6 +474,7 @@
       <div id="winBanner">
         <span id="winText">🎉 Fit achieved! 90% match.</span>
         <button id="nextLevelBtn">Next Level</button>
+        <button id="finishShareBtn">Finish &amp; Share</button>
       </div>
     </div>
   </div>
@@ -498,7 +512,9 @@
   const fitPctEl = document.getElementById('fitPct');
   const topBar = document.getElementById('topBar');
   const nextLevelBtn = document.getElementById('nextLevelBtn');
+  const finishShareBtn = document.getElementById('finishShareBtn');
   const levelBarTop = document.getElementById('levelBarTop');
+  const elapsedTimerEl = document.getElementById('elapsedTimer');
   const AXIS_RANGE = 10; // plot spans -10..10 on both axes
   const WIN_THRESHOLD = 0.90;
   const MAX_HIDDEN = 6; // cap neuron count so the control panel stays usable
@@ -828,6 +844,25 @@
     startLevel(level + 1);
   });
 
+  let elapsedSeconds = 0;
+  let elapsedTimerId = null;
+
+  function formatElapsed(s) {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return m + ':' + String(sec).padStart(2, '0');
+  }
+
+  function startElapsedTimer() {
+    clearInterval(elapsedTimerId);
+    elapsedSeconds = 0;
+    elapsedTimerEl.textContent = formatElapsed(0);
+    elapsedTimerId = setInterval(() => {
+      elapsedSeconds++;
+      elapsedTimerEl.textContent = formatElapsed(elapsedSeconds);
+    }, 1000);
+  }
+
   const welcomeOverlay = document.getElementById('welcomeOverlay');
   const startBtn = document.getElementById('startBtn');
   const gameOverOverlay = document.getElementById('gameOverOverlay');
@@ -836,23 +871,32 @@
   const playAgainBtn = document.getElementById('playAgainBtn');
 
   function endGame() {
-    gameOverText.textContent = 'You reached Level ' + level + ' · ' + cfg.name;
+    clearInterval(elapsedTimerId);
+    gameOverText.textContent = 'You reached Level ' + level + ' · ' + cfg.name + ' in ' + formatElapsed(elapsedSeconds);
     gameOverOverlay.classList.remove('hidden');
   }
 
   startBtn.addEventListener('click', () => {
     welcomeOverlay.classList.add('hidden');
+    startElapsedTimer();
+  });
+
+  finishShareBtn.addEventListener('click', () => {
+    clearInterval(elapsedTimerId);
+    gameOverText.textContent = 'You reached Level ' + level + ' · ' + cfg.name + ' in ' + formatElapsed(elapsedSeconds);
+    gameOverOverlay.classList.remove('hidden');
   });
 
   playAgainBtn.addEventListener('click', () => {
     gameOverOverlay.classList.add('hidden');
     startLevel(1);
+    startElapsedTimer();
   });
 
   shareBtn.addEventListener('click', async () => {
     const shareData = {
       title: 'NeuralFit',
-      text: 'I reached Level ' + level + ' · ' + cfg.name + ' in NeuralFit! Can you beat me?',
+      text: 'I reached Level ' + level + ' · ' + cfg.name + ' in ' + formatElapsed(elapsedSeconds) + ' playing NeuralFit! Can you beat me?',
       url: location.href
     };
     const fullText = shareData.text + ' ' + shareData.url;
