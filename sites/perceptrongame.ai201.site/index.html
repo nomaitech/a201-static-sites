@@ -16,12 +16,24 @@
     --win: #2ea043;
   }
   * { box-sizing: border-box; }
+  html, body {
+    height: 100%;
+  }
   body {
     margin: 0;
     background: var(--bg);
     color: var(--text);
     font-family: 'Segoe UI', system-ui, sans-serif;
-    min-height: 100vh;
+  }
+  #app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  #scrollArea {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
   }
   header {
     text-align: center;
@@ -70,14 +82,30 @@
     display: block;
     margin: 0 auto;
   }
+  #controlsBar {
+    flex: 0 0 auto;
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    padding: 14px 20px 18px;
+  }
+  #controlsBar h2 {
+    margin: 0 0 10px;
+    font-size: 1.05rem;
+    color: #8b949e;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+  }
   .controls {
-    margin-top: 14px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 14px;
-    max-height: 420px;
+    justify-content: center;
+    max-height: 34vh;
     overflow-y: auto;
-    padding-right: 4px;
+    padding-bottom: 4px;
   }
   .control-row {
     display: flex;
@@ -87,7 +115,9 @@
   .control-row label {
     display: flex;
     justify-content: space-between;
-    font-size: 0.9rem;
+    gap: 8px;
+    font-size: 0.85rem;
+    white-space: nowrap;
   }
   .control-row .val {
     font-variant-numeric: tabular-nums;
@@ -95,7 +125,7 @@
     font-weight: 600;
   }
   input[type=range] {
-    width: 260px;
+    width: 150px;
     accent-color: var(--accent);
   }
   .neuron-card {
@@ -113,6 +143,12 @@
     color: var(--perc);
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    text-align: center;
+  }
+  .neuron-sliders {
+    display: flex;
+    flex-direction: row;
+    gap: 14px;
   }
   #plotCanvas {
     display: block;
@@ -213,36 +249,44 @@
 </head>
 <body>
 
-<header>
-  <h1>NeuralFit</h1>
-  <p>Adjust the network's weights and biases so its output curve matches the target.</p>
-</header>
+<div id="app">
+  <div id="scrollArea">
+    <header>
+      <h1>NeuralFit</h1>
+      <p>Adjust the network's weights and biases so its output curve matches the target.</p>
+    </header>
 
-<div id="levelBar">Level 1 · Straight Line</div>
+    <div id="levelBar">Level 1 · Straight Line</div>
 
-<div id="winBanner">
-  <span id="winText">🎉 Fit achieved! 90%+ match.</span>
-  <button id="nextLevelBtn">Next Level →</button>
-</div>
+    <div id="winBanner">
+      <span id="winText">🎉 Fit achieved! 90%+ match.</span>
+      <button id="nextLevelBtn">Next Level →</button>
+    </div>
 
-<div class="stage">
-  <div class="panel" id="leftPanel">
-    <h2>Perceptron</h2>
-    <canvas id="netCanvas" width="320" height="240"></canvas>
-    <div class="controls" id="controls"></div>
+    <div class="stage">
+      <div class="panel" id="leftPanel">
+        <h2>Neural Network Visualization</h2>
+        <canvas id="netCanvas" width="320" height="240"></canvas>
+      </div>
+
+      <div class="panel" id="rightPanel">
+        <h2>Target vs. Output</h2>
+        <canvas id="plotCanvas" width="420" height="420"></canvas>
+        <div class="legend">
+          <span><i class="swatch" style="background:var(--target)"></i> Target curve</span>
+          <span><i class="swatch" style="background:var(--perc)"></i> Perceptron output</span>
+        </div>
+        <div class="fit-wrap">
+          <div class="fit-bar-bg"><div class="fit-bar-fill" id="fitBar"></div></div>
+          <div class="fit-label"><span>Fit</span><span id="fitPct">0%</span></div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="panel" id="rightPanel">
-    <h2>Target vs. Output</h2>
-    <canvas id="plotCanvas" width="420" height="420"></canvas>
-    <div class="legend">
-      <span><i class="swatch" style="background:var(--target)"></i> Target curve</span>
-      <span><i class="swatch" style="background:var(--perc)"></i> Perceptron output</span>
-    </div>
-    <div class="fit-wrap">
-      <div class="fit-bar-bg"><div class="fit-bar-fill" id="fitBar"></div></div>
-      <div class="fit-label"><span>Fit</span><span id="fitPct">0%</span></div>
-    </div>
+  <div id="controlsBar">
+    <h2>Controls</h2>
+    <div class="controls" id="controls"></div>
   </div>
 </div>
 
@@ -367,9 +411,12 @@
         const h3 = document.createElement('h3');
         h3.textContent = 'Neuron ' + (i + 1) + ' (ReLU)';
         card.appendChild(h3);
-        addSlider(card, 'Input weight w', -5, 5, n.w, v => n.w = v);
-        addSlider(card, 'Bias b', -10, 10, n.b, v => n.b = v);
-        addSlider(card, 'Output weight v', -6, 6, n.v, v => n.v = v);
+        const slidersRow = document.createElement('div');
+        slidersRow.className = 'neuron-sliders';
+        addSlider(slidersRow, 'Input weight w', -5, 5, n.w, v => n.w = v);
+        addSlider(slidersRow, 'Bias b', -10, 10, n.b, v => n.b = v);
+        addSlider(slidersRow, 'Output weight v', -6, 6, n.v, v => n.v = v);
+        card.appendChild(slidersRow);
         controlsEl.appendChild(card);
       });
       addSlider(controlsEl, 'Output bias', -10, 10, model.outBias, v => model.outBias = v);
