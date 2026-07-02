@@ -370,12 +370,6 @@
     letter-spacing: 0.3px;
     padding-bottom: 4px;
   }
-  #countdown {
-    font-variant-numeric: tabular-nums;
-  }
-  #countdown.urgent {
-    color: #f85149;
-  }
   #fitWrap {
     position: relative;
     flex: 1 1 auto;
@@ -458,7 +452,6 @@
   <div id="topBar">
     <div id="levelRow">
       <span id="levelBarTop">Level 1 · Straight Line</span>
-      <span id="countdown">10s</span>
     </div>
     <div id="fitWrap">
       <div id="fitProgress">
@@ -506,18 +499,9 @@
   const topBar = document.getElementById('topBar');
   const nextLevelBtn = document.getElementById('nextLevelBtn');
   const levelBarTop = document.getElementById('levelBarTop');
-  const countdownEl = document.getElementById('countdown');
-
   const AXIS_RANGE = 10; // plot spans -10..10 on both axes
   const WIN_THRESHOLD = 0.90;
   const MAX_HIDDEN = 6; // cap neuron count so the control panel stays usable
-  const LEVEL_SECONDS = [40, 120, 300]; // level 1 = 40s, level 2 = 2min, level 3 = 5min, doubling each level thereafter
-
-  function levelTimeSeconds(lvl) {
-    if (lvl <= LEVEL_SECONDS.length) return LEVEL_SECONDS[lvl - 1];
-    const last = LEVEL_SECONDS[LEVEL_SECONDS.length - 1];
-    return last * Math.pow(2, lvl - LEVEL_SECONDS.length);
-  }
 
   let level = 1;
   let cfg, target, model, hasWon;
@@ -824,33 +808,6 @@
     }
   }
 
-  let timeLeft = 0;
-  let timerId = null;
-  let gameActive = false;
-
-  function updateCountdownDisplay() {
-    countdownEl.textContent = timeLeft + 's';
-    countdownEl.classList.toggle('urgent', timeLeft <= 3);
-  }
-
-  function tick() {
-    timeLeft--;
-    updateCountdownDisplay();
-    if (timeLeft <= 0) {
-      clearInterval(timerId);
-      endGame();
-    }
-  }
-
-  function resetTimerForLevel() {
-    clearInterval(timerId);
-    timeLeft = levelTimeSeconds(level);
-    updateCountdownDisplay();
-    if (gameActive) {
-      timerId = setInterval(tick, 1000);
-    }
-  }
-
   function startLevel(lvl) {
     level = lvl;
     cfg = levelConfig(level);
@@ -865,7 +822,6 @@
     levelBarTop.textContent = 'Level ' + level + ' · ' + cfg.name;
     buildControls();
     update();
-    resetTimerForLevel();
   }
 
   nextLevelBtn.addEventListener('click', () => {
@@ -880,21 +836,16 @@
   const playAgainBtn = document.getElementById('playAgainBtn');
 
   function endGame() {
-    gameActive = false;
-    clearInterval(timerId);
     gameOverText.textContent = 'You reached Level ' + level + ' · ' + cfg.name;
     gameOverOverlay.classList.remove('hidden');
   }
 
   startBtn.addEventListener('click', () => {
     welcomeOverlay.classList.add('hidden');
-    gameActive = true;
-    resetTimerForLevel();
   });
 
   playAgainBtn.addEventListener('click', () => {
     gameOverOverlay.classList.add('hidden');
-    gameActive = true;
     startLevel(1);
   });
 
