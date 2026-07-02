@@ -419,7 +419,16 @@
         card.appendChild(slidersRow);
         controlsEl.appendChild(card);
       });
-      addSlider(controlsEl, 'Output bias', -10, 10, model.outBias, v => model.outBias = v);
+      const outputCard = document.createElement('div');
+      outputCard.className = 'neuron-card';
+      const outputH3 = document.createElement('h3');
+      outputH3.textContent = 'Output';
+      outputCard.appendChild(outputH3);
+      const outputRow = document.createElement('div');
+      outputRow.className = 'neuron-sliders';
+      addSlider(outputRow, 'Output bias', -10, 10, model.outBias, v => model.outBias = v);
+      outputCard.appendChild(outputRow);
+      controlsEl.appendChild(outputCard);
     }
   }
 
