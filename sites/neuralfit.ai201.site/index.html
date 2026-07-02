@@ -574,16 +574,32 @@
     return sum;
   }
 
+  // R^2 (coefficient of determination): scale-invariant, so it correctly
+  // penalizes a flat/straight prediction against a curve with real variation
+  // instead of comparing raw error to a fixed axis-range constant.
   function computeFit() {
     const samples = 100;
-    let totalErr = 0;
-    for (let i = 0; i <= samples; i++) {
+    const n = samples + 1;
+    const targetVals = new Array(n);
+    const predVals = new Array(n);
+    for (let i = 0; i < n; i++) {
       const x = -AXIS_RANGE + (2 * AXIS_RANGE * i) / samples;
-      totalErr += Math.abs(targetY(x) - predict(x));
+      targetVals[i] = targetY(x);
+      predVals[i] = predict(x);
     }
-    const avgErr = totalErr / (samples + 1);
-    const fit = 1 - avgErr / (2 * AXIS_RANGE);
-    return Math.max(0, Math.min(1, fit));
+    const meanTarget = targetVals.reduce((a, b) => a + b, 0) / n;
+    let ssRes = 0, ssTot = 0;
+    for (let i = 0; i < n; i++) {
+      ssRes += (targetVals[i] - predVals[i]) ** 2;
+      ssTot += (targetVals[i] - meanTarget) ** 2;
+    }
+    if (ssTot < 1e-6) {
+      // near-flat target: fall back to absolute error so we don't divide by ~0
+      let totalErr = 0;
+      for (let i = 0; i < n; i++) totalErr += Math.abs(targetVals[i] - predVals[i]);
+      return Math.max(0, Math.min(1, 1 - (totalErr / n) / (2 * AXIS_RANGE)));
+    }
+    return Math.max(0, Math.min(1, 1 - ssRes / ssTot));
   }
 
   function buildControls() {
