@@ -499,7 +499,7 @@
   const AXIS_RANGE = 10; // plot spans -10..10 on both axes
   const WIN_THRESHOLD = 0.95;
   const MAX_HIDDEN = 6; // cap neuron count so the control panel stays usable
-  const LEVEL_BASE_SECONDS = 30; // level 1 = 30s, level 2 = 60s, level 3 = 120s, doubling each level
+  const LEVEL_BASE_SECONDS = 20; // level 1 = 20s, level 2 = 40s, level 3 = 80s, doubling each level
 
   function levelTimeSeconds(lvl) {
     return LEVEL_BASE_SECONDS * Math.pow(2, lvl - 1);
@@ -887,7 +887,7 @@
   shareBtn.addEventListener('click', async () => {
     const shareData = {
       title: 'NeuralFit',
-      text: 'I reached Level ' + level + ' · ' + cfg.name + ' in NeuralFit!',
+      text: 'I reached Level ' + level + ' · ' + cfg.name + ' in NeuralFit! Can you beat me?',
       url: location.href
     };
     const fullText = shareData.text + ' ' + shareData.url;
