@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Perceptron Fit — a curve-fitting game</title>
+<title>NeuralFit — a curve-fitting game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   :root {
@@ -165,12 +165,6 @@
     color: var(--text);
     font-weight: 700;
   }
-  .actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 14px;
-    justify-content: center;
-  }
   button {
     background: #21262d;
     color: var(--text);
@@ -220,7 +214,7 @@
 <body>
 
 <header>
-  <h1>Perceptron Fit</h1>
+  <h1>NeuralFit</h1>
   <p>Adjust the network's weights and biases so its output curve matches the target.</p>
 </header>
 
@@ -249,10 +243,6 @@
       <div class="fit-bar-bg"><div class="fit-bar-fill" id="fitBar"></div></div>
       <div class="fit-label"><span>Fit</span><span id="fitPct">0%</span></div>
     </div>
-    <div class="actions">
-      <button id="newLineBtn">New Target</button>
-      <button id="resetBtn">Reset Weights</button>
-    </div>
   </div>
 </div>
 
@@ -267,8 +257,6 @@
   const fitPctEl = document.getElementById('fitPct');
   const winBanner = document.getElementById('winBanner');
   const nextLevelBtn = document.getElementById('nextLevelBtn');
-  const newLineBtn = document.getElementById('newLineBtn');
-  const resetBtn = document.getElementById('resetBtn');
   const levelBar = document.getElementById('levelBar');
 
   const AXIS_RANGE = 10; // plot spans -10..10 on both axes
@@ -550,19 +538,6 @@
     buildControls();
     update();
   }
-
-  newLineBtn.addEventListener('click', () => {
-    target = generateTarget(cfg.kinks);
-    hasWon = false;
-    winBanner.classList.remove('show');
-    update();
-  });
-
-  resetBtn.addEventListener('click', () => {
-    model = defaultModel(cfg.hidden);
-    buildControls();
-    update();
-  });
 
   nextLevelBtn.addEventListener('click', () => {
     startLevel(level + 1);
