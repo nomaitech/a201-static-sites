@@ -133,14 +133,21 @@
 </head>
 <body>
   <h1>Statistical LLM <span class="badge">runs 100% in your browser</span></h1>
-  <p class="subtitle">Type a phrase and see the real next-token probability distribution from GPT-2 — downloaded once and run locally on-device, no server involved.</p>
+  <p class="subtitle">Type a phrase and see the real next-token probability distribution — downloaded once and run locally on-device, no server involved.</p>
 
   <input id="phrase" type="text" placeholder="Loading model..." autocomplete="off" disabled>
 
   <div class="controls">
+    <label>Model
+      <select id="modelSelect">
+        <option value="Xenova/gpt2" data-dtype="fp16">GPT-2</option>
+        <option value="Xenova/distilgpt2" data-dtype="fp32">DistilGPT-2 (GPT-1 stand-in*)</option>
+      </select>
+    </label>
     <label>Top K <input id="topk" type="number" value="8" min="1" max="20" style="width:50px"></label>
     <label>Temperature <input id="temp" type="number" value="1.0" step="0.1" min="0.1" max="3" style="width:50px"></label>
   </div>
+  <p class="subtitle" style="margin-top:8px; margin-bottom:0;">* The original 2018 GPT-1 has no browser-compatible (ONNX) build, so DistilGPT-2 stands in as a smaller/lighter GPT for comparison.</p>
 
   <div id="loadbar-track"><div id="loadbar-fill"></div></div>
   <div id="results"></div>
@@ -149,9 +156,8 @@
 <script type="module">
 import { AutoTokenizer, AutoModelForCausalLM } from "https://esm.sh/@huggingface/transformers@4.2.0";
 
-const MODEL_ID = "Xenova/gpt2";
-
 const phraseInput = document.getElementById('phrase');
+const modelSelect = document.getElementById('modelSelect');
 const topkInput = document.getElementById('topk');
 const tempInput = document.getElementById('temp');
 const results = document.getElementById('results');
@@ -160,6 +166,7 @@ const loadbarTrack = document.getElementById('loadbar-track');
 const loadbarFill = document.getElementById('loadbar-fill');
 
 let tokenizer, model;
+let modelSeq = 0;
 const fileProgress = new Map();
 
 function updateLoadProgress(evt) {
@@ -174,20 +181,33 @@ function updateLoadProgress(evt) {
   loadbarFill.style.width = avg + '%';
 }
 
-async function loadModel() {
-  tokenizer = await AutoTokenizer.from_pretrained(MODEL_ID, {
+async function loadModel(modelId, dtype) {
+  const seq = ++modelSeq;
+  phraseInput.disabled = true;
+  phraseInput.placeholder = 'Loading model...';
+  results.innerHTML = '';
+  fileProgress.clear();
+  loadbarTrack.style.display = '';
+  loadbarFill.style.width = '0%';
+  status.textContent = `Loading ${modelId}...`;
+
+  const newTokenizer = await AutoTokenizer.from_pretrained(modelId, {
     progress_callback: updateLoadProgress,
   });
-  model = await AutoModelForCausalLM.from_pretrained(MODEL_ID, {
-    dtype: 'fp16',
+  const newModel = await AutoModelForCausalLM.from_pretrained(modelId, {
+    dtype,
     progress_callback: updateLoadProgress,
   });
+  if (seq !== modelSeq) return; // a newer model selection finished first
+
+  tokenizer = newTokenizer;
+  model = newModel;
 
   loadbarTrack.style.display = 'none';
   status.textContent = '';
   phraseInput.disabled = false;
   phraseInput.placeholder = 'Hello, how are you';
-  phraseInput.value = 'Hello, how are you';
+  if (!phraseInput.value) phraseInput.value = 'Hello, how are you';
   fetchPredictions();
 }
 
@@ -287,8 +307,18 @@ function debouncedFetch() {
 phraseInput.addEventListener('input', debouncedFetch);
 topkInput.addEventListener('input', debouncedFetch);
 tempInput.addEventListener('input', debouncedFetch);
+function currentDtype() {
+  return modelSelect.selectedOptions[0].dataset.dtype;
+}
 
-loadModel().catch(e => {
+modelSelect.addEventListener('change', () => {
+  loadModel(modelSelect.value, currentDtype()).catch(e => {
+    console.error(e);
+    status.textContent = 'Failed to load model: ' + e.message;
+  });
+});
+
+loadModel(modelSelect.value, currentDtype()).catch(e => {
   console.error(e);
   status.textContent = 'Failed to load model: ' + e.message;
 });
