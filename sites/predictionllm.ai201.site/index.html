@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Statistical LLM</title>
+<style>
+  :root {
+    color-scheme: dark;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #0f1115;
+    color: #e6e6e6;
+    max-width: 720px;
+    margin: 60px auto;
+    padding: 0 20px;
+  }
+  h1 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  p.subtitle {
+    color: #8a8f98;
+    margin-top: 0;
+    margin-bottom: 30px;
+    font-size: 0.9rem;
+  }
+  #phrase {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 1.1rem;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid #2a2d35;
+    background: #1a1d24;
+    color: #e6e6e6;
+    outline: none;
+  }
+  #phrase:disabled {
+    opacity: 0.5;
+  }
+  #phrase:focus {
+    border-color: #5b8cff;
+  }
+  .controls {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: #8a8f98;
+  }
+  .controls label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  #results {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .bar-token {
+    width: 140px;
+    text-align: right;
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 0.95rem;
+    white-space: pre;
+    color: #d8dbe0;
+  }
+  .bar-track {
+    flex: 1;
+    background: #1a1d24;
+    border-radius: 6px;
+    overflow: hidden;
+    height: 26px;
+    position: relative;
+  }
+  .bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #5b8cff, #7fb8ff);
+    border-radius: 6px;
+    transition: width 0.3s ease;
+  }
+  .bar-pct {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8rem;
+    color: #0f1115;
+    font-weight: 600;
+  }
+  .bar-pct.outside {
+    color: #e6e6e6;
+    right: -60px;
+  }
+  #status {
+    margin-top: 20px;
+    color: #8a8f98;
+    font-size: 0.85rem;
+  }
+  #loadbar-track {
+    margin-top: 20px;
+    background: #1a1d24;
+    border-radius: 6px;
+    overflow: hidden;
+    height: 8px;
+  }
+  #loadbar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #5b8cff, #7fb8ff);
+    transition: width 0.2s ease;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    color: #7fb8ff;
+    border: 1px solid #2a2d35;
+    border-radius: 6px;
+    padding: 2px 8px;
+    margin-left: 8px;
+  }
+</style>
+</head>
+<body>
+  <h1>Statistical LLM <span class="badge">runs 100% in your browser</span></h1>
+  <p class="subtitle">Type a phrase and see the real next-token probability distribution from GPT-2 — downloaded once and run locally on-device, no server involved.</p>
+
+  <input id="phrase" type="text" placeholder="Loading model..." autocomplete="off" disabled>
+
+  <div class="controls">
+    <label>Top K <input id="topk" type="number" value="8" min="1" max="20" style="width:50px"></label>
+    <label>Temperature <input id="temp" type="number" value="1.0" step="0.1" min="0.1" max="3" style="width:50px"></label>
+  </div>
+
+  <div id="loadbar-track"><div id="loadbar-fill"></div></div>
+  <div id="results"></div>
+  <div id="status">Loading GPT-2 (~40MB, cached after first load)...</div>
+
+<script type="module">
+import { AutoTokenizer, AutoModelForCausalLM } from "https://esm.sh/@huggingface/transformers@4.2.0";
+
+const MODEL_ID = "Xenova/gpt2";
+
+const phraseInput = document.getElementById('phrase');
+const topkInput = document.getElementById('topk');
+const tempInput = document.getElementById('temp');
+const results = document.getElementById('results');
+const status = document.getElementById('status');
+const loadbarTrack = document.getElementById('loadbar-track');
+const loadbarFill = document.getElementById('loadbar-fill');
+
+let tokenizer, model;
+const fileProgress = new Map();
+
+function updateLoadProgress(evt) {
+  if (evt.status !== 'progress' && evt.status !== 'done') return;
+  if (evt.status === 'done') {
+    fileProgress.set(evt.file, 100);
+  } else {
+    fileProgress.set(evt.file, evt.progress ?? 0);
+  }
+  const values = [...fileProgress.values()];
+  const avg = values.reduce((a, b) => a + b, 0) / values.length;
+  loadbarFill.style.width = avg + '%';
+}
+
+async function loadModel() {
+  tokenizer = await AutoTokenizer.from_pretrained(MODEL_ID, {
+    progress_callback: updateLoadProgress,
+  });
+  model = await AutoModelForCausalLM.from_pretrained(MODEL_ID, {
+    dtype: 'fp16',
+    progress_callback: updateLoadProgress,
+  });
+
+  loadbarTrack.style.display = 'none';
+  status.textContent = '';
+  phraseInput.disabled = false;
+  phraseInput.placeholder = 'Hello, how are you';
+  phraseInput.value = 'Hello, how are you';
+  fetchPredictions();
+}
+
+function render(tokens) {
+  results.innerHTML = '';
+  const maxProb = tokens.length ? tokens[0].prob : 1;
+  for (const t of tokens) {
+    const row = document.createElement('div');
+    row.className = 'bar-row';
+
+    const label = document.createElement('div');
+    label.className = 'bar-token';
+    label.textContent = t.token.replace(/ /g, '·').replace(/\n/g, '⏎') || '·';
+
+    const track = document.createElement('div');
+    track.className = 'bar-track';
+
+    const fill = document.createElement('div');
+    fill.className = 'bar-fill';
+    const widthPct = Math.max((t.prob / maxProb) * 100, 3);
+    fill.style.width = widthPct + '%';
+
+    const pct = document.createElement('span');
+    pct.className = 'bar-pct' + (widthPct < 15 ? ' outside' : '');
+    pct.textContent = t.prob + '%';
+
+    fill.appendChild(pct);
+    track.appendChild(fill);
+    row.appendChild(label);
+    row.appendChild(track);
+    results.appendChild(row);
+  }
+}
+
+async function predictNextTokens(text, topK, temperature) {
+  const inputs = await tokenizer(text);
+  const output = await model(inputs);
+  const logits = output.logits;
+  const dims = logits.dims; // [1, seqLen, vocabSize]
+  const seqLen = dims[1];
+  const vocabSize = dims[2];
+  const start = (seqLen - 1) * vocabSize;
+  const lastLogits = logits.data.subarray(start, start + vocabSize);
+
+  let maxLogit = -Infinity;
+  for (let i = 0; i < vocabSize; i++) {
+    const v = lastLogits[i] / temperature;
+    if (v > maxLogit) maxLogit = v;
+  }
+  let sum = 0;
+  const expVals = new Float64Array(vocabSize);
+  for (let i = 0; i < vocabSize; i++) {
+    const v = Math.exp(lastLogits[i] / temperature - maxLogit);
+    expVals[i] = v;
+    sum += v;
+  }
+
+  const probs = new Array(vocabSize);
+  for (let i = 0; i < vocabSize; i++) probs[i] = [i, expVals[i] / sum];
+  probs.sort((a, b) => b[1] - a[1]);
+
+  const top = probs.slice(0, topK);
+  return top.map(([id, p]) => ({
+    token: tokenizer.decode([id]),
+    prob: Math.round(p * 10000) / 100,
+  }));
+}
+
+let debounceTimer = null;
+let requestSeq = 0;
+
+async function fetchPredictions() {
+  const text = phraseInput.value;
+  if (!text.trim()) {
+    results.innerHTML = '';
+    status.textContent = '';
+    return;
+  }
+  const seq = ++requestSeq;
+  status.textContent = 'thinking...';
+  try {
+    const tokens = await predictNextTokens(text, Number(topkInput.value), Number(tempInput.value));
+    if (seq !== requestSeq) return; // a newer request finished first
+    render(tokens);
+    status.textContent = '';
+  } catch (e) {
+    console.error(e);
+    status.textContent = 'Error running model: ' + e.message;
+  }
+}
+
+function debouncedFetch() {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(fetchPredictions, 200);
+}
+
+phraseInput.addEventListener('input', debouncedFetch);
+topkInput.addEventListener('input', debouncedFetch);
+tempInput.addEventListener('input', debouncedFetch);
+
+loadModel().catch(e => {
+  console.error(e);
+  status.textContent = 'Failed to load model: ' + e.message;
+});
+</script>
+</body>
+</html>
