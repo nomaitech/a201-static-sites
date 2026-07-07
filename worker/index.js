@@ -15,12 +15,18 @@ export default {
 
     if (!object) {
       // Try index.html fallback for extensionless paths
-      const fallback = await env.BUCKET.get(`${host}${path}/index.html`);
-      if (!fallback) {
+      const dirFallback = await env.BUCKET.get(`${host}${path}/index.html`);
+      if (dirFallback) {
+        return respond(dirFallback);
+      }
+
+      // Try .html fallback for extensionless file paths
+      const htmlFallback = await env.BUCKET.get(`${host}${path}.html`);
+      if (!htmlFallback) {
         // No R2 content for this host — pass through to origin (e.g. backend apps)
         return fetch(request);
       }
-      return respond(fallback);
+      return respond(htmlFallback);
     }
 
     return respond(object);
