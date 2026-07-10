@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#f2e8d5">
+<title>Crack the Chest</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='14' width='24' height='14' rx='2' fill='%23d69a3f' stroke='%23241a12' stroke-width='2'/%3E%3Cpath d='M4 14 Q4 4 16 4 Q28 4 28 14 Z' fill='%23e8b45f' stroke='%23241a12' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Archivo:wght@500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<button class="menu-btn" id="menuBtn" aria-label="Open unlocked tools menu">
+  <span></span><span></span><span></span>
+</button>
+
+<div class="cabinet">
+  <header class="game-header">
+    <p class="kicker">MOBILE MINI&#8209;GAME</p>
+    <h1 class="title">CRACK<br>THE&nbsp;CHEST</h1>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab-btn active" id="tabChestBtn" role="tab" aria-selected="true">CHEST</button>
+    <button class="tab-btn" id="tabWorkshopBtn" role="tab" aria-selected="false">WORKSHOP</button>
+  </nav>
+
+  <main class="stage" id="stage">
+    <div class="shockwave" id="shockwave" aria-hidden="true"></div>
+    <div class="rays" id="rays" aria-hidden="true"></div>
+
+    <button class="chest-btn" id="chestBtn" aria-label="Tap to hit the chest">
+      <svg id="chestSvg" class="chest-svg" viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="150" cy="222" rx="128" ry="13" fill="var(--ink)" opacity="0.14"/>
+        <circle id="innerGlow" cx="150" cy="118" r="8" fill="var(--spark)" opacity="0"/>
+
+        <g id="body">
+          <path id="bodyShape" d="M50,112 H250 A16,16 0 0 1 266,128 V192 A16,16 0 0 1 250,208 H50 A16,16 0 0 1 34,192 V128 A16,16 0 0 1 50,112 Z" fill="var(--gold)" stroke="var(--ink)" stroke-width="8"/>
+          <rect x="34" y="150" width="232" height="18" fill="var(--gold-dark)" stroke="var(--ink)" stroke-width="6"/>
+          <rect x="140" y="112" width="20" height="96" fill="var(--gold-dark)" stroke="var(--ink)" stroke-width="6"/>
+          <circle cx="60" cy="199" r="7" fill="var(--wood)" stroke="var(--ink)" stroke-width="4"/>
+          <circle cx="240" cy="199" r="7" fill="var(--wood)" stroke="var(--ink)" stroke-width="4"/>
+          <path id="crack1" class="crack" d="M72,138 L84,158 L76,180" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path id="crack2" class="crack" d="M222,133 L208,153 L218,178" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path id="crack3" class="crack" d="M108,190 L128,174 L150,196 L172,176 L192,192" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+
+        <g id="lid">
+          <g id="lidShapeWrap">
+            <path d="M34,112 Q34,32 150,28 Q266,32 266,112 Z" fill="var(--gold-light)" stroke="var(--ink)" stroke-width="8" stroke-linejoin="round"/>
+          </g>
+          <rect x="34" y="99" width="232" height="17" fill="var(--gold-dark)" stroke="var(--ink)" stroke-width="6"/>
+        </g>
+
+        <g id="lock">
+          <g id="lockShapeWrap">
+            <path d="M132,100 a18,18 0 0 1 36,0 v16 h-13 v-16 a5.5,5.5 0 0 0 -10,0 v16 h-13 z" fill="none" stroke="var(--ink)" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>
+            <rect x="125" y="101" width="50" height="42" rx="8" fill="var(--lock-accent)" stroke="var(--ink)" stroke-width="7"/>
+            <circle cx="150" cy="117" r="6" fill="var(--ink)"/>
+            <rect x="147" y="121" width="6" height="13" fill="var(--ink)"/>
+          </g>
+        </g>
+      </svg>
+    </button>
+
+    <p class="key-chip" id="keyChip" hidden>KEY MATCH — EASY OPEN</p>
+
+    <div class="fx-layer" id="fxLayer" aria-hidden="true"></div>
+  </main>
+
+  <footer class="hint" id="hintFooter">
+    <p id="hintText">TAP THE CHEST</p>
+  </footer>
+
+  <section class="workshop" id="workshopPanel" hidden>
+    <p class="workshop-hint" id="workshopHint">PICK TWO TOOLS TO COMBINE</p>
+
+    <div class="workshop-slots">
+      <button class="workshop-slot" id="slotA" aria-label="Ingredient slot A"><span>+</span></button>
+      <span class="workshop-plus">+</span>
+      <button class="workshop-slot" id="slotB" aria-label="Ingredient slot B"><span>+</span></button>
+    </div>
+
+    <button class="btn-primary workshop-combine" id="combineBtn" disabled>COMBINE</button>
+
+    <p class="workshop-result" id="workshopResult" hidden></p>
+
+    <p class="menu-subtitle workshop-inv-title">YOUR TOOLS</p>
+    <div class="workshop-inventory" id="workshopInventory"></div>
+  </section>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<section class="sheet" id="sheet" aria-hidden="true">
+  <div class="sheet-handle" aria-hidden="true"></div>
+  <p class="sheet-kicker" id="sheetKicker">CHEST OPENED</p>
+  <h2 class="sheet-title" id="sheetTitle">TOOL<br>UNLOCKED!</h2>
+  <div class="tool-card">
+    <div class="tool-badge-wrap">
+      <div class="tool-badge" id="toolBadge"></div>
+      <span class="badge-count" id="toolCountBadge" hidden></span>
+    </div>
+    <div class="tool-info">
+      <h3 id="toolName">&nbsp;</h3>
+      <p id="toolDesc">&nbsp;</p>
+    </div>
+  </div>
+  <button class="btn-primary" id="continueBtn">AWESOME!</button>
+</section>
+
+<div class="menu-scrim" id="menuScrim"></div>
+<aside class="menu-drawer" id="menuDrawer" aria-hidden="true">
+  <div class="menu-head">
+    <p class="menu-title">COLLECTION</p>
+    <button class="menu-close" id="menuClose" aria-label="Close menu">&times;</button>
+  </div>
+  <p class="menu-subtitle" id="toolsSubtitle">TOOLS FOUND</p>
+  <ul class="tool-list" id="toolList"></ul>
+  <p class="menu-subtitle" id="craftedSubtitle">WORKSHOP FINDS</p>
+  <ul class="tool-list" id="craftedList"></ul>
+  <p class="menu-subtitle" id="keysSubtitle">KEYS FOUND</p>
+  <ul class="tool-list" id="keyList"></ul>
+</aside>
+
+<script src="script.js"></script>
+</body>
+</html>
