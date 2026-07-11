@@ -368,27 +368,6 @@
     shareSheet.classList.remove("open");
   });
 
-  // ---------- Top feed tabs ----------
-  const feedTabs = document.querySelectorAll(".feed-tab");
-  const EMPTY_FOLLOWING = `
-    <div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 40px;text-align:center;color:rgba(255,255,255,.6);gap:10px;">
-      <div style="font-size:40px;">👥</div>
-      <div style="color:#fff;font-weight:700;font-size:16px;">No videos yet</div>
-      <div style="font-size:13.5px;">Videos from accounts you follow will show up here.</div>
-    </div>`;
-
-  feedTabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      feedTabs.forEach((t) => t.classList.remove("is-active"));
-      tab.classList.add("is-active");
-      if (tab.dataset.tab === "following") {
-        feedEl.innerHTML = EMPTY_FOLLOWING;
-      } else {
-        renderFeed();
-      }
-    });
-  });
-
   // ---------- Bottom nav ----------
   const navItems = document.querySelectorAll(".nav-item");
   navItems.forEach((item) => {
