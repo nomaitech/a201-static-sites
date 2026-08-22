@@ -3,75 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nomai — Build Products with AI. No Technical Skills Required.</title>
-    <meta name="description" content="Nomai teaches non-technical founders and business owners how to build real products using AI.">
+    <title>Nomai — Product Development Agency. We Build With AI.</title>
+    <meta name="description" content="Nomai is a product development agency that designs and builds real products fast using AI-native workflows — and trains teams to do the same.">
     <link rel="canonical" href="https://nomaitech.com/">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Nomai — Build Products with AI. No Technical Skills Required.">
-    <meta property="og:description" content="Nomai teaches non-technical founders and business owners how to build real products using AI.">
+    <meta property="og:title" content="Nomai — Product Development Agency. We Build With AI.">
+    <meta property="og:description" content="Nomai is a product development agency that designs and builds real products fast using AI-native workflows — and trains teams to do the same.">
     <meta property="og:url" content="https://nomaitech.com/">
     <meta property="og:site_name" content="Nomai">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Nomai — Build Products with AI. No Technical Skills Required.">
-    <meta name="twitter:description" content="Nomai teaches non-technical founders and business owners how to build real products using AI.">
+    <meta name="twitter:title" content="Nomai — Product Development Agency. We Build With AI.">
+    <meta name="twitter:description" content="Nomai is a product development agency that designs and builds real products fast using AI-native workflows — and trains teams to do the same.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --neon-green: #00ff41;
-            --hot-pink: #ff006e;
-            --electric-blue: #3a86ff;
-            --bright-yellow: #ffbe0b;
-            --acid-orange: #ff5400;
-            --deep-purple: #7b2ff7;
-            --bg-dark: #0a0a0f;
-            --bg-card: #12121a;
-            --text-primary: #f0f0f0;
-            --text-muted: #8888aa;
+            --paper: #f2efe6;
+            --paper-alt: #e6e0cd;
+            --ink: #111111;
+            --red: #ff3300;
+            --text-muted: #55524a;
+            --border: 3px solid var(--ink);
+            --shadow: 6px 6px 0 var(--ink);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
 
         body {
-            background: var(--bg-dark);
-            color: var(--text-primary);
+            background: var(--paper);
+            color: var(--ink);
             font-family: 'JetBrains Mono', monospace;
             overflow-x: hidden;
             cursor: crosshair;
         }
 
-        ::selection { background: var(--hot-pink); color: var(--bg-dark); }
-
-        /* Noise overlay */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 9999;
-        }
-
-        /* Scanlines */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
-            pointer-events: none;
-            z-index: 9998;
-        }
+        ::selection { background: var(--red); color: var(--paper); }
 
         /* ══════════════════════════════════════════
            TICKER
         ══════════════════════════════════════════ */
         .ticker {
-            background: var(--hot-pink);
-            color: var(--bg-dark);
+            background: var(--ink);
+            color: var(--paper);
             padding: 8px 0;
             font-size: 0.75rem;
             font-weight: 700;
@@ -81,6 +56,7 @@
             white-space: nowrap;
             position: relative;
             z-index: 100;
+            border-bottom: var(--border);
         }
 
         .ticker-inner {
@@ -89,7 +65,7 @@
         }
 
         .ticker-inner span { padding: 0 2rem; }
-        .ticker-inner span::after { content: '✦'; padding-left: 2rem; }
+        .ticker-inner span::after { content: '✦'; padding-left: 2rem; color: var(--red); }
 
         @keyframes ticker {
             0% { transform: translateX(0); }
@@ -101,26 +77,27 @@
         ══════════════════════════════════════════ */
         nav {
             position: fixed;
-            top: 32px;
+            top: 0;
             left: 0; right: 0;
             z-index: 1000;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 2rem;
-            mix-blend-mode: difference;
+            padding: 1.1rem 2rem;
+            background: var(--paper);
+            border-bottom: var(--border);
         }
 
         .nav-logo {
             font-family: 'Unbounded', sans-serif;
             font-weight: 900;
             font-size: 1.4rem;
-            color: white;
+            color: var(--ink);
             text-decoration: none;
             letter-spacing: -0.02em;
         }
 
-        .nav-logo .blink { animation: blink 1s step-end infinite; }
+        .nav-logo .blink { color: var(--red); animation: blink 1s step-end infinite; }
 
         @keyframes blink {
             0%, 100% { opacity: 1; }
@@ -134,17 +111,18 @@
         }
 
         .nav-links a {
-            color: white;
+            color: var(--ink);
             text-decoration: none;
             font-size: 0.8rem;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            transition: all 0.2s;
+            transition: color 0.15s;
         }
 
         .nav-links a:hover {
-            color: var(--neon-green);
-            text-shadow: 0 0 20px var(--neon-green);
+            color: var(--red);
+            text-decoration: underline;
         }
 
         /* ══════════════════════════════════════════
@@ -157,100 +135,61 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 6rem 2rem 4rem;
+            padding: 9rem 2rem 4rem;
             position: relative;
             overflow: hidden;
-        }
-
-        .hero-bg-grid {
-            position: absolute;
-            inset: 0;
             background-image:
-                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
-            mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
-        }
-
-        .hero-blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.4;
-            animation: float 8s ease-in-out infinite;
-        }
-
-        .hero-blob-1 { width: 500px; height: 500px; background: var(--deep-purple); top: -10%; right: -5%; animation-delay: 0s; }
-        .hero-blob-2 { width: 400px; height: 400px; background: var(--electric-blue); bottom: -5%; left: -5%; animation-delay: -3s; }
-        .hero-blob-3 { width: 300px; height: 300px; background: var(--neon-green); top: 40%; left: 50%; animation-delay: -5s; opacity: 0.2; }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(30px, -20px) scale(1.05); }
-            66% { transform: translate(-20px, 20px) scale(0.95); }
+                linear-gradient(rgba(17,17,17,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(17,17,17,0.05) 1px, transparent 1px);
+            background-size: 48px 48px;
         }
 
         .hero-pretitle {
             font-size: 0.85rem;
-            color: var(--neon-green);
+            font-weight: 700;
+            color: var(--red);
             text-transform: uppercase;
             letter-spacing: 0.3em;
             margin-bottom: 1.5rem;
             position: relative;
             z-index: 2;
-            animation: fadeInUp 0.8s ease-out 0.2s both;
+            animation: fadeInUp 0.6s ease-out 0.1s both;
         }
 
         .hero-title {
             font-family: 'Unbounded', sans-serif;
             font-weight: 900;
-            font-size: clamp(3rem, 10vw, 8rem);
-            line-height: 0.95;
+            font-size: clamp(3rem, 10vw, 7.5rem);
+            line-height: 0.98;
             letter-spacing: -0.03em;
             position: relative;
             z-index: 2;
-            animation: fadeInUp 0.8s ease-out 0.4s both;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
         }
 
-        .hero-title .line-1 {
-            display: block;
-            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-primary) 60%, var(--electric-blue) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+        .hero-title .line-1,
+        .hero-title .line-3 { display: block; color: var(--ink); }
 
         .hero-title .line-2 {
-            display: block;
-            font-family: 'Instrument Serif', serif;
-            font-style: italic;
-            font-weight: 400;
-            color: var(--bright-yellow);
-            -webkit-text-fill-color: var(--bright-yellow);
-            font-size: 0.6em;
-            margin-top: 0.1em;
-        }
-
-        .hero-title .line-3 {
-            display: block;
-            background: linear-gradient(135deg, var(--neon-green), var(--electric-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            display: inline-block;
+            background: var(--ink);
+            color: var(--paper);
+            padding: 0 0.25em;
+            margin: 0.1em 0;
         }
 
         .hero-sub {
             font-size: clamp(0.9rem, 2vw, 1.1rem);
             color: var(--text-muted);
-            max-width: 540px;
+            max-width: 560px;
             margin: 2rem auto;
             line-height: 1.7;
             position: relative;
             z-index: 2;
-            animation: fadeInUp 0.8s ease-out 0.6s both;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
         }
 
-        .hero-sub strong { color: var(--text-primary); }
+        .hero-sub strong { color: var(--ink); }
 
         .hero-ctas {
             display: flex;
@@ -258,7 +197,7 @@
             margin-top: 1rem;
             position: relative;
             z-index: 2;
-            animation: fadeInUp 0.8s ease-out 0.8s both;
+            animation: fadeInUp 0.6s ease-out 0.4s both;
             flex-wrap: wrap;
             justify-content: center;
         }
@@ -268,24 +207,25 @@
             align-items: center;
             gap: 0.5rem;
             padding: 1rem 2.5rem;
-            background: var(--neon-green);
-            color: var(--bg-dark);
+            background: var(--ink);
+            color: var(--paper);
             font-family: 'Unbounded', sans-serif;
             font-weight: 700;
             font-size: 0.85rem;
             text-decoration: none;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            border: none;
+            border: var(--border);
             cursor: pointer;
-            transition: all 0.3s;
-            clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+            transition: all 0.15s;
+            box-shadow: var(--shadow);
         }
 
         .btn-primary:hover {
-            background: var(--bright-yellow);
-            transform: translate(-2px, -2px);
-            box-shadow: 4px 4px 0 var(--neon-green);
+            background: var(--red);
+            color: var(--ink);
+            transform: translate(-3px, -3px);
+            box-shadow: 9px 9px 0 var(--ink);
         }
 
         .btn-secondary {
@@ -293,29 +233,32 @@
             align-items: center;
             gap: 0.5rem;
             padding: 1rem 2.5rem;
-            background: transparent;
-            color: var(--text-primary);
+            background: var(--paper);
+            color: var(--ink);
             font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
             font-size: 0.85rem;
             text-decoration: none;
-            border: 1px solid rgba(255,255,255,0.2);
+            border: var(--border);
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.15s;
+            box-shadow: var(--shadow);
         }
 
         .btn-secondary:hover {
-            border-color: var(--hot-pink);
-            color: var(--hot-pink);
-            box-shadow: 0 0 30px rgba(255, 0, 110, 0.15);
+            transform: translate(-3px, -3px);
+            box-shadow: 9px 9px 0 var(--red);
         }
 
         .hero-stats {
             display: flex;
             gap: 3rem;
             margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: var(--border);
             position: relative;
             z-index: 2;
-            animation: fadeInUp 0.8s ease-out 1s both;
+            animation: fadeInUp 0.6s ease-out 0.5s both;
         }
 
         .hero-stat { text-align: center; }
@@ -324,7 +267,7 @@
             font-family: 'Unbounded', sans-serif;
             font-weight: 900;
             font-size: 2rem;
-            color: var(--bright-yellow);
+            color: var(--red);
         }
 
         .hero-stat-label {
@@ -336,23 +279,8 @@
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(24px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-
-        .floating-emoji {
-            position: absolute;
-            font-size: 2rem;
-            animation: floatEmoji 6s ease-in-out infinite;
-            z-index: 1;
-            opacity: 0.6;
-            user-select: none;
-        }
-
-        @keyframes floatEmoji {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            25% { transform: translateY(-20px) rotate(10deg); }
-            75% { transform: translateY(15px) rotate(-5deg); }
         }
 
         /* ══════════════════════════════════════════
@@ -361,13 +289,14 @@
         .scroller-section {
             padding: 0;
             overflow: hidden;
-            border-top: 1px solid rgba(255,255,255,0.06);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
+            border-top: var(--border);
+            border-bottom: var(--border);
         }
 
         .scroller-label {
             font-family: 'Unbounded', sans-serif;
             font-size: 0.65rem;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.3em;
             color: var(--text-muted);
@@ -389,17 +318,14 @@
             font-weight: 900;
             font-size: clamp(2rem, 5vw, 4rem);
             white-space: nowrap;
-            color: rgba(255,255,255,0.08);
-            transition: color 0.3s;
+            color: rgba(17,17,17,0.12);
+            transition: color 0.2s;
             cursor: default;
         }
 
-        .scroller-item:hover {
-            color: var(--electric-blue);
-            text-shadow: 0 0 40px rgba(58, 134, 255, 0.3);
-        }
+        .scroller-item:hover { color: var(--ink); }
 
-        .scroller-item .accent { color: var(--neon-green); opacity: 0.4; }
+        .scroller-item .accent { color: var(--red); opacity: 0.6; }
 
         @keyframes scrollTrack {
             0% { transform: translateX(0); }
@@ -432,15 +358,18 @@
             font-family: 'Unbounded', sans-serif;
             font-weight: 900;
             font-size: clamp(2rem, 6vw, 4.5rem);
-            background: linear-gradient(135deg, var(--neon-green), var(--bright-yellow));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--ink);
             line-height: 1.1;
         }
 
+        .vibecoded-answer .hl {
+            background: var(--red);
+            color: var(--paper);
+            padding: 0 0.2em;
+        }
+
         /* ══════════════════════════════════════════
-           PERSONA SECTIONS (3 PATHS)
+           ENGAGEMENT SECTIONS (3 PATHS)
         ══════════════════════════════════════════ */
         .persona-sections {
             max-width: 1200px;
@@ -460,11 +389,8 @@
             margin-bottom: 0.5rem;
         }
 
-        .persona-sections-header h2 em {
-            font-family: 'Instrument Serif', serif;
-            font-style: italic;
-            font-weight: 400;
-            color: var(--bright-yellow);
+        .persona-sections-header h2 span {
+            color: var(--red);
         }
 
         .persona-sections-header p {
@@ -476,16 +402,17 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 0;
-            background: var(--bg-card);
-            border: 1px solid rgba(255,255,255,0.06);
+            background: var(--paper);
+            border: var(--border);
             margin-bottom: 2rem;
             overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .persona-card:hover {
-            border-color: rgba(255,255,255,0.12);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            transform: translate(-3px, -3px);
+            box-shadow: 9px 9px 0 var(--ink);
         }
 
         .persona-card-visual {
@@ -493,36 +420,24 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            min-height: 300px;
-            overflow: hidden;
+            min-height: 280px;
         }
 
-        .persona-card-visual .big-emoji {
-            font-size: 5rem;
-            z-index: 2;
-            animation: float 6s ease-in-out infinite;
+        .persona-card-visual .big-number {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: 7rem;
+            line-height: 1;
         }
 
-        .persona-card.founder-card .persona-card-visual {
-            background: linear-gradient(135deg, rgba(0,255,65,0.08), rgba(58,134,255,0.06));
-            background-image:
-                radial-gradient(circle at 30% 50%, rgba(0,255,65,0.15) 0%, transparent 60%),
-                radial-gradient(circle at 70% 50%, rgba(58,134,255,0.1) 0%, transparent 60%);
-        }
+        .founder-card .persona-card-visual { background: var(--red); }
+        .founder-card .big-number { color: var(--ink); }
 
-        .persona-card.creator-card .persona-card-visual {
-            background: linear-gradient(135deg, rgba(255,0,110,0.08), rgba(123,47,247,0.06));
-            background-image:
-                radial-gradient(circle at 30% 50%, rgba(255,0,110,0.15) 0%, transparent 60%),
-                radial-gradient(circle at 70% 50%, rgba(123,47,247,0.1) 0%, transparent 60%);
-        }
+        .creator-card .persona-card-visual { background: var(--ink); }
+        .creator-card .big-number { color: var(--paper); }
 
-        .persona-card.professional-card .persona-card-visual {
-            background: linear-gradient(135deg, rgba(58,134,255,0.08), rgba(123,47,247,0.06));
-            background-image:
-                radial-gradient(circle at 30% 50%, rgba(58,134,255,0.15) 0%, transparent 60%),
-                radial-gradient(circle at 70% 50%, rgba(123,47,247,0.1) 0%, transparent 60%);
-        }
+        .professional-card .persona-card-visual { background: var(--paper-alt); border-right: var(--border); }
+        .professional-card .big-number { color: var(--ink); }
 
         .persona-card-content {
             padding: 3rem;
@@ -534,17 +449,18 @@
         .persona-card-tag {
             display: inline-block;
             font-size: 0.65rem;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.2em;
             padding: 0.3rem 0.8rem;
-            border: 1px solid;
+            border: 2px solid var(--ink);
             margin-bottom: 1.25rem;
             width: fit-content;
         }
 
-        .founder-card .persona-card-tag { color: var(--neon-green); border-color: var(--neon-green); }
-        .creator-card .persona-card-tag { color: var(--hot-pink); border-color: var(--hot-pink); }
-        .professional-card .persona-card-tag { color: var(--electric-blue); border-color: var(--electric-blue); }
+        .founder-card .persona-card-tag { color: var(--red); border-color: var(--red); }
+        .creator-card .persona-card-tag { background: var(--ink); color: var(--paper); }
+        .professional-card .persona-card-tag { background: var(--paper-alt); color: var(--ink); }
 
         .persona-card-content h3 {
             font-family: 'Unbounded', sans-serif;
@@ -554,15 +470,7 @@
             margin-bottom: 1rem;
         }
 
-        .persona-card-content h3 em {
-            font-family: 'Instrument Serif', serif;
-            font-style: italic;
-            font-weight: 400;
-        }
-
-        .founder-card h3 em { color: var(--neon-green); }
-        .creator-card h3 em { color: var(--hot-pink); }
-        .professional-card h3 em { color: var(--electric-blue); }
+        .persona-card-content h3 span { color: var(--red); }
 
         .persona-card-content p {
             font-size: 0.85rem;
@@ -582,17 +490,17 @@
             text-decoration: none;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            transition: all 0.3s;
+            transition: all 0.15s;
             width: fit-content;
-            clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+            border: var(--border);
         }
 
-        .founder-card .persona-cta { background: var(--neon-green); color: var(--bg-dark); }
-        .founder-card .persona-cta:hover { background: var(--bright-yellow); transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--neon-green); }
-        .creator-card .persona-cta { background: var(--hot-pink); color: white; }
-        .creator-card .persona-cta:hover { background: var(--deep-purple); transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--hot-pink); }
-        .professional-card .persona-cta { background: var(--electric-blue); color: white; }
-        .professional-card .persona-cta:hover { background: var(--deep-purple); transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--electric-blue); }
+        .founder-card .persona-cta { background: var(--ink); color: var(--paper); }
+        .founder-card .persona-cta:hover { background: var(--red); color: var(--ink); transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--ink); }
+        .creator-card .persona-cta { background: var(--red); color: var(--paper); }
+        .creator-card .persona-cta:hover { background: var(--ink); color: var(--paper); transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--red); }
+        .professional-card .persona-cta { background: var(--paper); color: var(--ink); }
+        .professional-card .persona-cta:hover { background: var(--ink); color: var(--paper); transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--red); }
 
         .persona-card:nth-child(even) { direction: rtl; }
         .persona-card:nth-child(even) > * { direction: ltr; }
@@ -609,10 +517,11 @@
         .section-tag {
             display: inline-block;
             font-size: 0.7rem;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.25em;
-            color: var(--neon-green);
-            border: 1px solid var(--neon-green);
+            color: var(--red);
+            border: 2px solid var(--red);
             padding: 0.4rem 1rem;
             margin-bottom: 2rem;
         }
@@ -632,13 +541,6 @@
             margin-bottom: 1.5rem;
         }
 
-        .about-left h2 em {
-            font-family: 'Instrument Serif', serif;
-            font-style: italic;
-            font-weight: 400;
-            color: var(--bright-yellow);
-        }
-
         .about-left p {
             color: var(--text-muted);
             line-height: 1.8;
@@ -652,32 +554,25 @@
         }
 
         .about-card {
-            background: var(--bg-card);
-            border: 1px solid rgba(255,255,255,0.06);
+            background: var(--paper-alt);
+            border: var(--border);
             padding: 1.5rem;
             position: relative;
             overflow: hidden;
-            transition: all 0.4s;
+            transition: all 0.2s;
         }
 
         .about-card:hover {
-            border-color: var(--electric-blue);
             transform: translateX(8px);
         }
 
-        .about-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 3px; height: 100%;
-            background: var(--neon-green);
-            transform: scaleY(0);
-            transition: transform 0.4s;
+        .about-card-num {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: 0.9rem;
+            color: var(--red);
+            margin-bottom: 0.75rem;
         }
-
-        .about-card:hover::before { transform: scaleY(1); }
-
-        .about-card-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
 
         .about-card h3 {
             font-family: 'Unbounded', sans-serif;
@@ -696,14 +591,16 @@
            MANIFESTO TAPE
         ══════════════════════════════════════════ */
         .manifesto-tape {
-            background: var(--bright-yellow);
-            color: var(--bg-dark);
+            background: var(--ink);
+            color: var(--paper);
             padding: 1.5rem 2rem;
             transform: rotate(-1deg);
             margin: -1rem -2rem;
             overflow: hidden;
             position: relative;
             z-index: 10;
+            border-top: 3px solid var(--red);
+            border-bottom: 3px solid var(--red);
         }
 
         .manifesto-tape-inner {
@@ -721,157 +618,74 @@
             letter-spacing: 0.05em;
         }
 
+        .manifesto-tape .star { color: var(--red); }
+
         /* ══════════════════════════════════════════
-           SHOWCASE
+           SERVICES
         ══════════════════════════════════════════ */
-        .showcase {
+        .services {
             padding: 6rem 2rem 8rem;
-            position: relative;
-        }
-
-        .showcase-header {
             max-width: 1200px;
-            margin: 0 auto 3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: end;
+            margin: 0 auto;
         }
 
-        .showcase-header h2 {
+        .services-header {
+            margin-bottom: 3rem;
+        }
+
+        .services-header h2 {
             font-family: 'Unbounded', sans-serif;
             font-weight: 900;
             font-size: clamp(2rem, 4vw, 3rem);
         }
 
-        .showcase-header p { color: var(--text-muted); font-size: 0.8rem; }
+        .services-header p { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem; }
 
-        .showcase-grid {
-            max-width: 1200px;
-            margin: 0 auto;
+        .services-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 1.5rem;
         }
 
-        .showcase-card {
-            background: var(--bg-card);
-            border: 1px solid rgba(255,255,255,0.06);
-            overflow: hidden;
+        .service-card {
+            background: var(--paper-alt);
+            border: var(--border);
+            padding: 2.5rem;
             position: relative;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .showcase-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(255,255,255,0.15);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        .service-card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 10px 10px 0 var(--red);
         }
 
-        .showcase-card-preview {
-            aspect-ratio: 16/10;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .showcase-card-preview-inner {
-            width: 100%; height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            position: relative;
-        }
-
-        .preview-bastion {
-            background: linear-gradient(135deg, #0d0d1a, #1a1a3e);
-            background-image: radial-gradient(circle at 50% 50%, rgba(58,134,255,0.2) 0%, transparent 60%);
-        }
-        .preview-bastion::after { content: '🏰📊'; font-size: 3rem; position: absolute; }
-
-        .preview-dream {
-            background: linear-gradient(135deg, #1a0a2e, #2d1050);
-            background-image: radial-gradient(circle at 40% 50%, rgba(123,47,247,0.3) 0%, transparent 60%);
-        }
-        .preview-dream::after { content: '🌙✨'; font-size: 3.5rem; position: absolute; animation: floatEmoji 4s ease-in-out infinite; }
-
-        .preview-phonetic {
-            background: linear-gradient(135deg, #f6f1e9, #fffaf2);
-        }
-        .preview-phonetic::after { content: '🗣️📞'; font-size: 3.5rem; position: absolute; }
-
-        .preview-svg {
-            background: linear-gradient(135deg, #0a0a0f, #1a1a2e);
-            background-image:
-                radial-gradient(circle at 20% 80%, var(--neon-green) 0%, transparent 40%),
-                radial-gradient(circle at 80% 20%, var(--hot-pink) 0%, transparent 40%);
-            opacity: 0.9;
-        }
-        .preview-svg::after { content: '🖼️⚡'; font-size: 3rem; position: absolute; }
-
-        .preview-linkedin {
-            background: linear-gradient(135deg, #0077b5, #00a0dc);
-        }
-        .preview-linkedin::after { content: '💼🤡'; font-size: 3.5rem; position: absolute; }
-
-        .preview-babyeta {
-            background: linear-gradient(135deg, #fff8ee, #ffe1be);
-        }
-        .preview-babyeta::after { content: '👶⏳'; font-size: 3.5rem; position: absolute; animation: floatEmoji 4s ease-in-out infinite; }
-
-        .preview-convo {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            background-image:
-                repeating-linear-gradient(90deg, rgba(58,134,255,0.1) 0px, rgba(58,134,255,0.1) 1px, transparent 1px, transparent 40px),
-                repeating-linear-gradient(0deg, rgba(58,134,255,0.05) 0px, rgba(58,134,255,0.05) 1px, transparent 1px, transparent 30px);
-        }
-        .preview-convo::after { content: '💬📊'; font-size: 3rem; position: absolute; }
-
-        .preview-yours {
-            background: linear-gradient(135deg, #0a0a0f, #1a0030);
-            background-image:
-                radial-gradient(circle at 30% 50%, var(--deep-purple) 0%, transparent 50%),
-                radial-gradient(circle at 70% 50%, var(--neon-green) 0%, transparent 50%);
-        }
-        .preview-yours::after { content: '💡🚀'; font-size: 3rem; position: absolute; animation: float 6s ease-in-out infinite; }
-
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        .showcase-card-info { padding: 1.25rem; }
-
-        .showcase-card-info h3 {
+        .service-number {
             font-family: 'Unbounded', sans-serif;
-            font-size: 0.8rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
+            font-weight: 900;
+            font-size: 3rem;
+            color: var(--red);
+            line-height: 1;
+            margin-bottom: 1rem;
         }
 
-        .showcase-card-info .meta {
-            font-size: 0.7rem;
+        .service-card h3 {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: 1.3rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .service-card p {
+            font-size: 0.85rem;
             color: var(--text-muted);
-            display: flex;
-            justify-content: space-between;
+            line-height: 1.7;
         }
 
-        .showcase-card-info .author { color: var(--electric-blue); }
-
-        .showcase-card-link {
-            color: inherit;
-            text-decoration: none;
-            display: block;
-        }
-
-        .showcase-card-tag {
-            position: absolute;
-            top: 0.75rem; right: 0.75rem;
-            background: var(--bg-dark);
-            color: var(--neon-green);
-            font-size: 0.6rem;
-            padding: 0.25rem 0.6rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            z-index: 2;
-        }
+        .service-card.secondary { background: var(--ink); color: var(--paper); }
+        .service-card.secondary p { color: #cfccc2; }
+        .service-card.secondary .service-number { color: var(--red); }
 
         /* ══════════════════════════════════════════
            STATS HIGHLIGHT
@@ -887,19 +701,19 @@
             grid-template-columns: 1fr 1fr;
             gap: 4rem;
             align-items: center;
-            background: var(--bg-card);
-            border: 1px solid rgba(255,255,255,0.06);
+            background: var(--paper-alt);
+            border: var(--border);
             padding: 4rem;
             position: relative;
-            overflow: hidden;
+            box-shadow: var(--shadow);
         }
 
         .highlight-grid::before {
             content: '';
             position: absolute;
             top: 0; left: 0;
-            width: 4px; height: 100%;
-            background: linear-gradient(180deg, var(--neon-green), var(--electric-blue));
+            width: 6px; height: 100%;
+            background: var(--red);
         }
 
         .highlight-grid h2 {
@@ -910,12 +724,7 @@
             margin-bottom: 1rem;
         }
 
-        .highlight-grid h2 em {
-            font-family: 'Instrument Serif', serif;
-            font-style: italic;
-            font-weight: 400;
-            color: var(--bright-yellow);
-        }
+        .highlight-grid h2 span { color: var(--red); }
 
         .highlight-grid > div > p {
             color: var(--text-muted);
@@ -929,14 +738,12 @@
             gap: 2rem;
         }
 
-        .stat { }
-
         .stat-number {
             display: block;
             font-family: 'Unbounded', sans-serif;
             font-weight: 900;
             font-size: clamp(2rem, 4vw, 3rem);
-            color: var(--bright-yellow);
+            color: var(--red);
             line-height: 1;
         }
 
@@ -956,14 +763,7 @@
             padding: 8rem 2rem;
             text-align: center;
             position: relative;
-            overflow: hidden;
-        }
-
-        .cta-section::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(ellipse at center, rgba(58, 134, 255, 0.08) 0%, transparent 70%);
+            border-top: var(--border);
         }
 
         .cta-giant-text {
@@ -977,15 +777,13 @@
         }
 
         .cta-giant-text .stroke-text {
-            -webkit-text-stroke: 2px var(--text-primary);
+            -webkit-text-stroke: 2px var(--ink);
             -webkit-text-fill-color: transparent;
+            color: transparent;
         }
 
         .cta-giant-text .fill-text {
-            background: linear-gradient(135deg, var(--neon-green), var(--electric-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--red);
         }
 
         .cta-description {
@@ -1010,35 +808,33 @@
         .cta-form input {
             flex: 1;
             padding: 1rem 1.5rem;
-            background: var(--bg-card);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--paper);
+            border: var(--border);
             border-right: none;
-            color: var(--text-primary);
+            color: var(--ink);
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.85rem;
             outline: none;
-            transition: border-color 0.3s;
         }
 
         .cta-form input::placeholder { color: var(--text-muted); }
-        .cta-form input:focus { border-color: var(--neon-green); }
 
         .cta-form button {
             padding: 1rem 2rem;
-            background: var(--neon-green);
-            color: var(--bg-dark);
+            background: var(--ink);
+            color: var(--paper);
             font-family: 'Unbounded', sans-serif;
             font-weight: 700;
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            border: none;
+            border: var(--border);
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.15s;
             white-space: nowrap;
         }
 
-        .cta-form button:hover { background: var(--bright-yellow); }
+        .cta-form button:hover { background: var(--red); color: var(--ink); }
 
         .cta-note {
             font-size: 0.7rem;
@@ -1062,7 +858,7 @@
             grid-template-columns: 2fr 1fr 1fr 1fr;
             gap: 3rem;
             padding-bottom: 3rem;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
+            border-bottom: var(--border);
         }
 
         .footer-brand {
@@ -1096,13 +892,14 @@
         }
 
         .footer-col a {
-            color: var(--text-primary);
+            color: var(--ink);
             text-decoration: none;
             font-size: 0.8rem;
-            transition: color 0.2s;
+            font-weight: 700;
+            transition: color 0.15s;
         }
 
-        .footer-col a:hover { color: var(--neon-green); }
+        .footer-col a:hover { color: var(--red); }
 
         .footer-bottom {
             display: flex;
@@ -1113,21 +910,7 @@
             color: var(--text-muted);
         }
 
-        .footer-bottom a { color: var(--hot-pink); text-decoration: none; }
-
-        /* ══════════════════════════════════════════
-           CURSOR TRAIL
-        ══════════════════════════════════════════ */
-        .cursor-dot {
-            position: fixed;
-            width: 8px; height: 8px;
-            background: var(--neon-green);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 99999;
-            mix-blend-mode: screen;
-            transition: opacity 0.3s;
-        }
+        .footer-bottom a { color: var(--red); text-decoration: none; }
 
         /* ══════════════════════════════════════════
            MOBILE MENU
@@ -1143,10 +926,10 @@
 
         .nav-hamburger span {
             display: block;
-            width: 24px; height: 2px;
-            background: white;
+            width: 24px; height: 3px;
+            background: var(--ink);
             margin: 5px 0;
-            transition: all 0.3s;
+            transition: all 0.2s;
         }
 
         .nav-hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
@@ -1157,7 +940,7 @@
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(10, 10, 15, 0.97);
+            background: var(--paper);
             z-index: 999;
             flex-direction: column;
             justify-content: center;
@@ -1168,23 +951,23 @@
         .mobile-menu.open { display: flex; }
 
         .mobile-menu a {
-            color: var(--text-primary);
+            color: var(--ink);
             text-decoration: none;
             font-family: 'Unbounded', sans-serif;
             font-size: 1.5rem;
             font-weight: 700;
-            transition: color 0.2s;
+            transition: color 0.15s;
         }
 
-        .mobile-menu a:hover { color: var(--neon-green); }
+        .mobile-menu a:hover { color: var(--red); }
 
         /* ══════════════════════════════════════════
            SCROLL REVEAL
         ══════════════════════════════════════════ */
         .reveal {
             opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(30px);
+            transition: all 0.5s ease-out;
         }
 
         .reveal.visible {
@@ -1195,8 +978,8 @@
         .skip-link {
             position: absolute;
             top: -100%; left: 0;
-            background: var(--neon-green);
-            color: var(--bg-dark);
+            background: var(--ink);
+            color: var(--paper);
             padding: 0.5rem 1rem;
             z-index: 10000;
             font-weight: 700;
@@ -1213,19 +996,19 @@
             .nav-links { display: none; }
 
             .about-grid { grid-template-columns: 1fr; gap: 2rem; }
-            .showcase-grid { grid-template-columns: 1fr; }
+            .services-grid { grid-template-columns: 1fr; }
             .highlight-grid { grid-template-columns: 1fr; padding: 2rem; }
             .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
 
             .persona-card { grid-template-columns: 1fr; }
             .persona-card:nth-child(even) { direction: ltr; }
-            .persona-card-visual { min-height: 200px; }
+            .persona-card-visual { min-height: 160px; border-right: none !important; border-bottom: var(--border); }
             .persona-card-content { padding: 2rem; }
 
             .hero-stats { gap: 1.5rem; }
 
             .cta-form { flex-direction: column; }
-            .cta-form input { border-right: 1px solid rgba(255,255,255,0.1); border-bottom: none; }
+            .cta-form input { border-right: var(--border); border-bottom: none; }
 
             .manifesto-tape { transform: rotate(-0.5deg); }
         }
@@ -1237,18 +1020,18 @@
     <!-- TICKER -->
     <div class="ticker">
         <div class="ticker-inner">
-            <span>Now enrolling</span>
-            <span>Build your first product this weekend</span>
-            <span>No CS degree required</span>
-            <span>AI is your co-founder</span>
-            <span>Ship without a dev team</span>
-            <span>Ideas become products here</span>
-            <span>Now enrolling</span>
-            <span>Build your first product this weekend</span>
-            <span>No CS degree required</span>
-            <span>AI is your co-founder</span>
-            <span>Ship without a dev team</span>
-            <span>Ideas become products here</span>
+            <span>Now booking Q4 builds</span>
+            <span>MVP to launch in weeks, not quarters</span>
+            <span>AI-native product studio</span>
+            <span>No bloated dev teams</span>
+            <span>Build fast. Ship real.</span>
+            <span>Enablement available for your team</span>
+            <span>Now booking Q4 builds</span>
+            <span>MVP to launch in weeks, not quarters</span>
+            <span>AI-native product studio</span>
+            <span>No bloated dev teams</span>
+            <span>Build fast. Ship real.</span>
+            <span>Enablement available for your team</span>
         </div>
     </div>
 
@@ -1256,10 +1039,10 @@
     <nav>
         <a href="/" class="nav-logo">Nomai<span class="blink">_</span></a>
         <ul class="nav-links">
-            <li><a href="#how">How it works</a></li>
-            <li><a href="#about">Curriculum</a></li>
-            <li><a href="#showcase">Builds</a></li>
-            <li><a href="#join">Join</a></li>
+            <li><a href="#engagements">Work</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
         </ul>
         <button class="nav-hamburger" aria-label="Toggle menu" onclick="toggleMobileMenu()">
             <span></span><span></span><span></span>
@@ -1267,129 +1050,116 @@
     </nav>
 
     <div class="mobile-menu" id="mobileMenu">
-        <a href="#how" onclick="toggleMobileMenu()">How it works</a>
-        <a href="#about" onclick="toggleMobileMenu()">Curriculum</a>
-        <a href="#showcase" onclick="toggleMobileMenu()">Builds</a>
-        <a href="#join" onclick="toggleMobileMenu()">Join</a>
+        <a href="#engagements" onclick="toggleMobileMenu()">Work</a>
+        <a href="#services" onclick="toggleMobileMenu()">Services</a>
+        <a href="#about" onclick="toggleMobileMenu()">About</a>
+        <a href="#contact" onclick="toggleMobileMenu()">Contact</a>
     </div>
 
     <!-- HERO -->
     <section class="hero" id="main-content">
-        <div class="hero-bg-grid"></div>
-        <div class="hero-blob hero-blob-1"></div>
-        <div class="hero-blob hero-blob-2"></div>
-        <div class="hero-blob hero-blob-3"></div>
-
-        <div class="floating-emoji" style="top:15%; left:8%; animation-delay:-1s;">💡</div>
-        <div class="floating-emoji" style="top:25%; right:12%; animation-delay:-3s;">🚀</div>
-        <div class="floating-emoji" style="bottom:20%; left:15%; animation-delay:-2s;">⚡</div>
-        <div class="floating-emoji" style="bottom:30%; right:8%; animation-delay:-4s;">🤖</div>
-        <div class="floating-emoji" style="top:60%; left:5%; animation-delay:-5s;">✨</div>
-
-        <div class="hero-pretitle">// The school for non-technical founders and business owners</div>
+        <div class="hero-pretitle">// Product Development Agency</div>
 
         <h1 class="hero-title">
-            <span class="line-1">Build your own</span>
-            <span class="line-2">products with AI.</span>
-            <span class="line-3">No code required.</span>
+            <span class="line-1">We build your</span>
+            <span class="line-2">product</span>
+            <span class="line-3">with AI.</span>
         </h1>
 
         <p class="hero-sub">
-            Nomai teaches <strong>non-technical founders and business owners</strong> how to build real products using AI — no coding, no dev team, no technical co-founder required.
+            Nomai is a product development agency. We design, build, and ship real software fast using <strong>AI-native workflows</strong> — then train your team to keep building without us.
         </p>
 
         <div class="hero-ctas">
-            <a href="#join" class="btn-primary">Start building →</a>
-            <a href="#showcase" class="btn-secondary">See what's been built ↓</a>
+            <a href="#contact" class="btn-primary">Start a project →</a>
+            <a href="#services" class="btn-secondary">See our services ↓</a>
         </div>
 
         <div class="hero-stats">
             <div class="hero-stat">
-                <div class="hero-stat-num">48h</div>
-                <div class="hero-stat-label">To first product</div>
+                <div class="hero-stat-num">2-4wk</div>
+                <div class="hero-stat-label">To first shippable version</div>
             </div>
             <div class="hero-stat">
                 <div class="hero-stat-num">10x</div>
-                <div class="hero-stat-label">Faster than hiring a dev</div>
+                <div class="hero-stat-label">Faster than a dev shop</div>
             </div>
             <div class="hero-stat">
-                <div class="hero-stat-num">0</div>
-                <div class="hero-stat-label">Lines of code written</div>
+                <div class="hero-stat-num">1</div>
+                <div class="hero-stat-label">Team: design, build, ship</div>
             </div>
         </div>
     </section>
 
     <!-- HORIZONTAL SCROLLER -->
     <section class="scroller-section">
-        <div class="scroller-label">What you learn ↓</div>
+        <div class="scroller-label">What we build ↓</div>
         <div class="scroller-track">
-            <div class="scroller-item">Prompt engineering <span class="accent">/</span></div>
-            <div class="scroller-item">AI workflows <span class="accent">/</span></div>
-            <div class="scroller-item">No-code building <span class="accent">/</span></div>
-            <div class="scroller-item">Ship in a weekend <span class="accent">/</span></div>
-            <div class="scroller-item">Idea to product <span class="accent">/</span></div>
-            <div class="scroller-item">AI tooling <span class="accent">/</span></div>
-            <div class="scroller-item">Product validation <span class="accent">/</span></div>
-            <div class="scroller-item">Launch without code <span class="accent">/</span></div>
-            <div class="scroller-item">Prompt engineering <span class="accent">/</span></div>
-            <div class="scroller-item">AI workflows <span class="accent">/</span></div>
-            <div class="scroller-item">No-code building <span class="accent">/</span></div>
-            <div class="scroller-item">Ship in a weekend <span class="accent">/</span></div>
-            <div class="scroller-item">Idea to product <span class="accent">/</span></div>
-            <div class="scroller-item">AI tooling <span class="accent">/</span></div>
-            <div class="scroller-item">Product validation <span class="accent">/</span></div>
-            <div class="scroller-item">Launch without code <span class="accent">/</span></div>
+            <div class="scroller-item">MVPs <span class="accent">/</span></div>
+            <div class="scroller-item">Internal tools <span class="accent">/</span></div>
+            <div class="scroller-item">AI agents <span class="accent">/</span></div>
+            <div class="scroller-item">Automations <span class="accent">/</span></div>
+            <div class="scroller-item">Dashboards <span class="accent">/</span></div>
+            <div class="scroller-item">Client portals <span class="accent">/</span></div>
+            <div class="scroller-item">Workflow apps <span class="accent">/</span></div>
+            <div class="scroller-item">MVPs <span class="accent">/</span></div>
+            <div class="scroller-item">Internal tools <span class="accent">/</span></div>
+            <div class="scroller-item">AI agents <span class="accent">/</span></div>
+            <div class="scroller-item">Automations <span class="accent">/</span></div>
+            <div class="scroller-item">Dashboards <span class="accent">/</span></div>
+            <div class="scroller-item">Client portals <span class="accent">/</span></div>
+            <div class="scroller-item">Workflow apps <span class="accent">/</span></div>
         </div>
     </section>
 
     <!-- BADGE -->
     <section class="vibecoded-section">
         <div class="vibecoded-inner reveal">
-            <span class="vibecoded-question">Did we build this with AI?</span>
-            <span class="vibecoded-answer">Every single line.</span>
+            <span class="vibecoded-question">Do we practice what we preach?</span>
+            <span class="vibecoded-answer">Every <span class="hl">single line.</span></span>
         </div>
     </section>
 
-    <!-- THREE PATHS (HOW IT WORKS) -->
-    <section class="persona-sections" id="how">
+    <!-- THREE ENGAGEMENTS -->
+    <section class="persona-sections" id="engagements">
         <div class="persona-sections-header reveal">
-            <h2>Three paths to your first <em>product.</em></h2>
+            <h2>Three ways to <span>work with us.</span></h2>
             <p>Pick your starting point. Leave with something live.</p>
         </div>
 
         <div class="persona-card founder-card reveal">
             <div class="persona-card-visual">
-                <span class="big-emoji">⚡</span>
+                <span class="big-number">01</span>
             </div>
             <div class="persona-card-content">
-                <div class="persona-card-tag">Build your startup</div>
-                <h3>For <em>Founders</em></h3>
-                <p>You have an idea. You need to build it. We teach you the exact AI workflow to go from concept to working product — no technical co-founder, no agency, no waiting. Idea to launch in a weekend.</p>
-                <a href="#join" class="persona-cta">Start the founder path &rarr;</a>
+                <div class="persona-card-tag">Build your product</div>
+                <h3>For <span>Founders</span></h3>
+                <p>You have an idea and need it built. We design and ship your MVP using AI-native workflows — no technical co-founder, no agency bloat, no six-month timeline. Live product in weeks.</p>
+                <a href="#contact" class="persona-cta">Start a build &rarr;</a>
             </div>
         </div>
 
         <div class="persona-card creator-card reveal">
             <div class="persona-card-visual">
-                <span class="big-emoji">🎨</span>
+                <span class="big-number">02</span>
             </div>
             <div class="persona-card-content">
-                <div class="persona-card-tag">Grow your business</div>
-                <h3>For <em>Business Owners</em></h3>
-                <p>Build the tools, systems, and digital products your business actually needs. Cut the agency fees. Stop waiting on developers. Turn your domain expertise into AI-powered products that work for you.</p>
-                <a href="#join" class="persona-cta">Start the owner path &rarr;</a>
+                <div class="persona-card-tag">Automate your operations</div>
+                <h3>For <span>Businesses</span></h3>
+                <p>We build the internal tools, dashboards, and automations your business actually needs. Cut the custom-dev quote. Cut the timeline. Get software that fits how you actually work.</p>
+                <a href="#contact" class="persona-cta">Start a project &rarr;</a>
             </div>
         </div>
 
         <div class="persona-card professional-card reveal">
             <div class="persona-card-visual">
-                <span class="big-emoji">🚀</span>
+                <span class="big-number">03</span>
             </div>
             <div class="persona-card-content">
-                <div class="persona-card-tag">Automate your operations</div>
-                <h3>For <em>Operators</em></h3>
-                <p>Stop waiting for the dev team. Build internal tools, automations, and client-facing products — and deliver them in days, not quarters. AI makes you the most valuable person in the room.</p>
-                <a href="#join" class="persona-cta">Start the operator path &rarr;</a>
+                <div class="persona-card-tag">Train your team</div>
+                <h3>For <span>Teams</span></h3>
+                <p>Want to keep building in-house after we ship? We train your team on the exact AI workflows we use — prompting, tooling, and process — so you can keep shipping without us.</p>
+                <a href="#contact" class="persona-cta">Ask about enablement &rarr;</a>
             </div>
         </div>
     </section>
@@ -1399,33 +1169,33 @@
         <div class="section-tag reveal">// What is Nomai</div>
         <div class="about-grid">
             <div class="about-left reveal">
-                <h2>Not your average<br><em>coding bootcamp.</em></h2>
+                <h2>Not your average<br>dev shop.</h2>
                 <p>
-                    Nomai is a school for people with ideas but without technical skills. We don't teach you to code. We teach you to <em>build</em> — using AI as your engineering team, designer, and product manager.
+                    Nomai is a product development agency built around AI-native workflows. We don't staff a slow committee of specialists — we use AI as our engineering team, designer, and PM, and pass the speed on to you.
                     <br><br>
-                    Every week, students ship real products. Not toy projects. Not tutorials. Actual things that work and live on the internet. You're next.
+                    Every engagement ships a real, working product. Not a deck. Not a prototype that dies in a drawer. Software that's live on the internet, built for actual use.
                 </p>
             </div>
             <div class="about-cards">
                 <div class="about-card reveal">
-                    <div class="about-card-icon">⚡</div>
-                    <h3>Weekly Build Challenges</h3>
-                    <p>A new product prompt every week. Build something real in days, not months. No prior experience needed — just an idea and the will to ship.</p>
+                    <div class="about-card-num">01.</div>
+                    <h3>Fixed-Sprint Builds</h3>
+                    <p>A scoped build, a fixed timeline. You know what you're getting and when it ships — no open-ended retainers.</p>
                 </div>
                 <div class="about-card reveal">
-                    <div class="about-card-icon">🧠</div>
-                    <h3>AI Workflow Mastery</h3>
-                    <p>From prompting to deploying. Learn the exact workflows our students use to build products that people actually pay for and use.</p>
+                    <div class="about-card-num">02.</div>
+                    <h3>AI-Native Workflow</h3>
+                    <p>From spec to deploy, we use the same AI-accelerated process for every engagement — the reason we move 10x faster than a traditional shop.</p>
                 </div>
                 <div class="about-card reveal">
-                    <div class="about-card-icon">👾</div>
-                    <h3>Community of Builders</h3>
-                    <p>Non-technical founders and business owners who share wins, ask questions, and build together. No gatekeeping. No jargon.</p>
+                    <div class="about-card-num">03.</div>
+                    <h3>Direct Access</h3>
+                    <p>No account managers, no hand-offs. You work directly with the people building your product.</p>
                 </div>
                 <div class="about-card reveal">
-                    <div class="about-card-icon">🔧</div>
-                    <h3>Hands-On Workshops</h3>
-                    <p>Live build sessions where you work on your own idea in real time. Come with a concept, leave with a working product.</p>
+                    <div class="about-card-num">04.</div>
+                    <h3>Built to Hand Off</h3>
+                    <p>Clean, documented, and yours. We build so your team — or ours — can keep extending it after launch.</p>
                 </div>
             </div>
         </div>
@@ -1434,135 +1204,53 @@
     <!-- MANIFESTO TAPE -->
     <div class="manifesto-tape">
         <div class="manifesto-tape-inner">
-            <span>Ideas are the product ★</span>
-            <span>AI is your co-founder ★</span>
-            <span>Ship before you're ready ★</span>
-            <span>Technical skills are optional ★</span>
-            <span>Build, don't wait ★</span>
-            <span>Your idea ships today ★</span>
-            <span>Ideas are the product ★</span>
-            <span>AI is your co-founder ★</span>
-            <span>Ship before you're ready ★</span>
-            <span>Technical skills are optional ★</span>
-            <span>Build, don't wait ★</span>
-            <span>Your idea ships today ★</span>
+            <span>Ideas are the product <span class="star">★</span></span>
+            <span>AI is the build team <span class="star">★</span></span>
+            <span>Ship before it's perfect <span class="star">★</span></span>
+            <span>Speed is the moat <span class="star">★</span></span>
+            <span>Build, don't wait <span class="star">★</span></span>
+            <span>Your product ships this quarter <span class="star">★</span></span>
+            <span>Ideas are the product <span class="star">★</span></span>
+            <span>AI is the build team <span class="star">★</span></span>
+            <span>Ship before it's perfect <span class="star">★</span></span>
+            <span>Speed is the moat <span class="star">★</span></span>
+            <span>Build, don't wait <span class="star">★</span></span>
+            <span>Your product ships this quarter <span class="star">★</span></span>
         </div>
     </div>
 
-    <!-- SHOWCASE -->
-    <section class="showcase" id="showcase">
-        <div class="showcase-header reveal">
-            <div>
-                <div class="section-tag">// Built with AI</div>
-                <h2>What's possible</h2>
-            </div>
-            <p>Every product below was built using AI tools — no engineers.</p>
+    <!-- SERVICES -->
+    <section class="services" id="services">
+        <div class="services-header reveal">
+            <div class="section-tag">// What we do</div>
+            <h2>Services</h2>
+            <p>Four ways we help you ship.</p>
         </div>
 
-        <div class="showcase-grid">
-            <a href="https://bastion.ai201.site" target="_blank" rel="noopener noreferrer" class="showcase-card showcase-card-link reveal">
-                <div class="showcase-card-tag">Venture ops</div>
-                <div class="showcase-card-preview">
-                    <div class="showcase-card-preview-inner preview-bastion"></div>
-                </div>
-                <div class="showcase-card-info">
-                    <h3>Bastion Ventures</h3>
-                    <div class="meta">
-                        <span class="author">Signal-driven venture scouting portal</span>
-                    </div>
-                </div>
-            </a>
+        <div class="services-grid">
+            <div class="service-card reveal">
+                <div class="service-number">01</div>
+                <h3>Product Design &amp; Build</h3>
+                <p>From idea to live product. We handle spec, design, and build end-to-end using AI-native workflows — MVPs, web apps, and client-facing tools.</p>
+            </div>
 
-            <a href="https://mihaidreamseer.ai201.site" target="_blank" rel="noopener noreferrer" class="showcase-card showcase-card-link reveal">
-                <div class="showcase-card-tag">Creative tool</div>
-                <div class="showcase-card-preview">
-                    <div class="showcase-card-preview-inner preview-dream"></div>
-                </div>
-                <div class="showcase-card-info">
-                    <h3>Mihaidreamseer</h3>
-                    <div class="meta">
-                        <span class="author">AI-powered dream analysis engine</span>
-                    </div>
-                </div>
-            </a>
+            <div class="service-card reveal">
+                <div class="service-number">02</div>
+                <h3>AI Integration</h3>
+                <p>Bring AI into your existing product or workflow — copilots, agents, automation, and AI features shipped straight into your stack.</p>
+            </div>
 
-            <a href="https://phoneticalalphabet.ai201.site" target="_blank" rel="noopener noreferrer" class="showcase-card showcase-card-link reveal">
-                <div class="showcase-card-tag">Productivity</div>
-                <div class="showcase-card-preview">
-                    <div class="showcase-card-preview-inner preview-phonetic"></div>
-                </div>
-                <div class="showcase-card-info">
-                    <h3>Phone Spelling Helper</h3>
-                    <div class="meta">
-                        <span class="author">NATO phonetic alphabet made easy</span>
-                    </div>
-                </div>
-            </a>
+            <div class="service-card reveal">
+                <div class="service-number">03</div>
+                <h3>Automation &amp; Internal Tools</h3>
+                <p>Replace spreadsheets and manual process with real internal tools — dashboards, ops tooling, and workflow automation.</p>
+            </div>
 
-            <a href="https://svgtoimg.ai201.site" target="_blank" rel="noopener noreferrer" class="showcase-card showcase-card-link reveal">
-                <div class="showcase-card-tag">Utility</div>
-                <div class="showcase-card-preview">
-                    <div class="showcase-card-preview-inner preview-svg"></div>
-                </div>
-                <div class="showcase-card-info">
-                    <h3>SVG to Image</h3>
-                    <div class="meta">
-                        <span class="author">Batch converter for asset exports</span>
-                    </div>
-                </div>
-            </a>
-
-            <a href="https://linkedinemojis.ai201.site" target="_blank" rel="noopener noreferrer" class="showcase-card showcase-card-link reveal">
-                <div class="showcase-card-tag">Unhinged</div>
-                <div class="showcase-card-preview">
-                    <div class="showcase-card-preview-inner preview-linkedin"></div>
-                </div>
-                <div class="showcase-card-info">
-                    <h3>LinkedIn Emoji Decoder</h3>
-                    <div class="meta">
-                        <span class="author">Decode corporate emoji overuse</span>
-                    </div>
-                </div>
-            </a>
-
-            <a href="https://babyeta.ai201.site" target="_blank" rel="noopener noreferrer" class="showcase-card showcase-card-link reveal">
-                <div class="showcase-card-tag">Lifestyle</div>
-                <div class="showcase-card-preview">
-                    <div class="showcase-card-preview-inner preview-babyeta"></div>
-                </div>
-                <div class="showcase-card-info">
-                    <h3>Baby ETA Countdown</h3>
-                    <div class="meta">
-                        <span class="author">The most important countdown of your life</span>
-                    </div>
-                </div>
-            </a>
-
-            <a href="https://convoanalysis.ai201.site" target="_blank" rel="noopener noreferrer" class="showcase-card showcase-card-link reveal">
-                <div class="showcase-card-tag">Analytics</div>
-                <div class="showcase-card-preview">
-                    <div class="showcase-card-preview-inner preview-convo"></div>
-                </div>
-                <div class="showcase-card-info">
-                    <h3>Chat Timeline Visualiser</h3>
-                    <div class="meta">
-                        <span class="author">Visualise your chat history as a timeline</span>
-                    </div>
-                </div>
-            </a>
-
-            <a href="#join" class="showcase-card showcase-card-link reveal">
-                <div class="showcase-card-tag">Your idea</div>
-                <div class="showcase-card-preview">
-                    <div class="showcase-card-preview-inner preview-yours"></div>
-                </div>
-                <div class="showcase-card-info">
-                    <h3>What will you build?</h3>
-                    <div class="meta">
-                        <span class="author">Join Nomai and find out</span>
-                    </div>
-                </div>
-            </a>
+            <div class="service-card secondary reveal">
+                <div class="service-number">04</div>
+                <h3>Team Enablement</h3>
+                <p>We train your team on the AI workflows we use to build — prompting, tooling, and process — so you can keep shipping after we're gone.</p>
+            </div>
         </div>
     </section>
 
@@ -1570,40 +1258,40 @@
     <section class="highlight">
         <div class="highlight-grid reveal">
             <div>
-                <h2>From idea to launched product — <em>faster than you think.</em></h2>
-                <p>Our students ship their first real product within 48 hours of starting. No prior technical knowledge. No excuses. Just the right AI workflows and the confidence to ship.</p>
+                <h2>From brief to launched product — <span>faster than you think.</span></h2>
+                <p>Most engagements ship a first live version within weeks, not quarters. No bloated teams. No committee sign-off. Just the right AI workflow and people who ship.</p>
             </div>
             <div class="stats">
                 <div class="stat">
-                    <span class="stat-number">1 wknd</span>
-                    <span class="stat-label">To your first live product</span>
+                    <span class="stat-number">2-4wk</span>
+                    <span class="stat-label">To first live version</span>
                 </div>
                 <div class="stat">
                     <span class="stat-number">10x</span>
-                    <span class="stat-label">Faster than hiring a dev</span>
+                    <span class="stat-label">Faster than a dev shop</span>
                 </div>
                 <div class="stat">
-                    <span class="stat-number">0</span>
-                    <span class="stat-label">Lines of code written</span>
+                    <span class="stat-number">1 team</span>
+                    <span class="stat-label">Design, build &amp; ship</span>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- CTA -->
-    <section class="cta-section" id="join">
+    <section class="cta-section" id="contact">
         <div class="cta-giant-text reveal">
             <span class="stroke-text">Stop</span> <span class="fill-text">waiting.</span><br>
             <span class="fill-text">Start</span> <span class="stroke-text">building.</span>
         </div>
         <p class="cta-description reveal">
-            Get in touch and we'll send you the first module free — including the exact AI workflow we use to go from idea to live product in 48 hours.
+            Tell us what you're building. We'll get back to you within a day to talk scope, timeline, and whether we're a fit.
         </p>
         <form class="cta-form reveal" onsubmit="handleSubmit(event)">
             <input type="email" placeholder="your@email.com" required>
-            <button type="submit">Get started</button>
+            <button type="submit">Get in touch</button>
         </form>
-        <p class="cta-note reveal">No spam. Weekly build prompts and community resources. Unsubscribe anytime.</p>
+        <p class="cta-note reveal">No spam. We only use this to reply about your project.</p>
     </section>
 
     <!-- FOOTER -->
@@ -1611,15 +1299,15 @@
         <div class="footer-top">
             <div>
                 <div class="footer-brand">Nomai</div>
-                <p class="footer-brand-desc">The AI school for non-technical builders. We teach founders and business owners to ship real products using AI &mdash; no coding required.</p>
+                <p class="footer-brand-desc">A product development agency that builds real software fast using AI-native workflows — for founders, businesses, and teams who'd rather ship than wait.</p>
             </div>
             <div class="footer-col">
-                <h4>School</h4>
+                <h4>Agency</h4>
                 <ul>
-                    <li><a href="#how">How it works</a></li>
-                    <li><a href="#about">Curriculum</a></li>
-                    <li><a href="#showcase">Builds</a></li>
-                    <li><a href="#join">Join</a></li>
+                    <li><a href="#engagements">Work</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
                 </ul>
             </div>
             <div class="footer-col">
@@ -1638,7 +1326,7 @@
         </div>
         <div class="footer-bottom">
             <span>&copy; 2026 Nomai &mdash; Built with <a href="#">AI</a> in London</span>
-            <span>for builders without limits</span>
+            <span>for people who'd rather ship than wait</span>
         </div>
     </footer>
 
@@ -1664,55 +1352,17 @@
 
         revealElements.forEach(el => revealObserver.observe(el));
 
-        // CURSOR TRAIL
-        const trail = [];
-        const trailLength = 8;
-
-        for (let i = 0; i < trailLength; i++) {
-            const dot = document.createElement('div');
-            dot.className = 'cursor-dot';
-            dot.style.width = (8 - i) + 'px';
-            dot.style.height = (8 - i) + 'px';
-            dot.style.opacity = (1 - i / trailLength) * 0.6;
-            dot.style.borderRadius = '50%';
-            dot.style.position = 'fixed';
-            dot.style.pointerEvents = 'none';
-            dot.style.zIndex = '99999';
-            dot.style.background = `hsl(${140 + i * 20}, 100%, 50%)`;
-            dot.style.mixBlendMode = 'screen';
-            dot.style.transition = `transform ${0.1 + i * 0.03}s ease`;
-            document.body.appendChild(dot);
-            trail.push({ el: dot, x: 0, y: 0 });
-        }
-
-        document.addEventListener('mousemove', (e) => {
-            trail[0].x = e.clientX;
-            trail[0].y = e.clientY;
-        });
-
-        function animateTrail() {
-            for (let i = trail.length - 1; i > 0; i--) {
-                trail[i].x += (trail[i-1].x - trail[i].x) * 0.35;
-                trail[i].y += (trail[i-1].y - trail[i].y) * 0.35;
-            }
-            trail.forEach(dot => {
-                dot.el.style.transform = `translate(${dot.x - 4}px, ${dot.y - 4}px)`;
-            });
-            requestAnimationFrame(animateTrail);
-        }
-        animateTrail();
-
         // FORM HANDLER
         function handleSubmit(e) {
             e.preventDefault();
             const btn = e.target.querySelector('button');
             const input = e.target.querySelector('input');
-            btn.textContent = '🎉 You\'re in!';
-            btn.style.background = 'var(--hot-pink)';
-            btn.style.color = 'white';
+            btn.textContent = "Got it. We'll be in touch.";
+            btn.style.background = 'var(--red)';
+            btn.style.color = 'var(--ink)';
             input.value = '';
             setTimeout(() => {
-                btn.textContent = 'Get started';
+                btn.textContent = 'Get in touch';
                 btn.style.background = '';
                 btn.style.color = '';
             }, 3000);
