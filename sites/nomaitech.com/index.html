@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nomai — Product Development Agency. We Build With AI.</title>
-    <meta name="description" content="Nomai is a product development agency that designs and builds real products fast using AI-native workflows — and trains teams to do the same.">
+    <title>Nomai — Product Development Agency</title>
+    <meta name="description" content="Nomai is a small product development agency. We design and build products with AI — MVPs, internal tools, automation, and AI features.">
     <link rel="canonical" href="https://nomaitech.com/">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Nomai — Product Development Agency. We Build With AI.">
-    <meta property="og:description" content="Nomai is a product development agency that designs and builds real products fast using AI-native workflows — and trains teams to do the same.">
+    <meta property="og:title" content="Nomai — Product Development Agency">
+    <meta property="og:description" content="Nomai is a small product development agency. We design and build products with AI.">
     <meta property="og:url" content="https://nomaitech.com/">
     <meta property="og:site_name" content="Nomai">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Nomai — Product Development Agency. We Build With AI.">
-    <meta name="twitter:description" content="Nomai is a product development agency that designs and builds real products fast using AI-native workflows — and trains teams to do the same.">
+    <meta name="twitter:title" content="Nomai — Product Development Agency">
+    <meta name="twitter:description" content="Nomai is a small product development agency. We design and build products with AI.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -23,1350 +23,316 @@
             --paper-alt: #e6e0cd;
             --ink: #111111;
             --red: #ff3300;
-            --text-muted: #55524a;
-            --border: 3px solid var(--ink);
-            --shadow: 6px 6px 0 var(--ink);
+            --muted: #55524a;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
 
         body {
             background: var(--paper);
             color: var(--ink);
             font-family: 'JetBrains Mono', monospace;
-            overflow-x: hidden;
-            cursor: crosshair;
         }
+
+        a { color: inherit; }
 
         ::selection { background: var(--red); color: var(--paper); }
 
-        /* ══════════════════════════════════════════
-           TICKER
-        ══════════════════════════════════════════ */
-        .ticker {
-            background: var(--ink);
-            color: var(--paper);
-            padding: 8px 0;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            overflow: hidden;
-            white-space: nowrap;
-            position: relative;
-            z-index: 100;
-            border-bottom: var(--border);
-        }
-
-        .ticker-inner {
-            display: inline-block;
-            animation: ticker 25s linear infinite;
-        }
-
-        .ticker-inner span { padding: 0 2rem; }
-        .ticker-inner span::after { content: '✦'; padding-left: 2rem; color: var(--red); }
-
-        @keyframes ticker {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        /* ══════════════════════════════════════════
-           NAV
-        ══════════════════════════════════════════ */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0; right: 0;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.1rem 2rem;
-            background: var(--paper);
-            border-bottom: var(--border);
-        }
-
-        .nav-logo {
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 900;
-            font-size: 1.4rem;
-            color: var(--ink);
-            text-decoration: none;
-            letter-spacing: -0.02em;
-        }
-
-        .nav-logo .blink { color: var(--red); animation: blink 1s step-end infinite; }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: var(--ink);
-            text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            transition: color 0.15s;
-        }
-
-        .nav-links a:hover {
-            color: var(--red);
-            text-decoration: underline;
-        }
-
-        /* ══════════════════════════════════════════
-           HERO
-        ══════════════════════════════════════════ */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 9rem 2rem 4rem;
-            position: relative;
-            overflow: hidden;
-            background-image:
-                linear-gradient(rgba(17,17,17,0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(17,17,17,0.05) 1px, transparent 1px);
-            background-size: 48px 48px;
-        }
-
-        .hero-pretitle {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--red);
-            text-transform: uppercase;
-            letter-spacing: 0.3em;
-            margin-bottom: 1.5rem;
-            position: relative;
-            z-index: 2;
-            animation: fadeInUp 0.6s ease-out 0.1s both;
-        }
-
-        .hero-title {
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 900;
-            font-size: clamp(3rem, 10vw, 7.5rem);
-            line-height: 0.98;
-            letter-spacing: -0.03em;
-            position: relative;
-            z-index: 2;
-            animation: fadeInUp 0.6s ease-out 0.2s both;
-        }
-
-        .hero-title .line-1,
-        .hero-title .line-3 { display: block; color: var(--ink); }
-
-        .hero-title .line-2 {
-            display: inline-block;
-            background: var(--ink);
-            color: var(--paper);
-            padding: 0 0.25em;
-            margin: 0.1em 0;
-        }
-
-        .hero-sub {
-            font-size: clamp(0.9rem, 2vw, 1.1rem);
-            color: var(--text-muted);
-            max-width: 560px;
-            margin: 2rem auto;
-            line-height: 1.7;
-            position: relative;
-            z-index: 2;
-            animation: fadeInUp 0.6s ease-out 0.3s both;
-        }
-
-        .hero-sub strong { color: var(--ink); }
-
-        .hero-ctas {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-            position: relative;
-            z-index: 2;
-            animation: fadeInUp 0.6s ease-out 0.4s both;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem 2.5rem;
-            background: var(--ink);
-            color: var(--paper);
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 700;
-            font-size: 0.85rem;
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border: var(--border);
-            cursor: pointer;
-            transition: all 0.15s;
-            box-shadow: var(--shadow);
-        }
-
-        .btn-primary:hover {
-            background: var(--red);
-            color: var(--ink);
-            transform: translate(-3px, -3px);
-            box-shadow: 9px 9px 0 var(--ink);
-        }
-
-        .btn-secondary {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem 2.5rem;
-            background: var(--paper);
-            color: var(--ink);
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 700;
-            font-size: 0.85rem;
-            text-decoration: none;
-            border: var(--border);
-            cursor: pointer;
-            transition: all 0.15s;
-            box-shadow: var(--shadow);
-        }
-
-        .btn-secondary:hover {
-            transform: translate(-3px, -3px);
-            box-shadow: 9px 9px 0 var(--red);
-        }
-
-        .hero-stats {
-            display: flex;
-            gap: 3rem;
-            margin-top: 4rem;
-            padding-top: 2rem;
-            border-top: var(--border);
-            position: relative;
-            z-index: 2;
-            animation: fadeInUp 0.6s ease-out 0.5s both;
-        }
-
-        .hero-stat { text-align: center; }
-
-        .hero-stat-num {
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 900;
-            font-size: 2rem;
-            color: var(--red);
-        }
-
-        .hero-stat-label {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            margin-top: 0.25rem;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(24px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ══════════════════════════════════════════
-           HORIZONTAL SCROLLER
-        ══════════════════════════════════════════ */
-        .scroller-section {
-            padding: 0;
-            overflow: hidden;
-            border-top: var(--border);
-            border-bottom: var(--border);
-        }
-
-        .scroller-label {
-            font-family: 'Unbounded', sans-serif;
-            font-size: 0.65rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.3em;
-            color: var(--text-muted);
-            padding: 2rem 2rem 0;
-        }
-
-        .scroller-track {
-            display: flex;
-            animation: scrollTrack 30s linear infinite;
-            padding: 1.5rem 0 2rem;
-        }
-
-        .scroller-track:hover { animation-play-state: paused; }
-
-        .scroller-item {
-            flex-shrink: 0;
-            padding: 0 1.5rem;
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 900;
-            font-size: clamp(2rem, 5vw, 4rem);
-            white-space: nowrap;
-            color: rgba(17,17,17,0.12);
-            transition: color 0.2s;
-            cursor: default;
-        }
-
-        .scroller-item:hover { color: var(--ink); }
-
-        .scroller-item .accent { color: var(--red); opacity: 0.6; }
-
-        @keyframes scrollTrack {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        /* ══════════════════════════════════════════
-           BADGE SECTION
-        ══════════════════════════════════════════ */
-        .vibecoded-section {
-            padding: 6rem 2rem;
-            text-align: center;
-        }
-
-        .vibecoded-inner {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .vibecoded-question {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: clamp(1rem, 2.5vw, 1.3rem);
-            color: var(--text-muted);
-            letter-spacing: 0.05em;
-        }
-
-        .vibecoded-answer {
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 900;
-            font-size: clamp(2rem, 6vw, 4.5rem);
-            color: var(--ink);
-            line-height: 1.1;
-        }
-
-        .vibecoded-answer .hl {
-            background: var(--red);
-            color: var(--paper);
-            padding: 0 0.2em;
-        }
-
-        /* ══════════════════════════════════════════
-           ENGAGEMENT SECTIONS (3 PATHS)
-        ══════════════════════════════════════════ */
-        .persona-sections {
-            max-width: 1200px;
+        .wrap {
+            max-width: 760px;
             margin: 0 auto;
-            padding: 4rem 2rem 2rem;
-        }
-
-        .persona-sections-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .persona-sections-header h2 {
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 900;
-            font-size: clamp(2rem, 4vw, 3rem);
-            margin-bottom: 0.5rem;
-        }
-
-        .persona-sections-header h2 span {
-            color: var(--red);
-        }
-
-        .persona-sections-header p {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
-        .persona-card {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0;
-            background: var(--paper);
-            border: var(--border);
-            margin-bottom: 2rem;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .persona-card:hover {
-            transform: translate(-3px, -3px);
-            box-shadow: 9px 9px 0 var(--ink);
-        }
-
-        .persona-card-visual {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            min-height: 280px;
-        }
-
-        .persona-card-visual .big-number {
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 900;
-            font-size: 7rem;
-            line-height: 1;
-        }
-
-        .founder-card .persona-card-visual { background: var(--red); }
-        .founder-card .big-number { color: var(--ink); }
-
-        .creator-card .persona-card-visual { background: var(--ink); }
-        .creator-card .big-number { color: var(--paper); }
-
-        .professional-card .persona-card-visual { background: var(--paper-alt); border-right: var(--border); }
-        .professional-card .big-number { color: var(--ink); }
-
-        .persona-card-content {
-            padding: 3rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .persona-card-tag {
-            display: inline-block;
-            font-size: 0.65rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            padding: 0.3rem 0.8rem;
-            border: 2px solid var(--ink);
-            margin-bottom: 1.25rem;
-            width: fit-content;
-        }
-
-        .founder-card .persona-card-tag { color: var(--red); border-color: var(--red); }
-        .creator-card .persona-card-tag { background: var(--ink); color: var(--paper); }
-        .professional-card .persona-card-tag { background: var(--paper-alt); color: var(--ink); }
-
-        .persona-card-content h3 {
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 900;
-            font-size: clamp(1.3rem, 2.5vw, 1.8rem);
-            line-height: 1.2;
-            margin-bottom: 1rem;
-        }
-
-        .persona-card-content h3 span { color: var(--red); }
-
-        .persona-card-content p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            line-height: 1.7;
-            margin-bottom: 1.5rem;
-        }
-
-        .persona-card-content .persona-cta {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.85rem 2rem;
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 700;
-            font-size: 0.75rem;
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            transition: all 0.15s;
-            width: fit-content;
-            border: var(--border);
-        }
-
-        .founder-card .persona-cta { background: var(--ink); color: var(--paper); }
-        .founder-card .persona-cta:hover { background: var(--red); color: var(--ink); transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--ink); }
-        .creator-card .persona-cta { background: var(--red); color: var(--paper); }
-        .creator-card .persona-cta:hover { background: var(--ink); color: var(--paper); transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--red); }
-        .professional-card .persona-cta { background: var(--paper); color: var(--ink); }
-        .professional-card .persona-cta:hover { background: var(--ink); color: var(--paper); transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--red); }
-
-        .persona-card:nth-child(even) { direction: rtl; }
-        .persona-card:nth-child(even) > * { direction: ltr; }
-
-        /* ══════════════════════════════════════════
-           ABOUT
-        ══════════════════════════════════════════ */
-        .about {
-            padding: 8rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-tag {
-            display: inline-block;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.25em;
-            color: var(--red);
-            border: 2px solid var(--red);
-            padding: 0.4rem 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: start;
-        }
-
-        .about-left h2 {
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 900;
-            font-size: clamp(2rem, 4vw, 3.5rem);
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-        }
-
-        .about-left p {
-            color: var(--text-muted);
-            line-height: 1.8;
-            font-size: 0.9rem;
-        }
-
-        .about-cards {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .about-card {
-            background: var(--paper-alt);
-            border: var(--border);
-            padding: 1.5rem;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.2s;
-        }
-
-        .about-card:hover {
-            transform: translateX(8px);
-        }
-
-        .about-card-num {
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 900;
-            font-size: 0.9rem;
-            color: var(--red);
-            margin-bottom: 0.75rem;
-        }
-
-        .about-card h3 {
-            font-family: 'Unbounded', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .about-card p {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            line-height: 1.6;
-        }
-
-        /* ══════════════════════════════════════════
-           MANIFESTO TAPE
-        ══════════════════════════════════════════ */
-        .manifesto-tape {
-            background: var(--ink);
-            color: var(--paper);
-            padding: 1.5rem 2rem;
-            transform: rotate(-1deg);
-            margin: -1rem -2rem;
-            overflow: hidden;
-            position: relative;
-            z-index: 10;
-            border-top: 3px solid var(--red);
-            border-bottom: 3px solid var(--red);
-        }
-
-        .manifesto-tape-inner {
-            display: flex;
-            animation: ticker 20s linear infinite;
-            white-space: nowrap;
-        }
-
-        .manifesto-tape span {
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 900;
-            font-size: 1rem;
-            text-transform: uppercase;
             padding: 0 2rem;
-            letter-spacing: 0.05em;
         }
 
-        .manifesto-tape .star { color: var(--red); }
-
-        /* ══════════════════════════════════════════
-           SERVICES
-        ══════════════════════════════════════════ */
-        .services {
-            padding: 6rem 2rem 8rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .services-header {
-            margin-bottom: 3rem;
-        }
-
-        .services-header h2 {
+        h1, h2 {
             font-family: 'Unbounded', sans-serif;
             font-weight: 900;
-            font-size: clamp(2rem, 4vw, 3rem);
         }
 
-        .services-header p { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem; }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-        }
-
-        .service-card {
-            background: var(--paper-alt);
-            border: var(--border);
-            padding: 2.5rem;
-            position: relative;
-            box-shadow: var(--shadow);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .service-card:hover {
-            transform: translate(-4px, -4px);
-            box-shadow: 10px 10px 0 var(--red);
-        }
-
-        .service-number {
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 900;
-            font-size: 3rem;
-            color: var(--red);
-            line-height: 1;
-            margin-bottom: 1rem;
-        }
-
-        .service-card h3 {
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 900;
-            font-size: 1.3rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .service-card p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            line-height: 1.7;
-        }
-
-        .service-card.secondary { background: var(--ink); color: var(--paper); }
-        .service-card.secondary p { color: #cfccc2; }
-        .service-card.secondary .service-number { color: var(--red); }
-
-        /* ══════════════════════════════════════════
-           STATS HIGHLIGHT
-        ══════════════════════════════════════════ */
-        .highlight {
-            padding: 6rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .highlight-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
+        .btn {
+            display: inline-flex;
             align-items: center;
-            background: var(--paper-alt);
-            border: var(--border);
-            padding: 4rem;
-            position: relative;
-            box-shadow: var(--shadow);
-        }
-
-        .highlight-grid::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 6px; height: 100%;
-            background: var(--red);
-        }
-
-        .highlight-grid h2 {
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 900;
-            font-size: clamp(1.5rem, 3vw, 2.5rem);
-            line-height: 1.2;
-            margin-bottom: 1rem;
-        }
-
-        .highlight-grid h2 span { color: var(--red); }
-
-        .highlight-grid > div > p {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            line-height: 1.7;
-        }
-
-        .stats {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .stat-number {
-            display: block;
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 900;
-            font-size: clamp(2rem, 4vw, 3rem);
-            color: var(--red);
-            line-height: 1;
-        }
-
-        .stat-label {
-            display: block;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            margin-top: 0.25rem;
-        }
-
-        /* ══════════════════════════════════════════
-           BIG CTA
-        ══════════════════════════════════════════ */
-        .cta-section {
-            padding: 8rem 2rem;
-            text-align: center;
-            position: relative;
-            border-top: var(--border);
-        }
-
-        .cta-giant-text {
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 900;
-            font-size: clamp(2.5rem, 8vw, 7rem);
-            line-height: 1;
-            position: relative;
-            z-index: 2;
-            margin-bottom: 1.5rem;
-        }
-
-        .cta-giant-text .stroke-text {
-            -webkit-text-stroke: 2px var(--ink);
-            -webkit-text-fill-color: transparent;
-            color: transparent;
-        }
-
-        .cta-giant-text .fill-text {
-            color: var(--red);
-        }
-
-        .cta-description {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            max-width: 480px;
-            margin: 0 auto 2.5rem;
-            line-height: 1.7;
-            position: relative;
-            z-index: 2;
-        }
-
-        .cta-form {
-            display: flex;
-            gap: 0;
-            max-width: 480px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 2;
-        }
-
-        .cta-form input {
-            flex: 1;
-            padding: 1rem 1.5rem;
-            background: var(--paper);
-            border: var(--border);
-            border-right: none;
-            color: var(--ink);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            outline: none;
-        }
-
-        .cta-form input::placeholder { color: var(--text-muted); }
-
-        .cta-form button {
+            gap: 0.5rem;
             padding: 1rem 2rem;
             background: var(--ink);
             color: var(--paper);
             font-family: 'Unbounded', sans-serif;
             font-weight: 700;
-            font-size: 0.75rem;
+            font-size: 0.85rem;
+            text-decoration: none;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            border: var(--border);
-            cursor: pointer;
+            border: 3px solid var(--ink);
+            box-shadow: 6px 6px 0 var(--red);
             transition: all 0.15s;
-            white-space: nowrap;
         }
 
-        .cta-form button:hover { background: var(--red); color: var(--ink); }
-
-        .cta-note {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-top: 1rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        /* ══════════════════════════════════════════
-           FOOTER
-        ══════════════════════════════════════════ */
-        footer {
-            padding: 4rem 2rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .footer-top {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 3rem;
-            padding-bottom: 3rem;
-            border-bottom: var(--border);
-        }
-
-        .footer-brand {
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 900;
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-        }
-
-        .footer-brand-desc {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            line-height: 1.6;
-            max-width: 280px;
-        }
-
-        .footer-col h4 {
-            font-family: 'Unbounded', sans-serif;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            margin-bottom: 1rem;
-            color: var(--text-muted);
-        }
-
-        .footer-col ul {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-        }
-
-        .footer-col a {
+        .btn:hover {
+            background: var(--red);
             color: var(--ink);
-            text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: 700;
-            transition: color 0.15s;
+            transform: translate(-3px, -3px);
+            box-shadow: 9px 9px 0 var(--ink);
         }
 
-        .footer-col a:hover { color: var(--red); }
+        /* HEADER */
+        header {
+            border-bottom: 3px solid var(--ink);
+        }
 
-        .footer-bottom {
+        header .wrap {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 2rem 0;
-            font-size: 0.7rem;
-            color: var(--text-muted);
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
         }
 
-        .footer-bottom a { color: var(--red); text-decoration: none; }
-
-        /* ══════════════════════════════════════════
-           MOBILE MENU
-        ══════════════════════════════════════════ */
-        .nav-hamburger {
-            display: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0.5rem;
-            z-index: 1001;
-        }
-
-        .nav-hamburger span {
-            display: block;
-            width: 24px; height: 3px;
-            background: var(--ink);
-            margin: 5px 0;
-            transition: all 0.2s;
-        }
-
-        .nav-hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
-        .nav-hamburger.active span:nth-child(2) { opacity: 0; }
-        .nav-hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
-
-        .mobile-menu {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: var(--paper);
-            z-index: 999;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 2rem;
-        }
-
-        .mobile-menu.open { display: flex; }
-
-        .mobile-menu a {
-            color: var(--ink);
-            text-decoration: none;
+        .logo {
             font-family: 'Unbounded', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            transition: color 0.15s;
+            font-weight: 900;
+            font-size: 1.3rem;
+            text-decoration: none;
         }
 
-        .mobile-menu a:hover { color: var(--red); }
-
-        /* ══════════════════════════════════════════
-           SCROLL REVEAL
-        ══════════════════════════════════════════ */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.5s ease-out;
-        }
-
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .skip-link {
-            position: absolute;
-            top: -100%; left: 0;
-            background: var(--ink);
-            color: var(--paper);
-            padding: 0.5rem 1rem;
-            z-index: 10000;
+        .header-email {
+            font-size: 0.85rem;
             font-weight: 700;
             text-decoration: none;
         }
 
-        .skip-link:focus { top: 0; }
+        .header-email:hover { color: var(--red); text-decoration: underline; }
 
-        /* ══════════════════════════════════════════
-           RESPONSIVE
-        ══════════════════════════════════════════ */
-        @media (max-width: 768px) {
-            .nav-hamburger { display: block; }
-            .nav-links { display: none; }
+        /* HERO */
+        .hero { padding: 5rem 0 4rem; }
 
-            .about-grid { grid-template-columns: 1fr; gap: 2rem; }
-            .services-grid { grid-template-columns: 1fr; }
-            .highlight-grid { grid-template-columns: 1fr; padding: 2rem; }
-            .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .tag {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--red);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 1rem;
+        }
 
-            .persona-card { grid-template-columns: 1fr; }
-            .persona-card:nth-child(even) { direction: ltr; }
-            .persona-card-visual { min-height: 160px; border-right: none !important; border-bottom: var(--border); }
-            .persona-card-content { padding: 2rem; }
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            line-height: 1.05;
+            margin-bottom: 1.5rem;
+        }
 
-            .hero-stats { gap: 1.5rem; }
+        .lede {
+            color: var(--muted);
+            max-width: 480px;
+            line-height: 1.7;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
 
-            .cta-form { flex-direction: column; }
-            .cta-form input { border-right: var(--border); border-bottom: none; }
+        /* SECTIONS (shared) */
+        section:not(.hero) {
+            border-top: 3px solid var(--ink);
+            padding: 4rem 0;
+        }
 
-            .manifesto-tape { transform: rotate(-0.5deg); }
+        section h2 {
+            font-size: 1.7rem;
+            margin-bottom: 2rem;
+        }
+
+        /* SERVICES */
+        .service-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .service-list li {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1.5rem 0;
+        }
+
+        .service-list li + li { border-top: 2px solid var(--ink); }
+
+        .service-list .num {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: 1.4rem;
+            color: var(--red);
+            flex-shrink: 0;
+            width: 2.5rem;
+        }
+
+        .service-list h3 {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .service-list p {
+            color: var(--muted);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        /* STACK / TOOLS */
+        .stack-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 1rem;
+        }
+
+        .tool {
+            border: 2px solid var(--ink);
+            padding: 1.1rem 0.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            text-align: center;
+            background: var(--paper-alt);
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .tool:hover { background: var(--ink); color: var(--paper); }
+
+        .tool-mark {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: 1.1rem;
+            color: var(--red);
+        }
+
+        .tool-name {
+            font-size: 0.62rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* ABOUT */
+        .about p {
+            color: var(--muted);
+            line-height: 1.8;
+            font-size: 0.95rem;
+            max-width: 600px;
+        }
+
+        /* CONTACT */
+        .contact p {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 3px solid var(--ink);
+            padding: 2rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        @media (max-width: 600px) {
+            .stack-grid { grid-template-columns: repeat(3, 1fr); }
+            .service-list li { flex-direction: column; gap: 0.5rem; }
+            .service-list .num { width: auto; }
         }
     </style>
 </head>
 <body>
-    <a href="#main-content" class="skip-link">Skip to content</a>
-
-    <!-- TICKER -->
-    <div class="ticker">
-        <div class="ticker-inner">
-            <span>Now booking Q4 builds</span>
-            <span>MVP to launch in weeks, not quarters</span>
-            <span>AI-native product studio</span>
-            <span>No bloated dev teams</span>
-            <span>Build fast. Ship real.</span>
-            <span>Enablement available for your team</span>
-            <span>Now booking Q4 builds</span>
-            <span>MVP to launch in weeks, not quarters</span>
-            <span>AI-native product studio</span>
-            <span>No bloated dev teams</span>
-            <span>Build fast. Ship real.</span>
-            <span>Enablement available for your team</span>
+    <header>
+        <div class="wrap">
+            <a href="/" class="logo">Nomai</a>
+            <a href="mailto:hello@nomaitech.com" class="header-email">hello@nomaitech.com</a>
         </div>
-    </div>
+    </header>
 
-    <!-- NAV -->
-    <nav>
-        <a href="/" class="nav-logo">Nomai<span class="blink">_</span></a>
-        <ul class="nav-links">
-            <li><a href="#engagements">Work</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-        <button class="nav-hamburger" aria-label="Toggle menu" onclick="toggleMobileMenu()">
-            <span></span><span></span><span></span>
-        </button>
-    </nav>
-
-    <div class="mobile-menu" id="mobileMenu">
-        <a href="#engagements" onclick="toggleMobileMenu()">Work</a>
-        <a href="#services" onclick="toggleMobileMenu()">Services</a>
-        <a href="#about" onclick="toggleMobileMenu()">About</a>
-        <a href="#contact" onclick="toggleMobileMenu()">Contact</a>
-    </div>
-
-    <!-- HERO -->
-    <section class="hero" id="main-content">
-        <div class="hero-pretitle">// Product Development Agency</div>
-
-        <h1 class="hero-title">
-            <span class="line-1">We build your</span>
-            <span class="line-2">product</span>
-            <span class="line-3">with AI.</span>
-        </h1>
-
-        <p class="hero-sub">
-            Nomai is a product development agency. We design, build, and ship real software fast using <strong>AI-native workflows</strong> — then train your team to keep building without us.
-        </p>
-
-        <div class="hero-ctas">
-            <a href="#contact" class="btn-primary">Start a project →</a>
-            <a href="#services" class="btn-secondary">See our services ↓</a>
-        </div>
-
-        <div class="hero-stats">
-            <div class="hero-stat">
-                <div class="hero-stat-num">2-4wk</div>
-                <div class="hero-stat-label">To first shippable version</div>
-            </div>
-            <div class="hero-stat">
-                <div class="hero-stat-num">10x</div>
-                <div class="hero-stat-label">Faster than a dev shop</div>
-            </div>
-            <div class="hero-stat">
-                <div class="hero-stat-num">1</div>
-                <div class="hero-stat-label">Team: design, build, ship</div>
-            </div>
+    <section class="hero">
+        <div class="wrap">
+            <p class="tag">// Product Development Agency</p>
+            <h1>We build products<br>with AI.</h1>
+            <p class="lede">A small agency that designs, builds, and ships real software — fast — using AI-native workflows.</p>
+            <a href="mailto:hello@nomaitech.com" class="btn">Get in touch &rarr;</a>
         </div>
     </section>
 
-    <!-- HORIZONTAL SCROLLER -->
-    <section class="scroller-section">
-        <div class="scroller-label">What we build ↓</div>
-        <div class="scroller-track">
-            <div class="scroller-item">MVPs <span class="accent">/</span></div>
-            <div class="scroller-item">Internal tools <span class="accent">/</span></div>
-            <div class="scroller-item">AI agents <span class="accent">/</span></div>
-            <div class="scroller-item">Automations <span class="accent">/</span></div>
-            <div class="scroller-item">Dashboards <span class="accent">/</span></div>
-            <div class="scroller-item">Client portals <span class="accent">/</span></div>
-            <div class="scroller-item">Workflow apps <span class="accent">/</span></div>
-            <div class="scroller-item">MVPs <span class="accent">/</span></div>
-            <div class="scroller-item">Internal tools <span class="accent">/</span></div>
-            <div class="scroller-item">AI agents <span class="accent">/</span></div>
-            <div class="scroller-item">Automations <span class="accent">/</span></div>
-            <div class="scroller-item">Dashboards <span class="accent">/</span></div>
-            <div class="scroller-item">Client portals <span class="accent">/</span></div>
-            <div class="scroller-item">Workflow apps <span class="accent">/</span></div>
-        </div>
-    </section>
-
-    <!-- BADGE -->
-    <section class="vibecoded-section">
-        <div class="vibecoded-inner reveal">
-            <span class="vibecoded-question">Do we practice what we preach?</span>
-            <span class="vibecoded-answer">Every <span class="hl">single line.</span></span>
-        </div>
-    </section>
-
-    <!-- THREE ENGAGEMENTS -->
-    <section class="persona-sections" id="engagements">
-        <div class="persona-sections-header reveal">
-            <h2>Three ways to <span>work with us.</span></h2>
-            <p>Pick your starting point. Leave with something live.</p>
-        </div>
-
-        <div class="persona-card founder-card reveal">
-            <div class="persona-card-visual">
-                <span class="big-number">01</span>
-            </div>
-            <div class="persona-card-content">
-                <div class="persona-card-tag">Build your product</div>
-                <h3>For <span>Founders</span></h3>
-                <p>You have an idea and need it built. We design and ship your MVP using AI-native workflows — no technical co-founder, no agency bloat, no six-month timeline. Live product in weeks.</p>
-                <a href="#contact" class="persona-cta">Start a build &rarr;</a>
-            </div>
-        </div>
-
-        <div class="persona-card creator-card reveal">
-            <div class="persona-card-visual">
-                <span class="big-number">02</span>
-            </div>
-            <div class="persona-card-content">
-                <div class="persona-card-tag">Automate your operations</div>
-                <h3>For <span>Businesses</span></h3>
-                <p>We build the internal tools, dashboards, and automations your business actually needs. Cut the custom-dev quote. Cut the timeline. Get software that fits how you actually work.</p>
-                <a href="#contact" class="persona-cta">Start a project &rarr;</a>
-            </div>
-        </div>
-
-        <div class="persona-card professional-card reveal">
-            <div class="persona-card-visual">
-                <span class="big-number">03</span>
-            </div>
-            <div class="persona-card-content">
-                <div class="persona-card-tag">Train your team</div>
-                <h3>For <span>Teams</span></h3>
-                <p>Want to keep building in-house after we ship? We train your team on the exact AI workflows we use — prompting, tooling, and process — so you can keep shipping without us.</p>
-                <a href="#contact" class="persona-cta">Ask about enablement &rarr;</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- ABOUT -->
-    <section class="about" id="about">
-        <div class="section-tag reveal">// What is Nomai</div>
-        <div class="about-grid">
-            <div class="about-left reveal">
-                <h2>Not your average<br>dev shop.</h2>
-                <p>
-                    Nomai is a product development agency built around AI-native workflows. We don't staff a slow committee of specialists — we use AI as our engineering team, designer, and PM, and pass the speed on to you.
-                    <br><br>
-                    Every engagement ships a real, working product. Not a deck. Not a prototype that dies in a drawer. Software that's live on the internet, built for actual use.
-                </p>
-            </div>
-            <div class="about-cards">
-                <div class="about-card reveal">
-                    <div class="about-card-num">01.</div>
-                    <h3>Fixed-Sprint Builds</h3>
-                    <p>A scoped build, a fixed timeline. You know what you're getting and when it ships — no open-ended retainers.</p>
-                </div>
-                <div class="about-card reveal">
-                    <div class="about-card-num">02.</div>
-                    <h3>AI-Native Workflow</h3>
-                    <p>From spec to deploy, we use the same AI-accelerated process for every engagement — the reason we move 10x faster than a traditional shop.</p>
-                </div>
-                <div class="about-card reveal">
-                    <div class="about-card-num">03.</div>
-                    <h3>Direct Access</h3>
-                    <p>No account managers, no hand-offs. You work directly with the people building your product.</p>
-                </div>
-                <div class="about-card reveal">
-                    <div class="about-card-num">04.</div>
-                    <h3>Built to Hand Off</h3>
-                    <p>Clean, documented, and yours. We build so your team — or ours — can keep extending it after launch.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- MANIFESTO TAPE -->
-    <div class="manifesto-tape">
-        <div class="manifesto-tape-inner">
-            <span>Ideas are the product <span class="star">★</span></span>
-            <span>AI is the build team <span class="star">★</span></span>
-            <span>Ship before it's perfect <span class="star">★</span></span>
-            <span>Speed is the moat <span class="star">★</span></span>
-            <span>Build, don't wait <span class="star">★</span></span>
-            <span>Your product ships this quarter <span class="star">★</span></span>
-            <span>Ideas are the product <span class="star">★</span></span>
-            <span>AI is the build team <span class="star">★</span></span>
-            <span>Ship before it's perfect <span class="star">★</span></span>
-            <span>Speed is the moat <span class="star">★</span></span>
-            <span>Build, don't wait <span class="star">★</span></span>
-            <span>Your product ships this quarter <span class="star">★</span></span>
-        </div>
-    </div>
-
-    <!-- SERVICES -->
-    <section class="services" id="services">
-        <div class="services-header reveal">
-            <div class="section-tag">// What we do</div>
+    <section id="services">
+        <div class="wrap">
             <h2>Services</h2>
-            <p>Four ways we help you ship.</p>
+            <ul class="service-list">
+                <li>
+                    <span class="num">01</span>
+                    <div>
+                        <h3>Product Design &amp; Build</h3>
+                        <p>Idea to live product — spec, design, and build end to end.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="num">02</span>
+                    <div>
+                        <h3>AI Integration</h3>
+                        <p>Copilots, agents, and AI features shipped into your existing product.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="num">03</span>
+                    <div>
+                        <h3>Automation &amp; Internal Tools</h3>
+                        <p>Replace manual process with dashboards and workflow automation.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="num">04</span>
+                    <div>
+                        <h3>Team Enablement</h3>
+                        <p>We train your team on the AI workflows we use to build.</p>
+                    </div>
+                </li>
+            </ul>
         </div>
+    </section>
 
-        <div class="services-grid">
-            <div class="service-card reveal">
-                <div class="service-number">01</div>
-                <h3>Product Design &amp; Build</h3>
-                <p>From idea to live product. We handle spec, design, and build end-to-end using AI-native workflows — MVPs, web apps, and client-facing tools.</p>
-            </div>
-
-            <div class="service-card reveal">
-                <div class="service-number">02</div>
-                <h3>AI Integration</h3>
-                <p>Bring AI into your existing product or workflow — copilots, agents, automation, and AI features shipped straight into your stack.</p>
-            </div>
-
-            <div class="service-card reveal">
-                <div class="service-number">03</div>
-                <h3>Automation &amp; Internal Tools</h3>
-                <p>Replace spreadsheets and manual process with real internal tools — dashboards, ops tooling, and workflow automation.</p>
-            </div>
-
-            <div class="service-card secondary reveal">
-                <div class="service-number">04</div>
-                <h3>Team Enablement</h3>
-                <p>We train your team on the AI workflows we use to build — prompting, tooling, and process — so you can keep shipping after we're gone.</p>
+    <section id="stack">
+        <div class="wrap">
+            <h2>Tools we build with</h2>
+            <div class="stack-grid">
+                <div class="tool"><span class="tool-mark">CC</span><span class="tool-name">Claude Code</span></div>
+                <div class="tool"><span class="tool-mark">CU</span><span class="tool-name">Cursor</span></div>
+                <div class="tool"><span class="tool-mark">GPT</span><span class="tool-name">ChatGPT</span></div>
+                <div class="tool"><span class="tool-mark">GH</span><span class="tool-name">GitHub</span></div>
+                <div class="tool"><span class="tool-mark">&#9650;</span><span class="tool-name">Vercel</span></div>
+                <div class="tool"><span class="tool-mark">CF</span><span class="tool-name">Cloudflare</span></div>
+                <div class="tool"><span class="tool-mark">SB</span><span class="tool-name">Supabase</span></div>
+                <div class="tool"><span class="tool-mark">n8n</span><span class="tool-name">n8n</span></div>
+                <div class="tool"><span class="tool-mark">DK</span><span class="tool-name">Docker</span></div>
+                <div class="tool"><span class="tool-mark">FG</span><span class="tool-name">Figma</span></div>
+                <div class="tool"><span class="tool-mark">RP</span><span class="tool-name">Replit</span></div>
+                <div class="tool"><span class="tool-mark">LN</span><span class="tool-name">Linear</span></div>
             </div>
         </div>
     </section>
 
-    <!-- STATS HIGHLIGHT -->
-    <section class="highlight">
-        <div class="highlight-grid reveal">
-            <div>
-                <h2>From brief to launched product — <span>faster than you think.</span></h2>
-                <p>Most engagements ship a first live version within weeks, not quarters. No bloated teams. No committee sign-off. Just the right AI workflow and people who ship.</p>
-            </div>
-            <div class="stats">
-                <div class="stat">
-                    <span class="stat-number">2-4wk</span>
-                    <span class="stat-label">To first live version</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number">10x</span>
-                    <span class="stat-label">Faster than a dev shop</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number">1 team</span>
-                    <span class="stat-label">Design, build &amp; ship</span>
-                </div>
-            </div>
+    <section id="about">
+        <div class="wrap">
+            <h2>About</h2>
+            <p>Nomai is a small product development agency. We don't staff a slow committee of specialists — we use AI as our engineering team, designer, and PM, and pass the speed on to you. Every engagement ships a real, working product: live on the internet, built for actual use.</p>
         </div>
     </section>
 
-    <!-- CTA -->
-    <section class="cta-section" id="contact">
-        <div class="cta-giant-text reveal">
-            <span class="stroke-text">Stop</span> <span class="fill-text">waiting.</span><br>
-            <span class="fill-text">Start</span> <span class="stroke-text">building.</span>
+    <section class="contact" id="contact">
+        <div class="wrap">
+            <h2>Let's build something.</h2>
+            <p>Tell us what you're building. We'll get back to you within a day.</p>
+            <a href="mailto:hello@nomaitech.com" class="btn">hello@nomaitech.com &rarr;</a>
         </div>
-        <p class="cta-description reveal">
-            Tell us what you're building. We'll get back to you within a day to talk scope, timeline, and whether we're a fit.
-        </p>
-        <form class="cta-form reveal" onsubmit="handleSubmit(event)">
-            <input type="email" placeholder="your@email.com" required>
-            <button type="submit">Get in touch</button>
-        </form>
-        <p class="cta-note reveal">No spam. We only use this to reply about your project.</p>
     </section>
 
-    <!-- FOOTER -->
     <footer>
-        <div class="footer-top">
-            <div>
-                <div class="footer-brand">Nomai</div>
-                <p class="footer-brand-desc">A product development agency that builds real software fast using AI-native workflows — for founders, businesses, and teams who'd rather ship than wait.</p>
-            </div>
-            <div class="footer-col">
-                <h4>Agency</h4>
-                <ul>
-                    <li><a href="#engagements">Work</a></li>
-                    <li><a href="#services">Services</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Community</h4>
-                <ul>
-                    <li><a href="https://ai201.club" target="_blank" rel="noopener noreferrer">ai201.club</a></li>
-                    <li><a href="https://lu.ma/ai201" target="_blank" rel="noopener noreferrer">Events</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Contact</h4>
-                <ul>
-                    <li><a href="mailto:hello@nomaitech.com">hello@nomaitech.com</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <span>&copy; 2026 Nomai &mdash; Built with <a href="#">AI</a> in London</span>
-            <span>for people who'd rather ship than wait</span>
-        </div>
+        &copy; 2026 Nomai — London
     </footer>
-
-    <script>
-        // MOBILE MENU
-        function toggleMobileMenu() {
-            document.getElementById('mobileMenu').classList.toggle('open');
-            document.querySelector('.nav-hamburger').classList.toggle('active');
-        }
-
-        // SCROLL REVEAL
-        const revealElements = document.querySelectorAll('.reveal');
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach((entry, i) => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.classList.add('visible');
-                    }, i * 80);
-                    revealObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-
-        revealElements.forEach(el => revealObserver.observe(el));
-
-        // FORM HANDLER
-        function handleSubmit(e) {
-            e.preventDefault();
-            const btn = e.target.querySelector('button');
-            const input = e.target.querySelector('input');
-            btn.textContent = "Got it. We'll be in touch.";
-            btn.style.background = 'var(--red)';
-            btn.style.color = 'var(--ink)';
-            input.value = '';
-            setTimeout(() => {
-                btn.textContent = 'Get in touch';
-                btn.style.background = '';
-                btn.style.color = '';
-            }, 3000);
-        }
-    </script>
 </body>
 </html>
