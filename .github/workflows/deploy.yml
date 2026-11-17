@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          fetch-depth: 2
+          fetch-depth: 0
 
       - uses: actions/setup-node@v5
         with:
@@ -31,8 +31,14 @@ jobs:
       - name: Detect changed sites
         id: changed
         run: |
+          # Diff the whole push (not just the last commit) so multi-commit pushes sync every site.
+          # Fall back to HEAD~1 when there is no usable "before" (new branch / force push).
+          BEFORE="${{ github.event.before }}"
+          if [ -z "$BEFORE" ] || ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            BEFORE=HEAD~1
+          fi
           # Get list of unique site hostnames that have changed files
-          CHANGED_SITES=$(git diff --name-only HEAD~1 HEAD -- 'sites/' \
+          CHANGED_SITES=$(git diff --name-only "$BEFORE" HEAD -- 'sites/' \
             | grep '^sites/' \
             | sed 's|^sites/||' \
             | cut -d'/' -f1 \
