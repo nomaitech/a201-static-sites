@@ -13,7 +13,8 @@ Key goals:
 
 - Content storage: Cloudflare R2 bucket `static-sites`
 - Web serving: Cloudflare Worker (`worker/`) routes requests by hostname to the matching folder in R2
-- DNS: proxied A records (192.0.2.1) on each site's Cloudflare zone — Worker intercepts before reaching origin
+- DNS: a proxied wildcard A record `*.ai201.site → 192.0.2.1` covers every subdomain. 192.0.2.1 is a non-routable placeholder (RFC 5737); the Worker answers before Cloudflare would contact it
+- Only `ai201.site` is served by the Worker; folders for other domains in `sites/` (e.g. `nomaitech.com`, `philosofriends.com`, `ai201.club`) are synced to R2 but not routed
 - TLS: handled automatically by Cloudflare
 
 ## Host Routing Model
@@ -34,8 +35,7 @@ Per host:
 mkdir sites/newsite.ai201.site
 # add index.html and assets
 
-# 2. Add a proxied DNS A record (192.0.2.1) for the hostname in Cloudflare dashboard
-#    or via API — the Worker intercepts all traffic before it hits the origin
+# 2. No DNS step needed — the wildcard *.ai201.site record already covers it
 
 # 3. Commit and push — CI will sync the new site to R2 automatically
 git add sites/newsite.ai201.site
@@ -64,7 +64,6 @@ done
 wrangler r2 object delete static-sites/<host>/index.html --remote
 # (repeat for all files)
 
-# Remove the DNS record from Cloudflare dashboard
 # Delete the sites/<host>/ folder from this repo
 ```
 
@@ -74,6 +73,7 @@ wrangler r2 object delete static-sites/<host>/index.html --remote
 - Deploy with `cd worker && wrangler deploy`
 - Routes are defined in `worker/wrangler.toml` — only `ai201.site` and `*.ai201.site` are routed; other domains need a route added + `wrangler deploy`
 - No redeploy needed when adding/removing `*.ai201.site` sites (routing is hostname-based at runtime)
+- If R2 has no object for a request, the Worker falls back to `fetch(request)` (the origin). For `*.ai201.site` that origin is the 192.0.2.1 placeholder, so missing pages time out with a Cloudflare 522 rather than a 404
 
 ## Deletion Policy For Old Source Folders
 
