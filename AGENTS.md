@@ -72,7 +72,7 @@ wrangler r2 object delete static-sites/<host>/index.html --remote
 
 - Located in `worker/`
 - Deploy with `cd worker && wrangler deploy`
-- Routes are defined in `worker/wrangler.toml` — only `ai201.site` has a wildcard (`*.ai201.site/*`); other zones list each hostname explicitly, so a new subdomain on those zones needs its own route + `wrangler deploy`
+- Routes are defined in `worker/wrangler.toml` — only `ai201.site` and `*.ai201.site` are routed; other domains need a route added + `wrangler deploy`
 - No redeploy needed when adding/removing `*.ai201.site` sites (routing is hostname-based at runtime)
 
 ## Deletion Policy For Old Source Folders
